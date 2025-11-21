@@ -1,0 +1,372 @@
+\documentclass{beamer}
+
+% Tema e colori
+\usetheme{Madrid}
+\usecolortheme{beaver}
+
+% Pacchetti
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{listings}
+\usepackage{amsmath}
+\usepackage{graphicx}
+
+% Configurazione listings per Python
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue},
+    stringstyle=\color{red},
+    commentstyle=\color{green!60!black},
+    numbers=left,
+    numberstyle=\tiny,
+    frame=single,
+    breaklines=true
+}
+
+% Informazioni documento
+\title{Introduzione ai Database}
+\subtitle{Modello Relazionale e SQL}
+\author{Prof. Esempio}
+\institute{IIS Fermi Sacconi Ceci\\Ascoli Piceno}
+\date{\today}
+
+% Rimuovi simboli di navigazione
+\setbeamertemplate{navigation symbols}{}
+
+\begin{document}
+
+% ===== SLIDE TITOLO =====
+\frame{\titlepage}
+
+% ===== INDICE =====
+\begin{frame}
+\frametitle{Contenuti}
+\tableofcontents
+\end{frame}
+
+% ===== SEZIONE 1: INTRODUZIONE =====
+\section{Introduzione}
+
+\begin{frame}
+\frametitle{Cos'è un Database?}
+
+\begin{definition}
+Un \textbf{database} è una collezione organizzata e strutturata di dati, gestita attraverso un DBMS (Database Management System).
+\end{definition}
+
+\pause
+
+\begin{block}{Caratteristiche principali}
+\begin{itemize}
+    \item<2-> Persistenza dei dati
+    \item<3-> Accesso concorrente
+    \item<4-> Integrità e sicurezza
+    \item<5-> Efficienza nelle query
+\end{itemize}
+\end{block}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Tipi di Database}
+
+\begin{columns}
+    \column{0.5\textwidth}
+    \textbf{Relazionali (SQL)}
+    \begin{itemize}
+        \item MySQL
+        \item PostgreSQL
+        \item Oracle
+        \item SQLite
+    \end{itemize}
+    
+    \column{0.5\textwidth}
+    \textbf{NoSQL}
+    \begin{itemize}
+        \item MongoDB
+        \item Redis
+        \item Cassandra
+        \item Neo4j
+    \end{itemize}
+\end{columns}
+
+\vspace{1cm}
+
+\alert{Focus del corso: Database Relazionali}
+
+\end{frame}
+
+% ===== SEZIONE 2: MODELLO RELAZIONALE =====
+\section{Modello Relazionale}
+
+\begin{frame}
+\frametitle{Concetti Fondamentali}
+
+\begin{exampleblock}{Relazione (Tabella)}
+Una tabella composta da righe (tuple) e colonne (attributi)
+\end{exampleblock}
+
+\pause
+
+\begin{alertblock}{Chiave Primaria}
+Attributo (o insieme di attributi) che identifica univocamente ogni riga
+\end{alertblock}
+
+\pause
+
+\begin{block}{Chiave Esterna}
+Attributo che referenzia la chiave primaria di un'altra tabella
+\end{block}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Esempio: Schema Database Scuola}
+
+\begin{table}
+\centering
+\begin{tabular}{|l|l|l|}
+\hline
+\multicolumn{3}{|c|}{\textbf{STUDENTI}} \\
+\hline
+\textbf{ID} & \textbf{Nome} & \textbf{Classe} \\
+\hline
+1 & Mario Rossi & 5A \\
+2 & Laura Bianchi & 5B \\
+3 & Giuseppe Verdi & 5A \\
+\hline
+\end{tabular}
+\end{table}
+
+\vspace{0.5cm}
+
+\begin{table}
+\centering
+\begin{tabular}{|l|l|l|l|}
+\hline
+\multicolumn{4}{|c|}{\textbf{VOTI}} \\
+\hline
+\textbf{ID} & \textbf{ID\_Studente} & \textbf{Materia} & \textbf{Voto} \\
+\hline
+1 & 1 & Informatica & 8 \\
+2 & 1 & Matematica & 7 \\
+3 & 2 & Informatica & 9 \\
+\hline
+\end{tabular}
+\end{table}
+
+\end{frame}
+
+% ===== SEZIONE 3: SQL =====
+\section{Linguaggio SQL}
+
+\begin{frame}
+\frametitle{SQL: Structured Query Language}
+
+SQL è suddiviso in diverse categorie:
+
+\begin{enumerate}
+    \item \textbf{DDL} - Data Definition Language
+    \begin{itemize}
+        \item CREATE, ALTER, DROP
+    \end{itemize}
+    
+    \item \textbf{DML} - Data Manipulation Language
+    \begin{itemize}
+        \item SELECT, INSERT, UPDATE, DELETE
+    \end{itemize}
+    
+    \item \textbf{DCL} - Data Control Language
+    \begin{itemize}
+        \item GRANT, REVOKE
+    \end{itemize}
+\end{enumerate}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Creazione Tabella (DDL)}
+
+\begin{lstlisting}[language=SQL]
+CREATE TABLE studenti (
+    id INTEGER PRIMARY KEY,
+    nome VARCHAR(50) NOT NULL,
+    cognome VARCHAR(50) NOT NULL,
+    classe VARCHAR(10),
+    data_nascita DATE
+);
+\end{lstlisting}
+
+\pause
+
+\begin{lstlisting}[language=SQL]
+CREATE TABLE voti (
+    id INTEGER PRIMARY KEY,
+    id_studente INTEGER,
+    materia VARCHAR(30),
+    voto DECIMAL(3,1),
+    FOREIGN KEY (id_studente) 
+        REFERENCES studenti(id)
+);
+\end{lstlisting}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Query SELECT di Base}
+
+\textbf{Selezionare tutti i dati:}
+\begin{lstlisting}[language=SQL]
+SELECT * FROM studenti;
+\end{lstlisting}
+
+\pause
+
+\textbf{Selezionare colonne specifiche:}
+\begin{lstlisting}[language=SQL]
+SELECT nome, cognome, classe 
+FROM studenti;
+\end{lstlisting}
+
+\pause
+
+\textbf{Con condizione WHERE:}
+\begin{lstlisting}[language=SQL]
+SELECT nome, cognome 
+FROM studenti 
+WHERE classe = '5A';
+\end{lstlisting}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{JOIN: Unire Tabelle}
+
+\begin{lstlisting}[language=SQL]
+SELECT 
+    s.nome, 
+    s.cognome, 
+    v.materia, 
+    v.voto
+FROM studenti s
+INNER JOIN voti v 
+    ON s.id = v.id_studente
+WHERE v.voto >= 7
+ORDER BY s.cognome, v.materia;
+\end{lstlisting}
+
+\vspace{0.3cm}
+
+\alert{Il JOIN permette di combinare dati da più tabelle correlate}
+
+\end{frame}
+
+% ===== SEZIONE 4: ESERCIZIO =====
+\section{Esercizio Pratico}
+
+\begin{frame}[fragile]
+\frametitle{Connessione da Python}
+
+\begin{lstlisting}
+import sqlite3
+
+# Connessione al database
+conn = sqlite3.connect('scuola.db')
+cursor = conn.cursor()
+
+# Esecuzione query
+cursor.execute('''
+    SELECT nome, AVG(voto) as media
+    FROM studenti s
+    JOIN voti v ON s.id = v.id_studente
+    GROUP BY s.id
+    HAVING media >= 7
+''')
+
+# Recupero risultati
+for row in cursor.fetchall():
+    print(f"{row[0]}: {row[1]:.2f}")
+
+conn.close()
+\end{lstlisting}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Esercizio per Casa}
+
+\begin{alertblock}{Compito}
+Progettare uno schema E-R per un database di una biblioteca che gestisca:
+\begin{itemize}
+    \item Libri (titolo, autore, ISBN, anno)
+    \item Utenti (nome, cognome, tessera)
+    \item Prestiti (data inizio, data fine)
+\end{itemize}
+\end{alertblock}
+
+\vspace{0.5cm}
+
+\begin{block}{Deliverable}
+\begin{enumerate}
+    \item Diagramma E-R
+    \item Schema logico (tabelle)
+    \item Query SQL per creare le tabelle
+\end{enumerate}
+\end{block}
+
+\end{frame}
+
+% ===== SEZIONE 5: CONCLUSIONI =====
+\section{Conclusioni}
+
+\begin{frame}
+\frametitle{Riepilogo}
+
+\textbf{Cosa abbiamo imparato:}
+
+\begin{itemize}
+    \item Concetti base dei database relazionali
+    \item Struttura del modello relazionale
+    \item Sintassi SQL essenziale (DDL e DML)
+    \item JOIN tra tabelle
+    \item Integrazione con Python
+\end{itemize}
+
+\vspace{1cm}
+
+\begin{center}
+\Large \alert{Domande?}
+\end{center}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Risorse Utili}
+
+\textbf{Documentazione:}
+\begin{itemize}
+    \item \url{https://www.postgresql.org/docs/}
+    \item \url{https://www.sqlite.org/docs.html}
+    \item \url{https://www.w3schools.com/sql/}
+\end{itemize}
+
+\vspace{0.5cm}
+
+\textbf{Strumenti:}
+\begin{itemize}
+    \item DBeaver (client universale)
+    \item DB Browser for SQLite
+    \item phpMyAdmin
+\end{itemize}
+
+\vspace{1cm}
+
+\begin{center}
+\textbf{Grazie per l'attenzione!}\\
+\texttt{email@esempio.it}
+\end{center}
+
+\end{frame}
+
+\end{document}
