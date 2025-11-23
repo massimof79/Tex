@@ -54,17 +54,11 @@
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Gli archivi}
-Archivi dei movimenti contabili, archivi dei clienti e dei fornitori, archivi del personale, archivi di magazzino e riguardanti la produzione: questi sono gli insiemi di dati tipici di un'azienda e il trattamento delle informazioni in essi contenute occupa una parte rilevante dell'attività delle aziende.
-
-\vspace{0.5cm}
-
-L'elaborazione di grandi volumi di dati che riguardano strumenti, attività e persone è di notevole importanza anche in tutti gli altri settori della società moderna.
-\end{frame}
 
 % ========== DEFINIZIONE DI ARCHIVIO ==========
 \begin{frame}{Definizione di archivio}
-In generale, un archivio può essere definito come un \textbf{insieme organizzato di informazioni} caratterizzate da alcune proprietà fondamentali:
+\textbf{Def.} un archivio può essere definito come un \textbf{insieme organizzato di informazioni} caratterizzate da alcune proprietà fondamentali:
+
 
 \begin{itemize}
 \item esiste un \textbf{nesso logico} tra di esse (cioè sono in qualche modo inerenti a un medesimo argomento);
@@ -81,10 +75,16 @@ In generale, un archivio può essere definito come un \textbf{insieme organizzat
 \item Per ogni abbonato sono riportati nell'ordine: 
 	generalità
 	indirizzo
-	numero di telefono
+	numero di telefono\begin{figure}
+		\centering
+		\includegraphics[width=0.3\linewidth]{db}
+		\caption{}
+		\label{fig:db}
+	\end{figure}
+	
 	tutte queste informazioni sono stampate su fogli di carta oppure sono accessibili tramite Internet.
 
-\item Le informazioni vengono raccolte in questo archivio perché si riferiscono agli abbonati di una stessa provincia e, all'interno della provincia, di uno stesso comune (nesso logico).
+\item Le informazioni vengono raccolte in questo archivio perché si riferiscono agli abbonati di una stessa provincia e, all'interno della provincia, di uno stesso comune \textbf{(nesso logico).}
 		 
 	\end{itemize}
 \end{frame}
@@ -95,6 +95,16 @@ In generale, un archivio può essere definito come un \textbf{insieme organizzat
 \item Il supporto è dal disco che contiene i dati.
 \item Gli abbonati sono stampati seguendo l'ordine alfabetico dei cognomi, all'interno della suddivisione per comune, per permettere un veloce reperimento del numero di telefono che corrisponde alla persona cercata (organizzazione dei dati).
 \end{itemize}
+\end{frame}
+
+\begin{frame}
+\begin{figure}
+	\centering
+	\includegraphics[width=0.6\linewidth]{archivi}
+	\caption{Gestione automatizzata degli archivi}
+	\label{fig:archivi}
+\end{figure}
+
 \end{frame}
 
 
@@ -108,12 +118,23 @@ In generale, un archivio può essere definito come un \textbf{insieme organizzat
 
 \begin{frame}{I record e i campi}
 	In un archivio le informazioni, in genere, sono raggruppate secondo un'unità logica: nel caso dell'elenco telefonico i dati relativi a ogni abbonato, in un archivio notarile i dati contenuti nell'incartamento relativo a un cliente.
-
+\vspace{0.5cm}
 	Questi insiemi di informazioni logicamente organizzate e riferite a un unico soggetto sono chiamati con il termine \textbf{record};
 \begin{itemize}
 \item Le singole informazioni che compongono il record si chiamano \textbf{campi};
 \item L'elenco dei campi che lo compongono viene detto \textbf{tracciato del record}.
 \end{itemize}
+\end{frame}
+
+\begin{frame}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.6\linewidth]{record}
+	\caption{Record}
+	\label{fig:record}
+\end{figure}
+
 \end{frame}
 
 % ========== FILE ==========
@@ -145,18 +166,22 @@ La creazione di un archivio richiede la definizione preliminare delle seguenti s
 \item il \textbf{tracciato record}, in altre parole quali informazioni compongono il record;
 \item il \textbf{supporto} da usare per archiviare i dati (fogli di carta, dischi o nastri magnetici, dischi ottici);
 \item la \textbf{dimensione massima} dell'archivio: per esempio il numero massimo di scaffali occupati in un archivio cartaceo o di abbonati in un elenco telefonico;
+\item il modo con cui i dati sono strutturati e collegati tra loro, cioè l'\textbf{organizzazione dell'archivio}\textbf{(Legami tra le tabelle)}
 \end{itemize}
 \end{frame}
 
-\begin{frame}{La creazione di un archivio}
-\begin{itemize}
-\item il modo con cui i dati sono strutturati e collegati tra loro, cioè l'\textbf{organizzazione dell'archivio}: ci sono diverse possibilità di organizzazione e la scelta del supporto di archiviazione è spesso legata al tipo di organizzazione e alle modalità di consultazione previste. (Legami tra le tabelle)
-\end{itemize}
+\begin{frame}{Legami tra tabelle}
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{relazioni}
+	\caption[Legami tra tabelle]{Legami tra tabelle}
+	\label{fig:relazioni}
+\end{figure}
+
 \end{frame}
 
 \begin{frame}{Interrogazione e modifica dei dati}
 Dopo aver creato l'archivio, su di esso si possono effettuare operazioni di:
-
 \begin{itemize}
 \item \textbf{manipolazione}, cioè inserimento di nuovi dati o variazione dei dati registrati;
 \item \textbf{interrogazione}, cioè reperimento all'interno dell'archivio delle informazioni necessarie.
@@ -166,18 +191,16 @@ Dopo aver creato l'archivio, su di esso si possono effettuare operazioni di:
 % ========== FILE E MEMORIE DI MASSA ==========
 
 \begin{frame}{I file e le memorie di massa}
-Gli archivi memorizzati su tali supporti vengono detti \textbf{file} perchè in inglese la parola archivio viene tradotta con file.
-
-In informatica questo termine serve a indicare in modo generico qualsiasi informazione che può essere registrata sui supporti di memoria, come un testo, un programma, un comando del sistema operativo o un grafico.
-\end{frame}
-
-\begin{frame}{I file e le memorie di massa}
 	\begin{itemize}
-		\item Nelle \textbf{applicazioni} con il computer, un archivio può contenere qualsiasi tipo di informazione, non solo di tipo testuale ma anche di tipo multimediale.
+\item Gli archivi memorizzati su tali supporti vengono detti \textbf{file} perchè in inglese la parola archivio viene tradotta con file.
+\item  In informatica questo termine serve a indicare in modo generico qualsiasi informazione che può essere registrata sui supporti di memoria, come un testo, un programma, un comando del sistema operativo o un grafico.
+	\item Nelle \textbf{applicazioni} con il computer, un archivio può contenere qualsiasi tipo di informazione, non solo di tipo testuale ma anche di tipo multimediale.
+			\item Nelle procedure gestionali comunque, nella maggior parte dei casi, gli archivi sono costituiti da insiemi di record omogenei, nel senso che ciascun archivio possiede un tracciato predefinito e uguale per tutti i record in esso contenuti, che si dicono \textbf{record logici} (file di record).
+	\end{itemize}
 
-		\item Nelle procedure gestionali comunque, nella maggior parte dei casi, gli archivi sono costituiti da insiemi di record omogenei, nel senso che ciascun archivio possiede un tracciato predefinito e uguale per tutti i record in esso contenuti, che si dicono \textbf{record logici} (file di record).
-\end{itemize}
 \end{frame}
+
+
 
 \begin{frame}{I file e le memorie di massa}
 	\begin{itemize}
@@ -202,11 +225,13 @@ Le memorie di massa sono caratterizzate da alcuni parametri usati abitualmente p
 \end{frame}
 
 \begin{frame}{I file e le memorie di massa}
-	\begin{itemize}
-		\item Le unità periferiche che contengono i supporti di memorizzazione sono gestite da apparecchiature hardware, dette \textbf{drive}, che sono collegate al computer tramite opportune schede di controllo e che consentono la registrazione o l'accesso ai dati già registrati.
-	\end{itemize}
+\begin{figure}
+	\centering
+	\includegraphics[width=0.5\linewidth]{memorie_massa}
+	\caption{}
+	\label{fig:memoriemassa}
+\end{figure}
 
-Il termine \textbf{driver} è invece usato in informatica per indicare il software di gestione della periferiche.
 \end{frame}
 
 
@@ -221,21 +246,10 @@ Il termine \textbf{driver} è invece usato in informatica per indicare il softwa
 	\begin{itemize}
 		\item Il modulo del sistema operativo che svolge le funzioni di gestore dei file viene chiamato \textbf{file system}.
 		\item Esso è costituito dall'insieme delle routine (funzioni) che consentono all'utente-programmatore di usufruire degli archivi sulle memorie di massa, senza preoccuparsi dei dettagli delle operazioni di input/output (I/O) e facendo riferimento ai file solo con nomi simbolici.
+\item Il file system regola l'organizzazione, l'assegnamento, la protezione e il ritrovamento di insiemi di dati, cioè di file. In particolare esso svolge le seguenti funzioni:
 	\end{itemize}
 
 \end{frame}
-
-\begin{frame}{Il filesystem}
-Il file system regola l'organizzazione, l'assegnamento, la protezione e il ritrovamento di insiemi di dati, cioè di file. In particolare esso svolge le seguenti funzioni:
-
-\begin{itemize}
-\item tiene traccia dei file, della loro posizione, del loro stato, usando particolari strutture dati dette \textbf{file directory};
-\item decide secondo le richieste, le \textbf{protezioni e i diritti di accesso }(per esempio, lettura e scrittura oppure solo lettura) a quale programma assegnare un file o una parte di esso;
-\end{itemize}
-\end{frame}
-
-
-
 
 
 % ========== ORGANIZZAZIONE DEGLI ARCHIVI ==========
@@ -260,9 +274,18 @@ Il file system regola l'organizzazione, l'assegnamento, la protezione e il ritro
 		\item Essa consente l'uso di \textbf{record a lunghezza variabile} e ha come modello di file il pacco di schede o un file su nastro magnetico dove è possibile accedere a un record solo dopo aver visitato tutti i record che lo precedono.
 		\item Si parla in tal caso di \textbf{accesso sequenziale}.
 	\end{itemize}
+\end{frame}
 
+\begin{frame}
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{accesso_sequenziale}
+	\caption[Accesso sequenziale]{Accesso sequenziale}
+	\label{fig:accessosequenziale}
+\end{figure}
 
 \end{frame}
+
 
 \begin{frame}{L'organizzazione sequenziale}
 	\begin{itemize}
@@ -274,7 +297,7 @@ Il file system regola l'organizzazione, l'assegnamento, la protezione e il ritro
 
 \begin{frame}{L'organizzazione sequenziale}
 	\begin{itemize}
-		\item Un file a organizzazione sequenziale può essere utilizzato solo per scrivere nuovi record, per leggere record o per aggiungere record in coda a quelli già registrati.
+		\item Un file a organizzazione sequenziale può essere utilizzato solo per \textbf{scrivere nuovi record}, per\textbf{ leggere record }o per aggiungere record in coda a quelli già registrati.
 		\item La scrittura di record a partire da una qualsiasi posizione, eseguita su un file già esistente, provoca di norma la cancellazione di tutti i record che lo seguono; perciò la riscrittura dei record non è permessa.
 	\end{itemize}
 
@@ -288,15 +311,28 @@ Il file system regola l'organizzazione, l'assegnamento, la protezione e il ritro
 \end{center}
 \end{frame}
 
+\begin{frame}
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{accesso_diretto}
+	\caption[File ad accesso diretto]{}
+	\label{fig:accessodiretto}
+\end{figure}
+
+\end{frame}
+
 \begin{frame}{L'organizzazione ad accesso diretto}
 \begin{itemize}
-\item I file con record di lunghezza fissa, cioè aventi tutti la stessa lunghezza, sono di uso comune nelle applicazioni gestionali (record del cliente, record dell'articolo di magazzino, record anagrafico dello studente)
+\item I file con \textit{record di lunghezza fiss}a, cioè aventi tutti la stessa lunghezza, sono di uso comune nelle applicazioni gestionali (record del cliente, record dell'articolo di magazzino, record anagrafico dello studente)
 \item In questo caso si può calcolare la posizione del primo carattere di un qualsiasi record, nota la sua posizione nel file.
 \end{itemize}
 \end{frame}
 
 % ========== ORGANIZZAZIONE AD INDICI ==========
 \subsection{Organizzazione ad indici}
+
+
+
 \begin{frame}
 \begin{center}
 {\Large \textbf{Organizzazione ad indici}}
@@ -304,8 +340,22 @@ Il file system regola l'organizzazione, l'assegnamento, la protezione e il ritro
 \end{frame}
 
 \begin{frame}{L'organizzazione ad indici (accesso associativo)}
+
 Nelle applicazioni gestionali non basta poter accedere a un record mediante la posizione che occupa in un file, ma bisogna riuscire a identificare un record in base a informazioni contenute nel record stesso (\textbf{accesso associativo}).
+
 \end{frame}
+
+
+\begin{frame}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.7\linewidth]{indice}
+		\caption[Organizzazione ad indice]{Organizzazione ad indice}
+		\label{fig:indice}
+	\end{figure}
+	
+\end{frame}
+
 
 \begin{frame}{Esempio Pratico: Archivio Clienti}
 Immagina di avere un database di 10.000 clienti.
@@ -355,19 +405,12 @@ Quando chiedi ``trovami il cliente CLI789'':
 \begin{itemize}
 \item Organizzazione ad indici implica la possibilità di leggere e scrivere record in base al valore della chiave identifica l'\textbf{accesso a chiave}.
 \item I clienti sono identificati in modo univoco per mezzo di un codice e i record sono ordinati secondo l'ordine di arrivo in archivio.
-\item Si vogliono ritrovare i dati in base ai valori assunti dal codice evidenziato in colore.
-\end{itemize}
-\end{frame}
-
-\begin{frame}{L'organizzazione ad indici}
-	\begin{itemize}
 		\item Per permettere l'\textbf{accesso a chiave} l'organizzazione dell'archivio deve essere simile a quella di un libro dotato di indice analitico: in tale indice sono elencate in ordine alfabetico le parole chiave, che richiamano gli argomenti e i concetti trattati nel testo, affiancate dalla pagina corrispondente del libro.
-		\item Il lettore cerca la parola nell'indice analitico secondo un metodo di \textbf{ricerca binaria} (o ricerca dicotomica): essendo l'elenco ordinato, il numero di pagina funziona da puntatore della pagina dove viene trattato l'argomento.
-		
-		\item Basta allora costruire un \textbf{indice ordinato }in base al valore della chiave e abbinare a ogni valore del codice un puntatore al record posto in un file ad accesso diretto.
-		
-	\end{itemize}
+\item Il lettore cerca la parola nell'indice analitico secondo un metodo di \textbf{ricerca binaria} (o ricerca dicotomica): essendo l'elenco ordinato, il numero di pagina funziona da puntatore della pagina dove viene trattato l'argomento.
 
+\item Basta allora costruire un \textbf{indice ordinato }in base al valore della chiave e abbinare a ogni valore del codice un puntatore al record posto in un file ad accesso diretto.
+
+\end{itemize}
 \end{frame}
 
 \begin{frame}{L'organizzazione ad indici}
@@ -376,6 +419,17 @@ Quando chiedi ``trovami il cliente CLI789'':
 		\item La ricerca di un record avviene con una ricerca binaria nella tabella delle chiavi per recuperare la posizione del record cercato nel file ad accesso diretto.
 		\item In questo modo si riesce ad accedere al record specificandone il valore della chiave (accesso a chiave).
 	\end{itemize}
+\end{frame}
+
+\begin{frame}
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{indice_chiave}
+	\caption[Costruzione dell'indice - chiave primaria]{Costruzione dell'indice - Chiave primaria}
+	\label{fig:indicechiave}
+\end{figure}
+
+
 \end{frame}
 
 \begin{frame}{L'organizzazione ad indici}
@@ -408,13 +462,11 @@ con l'obiettivo di manipolare e trovare in modo efficiente i dati memorizzati, s
 \end{frame}
 
 \begin{frame}{Le basi di dati}
-	\begin{itemize}
-\item Le problematiche relative alle basi di dati risalgono agli anni Sessanta
-\item Il passaggio dalla teoria all'applicazione sui computer con l'uso di software efficiente ha prodotto, nel corso degli anni successivi, strumenti software per aumentare la produttività nell'elaborazione di informazioni, soprattutto nei casi che riguardano la gestione di grandi quantità di dati.
-\item La gestione delle basi di dati si è poi consolidata anche nelle applicazioni per i personal computer.
-
-	\end{itemize}
-
+\begin{figure}
+	\caption[Basi di dati]{Basi di dati}
+	\label{fig:database}
+		\includegraphics[width=0.7\linewidth]{database}
+		\end{figure}
 
 \end{frame}
 
@@ -440,9 +492,12 @@ Devono anche essere offerte misure di sicurezza per impedire che il database ven
 \end{frame}
 
 \begin{frame}{Le basi di dati}
-Occorre anche sottolineare l'importanza che l'uso dei database assume nella gestione degli archivi di dati, favorendo l'utente del computer nel suo modo di vedere i dati e liberandolo dagli aspetti riguardanti la collocazione fisica delle registrazioni sui supporti degli archivi.
+	\begin{itemize}
+	\item I database favoriscono gli utenti  nel manipolare i dati e liberandolo dagli aspetti riguardanti la collocazione fisica delle registrazioni sui supporti degli archivi.
 
-Viene così superata la visione tradizionale dell'organizzazione degli archivi basata su file che obbliga il programmatore ad accedere ai dati con comandi espliciti di apertura, chiusura, lettura, scrittura e posizionamento sui file contenenti i dati degli archivi da gestire.
+	\item Viene così superata la visione tradizionale dell'organizzazione degli archivi basata su file che obbliga il programmatore ad accedere ai dati con comandi espliciti di apertura, chiusura, lettura, scrittura e posizionamento sui file contenenti i dati degli archivi da gestire.
+		
+	\end{itemize}
 \end{frame}
 
 % ========== I DBMS ==========
@@ -453,6 +508,18 @@ I prodotti software per la gestione dei database sono indicati con il termine \t
 
 I DBMS consentono all'utente di focalizzare l'attenzione solo sull'applicazione che utilizza i dati dell'archivio consentendone la gestione anche a utenti che nulla conoscono dell'hardware sottostante.
 \end{frame}
+
+
+\begin{frame}{DBMS}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.7\linewidth]{basi_di_dati}
+		\caption[DBMS]{DBMS}
+		\label{fig:dbms}
+	\end{figure}
+	
+\end{frame}
+
 
 \begin{frame}{I DBMS}
 In questo modo l'utente del database può concentrare la sua attenzione sul:
@@ -489,27 +556,34 @@ così come nell'uso degli archivi tradizionali c'è una distinzione tra archivi 
 \end{frame}
 
 \begin{frame}{I DBMS - database distribuiti}
-Gli utenti della base di dati elaborano in modo locale gli archivi che hanno a disposizione nel proprio sistema e nello stesso tempo accedono in modo remoto a sistemi centrali attraverso le linee di comunicazione.
+	\begin{itemize}
+\item Gli utenti della base di dati elaborano in modo locale gli archivi che hanno a disposizione nel proprio sistema e nello stesso tempo accedono in modo remoto a sistemi centrali attraverso le linee di comunicazione.
 
-Gli archivi integrati che costituiscono la base di dati aziendale possono risiedere su un unico computer oppure possono essere distribuiti sulle memorie di massa di computer diversi, facenti parte di una rete aziendale, i cui nodi possono essere anche fisicamente lontani: in questo caso si parla di \textbf{database distribuiti}.
+\item Gli archivi integrati che costituiscono la base di dati aziendale possono risiedere su un unico computer oppure possono essere distribuiti sulle memorie di massa di computer diversi, facenti parte di una rete aziendale, i cui nodi possono essere anche fisicamente lontani: in questo caso si parla di \textbf{database distribuiti}.
+
+	\end{itemize}
+
 \end{frame}
 
 \begin{frame}{I DBMS}
-Con i database distribuiti è possibile gestire archivi di dimensioni limitate laddove vengono creati, facilitando il lavoro di manutenzione e di controllo sulla sicurezza, ma garantendo comunque la disponibilità dei dati aggiornati a tutti gli utenti del sistema informativo aziendale, qualunque sia la loro posizione geografica o il computer da essi usato per l'attività di elaborazione.
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{database_distribuiti}
+	\caption[Database distribuiti]{}
+	\label{fig:databasedistribuiti}
+\end{figure}
 
-L'integrazione degli archivi è realizzata quindi a livello logico, nella visione che di essi hanno gli utenti finali, anche se i dati fisicamente possono risiedere su sistemi distanti.
-\end{frame}
-
-\begin{frame}{Servizi offerti da un DBMS}
-Per esemplificare ed evidenziare i servizi offerti da un DBMS è utile confrontare le caratteristiche di un file di dati con quelle di un archivio di database con le stesse informazioni.
 \end{frame}
 
 \begin{frame}{Limiti dell'organizzazione tradizionale degli archivi}
 \textbf{Ridondanza e inconsistenza dei dati.}
+\begin{itemize}
+\item La ridondanza nei dati è frequente nell'approccio basato su file indipendenti.
+\item La duplicazione dei dati richiede di inserirli più volte, con l'aumento dello spazio occupato dai dati, ma, soprattutto, la ridondanza può portare all'\textbf{incongruenza} nel caso in cui un dato sia aggiornato in un archivio e non in un altro, oppure siano presenti valori diversi per lo stesso dato.
 
-La ridondanza nei dati è frequente nell'approccio basato su file indipendenti.
+\end{itemize}
 
-La duplicazione dei dati richiede di inserirli più volte, con l'aumento dello spazio occupato dai dati, ma, soprattutto, la ridondanza può portare all'\textbf{incongruenza} nel caso in cui un dato sia aggiornato in un archivio e non in un altro, oppure siano presenti valori diversi per lo stesso dato.
+
 \end{frame}
 
 \begin{frame}{Limiti dell'organizzazione tradizionale degli archivi}
@@ -553,12 +627,20 @@ Qualsiasi modifica alla struttura del record richiede la modifica di tutti i pro
 \end{frame}
 
 % ========== I MODELLI PER IL DATABASE ==========
+\subsection{Modelli per i database}
+\begin{frame}
+	\begin{center}
+		{\LARGE \textbf{Modelli per i database}}
+	\end{center}
+\end{frame}
+
 \begin{frame}{I modelli per il database}
-Il database è un modello della realtà considerata: i contenuti della base di dati rappresentano gli stati in cui si trova la realtà da modellare.
+	\begin{itemize}
+		\item Il database è un modello della realtà considerata: i contenuti della base di dati rappresentano gli stati in cui si trova la realtà da modellare.
+		\item I cambiamenti che vengono apportati alla base di dati rappresentano gli eventi che avvengono nell'ambiente in cui opera l'azienda.
+		Per descrivere i dati, il loro significato, come sono correlati e i vincoli definiti su di essi si fa uso di \textbf{modelli dei dati}.
+		\end{itemize}
 
-I cambiamenti che vengono apportati alla base di dati rappresentano gli eventi che avvengono nell'ambiente in cui opera l'azienda.
-
-Per descrivere i dati, il loro significato, come sono correlati e i vincoli definiti su di essi si fa uso di \textbf{modelli dei dati}.
 \end{frame}
 
 \begin{frame}{I modelli per il database}
@@ -588,11 +670,13 @@ Entità, attributi, associazioni sono rappresentati graficamente in un \textbf{d
 \end{frame}
 
 \begin{frame}{Il modello concettuale}
-Il modello Entità/Associazioni è anche un importante strumento di comunicazione.
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{diagramma_er}
+	\caption[Diagramma E-R]{Modello concettuale}
+	\label{fig:diagrammaer}
+\end{figure}
 
-Dalla lettura del modello Entità/Associazioni è possibile avere una precisa idea del problema analizzato ed esprimere la visione dell'analista con frasi espresse in linguaggio naturale.
-
-Per esempio, le associazioni Possedere e Variare possono essere descritte con le seguenti frasi:
 \begin{itemize}
 \item ogni cliente deve possedere uno e un solo conto;
 \item ogni conto deve essere posseduto da uno o più clienti;
@@ -613,19 +697,34 @@ Nello sviluppo della teoria dei database, a partire dagli anni Sessanta, sono em
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Il modello logico}
-È evidente che, dopo aver effettuato l'accesso all'anagrafica di un cliente, per trovare il record correlato è richiesta una limitata capacità elaborativa da parte del sistema ma, di contro, sono complesse le operazione di manutenzione, ristrutturazione e di esportazione dei dati.
-
-Questo spiega anche il successo avuto da questi modelli di database nel corso degli anni Settanta e nella prima metà degli anni Ottanta, vista la limitata potenza dei sistemi allora disponibili.
-\end{frame}
 
 \begin{frame}{Il modello logico}
-I modelli gerarchico e reticolare sono stati definiti attraverso un processo di astrazione da sistemi già implementati, mentre il modello relazionale è stato definito a livello teorico prima di qualsiasi implementazione sul computer.
+	\begin{itemize}
+	\item I modelli gerarchico e reticolare sono stati definiti attraverso un processo di astrazione da sistemi già implementati, mentre il modello relazionale è stato definito a livello teorico prima di qualsiasi implementazione sul computer.
+\item Il modello relazionale nasce nel 1970, proposto da \textbf{Edgar F. Codd}, ricercatore IBM, come idea di un modello logico molto semplice e nello stesso tempo in grado di superare i limiti degli altri modelli utilizzati.
+	
+	\end{itemize}
 
-Il modello relazionale nasce nel 1970, proposto da \textbf{Edgar F. Codd}, ricercatore IBM, come idea di un modello logico molto semplice e nello stesso tempo in grado di superare i limiti degli altri modelli utilizzati.
 \end{frame}
 
 % ========== IL MODELLO RELAZIONALE ==========
+\subsection{Modello relazionale}
+\begin{frame}
+\begin{center}
+{\LARGE \textbf{Modello relazionale}}
+\end{center}
+\end{frame}
+
+\begin{frame}
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{modello_relazionale}
+	\caption[Modello relazionale]{}
+	\label{fig:modellorelazionale}
+\end{figure}
+
+\end{frame}
+
 \begin{frame}{Il modello relazionale}
 Il modello relazionale si basa su alcuni concetti fondamentali tipicamente matematici e assegna grande importanza all'uso rigoroso del linguaggio matematico, con due obiettivi importanti:
 
@@ -637,46 +736,45 @@ Il modello relazionale si basa su alcuni concetti fondamentali tipicamente matem
 Il modello relazionale è un \textbf{modello basato sui valori}. Le associazioni tra entità sono descritte solamente tramite i valori assunti da campi, nelle righe delle tabelle che modellano le entità stesse, senza fare uso di puntatori.
 \end{frame}
 
-\begin{frame}{Il modello relazionale}
-Si supponga che alla tabella Clienti si vogliano aggiungere due colonne, la prima con il codice fiscale del cliente e la seconda con un suo recapito telefonico.
 
-La nuova tabella occuperà più spazio della precedente e andrà collocata in una diversa posizione su disco, ma non sarà necessario modificare i puntatori che descrivono l'associazione tra Clienti e Conti.
+\begin{frame}{Altri modelli}
+	\begin{itemize}
+\item La diffusione del \textbf{modello relazionale} è cresciuta nel tempo in coincidenza con la crescita della capacità delle memorie centrali e della potenza di calcolo dei processori, che hanno permesso di manipolare le tabelle con sempre maggior rapidità.
+\item Invece i database costruiti sul \textbf{modello gerarchico e reticolare}, meno esigenti in termini di prestazioni dell'hardware, erano più adeguati alle limitate prestazioni delle macchine degli anni Settanta.
+	\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{modello_gerarchico}
+	\caption[Modello gerarchico]{Modello gerarchico}
+	\label{fig:modellogerarchico}
+\end{figure}
+
+\end{frame}
+
+
+\begin{frame}{Modello gerarchico e reticolare}
+\begin{itemize}
+\item Le operazioni sui database gerarchici e reticolari sono complesse, poiché agiscono su singoli record che vengono identificati specificando i percorsi per ritrovarli.
+\item Si dice in tale caso che l'approccio adottato nell'elaborazione dei dati è di tipo \textbf{procedurale}, ovvero bisogna indicare al computer come deve fare per trovare i dati.
+
+\item I sistemi relazionali adottano invece un approccio di tipo \textbf{dichiarativo} nell'elaborazione delle informazioni, in quanto viene specificato cosa si vuole trovare, mentre i percorsi per trovare i dati sono a carico del sistema.
+
+\end{itemize}
+
+
 \end{frame}
 
 \begin{frame}{Il modello relazionale}
-Inoltre, volendo aggiungere al database la tabella Causali con i campi Causale e DescrizioneCausale, tutto quello che il DBMS deve fare per descrivere l'associazione tra Movimenti e Causali è inserire tra i metadati il fatto che il campo Causale di Movimenti è in corrispondenza con lo stesso campo di Causali, senza alcun riferimento alla collocazione della nuova tabella su disco e senza inserire puntatori per collegare una causale con la relativa descrizione.
+	\begin{itemize}
+\item Tra i modelli di database illustrati, il modello relazionale è il più diffuso nella quasi totalità dei prodotti commerciali DBMS, nei sistemi di elaborazione grandi, medi e piccoli.
+\item Proprio questo modello ha determinato un'ampia diffusione dei programmi per la gestione di database anche per i personal computer.
 
-Il costo di questa scelta risiede nella necessità di dover ricercare i record da abbinare ogni volta che ciò è necessario.
-\end{frame}
+	\end{itemize}
 
-\begin{frame}{Il modello relazionale}
-\textbf{Esempio.}
-
-Si supponga di formulare una richiesta per conoscere il saldo del conto di Rossi. Nel caso del modello relazionale il sistema deve cercare nella tabella Conti il record da abbinare a quello della tabella Clienti con le informazioni di Rossi.
-
-L'abbinamento avviene esaminando la tabella Conti alla ricerca del record con il valore di 4500 nel campo NumConto e utilizzando un indice sul campo Cognome di Clienti.
-
-Nel modello gerarchico o reticolare invece l'accesso al record anagrafico di Rossi permette (al DBMS) di conoscere immediatamente la posizione sul disco del record dei conti collegato al record anagrafico di Rossi e di prelevare l'informazione richiesta.
-\end{frame}
-
-\begin{frame}{Il modello relazionale}
-La diffusione del modello relazionale è cresciuta nel tempo in coincidenza con la crescita della capacità delle memorie centrali e della potenza di calcolo dei processori, che hanno permesso di manipolare le tabelle con sempre maggior rapidità.
-
-Invece i database costruiti sul modello gerarchico e reticolare, meno esigenti in termini di prestazioni dell'hardware, erano più adeguati alle limitate prestazioni delle macchine degli anni Settanta.
-\end{frame}
-
-\begin{frame}{Il modello relazionale}
-Le operazioni sui database gerarchici e reticolari sono complesse, poiché agiscono su singoli record che vengono identificati specificando i percorsi per ritrovarli.
-
-Si dice in tale caso che l'approccio adottato nell'elaborazione dei dati è di tipo \textbf{procedurale}, ovvero bisogna indicare al computer come deve fare per trovare i dati.
-
-I sistemi relazionali adottano invece un approccio di tipo \textbf{dichiarativo} nell'elaborazione delle informazioni, in quanto viene specificato cosa si vuole trovare, mentre i percorsi per trovare i dati sono a carico del sistema.
-\end{frame}
-
-\begin{frame}{Il modello relazionale}
-Tra i modelli di database illustrati, il modello relazionale è il più diffuso nella quasi totalità dei prodotti commerciali DBMS, nei sistemi di elaborazione grandi, medi e piccoli.
-
-Proprio questo modello ha determinato un'ampia diffusione dei programmi per la gestione di database anche per i personal computer.
 \end{frame}
 
 % ========== IL MODELLO FISICO ==========
