@@ -1079,11 +1079,15 @@ In ogni caso il programmatore deve agire sotto il controllo del gruppo di proget
 \end{frame}
 
 \begin{frame}{Le proprietà acide delle transazioni}
-L'importo trasferito deve essere tolto da un conto e aggiunto all'altro. Entrambe le operazioni devono essere eseguite per poter affermare di avere concluso il trasferimento e non è tollerabile che venga eseguita una sola delle due operazioni.
+	\begin{itemize}
+\item L'importo trasferito deve essere tolto da un conto e aggiunto all'altro. Entrambe le operazioni devono essere eseguite per poter affermare di avere concluso il trasferimento e non è tollerabile che venga eseguita una sola delle due operazioni.
+\item Ne segue che il sistema di gestione delle transazioni deve intervenire per effettuare un \textbf{rollback} automatico nel caso che, per una qualsiasi ragione, una delle due operazioni di aggiornamento della base di dati non vada a buon fine.
 
-Ne segue che il sistema di gestione delle transazioni deve intervenire per effettuare un \textbf{rollback} automatico nel caso che, per una qualsiasi ragione, una delle due operazioni di aggiornamento della base di dati non vada a buon fine.
+\item Questo comportamento caratterizza un'importante proprietà delle transazioni e prende il nome di \textbf{atomicità}. Essa è una delle cosiddette proprietà acide delle transazioni, dall'acronimo inglese \textbf{ACID} (Atomicity, Consistency, Isolation, Durability).
 
-Questo comportamento caratterizza un'importante proprietà delle transazioni e prende il nome di \textbf{atomicità}. Essa è una delle cosiddette proprietà acide delle transazioni, dall'acronimo inglese \textbf{ACID} (Atomicity, Consistency, Isolation, Durability).
+	\end{itemize}
+
+
 \end{frame}
 
 \begin{frame}{Le proprietà acide delle transazioni}
