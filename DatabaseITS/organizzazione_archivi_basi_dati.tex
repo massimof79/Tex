@@ -4,6 +4,11 @@
 \usepackage{graphicx}
 \usepackage{listings}
 \usepackage{color}
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows,positioning,shadows}
+
 
 % Tema beamer
 \usetheme{Madrid}
@@ -30,6 +35,7 @@
 \end{frame}
 
 
+
 \section{Gli archivi}
 \begin{frame}
 \begin{center}
@@ -37,7 +43,61 @@
 \end{center}
 \end{frame}
 % ========== GLI ARCHIVI ==========
+\begin{frame}{Gli Archivi}
+	\begin{columns}[T]
+		\begin{column}{0.55\textwidth}
+			\textbf{Definizione}
+			
+			Un \alert{archivio} è una collezione organizzata di dati correlati, memorizzati in modo permanente su supporti di memoria di massa.
+			
+			\vspace{0.3cm}
+			\textbf{Analogia}
+			Analogamente a uno schedario fisico, contiene informazioni strutturate e facilmente accessibili.
+			\vspace{0.3cm}
+			
+			\textbf{Elementi fondamentali}
+			\begin{itemize}
+				\item \textbf{Record}: unità di informazione
+				\item \textbf{Campi}: attributi descrittivi
+				\item \textbf{Supporto}: dispositivo di memoria di massa
+				\item \textbf{Organizzazione}: modalità di strutturazione dei dati
+			\end{itemize}
+		\end{column}
+		
+		\begin{column}{0.4\textwidth}
+			\begin{tikzpicture}[scale=0.8, every node/.style={font=\small}]
+				% Archivio fisico
+				\draw[fill=gray!20] (0,4) rectangle (3,5.5);
+				\draw (1.5,5.8) node {\textbf{Archivio fisico}};
+				\foreach \y in {4.2,4.6,5.0} {
+					\draw[fill=white] (0.2,\y) rectangle (2.8,\y+0.3);
+				}
+				
+				% Freccia
+				\draw[->,thick] (1.5,3.8) -- (1.5,3.2);
+				
+				% Archivio digitale
+				\draw[fill=blue!20] (0,0.5) rectangle (3,3);
+				\draw (1.5,3.3) node {\textbf{Archivio digitale}};
+				
+				% Record
+				\draw[fill=green!30] (0.3,2.3) rectangle (2.7,2.8);
+				\draw (1.5,2.55) node {\scriptsize Record 1};
+				
+				\draw[fill=green!30] (0.3,1.6) rectangle (2.7,2.1);
+				\draw (1.5,1.85) node {\scriptsize Record 2};
+				
+				\draw[fill=green!30] (0.3,0.9) rectangle (2.7,1.4);
+				\draw (1.5,1.15) node {\scriptsize Record 3};
+				
+				% Campi (nel primo record)
+				\draw[dashed] (0.3,2.55) -- (2.7,2.55);
+			\end{tikzpicture}
+		\end{column}
+	\end{columns}
+\end{frame}
 
+ 
 \begin{frame}{Gli archivi}
 \begin{itemize}
 \item L'uso degli archivi deriva dalla necessità di conservare dati e informazioni in modo permanente perché potranno essere utili in momenti successivi.
@@ -70,7 +130,7 @@
 
 \begin{frame}{Correlazione tra dati - esempio dell'archivio telefonico}
 	\begin{itemize}
-\item L'elenco telefonico è un archivio di dati in cui le informazioni riguardano gli abbonati al telefono di una provincia.
+\item L'\textbf{elenco telefonico} è un archivio di dati in cui le informazioni riguardano gli abbonati al telefono di una provincia.
 
 \item Per ogni abbonato sono riportati nell'ordine: 
 	generalità
@@ -87,6 +147,8 @@
 \item Le informazioni vengono raccolte in questo archivio perché si riferiscono agli abbonati di una stessa provincia e, all'interno della provincia, di uno stesso comune \textbf{(nesso logico).}
 		 
 	\end{itemize}
+	
+	
 \end{frame}
 
 \begin{frame}{Gli archivi}
@@ -117,7 +179,7 @@
 \end{frame}
 
 \begin{frame}{I record e i campi}
-	In un archivio le informazioni, in genere, sono raggruppate secondo un'unità logica: nel caso dell'elenco telefonico i dati relativi a ogni abbonato, in un archivio notarile i dati contenuti nell'incartamento relativo a un cliente.
+	In un archivio le informazioni, in genere, sono raggruppate secondo un'\textbf{unità logica}: nel caso dell'elenco telefonico i dati relativi a ogni abbonato, in un archivio notarile i dati contenuti nell'incartamento relativo a un cliente.
 \vspace{0.5cm}
 	Questi insiemi di informazioni logicamente organizzate e riferite a un unico soggetto sono chiamati con il termine \textbf{record};
 \begin{itemize}
@@ -150,11 +212,76 @@ Si consideri un archivio con le informazioni anagrafiche degli studenti.
 \end{frame}
 
 \begin{frame}{Il file - definizione}
-\begin{block}{Definizione}
-Un \textbf{file} è una collezione di record, cioè di informazioni logicamente omogenee che descrivono i singoli elementi di una realtà considerata.
-\end{block}
-
-Ogni record è composto da un insieme di campi che contengono i valori assunti dalle caratteristiche scelte per descrivere la realtà.
+	\begin{columns}[T]
+		\begin{column}{0.5\textwidth}
+			\begin{block}{Definizione}
+				Un \textbf{file} è una collezione di record, cioè di informazioni logicamente omogenee che descrivono i singoli elementi di una realtà considerata.
+			\end{block}
+			
+			\vspace{0.3cm}
+			
+			Ogni record è composto da un insieme di \alert{campi} che contengono i valori assunti dalle caratteristiche scelte per descrivere la realtà.
+		\end{column}
+		
+		\begin{column}{0.45\textwidth}
+			\begin{tikzpicture}[scale=0.85, every node/.style={font=\scriptsize}]
+				% Titolo del file
+				\draw[fill=orange!30, rounded corners] (-0.2,4.5) rectangle (4.2,5) node[pos=.5] {\textbf{FILE: Studenti.dat}};
+				
+				% Header con nomi dei campi
+				\draw[fill=blue!40] (0,3.8) rectangle (1.3,4.3);
+				\draw (0.65,4.05) node {\textbf{ID}};
+				
+				\draw[fill=blue!40] (1.4,3.8) rectangle (2.7,4.3);
+				\draw (2.05,4.05) node {\textbf{Nome}};
+				
+				\draw[fill=blue!40] (2.8,3.8) rectangle (4,4.3);
+				\draw (3.4,4.05) node {\textbf{Classe}};
+				
+				% Record 1
+				\draw[fill=green!20] (0,3.1) rectangle (1.3,3.6);
+				\draw (0.65,3.35) node {001};
+				
+				\draw[fill=green!20] (1.4,3.1) rectangle (2.7,3.6);
+				\draw (2.05,3.35) node {Mario};
+				
+				\draw[fill=green!20] (2.8,3.1) rectangle (4,3.6);
+				\draw (3.4,3.35) node {5A};
+				
+				\draw[<-, thick, red] (4.2,3.35) -- (4.8,3.35) node[right] {\textcolor{red}{Record 1}};
+				
+				% Record 2
+				\draw[fill=green!20] (0,2.4) rectangle (1.3,2.9);
+				\draw (0.65,2.65) node {002};
+				
+				\draw[fill=green!20] (1.4,2.4) rectangle (2.7,2.9);
+				\draw (2.05,2.65) node {Laura};
+				
+				\draw[fill=green!20] (2.8,2.4) rectangle (4,2.9);
+				\draw (3.4,2.65) node {4B};
+				
+				\draw[<-, thick, red] (4.2,2.65) -- (4.8,2.65) node[right] {\textcolor{red}{Record 2}};
+				
+				% Record 3
+				\draw[fill=green!20] (0,1.7) rectangle (1.3,2.2);
+				\draw (0.65,1.95) node {003};
+				
+				\draw[fill=green!20] (1.4,1.7) rectangle (2.7,2.2);
+				\draw (2.05,1.95) node {Giulia};
+				
+				\draw[fill=green!20] (2.8,1.7) rectangle (4,2.2);
+				\draw (3.4,1.95) node {5A};
+				
+				\draw[<-, thick, red] (4.2,1.95) -- (4.8,1.95) node[right] {\textcolor{red}{Record 3}};
+				
+				% Indicazione campi
+				\draw[<-, thick, blue] (0.65,3.8) -- (0.65,4.8) node[above] {\textcolor{blue}{Campo}};
+				
+				% Puntini per indicare altri record
+				\draw (2,1.3) node {$\vdots$};
+			\end{tikzpicture}
+		\end{column}
+	\end{columns}
 \end{frame}
 
 % ========== CREAZIONE DI UN ARCHIVIO ==========
@@ -181,14 +308,147 @@ La creazione di un archivio richiede la definizione preliminare delle seguenti s
 \end{frame}
 
 \begin{frame}{Interrogazione e modifica dei dati}
-Dopo aver creato l'archivio, su di esso si possono effettuare operazioni di:
-\begin{itemize}
-\item \textbf{manipolazione}, cioè inserimento di nuovi dati o variazione dei dati registrati;
-\item \textbf{interrogazione}, cioè reperimento all'interno dell'archivio delle informazioni necessarie.
-\end{itemize}
+	\begin{columns}[T]
+		\begin{column}{0.5\textwidth}
+			Dopo aver creato l'archivio, su di esso si possono effettuare operazioni di:
+			\begin{itemize}
+				\item \textbf{manipolazione}, cioè inserimento di nuovi dati o variazione dei dati registrati;
+				\item \textbf{interrogazione}, cioè reperimento all'interno dell'archivio delle informazioni necessarie.
+			\end{itemize}
+		\end{column}
+		
+		\begin{column}{0.45\textwidth}
+			\begin{tikzpicture}[scale=0.9, every node/.style={font=\small}]
+				% Database centrale
+				\draw[fill=blue!20, rounded corners] (2,2.5) circle (1.2cm);
+				\draw (2,2.5) node[align=center] {\textbf{ARCHIVIO}\\\textbf{DATI}};
+				
+				% Operazioni di MANIPOLAZIONE (a sinistra)
+				\draw[fill=green!30, rounded corners] (-0.5,4.5) rectangle (1.5,5.2);
+				\draw (0.5,4.85) node {\textbf{INSERT}};
+				\draw[->, thick, green!70!black] (0.8,4.5) -- (1.3,3.4);
+				
+				\draw[fill=orange!30, rounded corners] (-0.5,3.3) rectangle (1.5,4);
+				\draw (0.5,3.65) node {\textbf{UPDATE}};
+				\draw[->, thick, orange!70!black] (0.8,3.3) -- (1.2,2.9);
+				
+				\draw[fill=red!30, rounded corners] (-0.5,2.1) rectangle (1.5,2.8);
+				\draw (0.5,2.45) node {\textbf{DELETE}};
+				\draw[->, thick, red!70!black] (0.8,2.5) -- (1.2,2.5);
+				
+				% Etichetta MANIPOLAZIONE
+				\draw[fill=green!10, rounded corners] (-0.7,1.3) rectangle (1.7,1.8);
+				\draw (0.5,1.55) node[font=\scriptsize\bfseries] {MANIPOLAZIONE};
+				
+				% Operazione di INTERROGAZIONE (a destra)
+				\draw[fill=cyan!30, rounded corners] (2.5,4.5) rectangle (4.5,5.2);
+				\draw (3.5,4.85) node {\textbf{SELECT}};
+				\draw[<-, thick, cyan!70!black] (3.2,4.5) -- (2.7,3.4);
+				
+				% Risultato query
+				\draw[fill=cyan!10, rounded corners, dashed] (2.5,0.3) rectangle (4.5,1.5);
+				\draw (3.5,1.2) node[font=\scriptsize] {ID: 001};
+				\draw (3.5,0.9) node[font=\scriptsize] {Nome: Mario};
+				\draw (3.5,0.6) node[font=\scriptsize] {Classe: 5A};
+				\draw[<-, thick, cyan!70!black] (3.5,1.5) -- (2.7,1.9);
+				
+				% Etichetta INTERROGAZIONE
+				\draw[fill=cyan!10, rounded corners] (2.3,0) rectangle (4.7,0.2);
+				\draw (3.5,0.1) node[font=\tiny\bfseries] {INTERROGAZIONE};
+				
+			\end{tikzpicture}
+		\end{column}
+	\end{columns}
 \end{frame}
 
 % ========== FILE E MEMORIE DI MASSA ==========
+
+\begin{frame}{File e Memorie di Massa}
+	\begin{center}
+		\begin{tikzpicture}[scale=1.1, every node/.style={font=\small}]
+			
+			% RAM (memoria volatile) - in alto
+			\draw[fill=red!20, rounded corners, drop shadow] (0,6) rectangle (3,7.5);
+			\draw (1.5,7.2) node[font=\bfseries] {RAM};
+			\draw (1.5,6.7) node[font=\scriptsize] {Memoria};
+			\draw (1.5,6.4) node[font=\scriptsize] {Volatile};
+			\draw (3.3,6.75) node[font=\tiny] {veloce};
+			
+			% CPU
+			\draw[fill=gray!30, rounded corners] (-2,6.3) rectangle (-0.5,7.2);
+			\draw (-1.25,6.75) node[font=\bfseries] {CPU};
+			
+			% Frecce CPU <-> RAM
+			\draw[->, thick, blue] (-0.5,6.9) -- (0,6.9);
+			\draw[<-, thick, blue] (-0.5,6.6) -- (0,6.6);
+			
+			% Freccia grande verso il basso (salvataggio permanente)
+			\draw[->, ultra thick, green!60!black] (1.5,6) -- (1.5,4.8);
+			\draw (2.5,5.4) node[font=\scriptsize, align=left] {\textcolor{green!60!black}{\textbf{Salvataggio}}\\[-2pt]\textcolor{green!60!black}{\textbf{permanente}}};
+			
+			% Freccia grande verso l'alto (caricamento)
+			\draw[->, ultra thick, orange!80!black] (4.5,4.8) -- (4.5,6);
+			\draw (5.5,5.4) node[font=\scriptsize, align=left] {\textcolor{orange!80!black}{\textbf{Caricamento}}\\[-2pt]\textcolor{orange!80!black}{\textbf{in memoria}}};
+			
+			% Memoria di massa (Hard Disk)
+			\draw[fill=blue!30, rounded corners, drop shadow] (-1,2.5) rectangle (2,4.5);
+			\draw[fill=gray!50] (0.5,3.5) circle (0.8cm);
+			\draw[fill=white] (0.5,3.5) circle (0.2cm);
+			\draw (0.5,2.9) node[font=\bfseries] {Hard Disk};
+			\draw (0.5,2.6) node[font=\tiny] {lento};
+			
+			% Memoria di massa (SSD)
+			\draw[fill=purple!30, rounded corners, drop shadow] (2.5,2.5) rectangle (5.5,4.5);
+			\draw[fill=gray!40, rounded corners] (3.2,3) rectangle (4.8,4);
+			\foreach \x in {3.4,3.7,4.0,4.3,4.6} {
+				\draw[fill=yellow!50] (\x,3.2) rectangle (\x+0.2,3.8);
+			}
+			\draw (4,2.9) node[font=\bfseries] {SSD};
+			\draw (4,2.6) node[font=\tiny] {veloce};
+			
+			% Memoria di massa (USB/Cloud)
+			\draw[fill=green!30, rounded corners, drop shadow] (6,2.5) rectangle (9,4.5);
+			\draw[fill=gray!60, rounded corners] (7,3.2) rectangle (8,3.8);
+			\draw (7.5,3.5) node[font=\tiny\bfseries] {USB};
+			\draw (7.5,2.9) node[font=\bfseries] {Dispositivi};
+			\draw (7.5,2.6) node[font=\scriptsize] {rimovibili};
+			
+			% File rappresentati su memoria di massa
+			\draw[fill=yellow!40, rounded corners] (-0.5,1.2) rectangle (0.7,1.8);
+			\draw (0.1,1.5) node[font=\tiny] {doc.txt};
+			
+			\draw[fill=yellow!40, rounded corners] (1,1.2) rectangle (2.2,1.8);
+			\draw (1.6,1.5) node[font=\tiny] {foto.jpg};
+			
+			\draw[fill=yellow!40, rounded corners] (2.8,1.2) rectangle (4,1.8);
+			\draw (3.4,1.5) node[font=\tiny] {video.mp4};
+			
+			\draw[fill=yellow!40, rounded corners] (4.5,1.2) rectangle (5.7,1.8);
+			\draw (5.1,1.5) node[font=\tiny] {dati.db};
+			
+			\draw[fill=yellow!40, rounded corners] (6.2,1.2) rectangle (7.4,1.8);
+			\draw (6.8,1.5) node[font=\tiny] {prog.exe};
+			
+			% Etichetta FILE
+			\draw (3.8,0.7) node[font=\bfseries\large] {FILE memorizzati permanentemente};
+			
+			% Box esplicativo
+			\draw[fill=yellow!10, rounded corners, dashed] (9.5,3) rectangle (12.5,7);
+			\draw (11,6.6) node[font=\scriptsize\bfseries] {Caratteristiche:};
+			\draw (11,6.1) node[font=\tiny, align=left] {
+				$\bullet$~Persistenza dati\\
+				$\bullet$~Accesso sequenziale\\
+				$\bullet$~o diretto\\
+				$\bullet$~Organizzazione\\
+				$\bullet$~strutturata\\
+				$\bullet$~Capacità elevata
+			};
+			
+			\draw (11,3.5) node[font=\scriptsize\bfseries, align=center] {Memorie\\di Massa};
+			
+		\end{tikzpicture}
+	\end{center}
+\end{frame}
 
 \begin{frame}{I file e le memorie di massa}
 	\begin{itemize}
@@ -492,21 +752,171 @@ Devono anche essere offerte misure di sicurezza per impedire che il database ven
 \end{frame}
 
 \begin{frame}{Le basi di dati}
-	\begin{itemize}
-	\item I database favoriscono gli utenti  nel manipolare i dati e liberandolo dagli aspetti riguardanti la collocazione fisica delle registrazioni sui supporti degli archivi.
-
-	\item Viene così superata la visione tradizionale dell'organizzazione degli archivi basata su file che obbliga il programmatore ad accedere ai dati con comandi espliciti di apertura, chiusura, lettura, scrittura e posizionamento sui file contenenti i dati degli archivi da gestire.
+	\begin{columns}[T]
+		\begin{column}{0.48\textwidth}
+			\begin{itemize}
+				\item I database favoriscono gli utenti nel manipolare i dati e liberandolo dagli aspetti riguardanti la collocazione fisica delle registrazioni sui supporti degli archivi.
+				\item Viene così superata la visione tradizionale dell'organizzazione degli archivi basata su file che obbliga il programmatore ad accedere ai dati con comandi espliciti di apertura, chiusura, lettura, scrittura e posizionamento sui file contenenti i dati degli archivi da gestire.
+			\end{itemize}
+		\end{column}
 		
-	\end{itemize}
+		\begin{column}{0.48\textwidth}
+			\begin{tikzpicture}[scale=0.75, every node/.style={font=\scriptsize}]
+				
+				% APPROCCIO TRADIZIONALE (File System)
+				\draw[fill=red!10, rounded corners] (-0.5,5.5) rectangle (5,8.5);
+				\draw (2.25,8.2) node[font=\small\bfseries] {APPROCCIO TRADIZIONALE};
+				
+				% Programmatore
+				\draw[fill=orange!30, rounded corners] (0.5,6.8) rectangle (2,7.5);
+				\draw (1.25,7.15) node[font=\tiny\bfseries] {Programmatore};
+				
+				% Comandi espliciti
+				\draw[->, thick, red] (2,7.15) -- (3,7.15);
+				\draw (2.5,7.4) node[font=\tiny, align=center] {open()\\read()\\write()\\close()};
+				
+				% File fisici
+				\draw[fill=yellow!40, rounded corners] (3.2,7.5) rectangle (4,7.8);
+				\draw (3.6,7.65) node[font=\tiny] {file1.dat};
+				
+				\draw[fill=yellow!40, rounded corners] (3.2,7.1) rectangle (4,7.4);
+				\draw (3.6,7.25) node[font=\tiny] {file2.dat};
+				
+				\draw[fill=yellow!40, rounded corners] (3.2,6.7) rectangle (4,7.0);
+				\draw (3.6,6.85) node[font=\tiny] {file3.dat};
+				
+				% Gestione fisica
+				\draw[fill=gray!30, rounded corners] (0.5,6) rectangle (4,6.5);
+				\draw (2.25,6.25) node[font=\tiny] {\textbf{Gestione fisica dei dati a carico del programmatore}};
+				
+				% Freccia verso il basso
+				\draw[->, ultra thick] (2.25,5.3) -- (2.25,4.8);
+				\draw (3.5,5.05) node[font=\tiny\bfseries, red] {SUPERAMENTO};
+				
+				% APPROCCIO DATABASE
+				\draw[fill=green!10, rounded corners] (-0.5,0.2) rectangle (5,4.5);
+				\draw (2.25,4.2) node[font=\small\bfseries] {APPROCCIO DATABASE};
+				
+				% Utente/Programmatore
+				\draw[fill=blue!30, rounded corners] (0.5,3) rectangle (2,3.7);
+				\draw (1.25,3.35) node[font=\tiny\bfseries] {Utente};
+				
+				% Query SQL semplici
+				\draw[->, thick, green!60!black] (2,3.35) -- (3,3.35);
+				\draw (2.5,3.6) node[font=\tiny, align=center] {SELECT\\INSERT\\UPDATE};
+				
+				% DBMS (livello intermedio)
+				\draw[fill=purple!30, rounded corners, drop shadow] (3,2.5) rectangle (4.5,4);
+				\draw (3.75,3.6) node[font=\tiny\bfseries, align=center] {DBMS};
+				\draw (3.75,3.2) node[font=\tiny, align=center] {Gestisce\\accesso\\fisico};
+				
+				% Dati astratti
+				\draw[fill=cyan!20, rounded corners] (0.5,1.8) rectangle (2,2.5);
+				\draw (1.25,2.15) node[font=\tiny, align=center] {Astrazione\\dai dettagli\\fisici};
+				
+				% Database logico
+				\draw[fill=green!40, rounded corners] (3,0.8) rectangle (4.5,2.2);
+				\draw (3.75,1.8) node[font=\tiny\bfseries] {DATABASE};
+				\draw (3.75,1.5) node[font=\tiny, align=center] {Organizzazione\\logica\\dei dati};
+				
+				% Vantaggi
+				\draw[fill=yellow!20, rounded corners] (0.3,0.4) rectangle (4.7,0.7);
+				\draw (2.5,0.55) node[font=\tiny] {\textbf{$\checkmark$ Indipendenza dai dettagli fisici}};
+				
+			\end{tikzpicture}
+		\end{column}
+	\end{columns}
 \end{frame}
+
 
 % ========== I DBMS ==========
 \begin{frame}{I DBMS}
-Il database, è una collezione di archivi (file) di dati ben organizzati e ben strutturati, che sono gestiti in modo integrato e che costituiscono una base di lavoro per utenti diversi con programmi diversi.
-
-I prodotti software per la gestione dei database sono indicati con il termine \textbf{DBMS}, acronimo di \textbf{DataBase Management System}.
-
-I DBMS consentono all'utente di focalizzare l'attenzione solo sull'applicazione che utilizza i dati dell'archivio consentendone la gestione anche a utenti che nulla conoscono dell'hardware sottostante.
+	\begin{columns}[T]
+		\begin{column}{0.48\textwidth}
+			I prodotti software per la gestione dei database sono indicati con il termine \textbf{DBMS}, acronimo di \textbf{DataBase Management System}.
+			
+			\vspace{0.3cm}
+			
+			I DBMS consentono all'utente di focalizzare l'attenzione solo sull'applicazione che utilizza i dati dell'archivio consentendone la gestione anche a utenti che nulla conoscono dell'hardware sottostante.
+		\end{column}
+		
+		\begin{column}{0.48\textwidth}
+			\begin{tikzpicture}[scale=0.85, every node/.style={font=\scriptsize}]
+				
+				% LIVELLO UTENTE/APPLICAZIONE
+				\draw[fill=blue!20, rounded corners, drop shadow] (0,6.5) rectangle (5.5,7.8);
+				\draw (2.75,7.4) node[font=\small\bfseries] {UTENTE / APPLICAZIONE};
+				\draw (2.75,6.9) node[font=\tiny, align=center] {Focus sui dati e sulla logica applicativa};
+				
+				% Icone utenti
+				\draw[fill=blue!40] (1,6.7) circle (0.15cm);
+				\draw[fill=blue!40] (1,6.4) -- (0.8,6) -- (1.2,6) -- cycle;
+				
+				\draw[fill=blue!40] (2.75,6.7) circle (0.15cm);
+				\draw[fill=blue!40] (2.75,6.4) -- (2.55,6) -- (2.95,6) -- cycle;
+				
+				\draw[fill=blue!40] (4.5,6.7) circle (0.15cm);
+				\draw[fill=blue!40] (4.5,6.4) -- (4.3,6) -- (4.7,6) -- cycle;
+				
+				% Frecce bidirezionali
+				\draw[<->, ultra thick, green!60!black] (2.75,6.3) -- (2.75,5.8);
+				
+				% LIVELLO DBMS (centrale e più importante)
+				\draw[fill=green!30, rounded corners, drop shadow, line width=1.5pt] (-0.3,3.8) rectangle (5.8,5.6);
+				\draw (2.75,5.3) node[font=\large\bfseries] {DBMS};
+				\draw (2.75,4.9) node[font=\bfseries] {(DataBase Management System)};
+				
+				% Funzioni del DBMS
+				\draw[fill=green!50, rounded corners] (0,4.2) rectangle (2.3,4.7);
+				\draw (1.15,4.45) node[font=\tiny] {Gestione query};
+				
+				\draw[fill=green!50, rounded corners] (2.5,4.2) rectangle (5.5,4.7);
+				\draw (4,4.45) node[font=\tiny] {Controllo accessi e sicurezza};
+				
+				\draw[fill=green!50, rounded corners] (0,3.9) rectangle (2.3,4.1);
+				\draw (1.15,4) node[font=\tiny] {Gestione transazioni};
+				
+				\draw[fill=green!50, rounded corners] (2.5,3.9) rectangle (5.5,4.1);
+				\draw (4,4) node[font=\tiny] {Ottimizzazione};
+				
+				% Frecce bidirezionali
+				\draw[<->, ultra thick, orange!70!black] (2.75,3.6) -- (2.75,3.1);
+				
+				% LIVELLO FISICO/HARDWARE
+				\draw[fill=gray!30, rounded corners, drop shadow] (0,0.5) rectangle (5.5,2.9);
+				\draw (2.75,2.6) node[font=\small\bfseries] {LIVELLO FISICO};
+				\draw (2.75,2.2) node[font=\tiny, align=center] {Hardware, file system, memoria};
+				
+				% Componenti hardware
+				\draw[fill=gray!50, rounded corners] (0.3,1.5) rectangle (1.8,2);
+				\draw (1.05,1.75) node[font=\tiny] {Hard Disk};
+				
+				\draw[fill=gray!50, rounded corners] (2,1.5) rectangle (3.5,2);
+				\draw (2.75,1.75) node[font=\tiny] {SSD};
+				
+				\draw[fill=gray!50, rounded corners] (3.7,1.5) rectangle (5.2,2);
+				\draw (4.45,1.75) node[font=\tiny] {RAM};
+				
+				\draw[fill=gray!50, rounded corners] (0.3,0.7) rectangle (2.6,1.3);
+				\draw (1.45,1) node[font=\tiny] {File System};
+				
+				\draw[fill=gray!50, rounded corners] (2.9,0.7) rectangle (5.2,1.3);
+				\draw (4.05,1) node[font=\tiny] {Gestione I/O};
+				
+				% Etichette laterali
+				\draw[fill=yellow!20, rounded corners] (6,6.8) rectangle (7.8,7.5);
+				\draw (6.9,7.15) node[font=\tiny, align=center] {Cosa\\conosce\\l'utente};
+				
+				\draw[fill=red!20, rounded corners] (6,1.5) rectangle (7.8,2.2);
+				\draw (6.9,1.85) node[font=\tiny, align=center] {Cosa\\NON deve\\conoscere};
+				
+				% Barriera di astrazione
+				\draw[dashed, thick, red] (5.9,3.7) -- (7.9,3.7);
+				\draw (6.9,3.4) node[font=\tiny\bfseries, red, align=center] {Barriera di\\astrazione};
+				
+			\end{tikzpicture}
+		\end{column}
+	\end{columns}
 \end{frame}
 
 
@@ -556,13 +966,109 @@ così come nell'uso degli archivi tradizionali c'è una distinzione tra archivi 
 \end{frame}
 
 \begin{frame}{I DBMS - database distribuiti}
-	\begin{itemize}
-\item Gli utenti della base di dati elaborano in modo locale gli archivi che hanno a disposizione nel proprio sistema e nello stesso tempo accedono in modo remoto a sistemi centrali attraverso le linee di comunicazione.
-
-\item Gli archivi integrati che costituiscono la base di dati aziendale possono risiedere su un unico computer oppure possono essere distribuiti sulle memorie di massa di computer diversi, facenti parte di una rete aziendale, i cui nodi possono essere anche fisicamente lontani: in questo caso si parla di \textbf{database distribuiti}.
-
-	\end{itemize}
-
+	\begin{columns}[T]
+		\begin{column}{0.48\textwidth}
+			\begin{itemize}
+				\item Gli utenti della base di dati elaborano in modo locale gli archivi che hanno a disposizione nel proprio sistema e nello stesso tempo accedono in modo remoto a sistemi centrali attraverso le linee di comunicazione.
+				\item Gli archivi integrati che costituiscono la base di dati aziendale possono risiedere su un unico computer oppure possono essere distribuiti sulle memorie di massa di computer diversi, facenti parte di una rete aziendale, i cui nodi possono essere anche fisicamente lontani: in questo caso si parla di \textbf{database distribuiti}.
+			\end{itemize}
+		\end{column}
+		
+		\begin{column}{0.48\textwidth}
+			\begin{tikzpicture}[scale=0.75, every node/.style={font=\scriptsize}]
+				
+				% RETE DI COMUNICAZIONE (al centro)
+				\draw[dashed, thick, blue!50] (3,3.5) circle (2.5cm);
+				\draw (3,3.5) node[font=\small\bfseries, blue] {RETE AZIENDALE};
+				
+				% SERVER CENTRALE (in alto)
+				\draw[fill=red!30, rounded corners, drop shadow] (2.2,6.5) rectangle (3.8,7.5);
+				\draw (3,7.2) node[font=\tiny\bfseries] {Server Centrale};
+				\draw (3,6.8) node[font=\tiny] {Roma};
+				
+				% Database centrale
+				\draw[fill=yellow!40, rounded corners] (2.4,6) rectangle (3.6,6.4);
+				\draw (3,6.2) node[font=\tiny] {DB};
+				
+				% Linea verso la rete
+				\draw[->, thick, blue] (3,6) -- (3,5.5);
+				
+				% NODO LOCALE 1 (sinistra)
+				\draw[fill=green!30, rounded corners, drop shadow] (0,3) rectangle (1.5,4);
+				\draw (0.75,3.7) node[font=\tiny\bfseries] {Nodo Locale};
+				\draw (0.75,3.4) node[font=\tiny] {Milano};
+				
+				% Database locale 1
+				\draw[fill=cyan!40, rounded corners] (0.2,2.5) rectangle (1.3,2.9);
+				\draw (0.75,2.7) node[font=\tiny] {DB};
+				
+				% Utente 1
+				\draw[fill=blue!40] (0.75,3.2) circle (0.1cm);
+				\draw (0.75,2.3) node[font=\tiny] {Utente};
+				
+				% Linea verso la rete
+				\draw[->, thick, blue] (1.5,3.5) -- (2,3.5);
+				
+				% NODO LOCALE 2 (destra)
+				\draw[fill=green!30, rounded corners, drop shadow] (4.5,3) rectangle (6,4);
+				\draw (5.25,3.7) node[font=\tiny\bfseries] {Nodo Locale};
+				\draw (5.25,3.4) node[font=\tiny] {Napoli};
+				
+				% Database locale 2
+				\draw[fill=cyan!40, rounded corners] (4.7,2.5) rectangle (5.8,2.9);
+				\draw (5.25,2.7) node[font=\tiny] {DB};
+				
+				% Utente 2
+				\draw[fill=blue!40] (5.25,3.2) circle (0.1cm);
+				\draw (5.25,2.3) node[font=\tiny] {Utente};
+				
+				% Linea verso la rete
+				\draw[->, thick, blue] (4,3.5) -- (4.5,3.5);
+				
+				% NODO LOCALE 3 (in basso a sinistra)
+				\draw[fill=green!30, rounded corners, drop shadow] (0.5,0.3) rectangle (2,1.3);
+				\draw (1.25,1) node[font=\tiny\bfseries] {Nodo Locale};
+				\draw (1.25,0.7) node[font=\tiny] {Torino};
+				
+				% Database locale 3
+				\draw[fill=cyan!40, rounded corners] (0.7,0) rectangle (1.8,0.2);
+				\draw (1.25,0.1) node[font=\tiny] {DB};
+				
+				% Linea verso la rete
+				\draw[->, thick, blue] (1.8,1) -- (2.3,2.5);
+				
+				% NODO LOCALE 4 (in basso a destra)
+				\draw[fill=green!30, rounded corners, drop shadow] (4,0.3) rectangle (5.5,1.3);
+				\draw (4.75,1) node[font=\tiny\bfseries] {Nodo Locale};
+				\draw (4.75,0.7) node[font=\tiny] {Bologna};
+				
+				% Database locale 4
+				\draw[fill=cyan!40, rounded corners] (4.2,0) rectangle (5.3,0.2);
+				\draw (4.75,0.1) node[font=\tiny] {DB};
+				
+				% Linea verso la rete
+				\draw[->, thick, blue] (4.2,1) -- (3.7,2.5);
+				
+				% Frecce di comunicazione tra nodi
+				\draw[<->, thick, orange, dashed] (1.5,3.5) -- (4.5,3.5);
+				\draw (3,3.8) node[font=\tiny, orange] {comunicazione};
+				
+				% Legende
+				\draw[fill=yellow!20, rounded corners] (6.3,6.5) rectangle (8,7.5);
+				\draw (7.15,7.2) node[font=\tiny\bfseries] {Accesso Remoto};
+				\draw (7.15,6.8) node[font=\tiny, align=center] {Dati\\centralizzati};
+				
+				\draw[fill=cyan!20, rounded corners] (6.3,5.3) rectangle (8,6.3);
+				\draw (7.15,6) node[font=\tiny\bfseries] {Accesso Locale};
+				\draw (7.15,5.6) node[font=\tiny, align=center] {Elaborazione\\dati locali};
+				
+				\draw[fill=orange!20, rounded corners] (6.3,4.1) rectangle (8,5.1);
+				\draw (7.15,4.8) node[font=\tiny\bfseries] {Distribuzione};
+				\draw (7.15,4.4) node[font=\tiny, align=center] {Database\\distribuito\\su più nodi};
+				
+			\end{tikzpicture}
+		\end{column}
+	\end{columns}
 \end{frame}
 
 \begin{frame}{I DBMS}
@@ -578,8 +1084,8 @@ così come nell'uso degli archivi tradizionali c'è una distinzione tra archivi 
 \begin{frame}{Limiti dell'organizzazione tradizionale degli archivi}
 \textbf{Ridondanza e inconsistenza dei dati.}
 \begin{itemize}
-\item La ridondanza nei dati è frequente nell'approccio basato su file indipendenti.
-\item La duplicazione dei dati richiede di inserirli più volte, con l'aumento dello spazio occupato dai dati, ma, soprattutto, la ridondanza può portare all'\textbf{incongruenza} nel caso in cui un dato sia aggiornato in un archivio e non in un altro, oppure siano presenti valori diversi per lo stesso dato.
+\item La \textbf{ridondanza} nei dati è frequente nell'approccio basato su file indipendenti.
+\item La \textbf{duplicazione} dei dati richiede di inserirli più volte, con l'aumento dello spazio occupato dai dati, ma, soprattutto, la ridondanza può portare all'\textbf{incongruenza} nel caso in cui un dato sia aggiornato in un archivio e non in un altro, oppure siano presenti valori diversi per lo stesso dato.
 
 \end{itemize}
 
@@ -757,33 +1263,149 @@ Il modello relazionale è un \textbf{modello basato sui valori}. Le associazioni
 
 
 \begin{frame}{Modello gerarchico e reticolare}
-\begin{itemize}
-\item Le operazioni sui database gerarchici e reticolari sono complesse, poiché agiscono su singoli record che vengono identificati specificando i percorsi per ritrovarli.
-\item Si dice in tale caso che l'approccio adottato nell'elaborazione dei dati è di tipo \textbf{procedurale}, ovvero bisogna indicare al computer come deve fare per trovare i dati.
-
-\item I sistemi relazionali adottano invece un approccio di tipo \textbf{dichiarativo} nell'elaborazione delle informazioni, in quanto viene specificato cosa si vuole trovare, mentre i percorsi per trovare i dati sono a carico del sistema.
-
-\end{itemize}
-
-
+	\begin{columns}
+		\column{0.55\textwidth}
+		\begin{itemize}
+			\item Le operazioni sui database gerarchici e reticolari sono complesse, poiché agiscono su singoli record che vengono identificati specificando i percorsi per ritrovarli.
+			\item Si dice in tale caso che l'approccio adottato nell'elaborazione dei dati è di tipo \textbf{procedurale}, ovvero bisogna indicare al computer come deve fare per trovare i dati.
+			\item I sistemi relazionali adottano invece un approccio di tipo \textbf{dichiarativo} nell'elaborazione delle informazioni, in quanto viene specificato cosa si vuole trovare, mentre i percorsi per trovare i dati sono a carico del sistema.
+		\end{itemize}
+		
+		\column{0.45\textwidth}
+		\begin{center}
+			\begin{tikzpicture}[scale=0.8]
+				% Approccio procedurale
+				\node[font=\small\bfseries] at (0,3.5) {Procedurale};
+				\node[draw, rectangle, fill=red!20, minimum width=2cm, minimum height=0.6cm] (user1) at (0,2.8) {Utente};
+				\node[draw, rectangle, fill=blue!20, minimum width=2cm, minimum height=0.6cm] (db1) at (0,1.2) {Database};
+				\draw[->, thick, red] (user1) -- node[right, font=\scriptsize] {COME} (db1);
+				
+				% Spazio
+				\draw[dashed, gray] (-1.5,0.5) -- (1.5,0.5);
+				
+				% Approccio dichiarativo
+				\node[font=\small\bfseries] at (0,-0.2) {Dichiarativo};
+				\node[draw, rectangle, fill=green!20, minimum width=2cm, minimum height=0.6cm] (user2) at (0,-0.9) {Utente};
+				\node[draw, rectangle, fill=blue!20, minimum width=2cm, minimum height=0.6cm] (db2) at (0,-2.5) {Database};
+				\draw[->, thick, green!60!black] (user2) -- node[right, font=\scriptsize] {COSA} (db2);
+			\end{tikzpicture}
+		\end{center}
+	\end{columns}
 \end{frame}
 
+
+
 \begin{frame}{Il modello relazionale}
-	\begin{itemize}
-\item Tra i modelli di database illustrati, il modello relazionale è il più diffuso nella quasi totalità dei prodotti commerciali DBMS, nei sistemi di elaborazione grandi, medi e piccoli.
-\item Proprio questo modello ha determinato un'ampia diffusione dei programmi per la gestione di database anche per i personal computer.
-
-	\end{itemize}
-
+	\begin{columns}
+		\column{0.6\textwidth}
+		\begin{itemize}
+			\item Tra i modelli di database illustrati, il modello relazionale è il più diffuso nella quasi totalità dei prodotti commerciali DBMS, nei sistemi di elaborazione grandi, medi e piccoli.
+			\item Proprio questo modello ha determinato un'ampia diffusione dei programmi per la gestione di database anche per i personal computer.
+		\end{itemize}
+		
+		\column{0.4\textwidth}
+		\begin{center}
+			\begin{tikzpicture}[scale=0.7]
+				% Tabella esempio
+				\node[font=\small\bfseries] at (0,3.2) {Tabella Relazionale};
+				
+				% Header
+				\draw[fill=blue!30, thick] (-2,2.5) rectangle (-0.5,2);
+				\draw[fill=blue!30, thick] (-0.5,2.5) rectangle (1,2);
+				\draw[fill=blue!30, thick] (1,2.5) rectangle (2.5,2);
+				
+				\node[font=\scriptsize] at (-1.25,2.25) {\textbf{ID}};
+				\node[font=\scriptsize] at (0.25,2.25) {\textbf{Nome}};
+				\node[font=\scriptsize] at (1.75,2.25) {\textbf{Città}};
+				
+				% Righe
+				\draw (-2,2) rectangle (-0.5,1.5);
+				\draw (-0.5,2) rectangle (1,1.5);
+				\draw (1,2) rectangle (2.5,1.5);
+				\node[font=\tiny] at (-1.25,1.75) {1};
+				\node[font=\tiny] at (0.25,1.75) {Mario};
+				\node[font=\tiny] at (1.75,1.75) {Roma};
+				
+				\draw (-2,1.5) rectangle (-0.5,1);
+				\draw (-0.5,1.5) rectangle (1,1);
+				\draw (1,1.5) rectangle (2.5,1);
+				\node[font=\tiny] at (-1.25,1.25) {2};
+				\node[font=\tiny] at (0.25,1.25) {Luca};
+				\node[font=\tiny] at (1.75,1.25) {Milano};
+				
+				\draw (-2,1) rectangle (-0.5,0.5);
+				\draw (-0.5,1) rectangle (1,0.5);
+				\draw (1,1) rectangle (2.5,0.5);
+				\node[font=\tiny] at (-1.25,0.75) {3};
+				\node[font=\tiny] at (0.25,0.75) {Anna};
+				\node[font=\tiny] at (1.75,0.75) {Napoli};
+				
+				% Icone sistemi
+				\node[font=\scriptsize] at (-1.5,-0.3) {Server};
+				\node[font=\scriptsize] at (0.2,-0.3) {Desktop};
+				\node[font=\scriptsize] at (1.8,-0.3) {Mobile};
+				
+				% Simboli
+				\draw[fill=gray!40] (-1.7,-1) rectangle (-1.3,-1.4);
+				\draw[fill=gray!60] (-1.7,-1.4) rectangle (-1.3,-1.5);
+				
+				\draw[fill=gray!40] (0,-1.2) rectangle (0.4,-0.8);
+				\draw[fill=gray!60] (0,-0.8) rectangle (0.4,-0.7);
+				
+				\draw[fill=gray!40] (1.6,-1.3) -- (2,-1.3) -- (2,-0.9) -- (1.6,-0.9) -- cycle;
+				\draw (1.75,-1.1) circle (0.08);
+				
+			\end{tikzpicture}
+		\end{center}
+	\end{columns}
 \end{frame}
 
 % ========== IL MODELLO FISICO ==========
 \begin{frame}{Il modello fisico}
-Il \textbf{modello fisico} dei dati ha la funzione di descrivere il modo con il quale un dato modello logico è realizzato concretamente sulle memorie di massa del computer.
+	\begin{columns}
+		\column{0.58\textwidth}
+		\begin{itemize}
+\item 		Il \textbf{modello fisico} dei dati ha la funzione di descrivere il modo con il quale un dato modello logico è realizzato concretamente sulle memorie di massa del computer.
 
-Nel caso del modello relazionale, il modello fisico precisa come sono realizzate le tabelle, il modo per implementare i vincoli sui dati che le compongono, come rappresentare le associazioni tra tabelle, come costruire gli indici sui campi di una tabella e così via.
+\item 		Nel caso del modello relazionale, il modello fisico precisa come sono realizzate le tabelle, il modo per implementare i vincoli sui dati che le compongono, come rappresentare le associazioni tra tabelle, come costruire gli indici sui campi di una tabella e così via.
 
-Il modello fisico si occupa di problemi trattati dai progettisti di uno specifico DBMS. Esempi di prodotti DBMS che gestiscono i modelli fisici dei dati sono Oracle, DB2, MySQL, SQL Server, Access.
+\item 
+		Il modello fisico si occupa di problemi trattati dai progettisti di uno specifico DBMS. Esempi di prodotti DBMS che gestiscono i modelli fisici dei dati sono Oracle, DB2, MySQL, SQL Server, Access.
+
+		\end{itemize}
+		
+		
+		
+		\column{0.42\textwidth}
+		\begin{center}
+			\begin{tikzpicture}[scale=0.75]
+				% Livello Logico
+				\node[font=\small\bfseries, blue] at (0,4) {Modello Logico};
+				\draw[fill=blue!20, rounded corners] (-1.8,3.5) rectangle (1.8,2.8);
+				\node[font=\tiny, align=center] at (0,3.15) {Tabella STUDENTI\\ID, Nome, Cognome};
+				
+				% Freccia
+				\draw[->, very thick, blue!60] (0,2.8) -- (0,2.3);
+				
+				% Livello Fisico
+				\node[font=\small\bfseries, orange!80!black] at (0,2) {Modello Fisico};
+				
+				% Disco
+				\draw[fill=gray!30] (0,0.5) ellipse (1.5 and 0.3);
+				\draw[fill=gray!40] (-1.5,0.5) -- (-1.5,-0.8) arc (180:360:1.5 and 0.3) -- (1.5,0.5);
+				\draw[fill=gray!30] (0,-0.8) ellipse (1.5 and 0.3);
+				
+				% Dettagli su disco
+				\node[font=\tiny, align=left] at (0,0.3) {File dati};
+				\node[font=\tiny, align=left] at (0,-0.1) {Indici};
+				\node[font=\tiny, align=left] at (0,-0.5) {Vincoli};
+				
+				% DBMS
+				\node[font=\scriptsize, align=center, fill=green!20, rounded corners, draw] at (0,-1.7) {DBMS\\Oracle, MySQL\\SQL Server...};
+				
+			\end{tikzpicture}
+		\end{center}
+	\end{columns}
 \end{frame}
 
 % ========== ARCHITETTURA A TRE LIVELLI ==========
@@ -801,23 +1423,98 @@ Il \textbf{livello esterno (viste)} rappresenta la visione del database da parte
 \end{frame}
 
 \begin{frame}{Architettura a tre livelli e indipendenza dei dati}
-In generale in un database ci sono tanti schemi esterni quante sono le classi di utente con differenti esigenze e visione dei dati.
-
-Il \textbf{livello logico} rappresenta la visione complessiva del database dal punto di vista logico, indipendentemente dalle modalità e dalle tecniche di memorizzazione dei dati.
-
-Il livello logico descrive, con le convenzioni del modello di database scelto, entità, attributi, associazioni e vincoli. Il livello logico è la cerniera tra ciò che vedono gli utenti e quello che viene effettivamente memorizzato nel computer.
+	\begin{columns}
+		\column{0.55\textwidth}
+		\begin{itemize}
+			\item In generale in un database ci sono tanti \textbf{schemi esterni} quante sono le classi di utente con differenti esigenze e visione dei dati.
+			\item Il \textbf{livello logico} rappresenta la visione complessiva del database dal punto di vista logico, indipendentemente dalle modalità e dalle tecniche di memorizzazione dei dati.
+			\item Il livello logico descrive, con le convenzioni del modello di database scelto, entità, attributi, associazioni e vincoli.
+			\item Il livello logico è la cerniera tra ciò che vedono gli utenti e quello che viene effettivamente memorizzato nel computer.
+		\end{itemize}
+		
+		\column{0.45\textwidth}
+		\begin{center}
+			\begin{tikzpicture}[scale=0.8]
+				% Livello Esterno
+				\node[font=\small\bfseries] at (0,4.2) {Livello Esterno};
+				\draw[fill=green!20, rounded corners] (-1.5,3.8) rectangle (-0.3,3.3);
+				\node[font=\tiny] at (-0.9,3.55) {Vista 1};
+				\draw[fill=green!20, rounded corners] (0.3,3.8) rectangle (1.5,3.3);
+				\node[font=\tiny] at (0.9,3.55) {Vista 2};
+				\draw[fill=green!20, rounded corners] (-0.6,3.2) rectangle (0.6,2.7);
+				\node[font=\tiny] at (0,2.95) {Vista N};
+				
+				% Frecce verso livello logico
+				\draw[->, thick] (-0.9,3.3) -- (-0.5,2.5);
+				\draw[->, thick] (0.9,3.3) -- (0.5,2.5);
+				\draw[->, thick] (0,2.7) -- (0,2.5);
+				
+				% Livello Logico (cerniera)
+				\node[font=\small\bfseries] at (0,2.2) {Livello Logico};
+				\draw[fill=blue!30, rounded corners] (-1.8,1.8) rectangle (1.8,0.8);
+				\node[font=\tiny, align=center] at (0,1.5) {Schema logico};
+				\node[font=\tiny, align=center] at (0,1.1) {Entità, Attributi\\Associazioni, Vincoli};
+				
+				% Freccia verso livello fisico
+				\draw[->, thick] (0,0.8) -- (0,0.4);
+				
+				% Livello Fisico
+				\node[font=\small\bfseries] at (0,0.1) {Livello Fisico};
+				\draw[fill=orange!20, rounded corners] (-1.5,-0.3) rectangle (1.5,-1.3);
+				\node[font=\tiny, align=center] at (0,-0.6) {Memorizzazione};
+				\node[font=\tiny, align=center] at (0,-1) {File, Indici, Strutture};
+				
+			\end{tikzpicture}
+		\end{center}
+	\end{columns}
 \end{frame}
 
 \begin{frame}{Architettura a tre livelli e indipendenza dei dati}
-Naturalmente c'è un solo schema logico di database.
-
-Il \textbf{livello interno (fisico)} riguarda la rappresentazione fisica del database nel computer e fornisce informazioni in merito alla realizzazione concreta del livello logico.
-
-Il livello interno entra nel merito dei dettagli implementativi delle forme di memorizzazione.
-
-\textbf{Esempio.}
-
-Una tabella di un database relazionale può essere rappresentata con un file ad accesso diretto e con una struttura a indice sequenziale per rappresentare la sua chiave primaria; nel caso di un database gerarchico o reticolare, è di competenza del livello interno la realizzazione, mediante puntatori, degli archi che collegano i nodi.
+	\begin{columns}
+		\column{0.55\textwidth}
+		\begin{itemize}
+			\item Naturalmente c'è un solo \textbf{schema logico} di database.
+			\item Il \textbf{livello interno (fisico)} riguarda la rappresentazione fisica del database nel computer e fornisce informazioni in merito alla realizzazione concreta del livello logico.
+			\item Il livello interno entra nel merito dei dettagli implementativi delle forme di memorizzazione.
+			\item \textbf{Esempio:} Una tabella di un database relazionale può essere rappresentata con un file ad accesso diretto e con una struttura a indice sequenziale per la chiave primaria.
+			\item Nel caso di database gerarchico o reticolare, il livello interno realizza mediante puntatori gli archi che collegano i nodi.
+		\end{itemize}
+		
+		\column{0.45\textwidth}
+		\begin{center}
+			\begin{tikzpicture}[scale=0.75]
+				% Schema Logico
+				\node[font=\small\bfseries, blue] at (0,3.8) {Schema Logico};
+				\draw[fill=blue!20, rounded corners] (-1.6,3.4) rectangle (1.6,2.6);
+				\node[font=\tiny, align=center] at (0,3) {Tabella CLIENTI\\ID (PK), Nome, Email};
+				
+				% Freccia
+				\draw[->, very thick, orange!70] (0,2.6) -- (0,2.1);
+				\node[font=\tiny, right] at (0.1,2.35) {mappatura};
+				
+				% Livello Fisico
+				\node[font=\small\bfseries, orange!80!black] at (0,1.8) {Livello Fisico};
+				
+				% File dati
+				\draw[fill=gray!20, rounded corners] (-1.8,1.4) rectangle (1.8,0.6);
+				\node[font=\tiny, align=left] at (-1.5,1.2) {\textbf{File dati:}};
+				\node[font=\tiny, align=left] at (-1.5,0.95) {record 1: |1|Mario|...};
+				\node[font=\tiny, align=left] at (-1.5,0.75) {record 2: |2|Luca|...};
+				
+				% Indice
+				\draw[fill=yellow!20, rounded corners] (-1.8,0.3) rectangle (1.8,-0.4);
+				\node[font=\tiny, align=left] at (-1.5,0.1) {\textbf{Indice su ID:}};
+				\node[font=\tiny, align=left] at (-1.5,-0.15) {1 → ptr\_rec1};
+				\node[font=\tiny, align=left] at (-1.5,-0.35) {2 → ptr\_rec2};
+				
+				% Disco
+				\draw[fill=gray!40] (-0.6,-1.2) rectangle (0.6,-0.8);
+				\draw[fill=gray!50] (-0.6,-0.8) rectangle (0.6,-0.7);
+				\node[font=\tiny] at (0,-1) {HDD/SSD};
+				
+			\end{tikzpicture}
+		\end{center}
+	\end{columns}
 \end{frame}
 
 \begin{frame}{Architettura a tre livelli e indipendenza dei dati}
@@ -831,27 +1528,59 @@ In un semplice database:
 \end{frame}
 
 \begin{frame}{Architettura a tre livelli e indipendenza dei dati}
-Il DBMS mantiene al proprio interno la descrizione delle viste logiche, ovvero degli schemi esterni, dello schema logico e dello schema interno del database. In base a queste informazioni, esso è in grado di attuare la corrispondenza (mapping) tra le viste logiche e lo schema logico del database e tra lo schema logico e il livello interno.
-
-Si supponga per esempio che un impiegato di Ingegneria desideri accedere tramite un'apposita interrogazione alle informazioni anagrafiche di uno studente di nome Nino Verdi.
-
-\begin{itemize}
-\item Il DBMS traduce la richiesta nella ricerca dei record di Studenti con quel nome e cognome, ma con il campo CodDip di valore Ing, identificando il record di Studenti con Matricola = 2340.
-\end{itemize}
+	\begin{columns}
+		\column{0.52\textwidth}
+		\begin{itemize}
+			\item Il DBMS mantiene al proprio interno la descrizione delle viste logiche (schemi esterni), dello schema logico e dello schema interno del database.
+			\item In base a queste informazioni, il DBMS è in grado di attuare la corrispondenza (\textit{mapping}) tra:
+			\begin{itemize}
+				\item[\tiny$\blacksquare$] viste logiche e schema logico
+				\item[\tiny$\blacksquare$] schema logico e livello interno
+			\end{itemize}
+			\item \textbf{Esempio:} Un impiegato di Ingegneria desidera accedere alle informazioni anagrafiche dello studente Nino Verdi.
+			\item Il DBMS traduce la richiesta nella ricerca dei record di Studenti con quel nome e cognome, ma con campo CodDip = 'Ing', identificando il record con Matricola = 2340.
+		\end{itemize}
+		
+		\column{0.48\textwidth}
+		\begin{center}
+			\begin{tikzpicture}[scale=0.7]
+				% Vista Utente
+				\node[font=\scriptsize\bfseries, green!60!black] at (0,4.3) {Vista Ingegneria};
+				\draw[fill=green!15, rounded corners] (-1.8,4) rectangle (1.8,3.4);
+				\node[font=\tiny, align=center] at (0,3.7) {Richiesta: "Nino Verdi"};
+				
+				% Mapping 1
+				\draw[->, thick, blue] (0,3.4) -- (0,3);
+				\node[font=\tiny, right, blue] at (0.1,3.2) {mapping};
+				
+				% Schema Logico
+				\node[font=\scriptsize\bfseries, blue] at (0,2.7) {Schema Logico};
+				\draw[fill=blue!15, rounded corners] (-1.8,2.4) rectangle (1.8,1.5);
+				\node[font=\tiny, align=left] at (-1.6,2.15) {SELECT * FROM Studenti};
+				\node[font=\tiny, align=left] at (-1.6,1.9) {WHERE Nome='Nino'};
+				\node[font=\tiny, align=left] at (-1.6,1.65) {AND Cognome='Verdi'};
+				\node[font=\tiny, align=left] at (-1.6,1.4) {AND CodDip='Ing'};
+				
+				% Mapping 2
+				\draw[->, thick, orange!70] (0,1.5) -- (0,1.1);
+				\node[font=\tiny, right, orange!70] at (0.1,1.3) {mapping};
+				
+				% Livello Fisico
+				\node[font=\scriptsize\bfseries, orange!80!black] at (0,0.8) {Livello Fisico};
+				\draw[fill=orange!15, rounded corners] (-1.8,0.5) rectangle (1.8,-0.5);
+				\node[font=\tiny, align=left] at (-1.6,0.3) {Record trovato:};
+				\node[font=\tiny, align=left] at (-1.6,0) {Mat: 2340 | Nino | Verdi};
+				\node[font=\tiny, align=left] at (-1.6,-0.25) {CodDip: Ing | ...};
+				
+				% DBMS
+				\draw[fill=gray!20, rounded corners] (-1.5,-1) rectangle (1.5,-1.5);
+				\node[font=\tiny\bfseries] at (0,-1.25) {DBMS (gestore mapping)};
+				
+			\end{tikzpicture}
+		\end{center}
+	\end{columns}
 \end{frame}
 
-\begin{frame}{Architettura a tre livelli e indipendenza dei dati}
-\begin{itemize}
-\item In base alle informazioni sull'organizzazione degli archivi contenute nello schema interno del database, il DBMS riesce a localizzare il record corrispondente allo studente con quel valore di matricola. Il risultato di questa operazione è del tipo: la riga cercata si trova nel record di posto 25 del file ad accesso diretto.
-\item L'abbinamento tra numero di record e numero di blocco del file e la successiva ricerca su disco vengono attuati dal DBMS e dal sistema operativo con modalità che dipendono dal DBMS usato e dallo specifico sistema operativo.
-\end{itemize}
-\end{frame}
-
-\begin{frame}{Architettura a tre livelli e indipendenza dei dati}
-L'architettura a tre livelli ha il vantaggio di semplificare la visione del database da parte degli utenti, in quanto essi vedono solo le informazioni alle quali sono interessati, secondo la propria visione del mondo reale.
-
-Inoltre l'architettura a tre livelli limita le possibilità di errore e permette di affrontare i problemi di riservatezza in modo puntuale.
-\end{frame}
 
 \begin{frame}{Architettura a tre livelli e indipendenza dei dati}
 L'architettura a tre livelli dei database realizza meccanismi di astrazione dei dati e assicura la cosiddetta \textbf{indipendenza dei dati}.
@@ -881,28 +1610,178 @@ Le funzioni che il DBMS, attraverso i suoi moduli software, è in grado di offri
 \end{frame}
 
 \begin{frame}{La gestione del database}
-Definizione dei sottoschemi (viste logiche) che consentono agli utenti di accedere ai soli dati ai quali sono interessati in base alla proprie esigenze applicative.
+	\begin{columns}
+		\column{0.55\textwidth}
+		\begin{itemize}
+			\item Definizione dei \textbf{sottoschemi (viste logiche)} che consentono agli utenti di accedere ai soli dati ai quali sono interessati in base alle proprie esigenze applicative.
+			\item Una \textbf{vista logica} è una tabella virtuale, mentre le tabelle del database sono indicate come \textbf{tabelle primarie}.
+			\item Le viste logiche sono \textbf{finestre dinamiche} sulle tabelle del database.
+			\item Ogni modifica ai dati delle tabelle primarie si riflette sulle viste corrispondenti e viceversa.
+		\end{itemize}
+		
+		\column{0.45\textwidth}
+		\begin{center}
+			\begin{tikzpicture}[scale=0.7]
+				% Tabella Primaria
+				\node[font=\small\bfseries, blue] at (0,4.2) {Tabella Primaria};
+				\draw[fill=blue!20, thick] (-2,3.7) rectangle (2,2.2);
+				
+				% Header
+				\draw[fill=blue!40] (-2,3.7) -- (2,3.7) -- (2,3.4) -- (-2,3.4) -- cycle;
+				\node[font=\tiny] at (-1.3,3.55) {\textbf{ID}};
+				\node[font=\tiny] at (-0.3,3.55) {\textbf{Nome}};
+				\node[font=\tiny] at (0.6,3.55) {\textbf{Ruolo}};
+				\node[font=\tiny] at (1.5,3.55) {\textbf{Stipendio}};
+				
+				% Righe
+				\node[font=\tiny] at (-1.3,3.1) {1};
+				\node[font=\tiny] at (-0.3,3.1) {Mario};
+				\node[font=\tiny] at (0.6,3.1) {Manager};
+				\node[font=\tiny] at (1.5,3.1) {3000};
+				
+				\node[font=\tiny] at (-1.3,2.7) {2};
+				\node[font=\tiny] at (-0.3,2.7) {Luca};
+				\node[font=\tiny] at (0.6,2.7) {Operaio};
+				\node[font=\tiny] at (1.5,2.7) {1500};
+				
+				\node[font=\tiny] at (-1.3,2.4) {3};
+				\node[font=\tiny] at (-0.3,2.4) {Anna};
+				\node[font=\tiny] at (0.6,2.4) {Manager};
+				\node[font=\tiny] at (1.5,2.4) {3200};
+				
+				% Frecce bidirezionali
+				\draw[<->, thick, green!60!black] (-2.5,3) -- (-2.5,1.3);
+				\draw[<->, thick, orange!70] (2.5,3) -- (2.5,0.3);
+				
+				% Vista 1
+				\node[font=\scriptsize\bfseries, green!60!black] at (-2.5,1.8) {Vista 1};
+				\draw[fill=green!15, thick] (-4.5,1.5) rectangle (-0.5,0.5);
+				\node[font=\tiny, align=center] at (-2.5,1.2) {\textbf{Solo Manager}};
+				\node[font=\tiny] at (-3.3,0.9) {Mario};
+				\node[font=\tiny] at (-1.7,0.9) {3000};
+				\node[font=\tiny] at (-3.3,0.65) {Anna};
+				\node[font=\tiny] at (-1.7,0.65) {3200};
+				
+				% Vista 2
+				\node[font=\scriptsize\bfseries, orange!80!black] at (2.5,0.8) {Vista 2};
+				\draw[fill=orange!15, thick] (0.5,0.5) rectangle (4.5,-0.3);
+				\node[font=\tiny, align=center] at (2.5,0.2) {\textbf{Solo ID e Nome}};
+				\node[font=\tiny] at (1.5,-0.05) {1 - Mario};
+				\node[font=\tiny] at (3.5,-0.05) {2 - Luca};
+				
+			\end{tikzpicture}
+		\end{center}
+	\end{columns}
+\end{frame}
 
-Una vista logica è una tabella virtuale, mentre le tabelle del database sono indicate come tabelle primarie. Le viste logiche sono finestre dinamiche sulle tabelle del database, in quanto ogni modifica ai dati delle tabelle primarie si riflette sulle viste corrispondenti e viceversa.
+
+\begin{frame}{La gestione del database}
+	\begin{columns}
+		\column{0.55\textwidth}
+		\textbf{2. La manipolazione e l'interrogazione sulla base di dati}
+		\begin{itemize}
+			\item Inserimento dei dati nel database e trattamento dei dati già registrati con operazioni di modifica o cancellazione.
+			\item Interfaccia tra i programmi degli utenti (scritti con i tradizionali linguaggi di programmazione) e la base di dati, utilizzando le funzionalità del DBMS.
+			\item Accesso ai dati del database attraverso interfacce grafiche e semplici comandi che facilitano l'utente non specialista.
+		\end{itemize}
+		
+		\column{0.45\textwidth}
+		\begin{center}
+			\begin{tikzpicture}[scale=0.75]
+				% Utenti
+				\node[font=\tiny\bfseries] at (-1.5,4) {Programmatore};
+				\draw[fill=blue!20, circle] (-1.5,3.5) circle (0.3);
+				\draw[fill=blue!20] (-1.7,3.2) -- (-1.3,3.2) -- (-1.3,2.5) -- (-1.7,2.5) -- cycle;
+				
+				\node[font=\tiny\bfseries] at (1.5,4) {Utente Finale};
+				\draw[fill=green!20, circle] (1.5,3.5) circle (0.3);
+				\draw[fill=green!20] (1.3,3.2) -- (1.7,3.2) -- (1.7,2.5) -- (1.3,2.5) -- cycle;
+				
+				% Interfacce
+				\draw[->, thick, blue] (-1.5,2.5) -- (-1.5,1.8);
+				\node[font=\tiny, left] at (-1.5,2.15) {Codice};
+				
+				\draw[->, thick, green!60!black] (1.5,2.5) -- (1.5,1.8);
+				\node[font=\tiny, right] at (1.5,2.15) {GUI};
+				
+				% DBMS
+				\draw[fill=orange!20, rounded corners] (-2.5,1.8) rectangle (2.5,0.8);
+				\node[font=\small\bfseries] at (0,1.5) {DBMS};
+				\node[font=\tiny, align=center] at (0,1.1) {INSERT | UPDATE | DELETE\\SELECT};
+				
+				% Frecce verso DB
+				\draw[->, thick] (-0.8,0.8) -- (-0.8,0.3);
+				\draw[->, thick] (0,0.8) -- (0,0.3);
+				\draw[->, thick] (0.8,0.8) -- (0.8,0.3);
+				
+				% Database
+				\draw[fill=gray!30] (0,-0.2) ellipse (1.8 and 0.35);
+				\draw[fill=gray!40] (-1.8,-0.2) -- (-1.8,-1) arc (180:360:1.8 and 0.35) -- (1.8,-0.2);
+				\draw[fill=gray!30] (0,-1) ellipse (1.8 and 0.35);
+				\node[font=\small\bfseries] at (0,-0.6) {DATABASE};
+				
+				% Operazioni
+				\node[font=\tiny, orange!80!black] at (-1.3,0.5) {Insert};
+				\node[font=\tiny, orange!80!black] at (0,0.5) {Update};
+				\node[font=\tiny, orange!80!black] at (1.3,0.5) {Delete};
+				
+			\end{tikzpicture}
+		\end{center}
+	\end{columns}
 \end{frame}
 
 \begin{frame}{La gestione del database}
-\textbf{2. La manipolazione e l'interrogazione sulla base di dati}
-
-\begin{itemize}
-\item Inserimento dei dati nel database e trattamento dei dati già registrati con operazioni di modifica o cancellazione.
-\item Interfaccia tra i programmi degli utenti (scritti con i tradizionali linguaggi di programmazione) e la base di dati, utilizzando le funzionalità del DBMS per migliorare l'organizzazione dei dati e le prestazioni dei programmi nelle operazioni di ritrovamento dei dati.
-\item Accesso ai dati del database attraverso interfacce grafiche e semplici comandi che facilitano l'utente non specialista.
-\end{itemize}
-\end{frame}
-
-\begin{frame}{La gestione del database}
-\textbf{3. Il controllo dell'integrità dei dati}
-
-\begin{itemize}
-\item Integrità sui dati, in relazione ai valori che possono assumere e alle interdipendenze tra dati di differenti tabelle.
-\item Integrità definite dall'utente, cioè vincoli che sono specifici per un particolare database, come conseguenza di politiche commerciali dell'impresa oppure di norme legislative e fiscali.
-\end{itemize}
+	\begin{columns}
+		\column{0.55\textwidth}
+		\textbf{3. Il controllo dell'integrità dei dati}
+		\begin{itemize}
+			\item \textbf{Integrità sui dati}, in relazione ai valori che possono assumere e alle interdipendenze tra dati di differenti tabelle.
+			\item \textbf{Integrità definite dall'utente}, cioè vincoli che sono specifici per un particolare database, come conseguenza di politiche commerciali dell'impresa oppure di norme legislative e fiscali.
+		\end{itemize}
+		
+		\column{0.45\textwidth}
+		\begin{center}
+			\begin{tikzpicture}[scale=0.7]
+				% Tabella ORDINI
+				\node[font=\scriptsize\bfseries, blue] at (0,4.2) {Tabella ORDINI};
+				\draw[fill=blue!15, thick] (-2,3.8) rectangle (2,2.8);
+				\node[font=\tiny] at (-1.3,3.5) {\textbf{ID}};
+				\node[font=\tiny] at (-0.3,3.5) {\textbf{ClienteID}};
+				\node[font=\tiny] at (0.8,3.5) {\textbf{Importo}};
+				\draw[fill=blue!10] (-2,3.3) rectangle (2,3);
+				\node[font=\tiny] at (-1.3,3.15) {1};
+				\node[font=\tiny] at (-0.3,3.15) {101};
+				\node[font=\tiny] at (0.8,3.15) {500€};
+				
+				% Vincolo integrità referenziale
+				\draw[->, thick, red, dashed] (-0.3,2.8) -- (-0.3,2.2);
+				\node[font=\tiny, red, right] at (0.2,2.5) {FK};
+				
+				% Tabella CLIENTI
+				\node[font=\scriptsize\bfseries, green!60!black] at (0,2) {Tabella CLIENTI};
+				\draw[fill=green!15, thick] (-2,1.6) rectangle (2,0.6);
+				\node[font=\tiny] at (-1.3,1.3) {\textbf{ID}};
+				\node[font=\tiny] at (-0.3,1.3) {\textbf{Nome}};
+				\node[font=\tiny] at (0.8,1.3) {\textbf{Credito}};
+				\draw[fill=green!10] (-2,1) rectangle (2,0.7);
+				\node[font=\tiny] at (-1.3,0.85) {101};
+				\node[font=\tiny] at (-0.3,0.85) {Rossi};
+				\node[font=\tiny] at (0.8,0.85) {1000€};
+				
+				% Vincoli
+				\draw[fill=orange!15, rounded corners] (-2.2,0.2) rectangle (2.2,-0.9);
+				\node[font=\tiny\bfseries, orange!80!black] at (0,0) {Vincoli di Integrità};
+				\node[font=\tiny, align=left] at (0,-0.35) {• Importo > 0};
+				\node[font=\tiny, align=left] at (0,-0.6) {• Importo ≤ Credito};
+				\node[font=\tiny, align=left] at (0,-0.85) {• ClienteID deve esistere};
+				
+				% Icona controllo
+				\draw[fill=red!20, circle] (2.8,1.3) circle (0.4);
+				\node[font=\Large, red!70!black] at (2.8,1.3) {✓};
+				
+			\end{tikzpicture}
+		\end{center}
+	\end{columns}
 \end{frame}
 
 \begin{frame}{La gestione del database}
@@ -917,25 +1796,115 @@ Una vista logica è una tabella virtuale, mentre le tabelle del database sono in
 \end{frame}
 
 \begin{frame}{La gestione del database}
-\textbf{5. Il supporto alle transazioni}
-
-\begin{itemize}
-\item Garanzia che tutte le operazioni che compongono la transazione siano completamente e correttamente eseguite oppure che non ne sia eseguita alcuna.
-\end{itemize}
-
-Una \textbf{transazione} consiste in un insieme di operazioni di interrogazione o di modifica del database che devono essere eseguite come se fossero un'unica operazione.
+	\begin{columns}
+		\column{0.55\textwidth}
+		\textbf{5. Il supporto alle transazioni}
+		\begin{itemize}
+			\item Garanzia che tutte le operazioni che compongono la transazione siano completamente e correttamente eseguite oppure che non ne sia eseguita alcuna.
+			\item Una \textbf{transazione} consiste in un insieme di operazioni di interrogazione o di modifica del database che devono essere eseguite come se fossero un'unica operazione.
+		\end{itemize}
+		
+		\column{0.45\textwidth}
+		\begin{center}
+			\begin{tikzpicture}[scale=0.75]
+				% Transazione esempio: Bonifico bancario
+				\node[font=\scriptsize\bfseries, blue] at (0,4.2) {Esempio: Bonifico 100€};
+				
+				% BEGIN
+				\draw[fill=green!20, rounded corners] (-2,3.8) rectangle (2,3.4);
+				\node[font=\tiny\bfseries] at (0,3.6) {BEGIN TRANSACTION};
+				
+				% Operazione 1
+				\draw[fill=blue!10, rounded corners] (-2,3.2) rectangle (2,2.7);
+				\node[font=\tiny, align=center] at (0,2.95) {1. Conto A - 100€};
+				
+				% Operazione 2
+				\draw[fill=blue!10, rounded corners] (-2,2.5) rectangle (2,2);
+				\node[font=\tiny, align=center] at (0,2.25) {2. Conto B + 100€};
+				
+				% Decisione
+				\draw[fill=yellow!20, diamond, aspect=2] (0,1.5) node[font=\tiny, align=center] {Tutte OK?} ;
+				
+				% Frecce
+				\draw[->, thick, green!60!black] (-1.2,1.2) -- (-1.2,0.6);
+				\node[font=\tiny, green!60!black, left] at (-1.2,0.9) {SÌ};
+				
+				\draw[->, thick, red] (1.2,1.2) -- (1.2,0.6);
+				\node[font=\tiny, red, right] at (1.2,0.9) {NO};
+				
+				% COMMIT
+				\draw[fill=green!30, rounded corners] (-2.2,0.6) rectangle (-0.2,0.1);
+				\node[font=\tiny\bfseries, green!60!black] at (-1.2,0.35) {COMMIT};
+				\node[font=\tiny, green!60!black] at (-1.2,0) {✓ Conferma};
+				
+				% ROLLBACK
+				\draw[fill=red!30, rounded corners] (0.2,0.6) rectangle (2.2,0.1);
+				\node[font=\tiny\bfseries, red!70!black] at (1.2,0.35) {ROLLBACK};
+				\node[font=\tiny, red!70!black] at (1.2,0) {✗ Annulla tutto};
+				
+				% Principio atomicità
+				\draw[fill=orange!15, rounded corners] (-2.2,-0.4) rectangle (2.2,-1);
+				\node[font=\tiny, align=center, orange!80!black] at (0,-0.7) {\textbf{Atomicità:} Tutto o Niente};
+				
+			\end{tikzpicture}
+		\end{center}
+	\end{columns}
 \end{frame}
 
 \begin{frame}{La gestione del database}
-Un esempio di transazione è un'operazione di trasferimento di fondi tra conti correnti bancari.
-
-L'importo trasferito deve essere tolto da un conto e aggiunto a un altro.
-
-Entrambe le operazioni devono essere eseguite per poter affermare di avere effettuato il trasferimento e non è tollerabile che sia eseguita una sola delle due operazioni.
-
-Il supporto alle transazioni deve garantirne il corretto completamento anche in caso di esecuzione concorrente.
+	\begin{columns}
+		\column{0.55\textwidth}
+		\begin{itemize}
+			\item Un esempio di transazione è un'operazione di \textbf{trasferimento di fondi} tra conti correnti bancari.
+			\item L'importo trasferito deve essere tolto da un conto e aggiunto a un altro.
+			\item Entrambe le operazioni devono essere eseguite per poter affermare di avere effettuato il trasferimento.
+			\item Non è tollerabile che sia eseguita una sola delle due operazioni.
+			\item Il supporto alle transazioni deve garantirne il corretto completamento anche in caso di \textbf{esecuzione concorrente}.
+		\end{itemize}
+		
+		\column{0.45\textwidth}
+		\begin{center}
+			\begin{tikzpicture}[scale=0.75]
+				% Stato iniziale
+				\node[font=\scriptsize\bfseries] at (0,4.3) {Stato Iniziale};
+				\draw[fill=blue!20, rounded corners] (-2,4) rectangle (-0.3,3.4);
+				\node[font=\tiny, align=center] at (-1.15,3.7) {Conto A\\1000€};
+				
+				\draw[fill=green!20, rounded corners] (0.3,4) rectangle (2,3.4);
+				\node[font=\tiny, align=center] at (1.15,3.7) {Conto B\\500€};
+				
+				% Transazione
+				\node[font=\scriptsize\bfseries, orange!80!black] at (0,3) {Transazione: 200€};
+				\draw[fill=orange!15, rounded corners] (-2.2,2.7) rectangle (2.2,1.9);
+				\node[font=\tiny] at (0,2.5) {BEGIN};
+				\node[font=\tiny, red] at (0,2.25) {A = A - 200};
+				\node[font=\tiny, green!60!black] at (0,2) {B = B + 200};
+				
+				% Frecce atomicità
+				\draw[<->, very thick, purple] (-2.2,2.5) -- (-2.2,2);
+				\node[font=\tiny, purple, left, rotate=90] at (-2.4,2.25) {ATOMICA};
+				
+				% Stato finale corretto
+				\node[font=\scriptsize\bfseries, green!60!black] at (-1.15,1.5) {Commit ✓};
+				\draw[fill=blue!20, rounded corners] (-2,1.2) rectangle (-0.3,0.6);
+				\node[font=\tiny, align=center] at (-1.15,0.9) {Conto A\\800€};
+				
+				\draw[fill=green!20, rounded corners] (0.3,1.2) rectangle (2,0.6);
+				\node[font=\tiny, align=center] at (1.15,0.9) {Conto B\\700€};
+				
+				% Stato finale errato (non ammesso)
+				\node[font=\scriptsize\bfseries, red] at (1.15,1.5) {Rollback ✗};
+				\draw[fill=red!10, rounded corners] (-2,0.3) rectangle (2,-0.3);
+				\node[font=\tiny, red, align=center] at (0,0) {Stato inconsistente\\NON AMMESSO};
+				
+				% Concorrenza
+				\draw[fill=yellow!20, rounded corners] (-2.2,-0.8) rectangle (2.2,-1.4);
+				\node[font=\tiny, align=center] at (0,-1.1) {\textbf{Gestione Concorrenza}\\Più transazioni simultanee};
+				
+			\end{tikzpicture}
+		\end{center}
+	\end{columns}
 \end{frame}
-
 \begin{frame}{La gestione del database}
 \textbf{6. L'ottimizzazione delle prestazioni}
 
