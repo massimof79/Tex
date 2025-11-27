@@ -1,0 +1,633 @@
+\documentclass{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{array}
+\usepackage{booktabs}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+
+\title{Circuiti Logici Digitali}
+\subtitle{Operatori Logici e Porte Logiche}
+\author{Corso di Scienze e Tecnologie Applicate}
+\institute{IIS Fermi Sacconi Ceci}
+\date{\today}
+
+\begin{document}
+	
+	% Slide 1: Titolo
+	\frame{\titlepage}
+	
+	% Slide 2: Indice
+	\begin{frame}
+		\frametitle{Indice}
+		\tableofcontents
+	\end{frame}
+	
+	% Slide 3: Introduzione
+	\section{Introduzione}
+	\begin{frame}
+		\frametitle{Introduzione alla Logica Digitale}
+		\begin{itemize}
+			\item La logica formale studia le proposizioni dichiarative
+			\item Una proposizione può essere \textbf{Vera} o \textbf{Falsa}
+			\item Rappresentazione numerica:
+			\begin{itemize}
+				\item Falso = 0 = 0V
+				\item Vero = 1 = tensione di alimentazione
+			\end{itemize}
+			\item Le variabili logiche possono assumere solo valori booleani
+			\item Gli operatori logici connettono i valori tra loro
+		\end{itemize}
+	\end{frame}
+	
+	% Slide 4: Operatori Unari
+	\section{Operatori Logici}
+	\begin{frame}
+		\frametitle{Operatori Unari}
+		\begin{block}{Operatore NOT}
+			\begin{itemize}
+				\item Interviene su un solo valore logico
+				\item Inverte il valore in ingresso
+				\item Simbolo: NOT, $\neg$, ' (apice)
+			\end{itemize}
+		\end{block}
+		
+		\begin{center}
+			\begin{tabular}{c|c}
+				\hline
+				A & NOT A \\
+				\hline
+				0 & 1 \\
+				1 & 0 \\
+				\hline
+			\end{tabular}
+		\end{center}
+		
+		\textbf{Esempio:} Se A = ``Antonio mangia'', NOT A = ``Antonio non mangia''
+	\end{frame}
+	
+	% Slide 5: Connettivo AND
+	\begin{frame}
+		\frametitle{Connettivo AND}
+		\begin{block}{Operatore AND}
+			\begin{itemize}
+				\item Opera su due o più ingressi
+				\item Restituisce Vero solo se \textbf{tutti} gli ingressi sono Vero
+				\item Simboli: AND, $\land$, $\cdot$
+			\end{itemize}
+		\end{block}
+		
+		\begin{center}
+			\begin{tabular}{cc|c}
+				\hline
+				A & B & A AND B \\
+				\hline
+				0 & 0 & 0 \\
+				0 & 1 & 0 \\
+				1 & 0 & 0 \\
+				1 & 1 & 1 \\
+				\hline
+			\end{tabular}
+		\end{center}
+		
+		\textbf{Esempio:} ``Antonio mangia E Piero legge''
+	\end{frame}
+	
+	% Slide 6: Connettivo OR
+	\begin{frame}
+		\frametitle{Connettivo OR}
+		\begin{block}{Operatore OR}
+			\begin{itemize}
+				\item Opera su due o più ingressi
+				\item Restituisce Vero se \textbf{almeno uno} degli ingressi è Vero
+				\item Simboli: OR, $\lor$, +
+			\end{itemize}
+		\end{block}
+		
+		\begin{center}
+			\begin{tabular}{cc|c}
+				\hline
+				A & B & A OR B \\
+				\hline
+				0 & 0 & 0 \\
+				0 & 1 & 1 \\
+				1 & 0 & 1 \\
+				1 & 1 & 1 \\
+				\hline
+			\end{tabular}
+		\end{center}
+		
+		\textbf{Esempio:} ``Antonio mangia E/O Piero legge''
+	\end{frame}
+	
+	% Slide 7: Connettivo XOR
+	\begin{frame}
+		\frametitle{Connettivo XOR (OR Esclusivo)}
+		\begin{block}{Operatore XOR}
+			\begin{itemize}
+				\item Opera su due ingressi
+				\item Restituisce Vero se \textbf{solo uno} degli ingressi è Vero
+				\item Simboli: XOR, $\oplus$
+			\end{itemize}
+		\end{block}
+		
+		\begin{center}
+			\begin{tabular}{cc|c}
+				\hline
+				A & B & A XOR B \\
+				\hline
+				0 & 0 & 0 \\
+				0 & 1 & 1 \\
+				1 & 0 & 1 \\
+				1 & 1 & 0 \\
+				\hline
+			\end{tabular}
+		\end{center}
+		
+		\textbf{Esempio:} ``Antonio mangia OPPURE Piero legge'' (ma non entrambi)
+	\end{frame}
+	
+	% Slide 8: Altri operatori
+	\begin{frame}
+		\frametitle{Altri Operatori Logici}
+		\begin{columns}[T]
+			\column{0.5\textwidth}
+			\textbf{NAND} (NOT AND)
+			\begin{center}
+				\begin{tabular}{cc|c}
+					\hline
+					A & B & NAND \\
+					\hline
+					0 & 0 & 1 \\
+					0 & 1 & 1 \\
+					1 & 0 & 1 \\
+					1 & 1 & 0 \\
+					\hline
+				\end{tabular}
+			\end{center}
+			
+			\column{0.5\textwidth}
+			\textbf{NOR} (NOT OR)
+			\begin{center}
+				\begin{tabular}{cc|c}
+					\hline
+					A & B & NOR \\
+					\hline
+					0 & 0 & 1 \\
+					0 & 1 & 0 \\
+					1 & 0 & 0 \\
+					1 & 1 & 0 \\
+					\hline
+				\end{tabular}
+			\end{center}
+		\end{columns}
+		
+		\vspace{0.5cm}
+		\textbf{Nota:} NAND e NOR sono operatori universali: qualsiasi funzione logica può essere realizzata usando solo porte NAND o solo porte NOR.
+	\end{frame}
+	
+	% Slide 9: Ordine di precedenza
+	\begin{frame}
+		\frametitle{Ordine di Precedenza}
+		\begin{block}{Regole di Valutazione}
+			Le espressioni logiche seguono un ordine di precedenza:
+			\begin{enumerate}
+				\item \textbf{NOT} (negazione)
+				\item \textbf{AND} (prodotto logico)
+				\item \textbf{OR} (somma logica)
+			\end{enumerate}
+		\end{block}
+		
+		\textbf{Esempi:}
+		\begin{itemize}
+			\item $a + b \cdot c'$ si legge come $a + (b \cdot (c'))$
+			\item Le parentesi modificano l'ordine di precedenza
+			\item $A \cdot B + C$ significa $(A \cdot B) + C$
+		\end{itemize}
+	\end{frame}
+	
+	% Slide 10: Valori irrilevanti
+	\section{Tabelle di Verità}
+	\begin{frame}
+		\frametitle{Valori Irrilevanti nelle Tabelle di Verità}
+		\begin{itemize}
+			\item In alcune situazioni, il valore di certe variabili non influenza il risultato
+			\item Si indica con ``X'' o ``-'' (don't care)
+			\item Utile per semplificare i circuiti
+		\end{itemize}
+		
+		\textbf{Esempio:} $A \cdot (B + C)$
+		
+		\begin{columns}[T]
+			\column{0.5\textwidth}
+			\centering
+			Tabella completa
+			\begin{tabular}{ccc|c}
+				\hline
+				A & B & C & Risultato \\
+				\hline
+				0 & 0 & 0 & 0 \\
+				0 & 0 & 1 & 0 \\
+				0 & 1 & 0 & 0 \\
+				0 & 1 & 1 & 0 \\
+				1 & 0 & 0 & 0 \\
+				1 & 0 & 1 & 1 \\
+				1 & 1 & 0 & 1 \\
+				1 & 1 & 1 & 1 \\
+				\hline
+			\end{tabular}
+			
+			\column{0.5\textwidth}
+			\centering
+			Tabella semplificata
+			\begin{tabular}{ccc|c}
+				\hline
+				A & B & C & Risultato \\
+				\hline
+				0 & X & X & 0 \\
+				1 & 0 & 0 & 0 \\
+				1 & X & 1 & 1 \\
+				1 & 1 & X & 1 \\
+				\hline
+			\end{tabular}
+		\end{columns}
+	\end{frame}
+	
+	% Slide 11: Equivalenze fondamentali
+	\section{Algebra di Boole}
+	\begin{frame}
+		\frametitle{Equivalenze dell'Algebra di Boole (1/2)}
+		\begin{block}{Proprietà Fondamentali}
+			\begin{columns}[T]
+				\column{0.5\textwidth}
+				\begin{align*}
+					a + 0 &= a \\
+					a + 1 &= 1 \\
+					a + a &= a \\
+					a + a' &= 1 \\
+					a + b &= b + a
+				\end{align*}
+				
+				\column{0.5\textwidth}
+				\begin{align*}
+					a \cdot 0 &= 0 \\
+					a \cdot 1 &= a \\
+					a \cdot a &= a \\
+					a \cdot a' &= 0 \\
+					a \cdot b &= b \cdot a
+				\end{align*}
+			\end{columns}
+		\end{block}
+	\end{frame}
+	
+	% Slide 12: Teoremi di De Morgan
+	\begin{frame}
+		\frametitle{Teoremi di De Morgan}
+		\begin{block}{Teoremi Fondamentali}
+			\Large
+			\begin{align*}
+				(a + b)' &= a' \cdot b' \\[0.5cm]
+				(a \cdot b)' &= a' + b'
+			\end{align*}
+		\end{block}
+		
+		\textbf{Applicazione:} Trasformare funzioni tra forme diverse
+		\begin{itemize}
+			\item Convertire OR in AND (e viceversa)
+			\item Utile per implementare circuiti con un solo tipo di porta
+			\item Esempio: realizzare circuiti con sole porte NAND
+		\end{itemize}
+	\end{frame}
+	
+	% Slide 13: Proprietà aggiuntive
+	\begin{frame}
+		\frametitle{Altre Proprietà dell'Algebra di Boole}
+		\begin{block}{Associatività}
+			\begin{align*}
+				a + (b + c) &= (a + b) + c \\
+				a \cdot (b \cdot c) &= (a \cdot b) \cdot c
+			\end{align*}
+		\end{block}
+		
+		\begin{block}{Distributività}
+			\begin{align*}
+				a \cdot (b + c) &= a \cdot b + a \cdot c \\
+				a + (b \cdot c) &= (a + b) \cdot (a + c)
+			\end{align*}
+		\end{block}
+		
+		\begin{block}{Doppia Negazione}
+			$$(a')' = a$$
+		\end{block}
+	\end{frame}
+	
+	% Slide 14: Somma dei prodotti
+	\section{Forme Canoniche}
+	\begin{frame}
+		\frametitle{Somma dei Prodotti (SOP)}
+		\begin{itemize}
+			\item Ogni funzione logica può essere espressa come somma di prodotti
+			\item Si parte dalla tabella di verità
+			\item Si considerano solo le righe con output = 1
+			\item Si crea un prodotto (AND) per ogni riga
+			\item Si sommano (OR) tutti i prodotti
+		\end{itemize}
+		
+		\textbf{Esempio:} Funzione NXOR
+		\begin{center}
+			\begin{tabular}{cc|c}
+				\hline
+				A & B & NXOR \\
+				\hline
+				0 & 0 & 1 \\
+				0 & 1 & 0 \\
+				1 & 0 & 0 \\
+				1 & 1 & 1 \\
+				\hline
+			\end{tabular}
+		\end{center}
+		
+		$$F = A' \cdot B' + A \cdot B$$
+	\end{frame}
+	
+	% Slide 15: Mintermini
+	\begin{frame}
+		\frametitle{Mintermini e Prodotti Fondamentali}
+		\begin{block}{Definizioni}
+			\begin{itemize}
+				\item \textbf{Letterale}: una variabile o la sua negazione (es. A, A')
+				\item \textbf{Mintermine}: prodotto di letterali per tutte le variabili
+				\item Ogni combinazione di input ha un mintermine corrispondente
+			\end{itemize}
+		\end{block}
+		
+		\textbf{Mintermini per 2 variabili:}
+		\begin{center}
+			\begin{tabular}{cc|c|c}
+				\hline
+				A & B & Mintermine & Notazione \\
+				\hline
+				0 & 0 & $A' \cdot B'$ & $m_0$ \\
+				0 & 1 & $A' \cdot B$ & $m_1$ \\
+				1 & 0 & $A \cdot B'$ & $m_2$ \\
+				1 & 1 & $A \cdot B$ & $m_3$ \\
+				\hline
+			\end{tabular}
+		\end{center}
+	\end{frame}
+	
+	% Slide 16: Introduzione alle mappe di Karnaugh
+	\section{Mappe di Karnaugh}
+	\begin{frame}
+		\frametitle{Introduzione alle Mappe di Karnaugh}
+		\begin{itemize}
+			\item Metodo grafico per semplificare funzioni logiche
+			\item Alternativa all'algebra di Boole
+			\item Rappresentazione bidimensionale dei prodotti fondamentali
+			\item Efficace fino a 4 variabili
+			\item Per più variabili serve rappresentazione multidimensionale
+		\end{itemize}
+		
+		\textbf{Vantaggi:}
+		\begin{itemize}
+			\item Visualizzazione immediata
+			\item Identificazione rapida di semplificazioni
+			\item Riduzione del numero di porte logiche necessarie
+		\end{itemize}
+	\end{frame}
+	
+	% Slide 17: Mappa a 2 variabili
+	\begin{frame}
+		\frametitle{Mappa di Karnaugh a 2 Variabili}
+		\begin{columns}[T]
+			\column{0.5\textwidth}
+			\textbf{Struttura:}
+			\begin{center}
+				\begin{tabular}{c|c|c|}
+					\multicolumn{1}{c}{} & \multicolumn{1}{c}{$B'$} & \multicolumn{1}{c}{$B$} \\
+					\cline{2-3}
+					$A'$ & $A'B'$ & $A'B$ \\
+					\cline{2-3}
+					$A$ & $AB'$ & $AB$ \\
+					\cline{2-3}
+				\end{tabular}
+			\end{center}
+			
+			\column{0.5\textwidth}
+			\textbf{Esempio: XOR}
+			\begin{center}
+				\begin{tabular}{c|c|c|}
+					\multicolumn{1}{c}{} & \multicolumn{1}{c}{$B'$} & \multicolumn{1}{c}{$B$} \\
+					\cline{2-3}
+					$A'$ & 0 & 1 \\
+					\cline{2-3}
+					$A$ & 1 & 0 \\
+					\cline{2-3}
+				\end{tabular}
+			\end{center}
+			
+			$$F = A \oplus B$$
+		\end{columns}
+		
+		\vspace{0.5cm}
+		\textbf{Nota:} Celle adiacenti differiscono per una sola variabile
+	\end{frame}
+	
+	% Slide 18: Mappa a 3 variabili
+	\begin{frame}
+		\frametitle{Mappa di Karnaugh a 3 Variabili}
+		\textbf{Attenzione all'ordine delle colonne: 00, 01, 11, 10 (Codice Gray)}
+		
+		\begin{center}
+			\begin{tabular}{c|c|c|c|c|}
+				\multicolumn{1}{c}{} & \multicolumn{1}{c}{$B'C'$} & \multicolumn{1}{c}{$B'C$} & \multicolumn{1}{c}{$BC$} & \multicolumn{1}{c}{$BC'$} \\
+				\cline{2-5}
+				$A'$ & $A'B'C'$ & $A'B'C$ & $A'BC$ & $A'BC'$ \\
+				\cline{2-5}
+				$A$ & $AB'C'$ & $AB'C$ & $ABC$ & $ABC'$ \\
+				\cline{2-5}
+			\end{tabular}
+		\end{center}
+		
+		\textbf{Procedimento di semplificazione:}
+		\begin{enumerate}
+			\item Inserire 1 nelle celle corrispondenti ai mintermini
+			\item Raggruppare celle adiacenti con 1 (gruppi di 1, 2, 4, 8)
+			\item Ogni gruppo elimina una variabile
+			\item Scrivere l'espressione minimizzata
+		\end{enumerate}
+	\end{frame}
+	
+	% Slide 19: Mappa a 4 variabili
+	\begin{frame}
+		\frametitle{Mappa di Karnaugh a 4 Variabili}
+		\begin{center}
+			\small
+			\begin{tabular}{c|c|c|c|c|}
+				\multicolumn{1}{c}{} & \multicolumn{1}{c}{$C'D'$} & \multicolumn{1}{c}{$C'D$} & \multicolumn{1}{c}{$CD$} & \multicolumn{1}{c}{$CD'$} \\
+				\cline{2-5}
+				$A'B'$ & 0 & 1 & 3 & 2 \\
+				\cline{2-5}
+				$A'B$ & 4 & 5 & 7 & 6 \\
+				\cline{2-5}
+				$AB$ & 12 & 13 & 15 & 14 \\
+				\cline{2-5}
+				$AB'$ & 8 & 9 & 11 & 10 \\
+				\cline{2-5}
+			\end{tabular}
+		\end{center}
+		
+		\textbf{Regole di raggruppamento:}
+		\begin{itemize}
+			\item I gruppi devono essere rettangolari
+			\item Dimensioni: 1, 2, 4, 8, 16 celle
+			\item La mappa è toroidale: i bordi sono adiacenti
+			\item Massimizzare la dimensione dei gruppi
+		\end{itemize}
+	\end{frame}
+	
+	% Slide 20: Esempi di semplificazione
+	\begin{frame}
+		\frametitle{Esempi di Semplificazione}
+		\textbf{Regole importanti:}
+		\begin{itemize}
+			\item Gruppo di 2 celle adiacenti $\rightarrow$ elimina 1 variabile
+			\item Gruppo di 4 celle adiacenti $\rightarrow$ elimina 2 variabili
+			\item Gruppo di 8 celle adiacenti $\rightarrow$ elimina 3 variabili
+		\end{itemize}
+		
+		\textbf{Processo:}
+		\begin{enumerate}
+			\item Formare i gruppi più grandi possibili
+			\item Ogni 1 deve essere coperto da almeno un gruppo
+			\item I gruppi possono sovrapporsi
+			\item Minimizzare il numero totale di gruppi
+		\end{enumerate}
+		
+		\textbf{Risultato:} Espressione logica minimizzata = somma dei termini rappresentati dai gruppi
+	\end{frame}
+	
+	% Slide 21: Condizioni indifferenti
+	\begin{frame}
+		\frametitle{Condizioni Indifferenti (Don't Care)}
+		\begin{itemize}
+			\item In alcune situazioni, certe combinazioni di input non si verificano mai
+			\item Oppure il valore di output è irrilevante
+			\item Si indicano con ``X'' nella mappa
+			\item Possono essere considerati come 0 o 1 per ottenere la migliore semplificazione
+		\end{itemize}
+		
+		\textbf{Vantaggio:}
+		\begin{itemize}
+			\item Permettono ulteriori semplificazioni
+			\item Riducono il numero di porte necessarie
+			\item Ottimizzazione del circuito
+		\end{itemize}
+	\end{frame}
+	
+	% Slide 22: Mappe con XOR
+	\begin{frame}
+		\frametitle{Mappe di Karnaugh con Funzione XOR}
+		\begin{block}{Pattern XOR nelle mappe}
+			Le funzioni XOR hanno pattern caratteristici:
+			\begin{itemize}
+				\item Distribuzione a ``scacchiera''
+				\item Nessun raggruppamento efficace possibile
+				\item Indicazione che la funzione contiene XOR
+			\end{itemize}
+		\end{block}
+		
+		\textbf{Esempio XOR a 2 variabili:}
+		\begin{center}
+			\begin{tabular}{c|c|c|}
+				\multicolumn{1}{c}{} & \multicolumn{1}{c}{$B'$} & \multicolumn{1}{c}{$B$} \\
+				\cline{2-3}
+				$A'$ & 0 & 1 \\
+				\cline{2-3}
+				$A$ & 1 & 0 \\
+				\cline{2-3}
+			\end{tabular}
+		\end{center}
+		
+		$$F = A \oplus B = A'B + AB'$$
+		
+		La presenza di XOR rende difficile la semplificazione con Karnaugh
+	\end{frame}
+	
+	% Slide 23: Applicazioni pratiche
+	\section{Applicazioni}
+	\begin{frame}
+		\frametitle{Applicazioni dei Circuiti Combinatori}
+		\begin{block}{Principali Applicazioni}
+			\begin{itemize}
+				\item \textbf{Decodificatori}: selezionano una linea di uscita in base all'input
+				\item \textbf{Multiplexer}: selezionano uno tra più ingressi
+				\item \textbf{Demultiplexer}: indirizzano un input verso una delle uscite
+				\item \textbf{Addizionatori}: somma di numeri binari
+				\item \textbf{Comparatori}: confronto tra valori
+				\item \textbf{Unità logiche (ALU)}: operazioni aritmetiche e logiche
+			\end{itemize}
+		\end{block}
+	\end{frame}
+	
+	% Slide 24: Vantaggi della minimizzazione
+	\begin{frame}
+		\frametitle{Vantaggi della Minimizzazione}
+		\begin{block}{Perché semplificare i circuiti?}
+			\begin{itemize}
+				\item \textbf{Costo}: meno componenti $\rightarrow$ costo inferiore
+				\item \textbf{Spazio}: circuiti più compatti
+				\item \textbf{Velocità}: meno porte $\rightarrow$ minor ritardo di propagazione
+				\item \textbf{Consumo}: minore dissipazione di potenza
+				\item \textbf{Affidabilità}: meno componenti $\rightarrow$ minor probabilità di guasto
+			\end{itemize}
+		\end{block}
+		
+		\textbf{Obiettivo:} Trovare il miglior compromesso tra:
+		\begin{itemize}
+			\item Numero di porte logiche
+			\item Profondità del circuito (livelli di porte)
+			\item Numero di connessioni
+		\end{itemize}
+	\end{frame}
+	
+	% Slide 25: Conclusioni
+	\begin{frame}
+		\frametitle{Conclusioni}
+		\begin{block}{Riepilogo}
+			\begin{itemize}
+				\item Gli operatori logici sono i mattoni dei circuiti digitali
+				\item L'algebra di Boole fornisce le regole di manipolazione
+				\item Le mappe di Karnaugh offrono un metodo grafico di semplificazione
+				\item La minimizzazione è fondamentale per circuiti efficienti
+			\end{itemize}
+		\end{block}
+		
+		\textbf{Prossimi passi:}
+		\begin{itemize}
+			\item Circuiti combinatori complessi
+			\item Circuiti sequenziali (con memoria)
+			\item Flip-flop e registri
+			\item Progettazione di sistemi digitali
+		\end{itemize}
+	\end{frame}
+	
+	% Slide 26: Bibliografia
+	\begin{frame}
+		\frametitle{Bibliografia e Risorse}
+		\begin{itemize}
+			\item Materiale didattico del corso
+			\item ``Appunti di Informatica Libera'' - Daniele Giacomini
+			\item Simulatori di circuiti logici: Tkgate, Logisim
+			\item Risorse online per esercitazioni
+		\end{itemize}
+		
+		\vspace{1cm}
+		\centering
+		\Large{Grazie per l'attenzione!}
+	\end{frame}
+	
+\end{document}
