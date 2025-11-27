@@ -1,0 +1,27 @@
+\frametitle{Moltiplicazione Binaria}
+		\textbf{Algoritmo:}
+		\begin{itemize}
+			\item Simile alla moltiplicazione decimale
+			\item Ogni cifra del moltiplicatore moltiplica il moltiplicando
+			\item Prodotti parziali shiftati e sommati
+		\end{itemize}
+		
+		\textbf{Esempio:}
+		\begin{verbatim}
+			1011  (11)
+			x 1101  (13)
+			------
+			1011
+			0000
+			1011
+			1011
+			--------
+			10001111  (143)
+		\end{verbatim}
+		
+		\textbf{Implementazione:}
+		\begin{itemize}
+			\item Porte AND per prodotti parziali
+			\item Addizionatori per sommare i prodotti
+			\item Matrice di celle moltiplicative
+		\end{itemize}

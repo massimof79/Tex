@@ -1,0 +1,714 @@
+\documentclass{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usetikzlibrary{circuits.logic.US}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+
+\title{Circuiti Combinatori}
+\subtitle{Componenti e Applicazioni}
+\author{Corso di Informatica}
+\institute{IIS Fermi Sacconi Ceci}
+\date{\today}
+
+\begin{document}
+	
+	% Slide 1: Titolo
+	\frame{\titlepage}
+	
+	% Slide 2: Indice
+	\begin{frame}
+		\frametitle{Indice}
+		\tableofcontents
+	\end{frame}
+	
+	% Slide 3: Introduzione ai circuiti combinatori
+	\section{Introduzione}
+	\begin{frame}
+		\frametitle{Cosa sono i Circuiti Combinatori?}
+		\begin{block}{Definizione}
+			Un \textbf{circuito combinatorio} è un sistema di porte logiche dove:
+			\begin{itemize}
+				\item Le uscite dipendono \textbf{solo} dagli ingressi attuali
+				\item Non c'è memoria dello stato precedente
+				\item Il comportamento è descritto da funzioni logiche
+				\item Sono circuiti \textbf{senza memoria}
+			\end{itemize}
+		\end{block}
+		
+		\textbf{Caratteristiche:}
+		\begin{itemize}
+			\item $n$ ingressi, $m$ uscite
+			\item Funzione: $F: 2^n \rightarrow 2^m$
+			\item Non considerano il tempo di propagazione
+		\end{itemize}
+	\end{frame}
+	
+	% Slide 4: Problemi di analisi e sintesi
+	\begin{frame}
+		\frametitle{Analisi e Sintesi}
+		\begin{columns}[T]
+			\column{0.5\textwidth}
+			\textbf{Analisi:}
+			\begin{itemize}
+				\item Dato il circuito
+				\item Determinare la funzione
+				\item Ricavare tabella di verità
+			\end{itemize}
+			
+			\column{0.5\textwidth}
+			\textbf{Sintesi:}
+			\begin{itemize}
+				\item Data la funzione desiderata
+				\item Progettare il circuito
+				\item Ottimizzare il numero di porte
+			\end{itemize}
+		\end{columns}
+		
+		\vspace{0.5cm}
+		\textbf{Forme di specifica:}
+		\begin{enumerate}
+			\item Descrizione verbale
+			\item Tabella di verità
+			\item Espressione analitica
+			\item Schema logico
+		\end{enumerate}
+	\end{frame}
+	
+	% Slide 5: Decodificatore - Introduzione
+	\section{Decodificatori}
+	\begin{frame}
+		\frametitle{Decodificatore (Decoder)}
+		\begin{block}{Definizione}
+			Un decodificatore attiva \textbf{una sola uscita}, selezionandola in base alla combinazione degli ingressi.
+		\end{block}
+		
+		\textbf{Caratteristiche:}
+		\begin{itemize}
+			\item $n$ ingressi di selezione
+			\item $2^n$ uscite
+			\item Una sola uscita attiva alla volta
+			\item Spesso presente un ingresso di abilitazione (enable)
+		\end{itemize}
+		
+		\textbf{Notazione:}
+		\begin{itemize}
+			\item Ingressi: $a_0, a_1, ..., a_{n-1}$
+			\item Uscite: $y_0, y_1, ..., y_{2^n-1}$
+			\item Enable: $en$
+		\end{itemize}
+	\end{frame}
+	
+	% Slide 6: Decodificatore 2-to-4
+	\begin{frame}
+		\frametitle{Decodificatore 2-to-4}
+		\textbf{Tabella di verità:}
+		\begin{center}
+			\begin{tabular}{ccc|cccc}
+				\hline
+				$en$ & $a_1$ & $a_0$ & $y_3$ & $y_2$ & $y_1$ & $y_0$ \\
+				\hline
+				0 & X & X & 0 & 0 & 0 & 0 \\
+				1 & 0 & 0 & 0 & 0 & 0 & 1 \\
+				1 & 0 & 1 & 0 & 0 & 1 & 0 \\
+				1 & 1 & 0 & 0 & 1 & 0 & 0 \\
+				1 & 1 & 1 & 1 & 0 & 0 & 0 \\
+				\hline
+			\end{tabular}
+		\end{center}
+		
+		\textbf{Equazioni logiche:}
+		\begin{align*}
+			y_0 &= en \cdot \overline{a_1} \cdot \overline{a_0} \\
+			y_1 &= en \cdot \overline{a_1} \cdot a_0 \\
+			y_2 &= en \cdot a_1 \cdot \overline{a_0} \\
+			y_3 &= en \cdot a_1 \cdot a_0
+		\end{align*}
+	\end{frame}
+	
+	% Slide 7: Applicazioni del decodificatore
+	\begin{frame}
+		\frametitle{Applicazioni dei Decodificatori}
+		\begin{itemize}
+			\item \textbf{Selezione di memoria}: indirizzamento di celle
+			\item \textbf{Display a 7 segmenti}: conversione binario-decimale
+			\item \textbf{Demultiplexing}: instradamento di dati
+			\item \textbf{Generazione di funzioni logiche}: ogni uscita è un mintermine
+		\end{itemize}
+		
+		\textbf{Esempio pratico:}
+		\begin{itemize}
+			\item Decodificatore 3-to-8 per selezionare 1 tra 8 dispositivi
+			\item Usato nei sistemi di memoria e I/O
+		\end{itemize}
+	\end{frame}
+	
+	% Slide 8: Demultiplatore - Introduzione
+	\section{Multiplatori e Demultiplatori}
+	\begin{frame}
+		\frametitle{Demultiplatore (Demux)}
+		\begin{block}{Definizione}
+			Un demultiplatore \textbf{instrada} un singolo ingresso dati verso una delle $2^n$ uscite, selezionata dagli ingressi di selezione.
+		\end{block}
+		
+		\textbf{Differenza con il decodificatore:}
+		\begin{itemize}
+			\item Decodificatore: uscita attiva (1) o inattiva (0)
+			\item Demultiplatore: uscita = valore dell'ingresso dati
+		\end{itemize}
+		
+		\textbf{Componenti:}
+		\begin{itemize}
+			\item $n$ ingressi di selezione
+			\item 1 ingresso dati ($d$)
+			\item $2^n$ uscite
+			\item Ingresso di abilitazione (opzionale)
+		\end{itemize}
+	\end{frame}
+	
+	% Slide 9: Demultiplatore 1-to-4
+	\begin{frame}
+		\frametitle{Demultiplatore 1-to-4}
+		\textbf{Tabella di verità:}
+		\begin{center}
+			\begin{tabular}{cccc|cccc}
+				\hline
+				$en$ & $a_1$ & $a_0$ & $d$ & $y_3$ & $y_2$ & $y_1$ & $y_0$ \\
+				\hline
+				0 & X & X & $d$ & 0 & 0 & 0 & 0 \\
+				1 & 0 & 0 & $d$ & 0 & 0 & 0 & $d$ \\
+				1 & 0 & 1 & $d$ & 0 & 0 & $d$ & 0 \\
+				1 & 1 & 0 & $d$ & 0 & $d$ & 0 & 0 \\
+				1 & 1 & 1 & $d$ & $d$ & 0 & 0 & 0 \\
+				\hline
+			\end{tabular}
+		\end{center}
+		
+		\textbf{Nota:} L'uscita selezionata riporta il valore di $d$
+	\end{frame}
+	
+	% Slide 10: Multiplatore - Introduzione
+	\begin{frame}
+		\frametitle{Multiplatore (Mux)}
+		\begin{block}{Definizione}
+			Un multiplatore \textbf{seleziona} uno tra $2^n$ ingressi e lo riproduce nell'uscita, in base agli ingressi di selezione.
+		\end{block}
+		
+		\textbf{Caratteristiche:}
+		\begin{itemize}
+			\item $2^n$ ingressi dati ($d_0, d_1, ..., d_{2^n-1}$)
+			\item $n$ ingressi di selezione
+			\item 1 uscita ($y$)
+			\item Spesso un ingresso di abilitazione
+		\end{itemize}
+		
+		\textbf{Analogia:}
+		\begin{itemize}
+			\item Funziona come un \textbf{selettore rotativo}
+			\item Commutatore controllato digitalmente
+		\end{itemize}
+	\end{frame}
+	
+	% Slide 11: Multiplatore 4-to-1
+	\begin{frame}
+		\frametitle{Multiplatore 4-to-1}
+		\textbf{Tabella di verità:}
+		\begin{center}
+			\begin{tabular}{ccccccc|c}
+				\hline
+				$en$ & $a_1$ & $a_0$ & $d_3$ & $d_2$ & $d_1$ & $d_0$ & $y$ \\
+				\hline
+				0 & X & X & $d_3$ & $d_2$ & $d_1$ & $d_0$ & 0 \\
+				1 & 0 & 0 & $d_3$ & $d_2$ & $d_1$ & $d_0$ & $d_0$ \\
+				1 & 0 & 1 & $d_3$ & $d_2$ & $d_1$ & $d_0$ & $d_1$ \\
+				1 & 1 & 0 & $d_3$ & $d_2$ & $d_1$ & $d_0$ & $d_2$ \\
+				1 & 1 & 1 & $d_3$ & $d_2$ & $d_1$ & $d_0$ & $d_3$ \\
+				\hline
+			\end{tabular}
+		\end{center}
+		
+		\textbf{Equazione:}
+		$$y = en \cdot (\overline{a_1} \cdot \overline{a_0} \cdot d_0 + \overline{a_1} \cdot a_0 \cdot d_1 + a_1 \cdot \overline{a_0} \cdot d_2 + a_1 \cdot a_0 \cdot d_3)$$
+	\end{frame}
+	
+	% Slide 12: Applicazioni dei multiplatori
+	\begin{frame}
+		\frametitle{Applicazioni dei Multiplatori}
+		\begin{itemize}
+			\item \textbf{Selezione di dati}: scegliere tra diverse sorgenti
+			\item \textbf{Implementazione di funzioni logiche}: ogni mux può implementare qualsiasi funzione booleana
+			\item \textbf{Trasmissione dati}: multiplexing di canali
+			\item \textbf{Operazioni condizionali}: selezione basata su condizioni
+		\end{itemize}
+		
+		\textbf{Esempio:}
+		Un mux 4-to-1 può implementare qualsiasi funzione a 2 variabili:
+		\begin{itemize}
+			\item Variabili di selezione = variabili della funzione
+			\item Ingressi dati = valori della tabella di verità
+		\end{itemize}
+	\end{frame}
+	
+	% Slide 13: Mux e Demux in parallelo
+	\begin{frame}
+		\frametitle{Multiplatori e Demultiplatori in Parallelo}
+		\begin{block}{Necessità}
+			Per gestire dati a più bit (bus), servono più mux/demux in parallelo.
+		\end{block}
+		
+		\textbf{Configurazione:}
+		\begin{itemize}
+			\item Un mux/demux per ogni bit del dato
+			\item Ingressi di selezione \textbf{condivisi}
+			\item Ingresso di abilitazione \textbf{condiviso}
+			\item Esempio: 4 mux 4-to-1 per dati a 4 bit
+		\end{itemize}
+		
+		\textbf{Rappresentazione compatta:}
+		\begin{itemize}
+			\item Linee multiple indicate con numero
+			\item Bus rappresentati come linee spesse
+		\end{itemize}
+	\end{frame}
+	
+	% Slide 14: Codificatore binario
+	\section{Codificatori}
+	\begin{frame}
+		\frametitle{Codificatore Binario (Encoder)}
+		\begin{block}{Definizione}
+			Un codificatore \textbf{traduce} l'ingresso selezionato in un numero binario nelle uscite.
+		\end{block}
+		
+		\textbf{Funzionamento inverso del decodificatore:}
+		\begin{itemize}
+			\item $2^n$ ingressi
+			\item $n$ uscite
+			\item Una sola linea di ingresso attiva per volta
+			\item Output = codice binario dell'ingresso attivo
+		\end{itemize}
+		
+		\textbf{Esempio 4-to-2:}
+		\begin{center}
+			\begin{tabular}{cccc|cc}
+				\hline
+				$w_3$ & $w_2$ & $w_1$ & $w_0$ & $y_1$ & $y_0$ \\
+				\hline
+				0 & 0 & 0 & 1 & 0 & 0 \\
+				0 & 0 & 1 & 0 & 0 & 1 \\
+				0 & 1 & 0 & 0 & 1 & 0 \\
+				1 & 0 & 0 & 0 & 1 & 1 \\
+				\hline
+			\end{tabular}
+		\end{center}
+	\end{frame}
+	
+	% Slide 15: Codificatore di priorità
+	\begin{frame}
+		\frametitle{Codificatore di Priorità (Priority Encoder)}
+		\begin{block}{Differenza}
+			Il codificatore di priorità \textbf{ammette più ingressi attivi} simultaneamente, emettendo il codice dell'ingresso con priorità più alta.
+		\end{block}
+		
+		\textbf{Caratteristiche:}
+		\begin{itemize}
+			\item Priorità: ingresso con indice più basso/alto
+			\item Gestisce più ingressi attivi
+			\item Spesso include uscita di validità ($z$)
+		\end{itemize}
+		
+		\textbf{Esempio 4-to-2 con priorità (indice basso = alta priorità):}
+		\begin{center}
+			\begin{tabular}{cccc|ccc}
+				\hline
+				$w_3$ & $w_2$ & $w_1$ & $w_0$ & $z$ & $y_1$ & $y_0$ \\
+				\hline
+				0 & 0 & 0 & 0 & 0 & X & X \\
+				X & X & X & 1 & 1 & 0 & 0 \\
+				X & X & 1 & 0 & 1 & 0 & 1 \\
+				X & 1 & 0 & 0 & 1 & 1 & 0 \\
+				1 & 0 & 0 & 0 & 1 & 1 & 1 \\
+				\hline
+			\end{tabular}
+		\end{center}
+	\end{frame}
+	
+	% Slide 16: Unità logiche
+	\section{Unità Logiche e Aritmetiche}
+	\begin{frame}
+		\frametitle{Unità Logiche}
+		\begin{block}{Definizione}
+			Un'unità logica esegue \textbf{operazioni logiche} (AND, OR, NOT, XOR) su coppie di bit.
+		\end{block}
+		
+		\textbf{Implementazione con multiplatori:}
+		\begin{itemize}
+			\item Ingressi: due operandi ($a$, $b$)
+			\item Ingresso di selezione: tipo di operazione ($f$)
+			\item Uscita: risultato dell'operazione
+		\end{itemize}
+		
+		\textbf{Esempio unità logica a 4 funzioni:}
+		\begin{center}
+			\begin{tabular}{cc|c}
+				\hline
+				$f_1$ & $f_0$ & Operazione \\
+				\hline
+				0 & 0 & $a$ AND $b$ \\
+				0 & 1 & $a$ OR $b$ \\
+				1 & 0 & $a$ XOR $b$ \\
+				1 & 1 & NOT $b$ \\
+				\hline
+			\end{tabular}
+		\end{center}
+	\end{frame}
+	
+	% Slide 17: Unità logiche parallele
+	\begin{frame}
+		\frametitle{Unità Logiche su Interi}
+		\textbf{Per operare su numeri a più bit:}
+		\begin{itemize}
+			\item Unità logiche semplici in parallelo
+			\item Una per ogni coppia di bit
+			\item Controllo condiviso ($f$)
+			\item Operazione bit per bit
+		\end{itemize}
+		
+		\textbf{Esempio: 4 bit}
+		\begin{itemize}
+			\item 4 unità logiche identiche
+			\item Input: $a_3a_2a_1a_0$ e $b_3b_2b_1b_0$
+			\item Output: $y_3y_2y_1y_0$
+			\item $y_i = f(a_i, b_i)$
+		\end{itemize}
+	\end{frame}
+	
+	% Slide 18: Scorrimento - Introduzione
+	\section{Operazioni di Scorrimento}
+	\begin{frame}
+		\frametitle{Scorrimento (Shift)}
+		\begin{block}{Definizione}
+			Lo scorrimento sposta le cifre binarie a sinistra o a destra.
+		\end{block}
+		
+		\textbf{Tipi di scorrimento:}
+		\begin{enumerate}
+			\item \textbf{Logico}: inserisce 0 dal lato opposto
+			\item \textbf{Aritmetico}: mantiene il segno (destra)
+			\item \textbf{Circolare}: la cifra espulsa rientra dall'altro lato
+			\item \textbf{Circolare con riporto}: usa il carry
+		\end{enumerate}
+		
+		\textbf{Effetti:}
+		\begin{itemize}
+			\item Scorrimento a sinistra = moltiplicazione per 2
+			\item Scorrimento a destra = divisione per 2
+		\end{itemize}
+	\end{frame}
+	
+	% Slide 19: Scorrimento logico
+	\begin{frame}
+		\frametitle{Scorrimento Logico}
+		\textbf{Scorrimento a sinistra:}
+		\begin{itemize}
+			\item Bit più significativo $\rightarrow$ perso
+			\item 0 inserito a destra
+			\item Esempio: $1011 \rightarrow 0110$
+		\end{itemize}
+		
+		\textbf{Scorrimento a destra:}
+		\begin{itemize}
+			\item Bit meno significativo $\rightarrow$ perso
+			\item 0 inserito a sinistra
+			\item Esempio: $1011 \rightarrow 0101$
+		\end{itemize}
+		
+		\textbf{Implementazione:}
+		\begin{itemize}
+			\item Multiplatori a 2 ingressi per ogni bit
+			\item Selezione: direzione dello scorrimento
+		\end{itemize}
+	\end{frame}
+
+% Slide 20: Scorrimento aritmetico
+\begin{frame}
+	\frametitle{Scorrimento Aritmetico}
+	\textbf{Caratteristiche:}
+	\begin{itemize}
+		\item Mantiene il bit di segno (bit più significativo)
+		\item Usato per numeri con rappresentazione in complemento a due
+		\item A sinistra: come lo scorrimento logico (inserisce 0)
+		\item A destra: duplica il bit di segno
+	\end{itemize}
+	
+	\textbf{Esempi:}
+	\begin{itemize}
+		\item Scorrimento aritmetico a destra: $1011 \rightarrow 1101$
+		\item Scorrimento aritmetico a sinistra: $1011 \rightarrow 0110$
+	\end{itemize}
+\end{frame}
+
+% Slide 21: Scorrimento circolare
+\begin{frame}
+	\frametitle{Scorrimento Circolare}
+	\begin{itemize}
+		\item Il bit espulso rientra dall’altro lato
+		\item Nessuna perdita di informazione
+	\end{itemize}
+	
+	\textbf{Esempio:}
+	\begin{itemize}
+		\item Sinistra: $1011 \rightarrow 0111$
+		\item Destra: $1011 \rightarrow 1101$
+	\end{itemize}
+\end{frame}
+
+% Slide 22: Fine
+\begin{frame}
+	\centering
+	\Huge Grazie per l'attenzione
+\end{frame}
+
+\end{document}
+
+
+	% Slide 23: Addizionatore completo
+	\begin{frame}
+		\frametitle{Addizionatore Completo (Full Adder)}
+		\begin{block}{Definizione}
+			Somma due bit più un riporto in ingresso.
+		\end{block}
+		
+		\textbf{Composizione:}
+		\begin{itemize}
+			\item Due semiaddizionatori
+			\item Una porta OR per il riporto finale
+		\end{itemize}
+		
+		\textbf{Equazioni:}
+		\begin{align*}
+			s &= a \oplus b \oplus c_{in} \\
+			c_{out} &= (a \cdot b) + (c_{in} \cdot (a \oplus b))
+		\end{align*}
+		
+		\textbf{Uso:}
+		\begin{itemize}
+			\item Base per addizionatori a più bit
+			\item Collegamento in cascata (ripple-carry)
+		\end{itemize}
+	\end{frame}
+	
+	% Slide 24: Addizionatore a 4 bit
+	\begin{frame}
+		\frametitle{Addizionatore a 4 Bit (Ripple-Carry)}
+		\textbf{Struttura:}
+		\begin{itemize}
+			\item 4 full adder in cascata
+			\item Riporto propagato da destra a sinistra
+			\item $c_{out}$ di uno $\rightarrow$ $c_{in}$ del successivo
+		\end{itemize}
+		
+		\textbf{Limitazione:}
+		\begin{itemize}
+			\item Ritardo di propagazione cumulativo
+			\item Tempo proporzionale al numero di bit
+			\item Soluzione: riporto anticipato (carry lookahead)
+		\end{itemize}
+		
+		\textbf{Funzionamento con segno:}
+		\begin{itemize}
+			\item Funziona correttamente con complemento a due
+			\item Supporta numeri positivi e negativi
+		\end{itemize}
+	\end{frame}
+	
+	% Slide 25: Sottrazione
+	\begin{frame}
+		\frametitle{Sottrazione}
+		\begin{block}{Metodo}
+			La sottrazione si realizza attraverso l'addizione del complemento a due.
+		\end{block}
+		
+		\textbf{Procedimento:}
+		$$a - b = a + (-b) = a + \text{complemento\_a\_due}(b)$$
+		
+		\textbf{Complemento a due:}
+		\begin{enumerate}
+			\item Invertire tutti i bit (complemento a uno)
+			\item Aggiungere 1
+		\end{enumerate}
+		
+		\textbf{Implementazione:}
+		\begin{itemize}
+			\item Porte XOR per invertire $b$
+			\item Addizionatore con $c_{in} = 1$
+			\item Stesso circuito dell'addizionatore!
+		\end{itemize}
+	\end{frame}
+	
+	% Slide 26: Somma e sottrazione combinata
+	\begin{frame}
+		\frametitle{Unità Somma/Sottrazione}
+		\textbf{Circuito combinato:}
+		\begin{itemize}
+			\item Ingresso di controllo $f$
+			\item $f = 0$: addizione
+			\item $f = 1$: sottrazione
+		\end{itemize}
+		
+		\textbf{Implementazione:}
+		\begin{itemize}
+			\item XOR tra $f$ e ogni bit di $b$
+			\item $f$ collegato a $c_{in}$
+			\item Se $f=0$: $b$ passa invariato, $c_{in}=0$
+			\item Se $f=1$: $b$ invertito, $c_{in}=1$ (complemento a due)
+		\end{itemize}
+		
+		\textbf{Vantaggio:}
+		\begin{itemize}
+			\item Singolo circuito per entrambe le operazioni
+			\item Minimo overhead hardware
+		\end{itemize}
+	\end{frame}
+	
+	% Slide 27: Riporto anticipato
+	\begin{frame}
+		\frametitle{Riporto Anticipato (Carry Lookahead)}
+		\begin{block}{Problema del Ripple-Carry}
+			Il ritardo aumenta linearmente con il numero di bit.
+		\end{block}
+		
+		\textbf{Soluzione:}
+		\begin{itemize}
+			\item Calcolare i riporti in \textbf{parallelo}
+			\item Usare funzioni di generazione ($G$) e propagazione ($P$)
+		\end{itemize}
+		
+		\textbf{Definizioni:}
+		\begin{align*}
+			G_i &= a_i \cdot b_i \quad \text{(genera riporto)} \\
+			P_i &= a_i + b_i \quad \text{(propaga riporto)} \\
+			c_{i+1} &= G_i + P_i \cdot c_i
+		\end{align*}
+		
+		\textbf{Vantaggio:}
+		\begin{itemize}
+			\item Tempo costante (non dipende dal numero di bit)
+			\item Più veloce per somme su molti bit
+		\end{itemize}
+	\end{frame}
+	
+	% Slide 28: Complemento a due
+	\begin{frame}
+		\frametitle{Complemento a Due}
+		\begin{block}{Rappresentazione dei Negativi}
+			Il complemento a due è lo standard per rappresentare numeri con segno.
+		\end{block}
+		
+		\textbf{Calcolo:}
+		\begin{enumerate}
+			\item Complemento a uno: invertire tutti i bit
+			\item Aggiungere 1 al risultato
+		\end{enumerate}
+		
+		\textbf{Esempio (4 bit):}
+		\begin{align*}
+			+5 &= 0101 \\
+			\text{Complemento a uno} &= 1010 \\
+			\text{Aggiungi 1} &= 1011 = -5
+		\end{align*}
+		
+		\textbf{Proprietà:}
+		\begin{itemize}
+			\item $a + (-a) = 0$
+			\item Un'unica rappresentazione dello zero
+			\item Range: $-2^{n-1}$ a $2^{n-1}-1$ per $n$ bit
+		\end{itemize}
+	\end{frame}
+	
+	% Slide 29: Moltiplicazione
+	\section{Operazioni Complesse}
+	\begin{frame}[fragile]
+		\frametitle{Moltiplicazione Binaria}
+		\textbf{Algoritmo:}
+		\begin{itemize}
+			\item Simile alla moltiplicazione decimale
+			\item Ogni cifra del moltiplicatore moltiplica il moltiplicando
+			\item Prodotti parziali shiftati e sommati
+		\end{itemize}
+		
+		\textbf{Esempio:}
+		\begin{verbatim}
+			1011  (11)
+			x 1101  (13)
+			------
+			1011
+			0000
+			1011
+			1011
+			--------
+			10001111  (143)
+		\end{verbatim}
+		
+		\textbf{Implementazione:}
+		\begin{itemize}
+			\item Porte AND per prodotti parziali
+			\item Addizionatori per sommare i prodotti
+			\item Matrice di celle moltiplicative
+		\end{itemize}
+	\end{frame}
+	
+	% Slide 30: Moltiplicazione con segno
+	\begin{frame}
+		\frametitle{Moltiplicazione con Segno}
+		\textbf{Problema:}
+		\begin{itemize}
+			\item Moltiplicazione diretta non funziona con complemento a due
+			\item Necessario considerare il segno
+		\end{itemize}
+		
+		\textbf{Soluzioni:}
+		\begin{enumerate}
+			\item Convertire a positivo, moltiplicare, aggiustare segno
+			\item Algoritmo di Booth (più efficiente)
+			\item Estendere il segno nei prodotti parziali
+		\end{enumerate}
+		
+		\textbf{Gestione del segno:}
+		\begin{itemize}
+			\item Se moltiplicando negativo: complemento a due
+			\item Se moltiplicatore negativo: complemento a due
+			\item Se segni diversi: risultato negativo
+		\end{itemize}
+	\end{frame}
+	
+	% Slide 31: Divisione
+	\begin{frame}
+		\frametitle{Divisione Binaria}
+		\textbf{Algoritmo:}
+		\begin{itemize}
+			\item Simile alla divisione decimale
+			\item Sottrazioni successive del divisore
+			\item Scorrimento del dividendo
+		\end{itemize}
+		
+		\textbf{Procedimento:}
+		\begin{enumerate}
+			\item Confronta divisore con cifre più significative del dividendo
+			\item Se divisore minore o uguale: sottrai, metti 1 nel quoziente
+			\item Altrimenti: metti 0 nel quoziente
+			\item Scorri e ripeti
+		\end{enumerate}
+		
+		\textbf{Componenti:}
+		\begin{itemize}
+			\item Sottrattori
+			\item Comparatori
+			\item Registri di scorrimento
+		\end{itemize}
+	\end{frame}
