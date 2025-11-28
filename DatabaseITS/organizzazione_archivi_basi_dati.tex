@@ -8,6 +8,11 @@
 \usepackage[italian]{babel}
 \usepackage{tikz}
 \usetikzlibrary{shapes,arrows,positioning,shadows}
+\usepackage{amssymb}   % per simboli matematici e \checkmark
+\usepackage{pifont}    % per \ding{51} / \ding{55}
+\usepackage{eurosym}   % per \euro
+\usepackage{tikz}
+
 
 
 % Tema beamer
@@ -1675,6 +1680,42 @@ Le funzioni che il DBMS, attraverso i suoi moduli software, è in grado di offri
 \end{frame}
 
 
+
+\begin{frame}{I linguaggi per database relazionali}
+	I linguaggi per database relazionali si basano sulla visione tabellare dei dati. 
+	I comandi del linguaggio relazionale operano inoltre su gruppi di righe o sull'intera tabella, 
+	anziche su una riga per volta: con una sola richiesta possono essere trattati o ritrovati molti 
+	record e non un record per volta, come avviene nei tradizionali linguaggi di programmazione.
+	Sono semplificate le operazioni per mettere in relazione tra loro tabelle diverse e per presentare 
+	sul video o stampare i risultati delle interrogazioni in modo ordinato, facilitandone la lettura 
+	e la comprensione.
+	
+	\vspace{0.3cm}
+	\begin{center}
+		\begin{tikzpicture}[scale=0.8]
+			% Tabella Studenti
+			\node[draw, rectangle, minimum width=3cm, minimum height=0.6cm, fill=blue!20] at (0,2) {\textbf{Studenti}};
+			\node[draw, rectangle, minimum width=3cm, minimum height=0.5cm] at (0,1.4) {ID | Nome | Classe};
+			\node[draw, rectangle, minimum width=3cm, minimum height=0.5cm] at (0,0.9) {1 | Mario | 5A};
+			\node[draw, rectangle, minimum width=3cm, minimum height=0.5cm] at (0,0.4) {2 | Laura | 5B};
+			
+			% Tabella Voti
+			\node[draw, rectangle, minimum width=3cm, minimum height=0.6cm, fill=green!20] at (5,2) {\textbf{Voti}};
+			\node[draw, rectangle, minimum width=3cm, minimum height=0.5cm] at (5,1.4) {ID\_Stud | Materia | Voto};
+			\node[draw, rectangle, minimum width=3cm, minimum height=0.5cm] at (5,0.9) {1 | Matematica | 8};
+			\node[draw, rectangle, minimum width=3cm, minimum height=0.5cm] at (5,0.4) {1 | Italiano | 7};
+			
+			% Freccia di connessione
+			\draw[->, thick, red] (1.5,1.15) -- (3.5,1.15) node[midway, above] {\small JOIN};
+			
+			% Query SQL
+			\node[draw, rounded corners, fill=yellow!20, text width=7cm, align=center] at (2.5,-0.8) 
+			{\small \texttt{SELECT * FROM Studenti WHERE Classe = '5A'}};
+		\end{tikzpicture}
+	\end{center}
+\end{frame}
+
+
 \begin{frame}{La gestione del database}
 	\begin{columns}
 		\column{0.55\textwidth}
@@ -1731,58 +1772,63 @@ Le funzioni che il DBMS, attraverso i suoi moduli software, è in grado di offri
 \end{frame}
 
 \begin{frame}{La gestione del database}
-	\begin{columns}
-		\column{0.55\textwidth}
-		\textbf{3. Il controllo dell'integrità dei dati}
-		\begin{itemize}
-			\item \textbf{Integrità sui dati}, in relazione ai valori che possono assumere e alle interdipendenze tra dati di differenti tabelle.
-			\item \textbf{Integrità definite dall'utente}, cioè vincoli che sono specifici per un particolare database, come conseguenza di politiche commerciali dell'impresa oppure di norme legislative e fiscali.
-		\end{itemize}
+	\begin{columns}[T]
 		
-		\column{0.45\textwidth}
-		\begin{center}
-			\begin{tikzpicture}[scale=0.7]
-				% Tabella ORDINI
-				\node[font=\scriptsize\bfseries, blue] at (0,4.2) {Tabella ORDINI};
-				\draw[fill=blue!15, thick] (-2,3.8) rectangle (2,2.8);
-				\node[font=\tiny] at (-1.3,3.5) {\textbf{ID}};
-				\node[font=\tiny] at (-0.3,3.5) {\textbf{ClienteID}};
-				\node[font=\tiny] at (0.8,3.5) {\textbf{Importo}};
-				\draw[fill=blue!10] (-2,3.3) rectangle (2,3);
-				\node[font=\tiny] at (-1.3,3.15) {1};
-				\node[font=\tiny] at (-0.3,3.15) {101};
-				\node[font=\tiny] at (0.8,3.15) {500€};
-				
-				% Vincolo integrità referenziale
-				\draw[->, thick, red, dashed] (-0.3,2.8) -- (-0.3,2.2);
-				\node[font=\tiny, red, right] at (0.2,2.5) {FK};
-				
-				% Tabella CLIENTI
-				\node[font=\scriptsize\bfseries, green!60!black] at (0,2) {Tabella CLIENTI};
-				\draw[fill=green!15, thick] (-2,1.6) rectangle (2,0.6);
-				\node[font=\tiny] at (-1.3,1.3) {\textbf{ID}};
-				\node[font=\tiny] at (-0.3,1.3) {\textbf{Nome}};
-				\node[font=\tiny] at (0.8,1.3) {\textbf{Credito}};
-				\draw[fill=green!10] (-2,1) rectangle (2,0.7);
-				\node[font=\tiny] at (-1.3,0.85) {101};
-				\node[font=\tiny] at (-0.3,0.85) {Rossi};
-				\node[font=\tiny] at (0.8,0.85) {1000€};
-				
-				% Vincoli
-				\draw[fill=orange!15, rounded corners] (-2.2,0.2) rectangle (2.2,-0.9);
-				\node[font=\tiny\bfseries, orange!80!black] at (0,0) {Vincoli di Integrità};
-				\node[font=\tiny, align=left] at (0,-0.35) {• Importo > 0};
-				\node[font=\tiny, align=left] at (0,-0.6) {• Importo ≤ Credito};
-				\node[font=\tiny, align=left] at (0,-0.85) {• ClienteID deve esistere};
-				
-				% Icona controllo
-				\draw[fill=red!20, circle] (2.8,1.3) circle (0.4);
-				\node[font=\Large, red!70!black] at (2.8,1.3) {✓};
-				
-			\end{tikzpicture}
-		\end{center}
+		\begin{column}{0.55\textwidth}
+			\textbf{3. Il controllo dell'integrità dei dati}
+			\begin{itemize}
+				\item \textbf{Integrità dei dati}: in relazione ai valori ammissibili e alle interdipendenze tra attributi di tabelle differenti.
+				\item \textbf{Integrità definite dall'utente}: vincoli specifici per un particolare database, derivanti da politiche aziendali o da norme legislative e fiscali.
+			\end{itemize}
+		\end{column}
+		
+		\begin{column}{0.45\textwidth}
+			\begin{center}
+				\begin{tikzpicture}[scale=0.7]
+					% Tabella ORDINI
+					\node[font=\scriptsize\bfseries] at (0,4.2) {Tabella ORDINI};
+					\draw[fill=blue!15, thick] (-2,3.8) rectangle (2,2.8);
+					\node[font=\tiny] at (-1.3,3.5) {\textbf{ID}};
+					\node[font=\tiny] at (-0.3,3.5) {\textbf{ClienteID}};
+					\node[font=\tiny] at (0.8,3.5) {\textbf{Importo}};
+					\draw[fill=blue!10] (-2,3.3) rectangle (2,3.0);
+					\node[font=\tiny] at (-1.3,3.15) {1};
+					\node[font=\tiny] at (-0.3,3.15) {101};
+					\node[font=\tiny] at (0.8,3.15) {500\,\euro};
+					
+					% Vincolo integrità referenziale
+					\draw[->, thick, red, dashed] (-0.3,2.8) -- (-0.3,2.2);
+					\node[font=\tiny, red, right] at (0.2,2.5) {FK};
+					
+					% Tabella CLIENTI
+					\node[font=\scriptsize\bfseries, green!60!black] at (0,2) {Tabella CLIENTI};
+					\draw[fill=green!15, thick] (-2,1.6) rectangle (2,0.6);
+					\node[font=\tiny] at (-1.3,1.3) {\textbf{ID}};
+					\node[font=\tiny] at (-0.3,1.3) {\textbf{Nome}};
+					\node[font=\tiny] at (0.8,1.3) {\textbf{Credito}};
+					\draw[fill=green!10] (-2,1.0) rectangle (2,0.7);
+					\node[font=\tiny] at (-1.3,0.85) {101};
+					\node[font=\tiny] at (-0.3,0.85) {Rossi};
+					\node[font=\tiny] at (0.8,0.85) {1000\,\euro};
+					
+					% Vincoli
+					\draw[fill=orange!15, rounded corners] (-2.2,0.2) rectangle (2.2,-0.9);
+					\node[font=\tiny\bfseries, orange!80!black] at (0,0) {Vincoli di integrità};
+					\node[font=\tiny, align=left] at (0,-0.35) {Importo $>$ 0};
+					\node[font=\tiny, align=left] at (0,-0.6) {Importo $\leq$ Credito};
+					\node[font=\tiny, align=left] at (0,-0.85) {ClienteID deve esistere (FK)};
+					
+					% Icona controllo (usare \ding per evitare Unicode)
+					\draw[fill=red!20] (2.8,1.3) circle (0.4);
+					\node[font=\small] at (2.8,1.3) {\ding{51}}; % \ding{51} = check
+					
+				\end{tikzpicture}
+			\end{center}
+		\end{column}
+		
 	\end{columns}
 \end{frame}
+
 
 \begin{frame}{La gestione del database}
 \textbf{4. La sicurezza e la protezione}
@@ -1796,115 +1842,126 @@ Le funzioni che il DBMS, attraverso i suoi moduli software, è in grado di offri
 \end{frame}
 
 \begin{frame}{La gestione del database}
-	\begin{columns}
-		\column{0.55\textwidth}
-		\textbf{5. Il supporto alle transazioni}
-		\begin{itemize}
-			\item Garanzia che tutte le operazioni che compongono la transazione siano completamente e correttamente eseguite oppure che non ne sia eseguita alcuna.
-			\item Una \textbf{transazione} consiste in un insieme di operazioni di interrogazione o di modifica del database che devono essere eseguite come se fossero un'unica operazione.
-		\end{itemize}
+	\begin{columns}[T]
+		\begin{column}{0.55\textwidth}
+			\begin{itemize}
+				\item Un esempio di transazione è l'operazione di \textbf{trasferimento di fondi} tra conti correnti bancari.
+				\item L'importo trasferito deve essere addebitato su un conto e accreditato sull'altro.
+				\item Entrambe le operazioni devono essere completate affinché il trasferimento sia considerato effettuato.
+				\item Non è accettabile che venga eseguita solo una delle due operazioni.
+				\item Il supporto alle transazioni deve garantirne il corretto completamento anche in presenza di esecuzione concorrente.
+			\end{itemize}
+		\end{column}
 		
-		\column{0.45\textwidth}
-		\begin{center}
-			\begin{tikzpicture}[scale=0.75]
-				% Transazione esempio: Bonifico bancario
-				\node[font=\scriptsize\bfseries, blue] at (0,4.2) {Esempio: Bonifico 100€};
-				
-				% BEGIN
-				\draw[fill=green!20, rounded corners] (-2,3.8) rectangle (2,3.4);
-				\node[font=\tiny\bfseries] at (0,3.6) {BEGIN TRANSACTION};
-				
-				% Operazione 1
-				\draw[fill=blue!10, rounded corners] (-2,3.2) rectangle (2,2.7);
-				\node[font=\tiny, align=center] at (0,2.95) {1. Conto A - 100€};
-				
-				% Operazione 2
-				\draw[fill=blue!10, rounded corners] (-2,2.5) rectangle (2,2);
-				\node[font=\tiny, align=center] at (0,2.25) {2. Conto B + 100€};
-				
-				% Decisione
-				\draw[fill=yellow!20, diamond, aspect=2] (0,1.5) node[font=\tiny, align=center] {Tutte OK?} ;
-				
-				% Frecce
-				\draw[->, thick, green!60!black] (-1.2,1.2) -- (-1.2,0.6);
-				\node[font=\tiny, green!60!black, left] at (-1.2,0.9) {SÌ};
-				
-				\draw[->, thick, red] (1.2,1.2) -- (1.2,0.6);
-				\node[font=\tiny, red, right] at (1.2,0.9) {NO};
-				
-				% COMMIT
-				\draw[fill=green!30, rounded corners] (-2.2,0.6) rectangle (-0.2,0.1);
-				\node[font=\tiny\bfseries, green!60!black] at (-1.2,0.35) {COMMIT};
-				\node[font=\tiny, green!60!black] at (-1.2,0) {✓ Conferma};
-				
-				% ROLLBACK
-				\draw[fill=red!30, rounded corners] (0.2,0.6) rectangle (2.2,0.1);
-				\node[font=\tiny\bfseries, red!70!black] at (1.2,0.35) {ROLLBACK};
-				\node[font=\tiny, red!70!black] at (1.2,0) {✗ Annulla tutto};
-				
-				% Principio atomicità
-				\draw[fill=orange!15, rounded corners] (-2.2,-0.4) rectangle (2.2,-1);
-				\node[font=\tiny, align=center, orange!80!black] at (0,-0.7) {\textbf{Atomicità:} Tutto o Niente};
-				
-			\end{tikzpicture}
-		\end{center}
+		\begin{column}{0.45\textwidth}
+			\begin{center}
+				\begin{tikzpicture}[scale=0.75]
+					
+					% Stato iniziale
+					\node[font=\scriptsize\bfseries] at (0,4.3) {Stato iniziale};
+					
+					\draw[fill=blue!20, rounded corners] (-2,4) rectangle (-0.3,3.4);
+					\node[font=\tiny, align=center] at (-1.15,3.7) {Conto A\\1000\,\euro};
+					
+					\draw[fill=green!20, rounded corners] (0.3,4) rectangle (2,3.4);
+					\node[font=\tiny, align=center] at (1.15,3.7) {Conto B\\500\,\euro};
+					
+					% Transazione
+					\node[font=\scriptsize\bfseries, orange!80!black] at (0,3) {Transazione: 200\,\euro};
+					
+					\draw[fill=orange!15, rounded corners] (-2.2,2.7) rectangle (2.2,1.9);
+					\node[font=\tiny] at (0,2.5) {BEGIN};
+					\node[font=\tiny, red] at (0,2.25) {A = A - 200};
+					\node[font=\tiny, green!60!black] at (0,2) {B = B + 200};
+					
+					% Atomicità
+					\draw[<->, very thick, purple] (-2.2,2.5) -- (-2.2,2);
+					\node[font=\tiny, purple, left, rotate=90] at (-2.4,2.25) {ATOMICA};
+					
+					% Stato finale corretto (commit)
+					\node[font=\scriptsize\bfseries, green!60!black] at (-1.15,1.5) {Commit \checkmark};
+					
+					\draw[fill=blue!20, rounded corners] (-2,1.2) rectangle (-0.3,0.6);
+					\node[font=\tiny, align=center] at (-1.15,0.9) {Conto A\\800\,\euro};
+					
+					\draw[fill=green!20, rounded corners] (0.3,1.2) rectangle (2,0.6);
+					\node[font=\tiny, align=center] at (1.15,0.9) {Conto B\\700\,\euro};
+					
+					% Stato finale errato (rollback)
+					\node[font=\scriptsize\bfseries, red] at (1.15,1.5) {Rollback \ding{55}};
+					
+					\draw[fill=red!10, rounded corners] (-2,0.3) rectangle (2,-0.3);
+					\node[font=\tiny, red, align=center] at (0,0) {Stato inconsistente\\NON AMMESSO};
+					
+					% Concorrenza
+					\draw[fill=yellow!20, rounded corners] (-2.2,-0.8) rectangle (2.2,-1.4);
+					\node[font=\tiny, align=center] at (0,-1.1) {\textbf{Gestione della concorrenza}\\Più transazioni simultanee};
+					
+				\end{tikzpicture}
+			\end{center}
+		\end{column}
 	\end{columns}
 \end{frame}
 
 \begin{frame}{La gestione del database}
-	\begin{columns}
-		\column{0.55\textwidth}
-		\begin{itemize}
-			\item Un esempio di transazione è un'operazione di \textbf{trasferimento di fondi} tra conti correnti bancari.
-			\item L'importo trasferito deve essere tolto da un conto e aggiunto a un altro.
-			\item Entrambe le operazioni devono essere eseguite per poter affermare di avere effettuato il trasferimento.
-			\item Non è tollerabile che sia eseguita una sola delle due operazioni.
-			\item Il supporto alle transazioni deve garantirne il corretto completamento anche in caso di \textbf{esecuzione concorrente}.
-		\end{itemize}
+	\begin{columns}[T]
+		\begin{column}{0.55\textwidth}
+			\begin{itemize}
+				\item Un esempio di transazione è l'operazione di \textbf{trasferimento di fondi} tra conti correnti bancari.
+				\item L'importo trasferito deve essere addebitato su un conto e accreditato sull'altro.
+				\item Entrambe le operazioni devono essere completate affinché il trasferimento sia considerato effettuato.
+				\item Non è accettabile che venga eseguita solo una delle due operazioni.
+				\item Il supporto alle transazioni deve garantirne il corretto completamento anche in presenza di esecuzione concorrente.
+			\end{itemize}
+		\end{column}
 		
-		\column{0.45\textwidth}
-		\begin{center}
-			\begin{tikzpicture}[scale=0.75]
-				% Stato iniziale
-				\node[font=\scriptsize\bfseries] at (0,4.3) {Stato Iniziale};
-				\draw[fill=blue!20, rounded corners] (-2,4) rectangle (-0.3,3.4);
-				\node[font=\tiny, align=center] at (-1.15,3.7) {Conto A\\1000€};
-				
-				\draw[fill=green!20, rounded corners] (0.3,4) rectangle (2,3.4);
-				\node[font=\tiny, align=center] at (1.15,3.7) {Conto B\\500€};
-				
-				% Transazione
-				\node[font=\scriptsize\bfseries, orange!80!black] at (0,3) {Transazione: 200€};
-				\draw[fill=orange!15, rounded corners] (-2.2,2.7) rectangle (2.2,1.9);
-				\node[font=\tiny] at (0,2.5) {BEGIN};
-				\node[font=\tiny, red] at (0,2.25) {A = A - 200};
-				\node[font=\tiny, green!60!black] at (0,2) {B = B + 200};
-				
-				% Frecce atomicità
-				\draw[<->, very thick, purple] (-2.2,2.5) -- (-2.2,2);
-				\node[font=\tiny, purple, left, rotate=90] at (-2.4,2.25) {ATOMICA};
-				
-				% Stato finale corretto
-				\node[font=\scriptsize\bfseries, green!60!black] at (-1.15,1.5) {Commit ✓};
-				\draw[fill=blue!20, rounded corners] (-2,1.2) rectangle (-0.3,0.6);
-				\node[font=\tiny, align=center] at (-1.15,0.9) {Conto A\\800€};
-				
-				\draw[fill=green!20, rounded corners] (0.3,1.2) rectangle (2,0.6);
-				\node[font=\tiny, align=center] at (1.15,0.9) {Conto B\\700€};
-				
-				% Stato finale errato (non ammesso)
-				\node[font=\scriptsize\bfseries, red] at (1.15,1.5) {Rollback ✗};
-				\draw[fill=red!10, rounded corners] (-2,0.3) rectangle (2,-0.3);
-				\node[font=\tiny, red, align=center] at (0,0) {Stato inconsistente\\NON AMMESSO};
-				
-				% Concorrenza
-				\draw[fill=yellow!20, rounded corners] (-2.2,-0.8) rectangle (2.2,-1.4);
-				\node[font=\tiny, align=center] at (0,-1.1) {\textbf{Gestione Concorrenza}\\Più transazioni simultanee};
-				
-			\end{tikzpicture}
-		\end{center}
+		\begin{column}{0.45\textwidth}
+			\begin{center}
+				\begin{tikzpicture}[scale=0.75]
+					% Stato iniziale
+					\node[font=\scriptsize\bfseries] at (0,4.3) {Stato iniziale};
+					\draw[fill=blue!20, rounded corners] (-2,4) rectangle (-0.3,3.4);
+					\node[font=\tiny, align=center] at (-1.15,3.7) {Conto A\\1000\,€};
+					
+					\draw[fill=green!20, rounded corners] (0.3,4) rectangle (2,3.4);
+					\node[font=\tiny, align=center] at (1.15,3.7) {Conto B\\500\,€};
+					
+					% Transazione
+					\node[font=\scriptsize\bfseries, orange!80!black] at (0,3) {Transazione: 200\,€};
+					\draw[fill=orange!15, rounded corners] (-2.2,2.7) rectangle (2.2,1.9);
+					\node[font=\tiny] at (0,2.5) {BEGIN};
+					\node[font=\tiny, red] at (0,2.25) {A = A - 200};
+					\node[font=\tiny, green!60!black] at (0,2) {B = B + 200};
+					
+					% Freccia atomicità
+					\draw[<->, very thick, purple] (-2.2,2.5) -- (-2.2,2);
+					\node[font=\tiny, purple, left, rotate=90] at (-2.4,2.25) {ATOMICA};
+					
+					% Stato finale corretto (commit)
+					\node[font=\scriptsize\bfseries, green!60!black] at (-1.15,1.5) {Commit};
+					\draw[fill=blue!20, rounded corners] (-2,1.2) rectangle (-0.3,0.6);
+					\node[font=\tiny, align=center] at (-1.15,0.9) {Conto A\\800\,€};
+					
+					\draw[fill=green!20, rounded corners] (0.3,1.2) rectangle (2,0.6);
+					\node[font=\tiny, align=center] at (1.15,0.9) {Conto B\\700\,€};
+					
+					% Stato finale errato (inconsistente)
+					\node[font=\scriptsize\bfseries, red] at (1.15,1.5) {Rollback};
+					\draw[fill=red!10, rounded corners] (-2,0.3) rectangle (2,-0.3);
+					\node[font=\tiny, red, align=center] at (0,0) {Stato inconsistente\\NON AMMESSO};
+					
+					% Concorrenza
+					\draw[fill=yellow!20, rounded corners] (-2.2,-0.8) rectangle (2.2,-1.4);
+					\node[font=\tiny, align=center] at (0,-1.1) {\textbf{Gestione della concorrenza}\\Più transazioni simultanee};
+					
+				\end{tikzpicture}
+			\end{center}
+		\end{column}
 	\end{columns}
 \end{frame}
+
+
+
 \begin{frame}{La gestione del database}
 \textbf{6. L'ottimizzazione delle prestazioni}
 
@@ -1915,15 +1972,14 @@ Le funzioni che il DBMS, attraverso i suoi moduli software, è in grado di offri
 \end{frame}
 
 \begin{frame}{La gestione del database}
-Per poter attuare questo ulteriore livello di ottimizzazione, il DBMS deve disporre di informazioni sulla numerosità dei record nelle tabelle e sulla distribuzione dei dati di uno specifico campo o di un dato indice: questi dati informativi costituiscono le \textbf{statistiche del database} o dati statistici gestiti dal DBMS.
+	\begin{itemize}
+\item Per poter attuare questo ulteriore livello di ottimizzazione, il DBMS deve disporre di informazioni sulla numerosità dei record nelle tabelle e sulla distribuzione dei dati di uno specifico campo o di un dato indice: questi dati informativi costituiscono le \textbf{statistiche del database} o dati statistici gestiti dal DBMS.
 
-L'esempio mostra come le statistiche possano essere usate dal modulo di ottimizzazione delle interrogazioni per costruirle nel modo più efficiente. Poiché la distribuzione dei dati in un campo o in un indice è un valore che cambia nel tempo (si pensi, per esempio, alla distribuzione degli studenti nei diversi dipartimenti), le statistiche sono un tipo di metadato dinamico gestito dal DBMS.
-\end{frame}
+\item L'esempio mostra come le statistiche possano essere usate dal modulo di ottimizzazione delle interrogazioni per costruirle nel modo più efficiente. Poiché la distribuzione dei dati in un campo o in un indice è un valore che cambia nel tempo (si pensi, per esempio, alla distribuzione degli studenti nei diversi dipartimenti), le statistiche sono un tipo di metadato dinamico gestito dal DBMS.
 
-\begin{frame}{Altre funzioni del DBMS}
-I DBMS dispongono spesso di generatori di rapporti, cioè componenti specializzate nella produzione di report.
+		
+	\end{itemize}
 
-Si tratta, in pratica, di applicazioni progettate per presentare i dati estratti da un database in formati adatti alla consultazione da parte di una specifica categoria di utenti.
 \end{frame}
 
 \begin{frame}{La gestione del database}
@@ -1974,29 +2030,51 @@ Accanto alla possibilità di usare questi comandi, richiamandoli dall'interno di
 La diffusione del modello relazionale ha poi favorito l'uso prevalente di linguaggi non procedurali ma \textbf{dichiarativi}: in questo modo l'utente non ha la necessità di conoscere né le modalità con le quali le informazioni sono state fisicamente registrate, né i cammini per ritrovare le informazioni contenute nella base di dati.
 \end{frame}
 
-\begin{frame}{I linguaggi per database relazionali}
-Si parla allora di linguaggio per basi di dati, intendendo un insieme completo di comandi che consente e facilita le operazioni di definizione del database, di manipolazione dei dati e di interrogazione da parte degli utenti: vengono cioè unificate in un unico linguaggio le funzioni dei linguaggi DDL, DML e QL.
 
-Tipici linguaggi non procedurali per database relazionali sono:
-\begin{itemize}
-\item il linguaggio \textbf{SQL} (Structured Query Language, linguaggio strutturato di interrogazione)
-\item \textbf{QBE} (Query By Example, interrogazioni per esempi)
-\end{itemize}
-\end{frame}
 
-\begin{frame}{I linguaggi per database relazionali}
-QBE permette di eseguire interrogazioni dichiarando, in un'apposita maschera, come si dovrà presentare la risposta alla query che si vuole realizzare. Nel descrivere l'output desiderato si possono effettuare calcoli partendo dai valori dei campi, oppure esprimere condizioni che devono essere verificate dai record estratti. Inoltre il QBE permette non solo di costruire interrogazioni, ma anche di modificare e variare i dati.
 
-Con il linguaggio SQL si può interrogare un database per estrarne informazioni. Ma non solo: nonostante il nome, SQL è un linguaggio per database completo. Con SQL si possono infatti sia definire che manipolare dati.
-
-L'approccio dichiarativo del linguaggio è evidenziato dagli esempi introduttivi.
-\end{frame}
 
 \begin{frame}{I linguaggi per database relazionali}
 I linguaggi per database relazionali si basano sulla visione tabellare dei dati. I comandi del linguaggio relazionale operano inoltre su gruppi di righe o sull'intera tabella, anziché su una riga per volta: con una sola richiesta possono essere trattati o ritrovati molti record e non solo un record per volta, come avviene con i tradizionali linguaggi di programmazione.
 
 Sono semplificate le operazioni per mettere in connessione tra loro tabelle diverse e per presentare sul video o stampare i risultati delle interrogazioni, ben impaginati, in modo da facilitarne la lettura e la comprensione.
 \end{frame}
+
+
+
+
+\begin{frame}{I linguaggi per database relazionali}
+	I linguaggi per database relazionali si basano sulla visione tabellare dei dati. I comandi del linguaggio relazionale operano inoltre su gruppi di righe o sull'intera tabella, anziché su una riga per volta: con una sola richiesta possono essere trattati o ritrovati molti record e non solo un record per volta, come avviene con i tradizionali linguaggi di programmazione.
+	Sono semplificate le operazioni per mettere in connessione tra loro tabelle diverse e per presentare sul video o stampare i risultati delle interrogazioni, ben impaginati, in modo da facilitarne la lettura e la comprensione.
+	
+	\vspace{0.3cm}
+	\begin{center}
+		\begin{tikzpicture}[scale=0.8]
+			% Tabella Studenti
+			\node[draw, rectangle, minimum width=3cm, minimum height=0.6cm, fill=blue!20] at (0,2) {\textbf{Studenti}};
+			\node[draw, rectangle, minimum width=3cm, minimum height=0.5cm] at (0,1.4) {ID | Nome | Classe};
+			\node[draw, rectangle, minimum width=3cm, minimum height=0.5cm] at (0,0.9) {1 | Mario | 5A};
+			\node[draw, rectangle, minimum width=3cm, minimum height=0.5cm] at (0,0.4) {2 | Laura | 5B};
+			
+			% Tabella Voti
+			\node[draw, rectangle, minimum width=3cm, minimum height=0.6cm, fill=green!20] at (5,2) {\textbf{Voti}};
+			\node[draw, rectangle, minimum width=3cm, minimum height=0.5cm] at (5,1.4) {ID\_Stud | Materia | Voto};
+			\node[draw, rectangle, minimum width=3cm, minimum height=0.5cm] at (5,0.9) {1 | Matematica | 8};
+			\node[draw, rectangle, minimum width=3cm, minimum height=0.5cm] at (5,0.4) {1 | Italiano | 7};
+			
+			% Freccia di connessione
+			\draw[->, thick, red] (1.5,1.15) -- (3.5,1.15) node[midway, above] {\small JOIN};
+			
+			% Query SQL
+			\node[draw, rounded corners, fill=yellow!20, text width=7cm, align=center] at (2.5,-0.8) 
+			{\small \texttt{SELECT * FROM Studenti WHERE Classe = '5A'}};
+		\end{tikzpicture}
+	\end{center}
+\end{frame}
+
+
+
+
 
 \begin{frame}{I linguaggi per database relazionali}
 Nei software DBMS, soprattutto nelle implementazioni di prodotti su personal computer, sono disponibili interfacce utente, con le quali si può interagire usando la lingua nazionale, che permettono di selezionare i comandi del linguaggio attraverso menu, sottomenu e il puntamento a icone sul video, con le modalità caratteristiche di un'interfaccia grafica.
