@@ -1,0 +1,1272 @@
+\documentclass[aspectratio=169]{beamer}
+\usepackage[utf8]{inputenc}
+% \usepackage[italian]{babel}  % Commented out - use English instead
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{multicol}
+\usepackage{amssymb}
+
+\usetikzlibrary{shapes,arrows,positioning,shadows,calc,shapes.geometric}
+
+% Tema e colori
+\usetheme{Madrid}
+\usecolortheme{default}
+\definecolor{reactblue}{RGB}{97,218,251}
+\definecolor{darkblue}{RGB}{0,51,102}
+\definecolor{codebg}{RGB}{245,245,245}
+
+\setbeamercolor{structure}{fg=darkblue}
+\setbeamercolor{palette primary}{bg=darkblue,fg=white}
+\setbeamercolor{palette secondary}{bg=reactblue,fg=darkblue}
+\setbeamercolor{title}{fg=white,bg=darkblue}
+\setbeamercolor{frametitle}{fg=white,bg=darkblue}
+
+
+\usepackage[most]{tcolorbox}      % carica tcolorbox con molte librerie
+\tcbuselibrary{listings,breakable,skins} % per usare tcblisting e breakable
+\usepackage{listings}             % per lstlisting
+\usepackage{tikz}
+\usetikzlibrary{positioning}      % per "right=2cm of ..."
+
+
+% Configurazione listing per codice
+\lstdefinelanguage{JavaScript}{
+	keywords={break, case, catch, continue, debugger, default, delete, do, else, finally, for, function, if, in, instanceof, new, return, switch, this, throw, try, typeof, var, void, while, with, const, let, class, export, import, extends, super, async, await},
+	morecomment=[l]{//},
+	morecomment=[s]{/*}{*/},
+	morestring=[b]',
+	morestring=[b]",
+	sensitive=true
+}
+
+\lstset{
+	basicstyle=\ttfamily\small,
+	backgroundcolor=\color{codebg},
+	breaklines=true,
+	frame=single,
+	numbers=left,
+	numberstyle=\tiny\color{gray},
+	keywordstyle=\color{blue},
+	commentstyle=\color{green!60!black},
+	stringstyle=\color{red},
+	showstringspaces=false,
+	escapeinside={(*@}{@*)}
+}
+
+% Informazioni del documento
+\title[React.js]{Esercitazione 6 -- React.js}
+\subtitle{Tecnologie Web T}
+\author{Prof. Fedeli Massimo}
+\institute{
+	IIS Fermi Sacconi Cpia
+}\usepackage[most]{tcolorbox}      % carica tcolorbox con molte librerie
+\tcbuselibrary{listings,breakable,skins} % per usare tcblisting e breakable
+\usepackage{listings}             % per lstlisting
+\usepackage{tikz}
+\usetikzlibrary{positioning}      % per "right=2cm of ..."
+
+\date{\today}
+
+\begin{document}
+	
+	% ========== SLIDE 1: TITLE ==========
+	\begin{frame}
+		\titlepage
+		\begin{center}
+			\begin{tikzpicture}[scale=0.4]
+				% React logo simplified
+				\draw[reactblue, ultra thick] (0,0) circle (1.5);
+				\fill[reactblue] (0,0) circle (0.3);
+				\draw[reactblue, ultra thick, rotate=60] (0,0) ellipse (3 and 0.8);
+				\draw[reactblue, ultra thick, rotate=-60] (0,0) ellipse (3 and 0.8);
+			\end{tikzpicture}
+		\end{center}
+	\end{frame}
+	
+	
+	% ========== SLIDE 3: COS'È REACT ==========
+	\begin{frame}{Cos'è React.js?}
+		\begin{block}{Definizione}
+			React.js è una \textbf{libreria JavaScript} per la creazione di interfacce utente web moderne e interattive.
+		\end{block}
+		
+		\vspace{0.5cm}
+		
+		\begin{columns}
+			\column{0.5\textwidth}
+			\textbf{Caratteristiche principali:}
+			\begin{itemize}
+				\item Sviluppato da Facebook
+				\item Open Source
+				\item Component-based
+				\item Virtual DOM
+				\item Dichiarativo
+			\end{itemize}
+			
+			\column{0.5\textwidth}
+			\begin{center}
+				\begin{tikzpicture}[scale=0.8]
+					\draw[fill=reactblue!20] (0,0) rectangle (4,3);
+					\node at (2,2.5) {\Large R};
+					\node at (2,1.5) {\textbf{React.js}};
+					\node[align=center] at (2,0.5) {\small Libreria\\JavaScript};
+				\end{tikzpicture}
+			\end{center}
+		\end{columns}
+	\end{frame}
+	
+	% ========== SLIDE 4: SINGLE PAGE APPLICATION ==========
+	\begin{frame}{Single Page Application (SPA)}
+		\begin{columns}
+			\column{0.5\textwidth}
+			\textbf{Approccio Tradizionale:}
+			\begin{center}
+				\begin{tikzpicture}[scale=0.6, node distance=1cm]
+					\node[draw, rectangle, fill=blue!20] (browser1) {Browser};
+					\node[draw, rectangle, fill=green!20, below=of browser1] (server1) {Server};
+					\draw[->, thick] (browser1) -- node[right] {Request} (server1);
+					\draw[->, thick] (server1.west) -- node[left] {New Page} ++(-1.5,0) |- (browser1.west);
+				\end{tikzpicture}
+			\end{center}
+			\small Caricamento di nuove pagine ad ogni interazione
+			
+			\column{0.5\textwidth}
+			\textbf{Single Page Application:}
+			\begin{center}
+				\begin{tikzpicture}[scale=0.6, node distance=1cm]
+					\node[draw, rectangle, fill=reactblue!20] (spa) {SPA Container};
+					\node[draw, rectangle, fill=yellow!20, below=of spa] (content) {Dynamic Content};
+					\draw[->, thick, dashed] (spa) -- (content);
+					\node[below=0.3cm of content] {\small Nessun reload};
+				\end{tikzpicture}
+			\end{center}
+			\small La pagina evolve dinamicamente senza ricaricare
+		\end{columns}
+	\end{frame}
+	
+	
+	% ========== SLIDE 5: VIRTUAL DOM ==========
+	\begin{frame}{Virtual DOM}
+		\begin{center}
+			\begin{tikzpicture}[
+				node distance=2cm,
+				box/.style={rectangle, draw, fill=blue!20, text width=3cm, align=center, minimum height=1.5cm},
+				vbox/.style={rectangle, draw, fill=reactblue!20, text width=3cm, align=center, minimum height=1.5cm}
+				]
+				\node[box] (react) {React\\Component};
+				\node[vbox, right=of react] (vdom) {Virtual\\DOM};
+				\node[box, right=of vdom] (dom) {Browser\\DOM};
+				
+				\draw[->, ultra thick] (react) -- node[above] {crea} (vdom);
+				\draw[->, ultra thick] (vdom) -- node[above] {diffing} (dom);
+				
+				\node[below=0.3cm of vdom, text width=6cm, align=center] {
+					\small Solo le modifiche effettive vengono applicate al DOM reale
+				};
+			\end{tikzpicture}
+		\end{center}
+		
+		\vspace{0.5cm}
+		
+		\begin{block}{Vantaggi del Virtual DOM}
+			\begin{itemize}
+				\item \textbf{Performance}: aggiornamenti ottimizzati
+				\item \textbf{Efficienza}: solo i cambiamenti reali vengono applicati
+				\item \textbf{Astrazione}: lo sviluppatore non manipola direttamente il DOM
+			\end{itemize}
+		\end{block}
+	\end{frame}
+	
+	
+	\begin{frame}
+		\frametitle{Il Virtual DOM di React}
+		
+		\begin{block}{Definizione}
+			Il \textbf{Virtual DOM} è una rappresentazione in memoria (in JavaScript) della struttura DOM reale della pagina.
+		\end{block}
+		
+		\vspace{0.5cm}
+		
+		\begin{itemize}
+			\item È una copia leggera dell'albero DOM effettivo del browser
+			\item Mantenuto da React come oggetto JavaScript
+			\item Permette operazioni veloci senza toccare il DOM reale
+		\end{itemize}
+		
+	\end{frame}
+	
+	% Slide 2: Come funziona
+	\begin{frame}
+		\frametitle{Come Funziona il Virtual DOM}
+		
+		\textbf{Processo di aggiornamento:}
+		
+		\begin{enumerate}
+			\item \textbf{Creazione del nuovo Virtual DOM}\\
+			React crea un nuovo albero Virtual DOM con i nuovi dati
+			
+			\vspace{0.3cm}
+			
+			\item \textbf{Confronto (Diffing)}\\
+			Algoritmo efficiente confronta il nuovo Virtual DOM con la versione precedente
+			
+			\vspace{0.3cm}
+			
+			\item \textbf{Riconciliazione}\\
+			React calcola il modo più efficiente per aggiornare il DOM reale
+			
+			\vspace{0.3cm}
+			
+			\item \textbf{Aggiornamento del DOM reale}\\
+			Solo le parti effettivamente cambiate vengono aggiornate nel browser
+		\end{enumerate}
+		
+	\end{frame}
+	
+	% Slide 3: Vantaggi
+	\begin{frame}
+		\frametitle{Vantaggi del Virtual DOM}
+		
+		\begin{block}{Perché è efficiente?}
+			Manipolare direttamente il DOM è costoso in termini di performance
+		\end{block}
+		
+		\vspace{0.5cm}
+		
+		\textbf{Vantaggi principali:}
+		
+		\begin{itemize}
+			\item[$\checkmark$] Le operazioni sul Virtual DOM sono molto più veloci (solo JavaScript in memoria)
+			
+			\vspace{0.2cm}
+			
+			\item[$\checkmark$] React raggruppa molteplici cambiamenti e li applica in un'unica operazione
+			
+			\vspace{0.2cm}
+			
+			\item[$\checkmark$] Vengono aggiornati solo gli elementi effettivamente modificati
+			
+			\vspace{0.2cm}
+			
+			\item[$\checkmark$] Ideale per applicazioni con interfacce dinamiche che cambiano frequentemente
+		\end{itemize}
+		
+	\end{frame}
+	
+	% ========== SLIDE 6: SETUP AMBIENTE ==========
+	\begin{frame}[fragile]{Preparazione Ambiente di Sviluppo}
+		\begin{block}{In Laboratorio}
+			\begin{enumerate}
+				\item Accedere a \texttt{C:\textbackslash Applicativi\textbackslash TecnologieWeb\textbackslash}
+				\item Copiare \texttt{react.zip} su pen drive USB
+				\item Scompattare il file (operazione lunga)
+				\item Risultato: directory \texttt{my-app} pronta
+			\end{enumerate}
+		\end{block}
+		
+		\begin{block}{Da Casa}
+			\begin{lstlisting}[language=bash]
+				# 1. Installare Node.js da https://nodejs.org
+				# 2. Creare applicazione React
+				npx create-react-app my-app
+				# 3. Avviare l'applicazione
+				cd my-app
+				npm start
+			\end{lstlisting}
+		\end{block}
+	\end{frame}
+	
+	% ========== SLIDE 7: STRUTTURA PROGETTO ==========
+	\begin{frame}{Struttura del Progetto React}
+		\begin{columns}
+			\column{0.5\textwidth}
+			\begin{tikzpicture}[
+				folder/.style={draw, rectangle, fill=yellow!30, minimum width=2.5cm, minimum height=0.6cm},
+				file/.style={draw, rectangle, fill=blue!10, minimum width=2.5cm, minimum height=0.5cm}
+				]
+				\node[folder] (root) at (0,0) {[DIR]\ my-app};
+				\node[folder, below left=0.3cm and -0.5cm of root] (node) {[DIR]\ node\_modules};
+				\node[folder, below=0.3cm of node] (public) {[DIR]\ public};
+				\node[folder, below=0.3cm of public] (src) {[DIR]\ src};
+				\node[file, below=0.3cm of src] (package) {[FILE]\ package.json};
+				
+				\draw[->] (root) -- (node);
+				\draw[->] (root) -- (public);
+				\draw[->] (root) -- (src);
+				\draw[->] (root) -- (package);
+			\end{tikzpicture}
+			
+			\column{0.5\textwidth}
+			\textbf{Descrizione cartelle:}
+			\begin{itemize}
+				\item \texttt{node\_modules}: librerie e dipendenze
+				\item \texttt{public}: template HTML
+				\item \texttt{src}: codice sorgente JavaScript
+				\item \texttt{package.json}: configurazione progetto
+			\end{itemize}
+		\end{columns}
+		
+		\vspace{0.5cm}
+		\begin{alertblock}{Comando di avvio}
+			\texttt{npm start} $\rightarrow$ Avvia server su porta 3000
+		\end{alertblock}
+	\end{frame}
+	
+	
+	\begin{frame}[fragile]
+		\frametitle{Struttura di un Progetto React}
+		
+		\begin{block}{Cartelle e File Principali}
+			\small
+			\texttt{my-react-app/}
+			\begin{itemize}
+				\item \texttt{node\_modules/} - Librerie e dipendenze installate
+				\item \texttt{public/} - File statici accessibili pubblicamente
+				\begin{itemize}
+					\item \texttt{index.html} - Template HTML principale
+					\item \texttt{favicon.ico} - Icona del sito
+				\end{itemize}
+				\item \texttt{src/} - Codice sorgente dell'applicazione
+				\begin{itemize}
+					\item \texttt{index.js} - Punto di ingresso dell'app
+					\item \texttt{App.js} - Componente principale
+					\item \texttt{App.css} - Stili del componente principale
+					\item \texttt{components/} - Componenti riutilizzabili
+				\end{itemize}
+				\item \texttt{package.json} - Configurazione e dipendenze del progetto
+				\item \texttt{.gitignore} - File da ignorare in Git
+			\end{itemize}
+		\end{block}
+		
+	\end{frame}
+	% ========== SLIDE 8: JSX ==========
+\begin{frame}[fragile]{JSX - JavaScript XML}
+	\begin{block}{Cos'è JSX?}
+		Sintassi che permette di scrivere tag HTML all'interno di codice JavaScript
+	\end{block}
+	
+	\begin{columns}
+		\column{0.5\textwidth}
+		\textbf{Senza JSX:}
+		\begin{tcolorbox}
+			\begin{lstlisting}[language=JavaScript, basicstyle=\ttfamily\tiny]
+				const element = 
+				React.createElement(
+				'h1',
+				{className: 'greeting'},
+				'Hello, World!'
+				);
+			\end{lstlisting}
+		\end{tcolorbox}
+		
+		\column{0.5\textwidth}
+		\textbf{Con JSX:}
+		\begin{tcolorbox}
+			\begin{lstlisting}[language=JavaScript, basicstyle=\ttfamily\tiny]
+				const element = (
+				<h1 className="greeting">
+				Hello, World!
+				</h1>
+				);
+			\end{lstlisting}
+		\end{tcolorbox}
+	\end{columns}
+	
+	\vspace{0.5cm}
+	\begin{center}
+		\begin{tikzpicture}
+			\node[draw, rectangle, fill=yellow!20] (jsx) {JSX};
+			\node[draw, rectangle, fill=blue!20, right=2cm of jsx] (js) {JavaScript};
+			\draw[->, ultra thick] (jsx) -- node[above] {Babel} (js);
+		\end{tikzpicture}
+	\end{center}
+\end{frame}
+	
+	
+	\begin{frame}[fragile]{JSX - JavaScript XML}
+		\begin{block}{Cos'è JSX?}
+			Sintassi che permette di scrivere tag HTML all'interno di codice JavaScript
+		\end{block}
+		
+		\begin{columns}
+			\column{0.5\textwidth}
+			\textbf{Senza JSX:}
+			\begin{tcblisting}{listing engine=listings, breakable, left=2mm, right=2mm, top=1mm, bottom=1mm}
+				const element = 
+				React.createElement(
+				'h1',
+				{className: 'greeting'},
+				'Hello, World!'
+				);
+			\end{tcblisting}
+			
+			\column{0.5\textwidth}
+			\textbf{Con JSX:}
+			\begin{tcblisting}{listing engine=listings, breakable, left=2mm, right=2mm, top=1mm, bottom=1mm}
+				const element = (
+				<h1 className="greeting">
+				Hello, World!
+				</h1>
+				);
+			\end{tcblisting}
+		\end{columns}
+		
+		\vspace{0.5cm}
+		\begin{center}
+			\begin{tikzpicture}
+				\node[draw, rectangle, fill=yellow!20] (jsx) {JSX};
+				\node[draw, rectangle, fill=blue!20, right=2cm of jsx] (js) {JavaScript};
+				\draw[->, ultra thick] (jsx) -- node[above] {Babel} (js);
+			\end{tikzpicture}
+		\end{center}
+	\end{frame}
+	
+	% ========== SLIDE 9: COMPONENTI INTRO ==========
+	\begin{frame}{Approccio a Componenti}
+		\begin{center}
+			\begin{tikzpicture}[scale=0.9]
+				% Interfaccia principale
+				\draw[thick] (0,0) rectangle (8,6);
+				\node at (4,5.5) {\textbf{Applicazione React}};
+				
+				% Componenti
+				\draw[fill=reactblue!30, thick] (0.5,3.5) rectangle (3.5,5);
+				\node at (2,4.5) {Header};
+				\node at (2,4) {\small Componente};
+				
+				\draw[fill=green!30, thick] (0.5,0.5) rectangle (3.5,3);
+				\node at (2,2.5) {Sidebar};
+				\node at (2,2) {\small Componente};
+				
+				\draw[fill=yellow!30, thick] (4,0.5) rectangle (7.5,5);
+				\node at (5.75,4.5) {Main Content};
+				\node at (5.75,4) {\small Componente};
+				
+				% Sotto-componenti
+				\draw[fill=orange!20] (4.2,2.5) rectangle (7.3,4.8);
+				\node[font=\small] at (5.75,3.6) {Sub-Component};
+			\end{tikzpicture}
+		\end{center}
+		
+		\begin{block}{Vantaggi}
+			\begin{itemize}
+				\item \textbf{Riusabilità}: componenti utilizzabili ovunque
+				\item \textbf{Modularità}: costruzione per composizione
+				\item \textbf{Manutenibilità}: focus su logica e layout
+			\end{itemize}
+		\end{block}
+	\end{frame}
+	
+	% ========== SLIDE 10: TIPI DI COMPONENTI ==========
+	\begin{frame}{Tipi di Componenti}
+		\begin{columns}
+			\column{0.5\textwidth}
+			\begin{block}{Function Component}
+				\begin{center}
+					\begin{tikzpicture}
+						\node[draw, rectangle, fill=blue!20, minimum width=3cm, minimum height=2cm, align=center] {
+							\textbf{Function}\\[0.3cm]
+							Props \\
+							Return JSX
+						};
+					\end{tikzpicture}
+				\end{center}
+				\begin{itemize}
+					\item Più semplici
+					\item Stateless
+					\item Solo props
+				\end{itemize}
+			\end{block}
+			
+			\column{0.5\textwidth}
+			\begin{block}{Class Component}
+				\begin{center}
+					\begin{tikzpicture}
+						\node[draw, rectangle, fill=green!20, minimum width=3cm, minimum height=2cm, align=center] {
+							\textbf{Class}\\[0.3cm]
+							Props + State\\
+							Lifecycle\\
+							Return JSX
+						};
+					\end{tikzpicture}
+				\end{center}
+				\begin{itemize}
+					\item Più complessi
+					\item Stateful
+					\item Props + State
+				\end{itemize}
+			\end{block}
+		\end{columns}
+		
+		\vspace{0.5cm}
+		\begin{alertblock}{Nota}
+			Entrambi i tipi devono restituire JSX tramite \texttt{return}
+		\end{alertblock}
+	\end{frame}
+	
+	% ========== SLIDE 11: FUNCTION COMPONENT ==========
+	\begin{frame}[fragile]{Function Component - Esempio}
+		\begin{lstlisting}[language=JavaScript]
+			function Welcome(props) {
+				return <h1>Benvenuto, {props.name}!</h1>;
+			}
+			
+			// Utilizzo
+			<Welcome name="Massimo" />
+		\end{lstlisting}
+		
+		\vspace{0.3cm}
+		
+		\begin{center}
+			\begin{tikzpicture}[node distance=1.5cm]
+				\node[draw, rectangle, fill=blue!20, minimum width=2cm] (props) {props.name};
+				\node[draw, rectangle, fill=green!20, right=of props, minimum width=2cm] (func) {Function};
+				\node[draw, rectangle, fill=yellow!20, right=of func, minimum width=2cm] (jsx) {JSX Output};
+				
+				\draw[->, thick] (props) -- (func);
+				\draw[->, thick] (func) -- (jsx);
+			\end{tikzpicture}
+		\end{center}
+		
+		\begin{block}{Caratteristiche}
+			\begin{itemize}
+				\item Sintassi più concisa
+				\item Ricevono props come parametro
+				\item Ideali per componenti di presentazione
+			\end{itemize}
+		\end{block}
+	\end{frame}
+	
+	% ========== SLIDE 12: CLASS COMPONENT ==========
+	\begin{frame}[fragile]{Class Component - Esempio}
+		\begin{lstlisting}[language=JavaScript, basicstyle=\ttfamily\footnotesize]
+			class Welcome extends React.Component {
+				render() {
+					return <h1>Benvenuto, {this.props.name}!</h1>;
+				}
+			}
+			
+			// Utilizzo
+			<Welcome name="Massimo" />
+		\end{lstlisting}
+		
+		\begin{block}{Accesso alle props}
+			Nelle classi si usa \texttt{this.props} invece di \texttt{props}
+		\end{block}
+		
+		\begin{center}
+			\begin{tikzpicture}[scale=0.8]
+				\node[draw, rectangle, fill=green!20, minimum width=4cm, minimum height=3cm, align=center] {
+					\textbf{React.Component}\\[0.3cm]
+					constructor()\\
+					render()\\
+					lifecycle methods
+				};
+			\end{tikzpicture}
+		\end{center}
+	\end{frame}
+	
+	% ========== SLIDE 13: PROPS ==========
+	\begin{frame}{Props - Proprietà Immutabili}
+		\begin{center}
+			\begin{tikzpicture}[
+				node distance=2cm,
+				component/.style={rectangle, draw, fill=blue!20, minimum width=2.5cm, minimum height=1.5cm, align=center}
+				]
+				\node[component] (parent) {Componente\\Padre};
+				\node[component, below left=1.5cm and 0cm of parent] (child1) {Componente\\Figlio 1};
+				\node[component, below right=1.5cm and 0cm of parent] (child2) {Componente\\Figlio 2};
+				
+				\draw[->, ultra thick, red] (parent) -- node[left, black] {props} (child1);
+				\draw[->, ultra thick, red] (parent) -- node[right, black] {props} (child2);
+			\end{tikzpicture}
+		\end{center}
+		
+		\begin{block}{Caratteristiche delle Props}
+			\begin{itemize}
+				\item \textbf{Immutabili}: non possono essere modificate dal componente figlio
+				\item \textbf{Unidirezionali}: flusso dati dal padre al figlio
+				\item \textbf{Configurazione}: usate per parametrizzare i componenti
+			\end{itemize}
+		\end{block}
+	\end{frame}
+	
+	% ========== SLIDE 14: STATE ==========
+	\begin{frame}[fragile]{State - Stato del Componente}
+		\begin{columns}
+			\column{0.5\textwidth}
+			\begin{lstlisting}[language=JavaScript, basicstyle=\ttfamily\tiny]
+				class Counter extends 
+				React.Component {
+					constructor(props) {
+						super(props);
+						this.state = {
+							count: 0
+						};
+					}
+					
+					render() {
+						return (
+						<div>
+						{this.state.count}
+						</div>
+						);
+					}
+				}
+			\end{lstlisting}
+			
+			\column{0.5\textwidth}
+			\begin{block}{Cos'è lo State?}
+				Dati che cambiano nel tempo durante il ciclo di vita del componente
+			\end{block}
+			
+			\vspace{0.3cm}
+			
+			\begin{tikzpicture}[scale=0.7]
+				\node[draw, circle, fill=yellow!30, minimum size=1.5cm] (state) {State};
+				\node[draw, rectangle, fill=blue!20, above=1cm of state, minimum width=2cm] (event) {Evento};
+				\node[draw, rectangle, fill=green!20, below=1cm of state, minimum width=2cm] (render) {Re-render};
+				
+				\draw[->, thick] (event) -- (state);
+				\draw[->, thick] (state) -- (render);
+			\end{tikzpicture}
+		\end{columns}
+		
+		\begin{alertblock}{Importante}
+			Usare \texttt{this.setState()} per modificare lo state, mai modificare direttamente!
+		\end{alertblock}
+	\end{frame}
+	
+	% ========== SLIDE 15: STATE VS PROPS ==========
+	\begin{frame}{State vs Props}
+		\begin{center}
+			\begin{tikzpicture}
+				% Props
+				\node[draw, rectangle, fill=blue!20, minimum width=4cm, minimum height=4cm, align=left] at (-3,0) {
+					\textbf{\large Props}\\[0.5cm]
+					$\bullet$\ Immutabili\\[0.3cm]
+					$\downarrow$\ Dal padre\\[0.3cm]
+					$\star$\ Configurazione\\[0.3cm]
+					[FILE]\ Read-only
+				};
+				
+				% State
+				\node[draw, rectangle, fill=green!20, minimum width=4cm, minimum height=4cm, align=left] at (3,0) {
+					\textbf{\large State}\\[0.5cm]
+					$\leftrightarrow$\ Mutabile\\[0.3cm]
+					$\bullet$\ Interno\\[0.3cm]
+					$\circlearrowleft$\ Dinamico\\[0.3cm]
+					$\bullet$\ Read-write
+				};
+			\end{tikzpicture}
+		\end{center}
+		
+		\begin{block}{Best Practice}
+			\begin{itemize}
+				\item Minimizzare i componenti con state
+				\item Usare props per passare dati ai figli
+				\item State solo dove necessario
+			\end{itemize}
+		\end{block}
+	\end{frame}
+	
+	% ========== SLIDE 16: GERARCHIA COMPONENTI ==========
+	\begin{frame}{Gerarchia di Componenti}
+		\begin{center}
+			\begin{tikzpicture}[
+				level 1/.style={sibling distance=4cm, level distance=2cm},
+				level 2/.style={sibling distance=2cm, level distance=2cm},
+				stateful/.style={rectangle, draw, fill=green!30, minimum width=2cm, minimum height=1cm, align=center},
+				stateless/.style={rectangle, draw, fill=blue!20, minimum width=2cm, minimum height=1cm, align=center}
+				]
+				\node[stateful] {App\\(con State)}
+				child {
+					node[stateless] {Header\\(stateless)}
+				}
+				child {
+					node[stateful] {Content\\(con State)}
+					child {node[stateless] {Item}}
+					child {node[stateless] {Item}}
+				}
+				child {
+					node[stateless] {Footer\\(stateless)}
+				};
+				
+				\node[below=4.5cm, text width=8cm, align=center] {
+					\small Componenti ai vertici mantengono lo state e passano dati via props
+				};
+			\end{tikzpicture}
+		\end{center}
+	\end{frame}
+	
+	% ========== SLIDE 17: GESTIONE EVENTI ==========
+	\begin{frame}[fragile]{Gestione degli Eventi}
+		\begin{lstlisting}[language=JavaScript, basicstyle=\ttfamily\footnotesize]
+			class Button extends React.Component {
+				handleClick(e) {
+					console.log('Pulsante premuto - Evento: ' + e.type);
+				}
+				
+				render() {
+					return (
+					<button onClick={this.handleClick}>
+					Cliccami
+					</button>
+					);
+				}
+			}
+		\end{lstlisting}
+		
+		\begin{center}
+			\begin{tikzpicture}[node distance=2cm]
+				\node[draw, rectangle, fill=yellow!30] (element) {Elemento JSX};
+				\node[draw, rectangle, fill=blue!20, right=of element] (event) {onClick};
+				\node[draw, rectangle, fill=green!20, right=of event] (handler) {Handler};
+				
+				\draw[->, thick] (element) -- (event);
+				\draw[->, thick] (event) -- (handler);
+			\end{tikzpicture}
+		\end{center}
+		
+		\begin{block}{Eventi comuni}
+			onClick, onChange, onSubmit, onMouseOver, onKeyPress, ...
+		\end{block}
+	\end{frame}
+	
+	% ========== SLIDE 18: BINDING THIS ==========
+	\begin{frame}[fragile]{Binding del this negli Eventi}
+		\textbf{Problema}: accedere allo state nell'handler
+		
+		\vspace{0.3cm}
+		
+		\begin{columns}
+			\column{0.5\textwidth}
+			\textbf{Versione 1: Bind nel costruttore}
+			\begin{lstlisting}[language=JavaScript, basicstyle=\ttfamily\tiny]
+				constructor(props) {
+					super(props);
+					this.state = {on: false};
+					this.handleClick = 
+					this.handleClick.bind(this);
+				}
+				
+				handleClick() {
+					this.setState({
+						on: !this.state.on
+					});
+				}
+				
+				render() {
+					return (
+					<button onClick=
+					{this.handleClick}>
+					</button>
+					);
+				}
+			\end{lstlisting}
+			
+			\column{0.5\textwidth}
+			\textbf{Versione 2: Arrow function}
+			\begin{lstlisting}[language=JavaScript, basicstyle=\ttfamily\tiny]
+				constructor(props) {
+					super(props);
+					this.state = {on: false};
+					// NO bind necessario
+				}
+				
+				handleClick() {
+					this.setState({
+						on: !this.state.on
+					});
+				}
+				
+				render() {
+					return (
+					<button onClick=
+					{() => this.handleClick()}>
+					</button>
+					);
+				}
+			\end{lstlisting}
+		\end{columns}
+	\end{frame}
+	
+	% ========== SLIDE 19: ESEMPIO CALCOLATRICE INTRO ==========
+	\begin{frame}{Esempio: Calcolatrice React}
+		\begin{columns}
+			\column{0.4\textwidth}
+			\begin{center}
+				\begin{tikzpicture}[scale=0.7]
+					% Display
+					\draw[fill=gray!30] (0,3.5) rectangle (4,4.5);
+					\node at (2,4) {\texttt{Display}};
+					
+					% Keyboard
+					\draw[fill=blue!20] (0,0) rectangle (4,3);
+					\node at (2,2.7) {\small\texttt{Keyboard}};
+					
+					% Buttons
+					\foreach \x in {0.5,1.5,2.5,3.5} {
+						\foreach \y in {0.3,1.0,1.7,2.4} {
+							\draw[fill=white] (\x-0.3,\y-0.2) rectangle (\x+0.3,\y+0.2);
+						}
+					}
+					
+					% Container
+					\draw[red, ultra thick] (-0.2,-0.2) rectangle (4.2,4.7);
+					\node[red] at (2,5) {\textbf{App Container}};
+				\end{tikzpicture}
+			\end{center}
+			
+			\column{0.6\textwidth}
+			\textbf{Componenti necessari:}
+			\begin{enumerate}
+				\item \textcolor{green!60!black}{Display} (figlio, stateless)
+				\begin{itemize}
+					\item Visualizza espressione
+					\item Visualizza risultato
+				\end{itemize}
+				
+				\item \textcolor{blue}{Keyboard} (figlio, stateless)
+				\begin{itemize}
+					\item Bottoni numerici
+					\item Operatori aritmetici
+				\end{itemize}
+				
+				\item \textcolor{red}{App} (padre, stateful)
+				\begin{itemize}
+					\item Gestisce lo state
+					\item Gestisce eventi
+					\item Compone i componenti
+				\end{itemize}
+			\end{enumerate}
+		\end{columns}
+	\end{frame}
+	
+	% ========== SLIDE 20: CALCOLATRICE DISPLAY ==========
+	\begin{frame}[fragile]{Calcolatrice: Componente Display}
+		\begin{lstlisting}[language=JavaScript, basicstyle=\ttfamily\footnotesize]
+			function Display(props) {
+				return (
+				<div className="display">
+				<input 
+				type="text" 
+				value={props.value} 
+				readOnly 
+				/>
+				</div>
+				);
+			}
+		\end{lstlisting}
+		
+		\begin{block}{Caratteristiche}
+			\begin{itemize}
+				\item Componente \textbf{function} (stateless)
+				\item Riceve il valore da visualizzare tramite \textbf{props}
+				\item Campo di input in sola lettura
+				\item Riutilizzabile
+			\end{itemize}
+		\end{block}
+	\end{frame}
+	
+	% ========== SLIDE 21: CALCOLATRICE KEYBOARD ==========
+	\begin{frame}[fragile]{Calcolatrice: Componente Keyboard}
+		\begin{lstlisting}[language=JavaScript, basicstyle=\ttfamily\tiny]
+			function Keyboard(props) {
+				return (
+				<div className="keyboard">
+				<button onClick={() => props.onButtonClick('7')}>7</button>
+				<button onClick={() => props.onButtonClick('8')}>8</button>
+				<button onClick={() => props.onButtonClick('9')}>9</button>
+				<button onClick={() => props.onButtonClick('+')}>+</button>
+				{/* altri bottoni... */}
+				<button onClick={() => props.onButtonClick('=')}>=</button>
+				</div>
+				);
+			}
+		\end{lstlisting}
+		
+		\begin{block}{Caratteristiche}
+			\begin{itemize}
+				\item Riceve funzione handler tramite props
+				\item Ogni bottone invoca \texttt{props.onButtonClick}
+				\item Non gestisce logica, solo presentazione
+			\end{itemize}
+		\end{block}
+	\end{frame}
+	
+	% ========== SLIDE 22: CALCOLATRICE APP ==========
+	\begin{frame}[fragile]{Calcolatrice: Componente App}
+		\begin{lstlisting}[language=JavaScript, basicstyle=\ttfamily\tiny]
+			class App extends React.Component {
+				constructor(props) {
+					super(props);
+					this.state = { expression: '', result: '' };
+				}
+				
+				handleButtonClick = (value) => {
+					if (value === '=') {
+						try {
+							this.setState({ result: eval(this.state.expression) });
+						} catch (e) {
+							this.setState({ result: 'Errore' });
+						}
+					} else if (value === 'C') {
+						this.setState({ expression: '', result: '' });
+					} else {
+						this.setState({ expression: this.state.expression + value });
+					}
+				}
+				
+				render() {
+					return (
+					<div>
+					<Display value={this.state.expression || this.state.result} />
+					<Keyboard onButtonClick={this.handleButtonClick} />
+					</div>
+					);
+				}
+			}
+		\end{lstlisting}
+	\end{frame}
+	
+	% ========== SLIDE 23: FLUSSO DATI ==========
+	\begin{frame}{Flusso dei Dati nella Calcolatrice}
+		\begin{center}
+			\begin{tikzpicture}[
+				node distance=2cm,
+				component/.style={rectangle, draw, minimum width=3cm, minimum height=1.2cm, align=center},
+				arrow/.style={->, ultra thick}
+				]
+				% Componenti
+				\node[component, fill=red!20] (app) {\textbf{App}\\state + handler};
+				\node[component, fill=blue!20, below left=2cm and 1cm of app] (keyboard) {\textbf{Keyboard}\\props};
+				\node[component, fill=green!20, below right=2cm and 1cm of app] (display) {\textbf{Display}\\props};
+				
+				% Frecce props down
+				\draw[arrow, blue] (app) -- node[left, black] {props.onClick} (keyboard);
+				\draw[arrow, blue] (app) -- node[right, black] {props.value} (display);
+				
+				% Freccia evento up
+				\draw[arrow, red, dashed] (keyboard) -- node[left, black, align=right] {evento\\click} (app);
+				
+				% Update display
+				\draw[arrow, green, dashed] (app) to[bend left=30] node[right, black] {setState} (display);
+			\end{tikzpicture}
+		\end{center}
+		
+		\begin{alertblock}{Pattern}
+			\textbf{Top-down data flow}: i dati fluiscono dall'alto verso il basso tramite props
+		\end{alertblock}
+	\end{frame}
+	
+	% ========== SLIDE 24: MODULI E RIUSABILITA ==========
+	\begin{frame}{Modularità e Riusabilità}
+		\begin{block}{Problema}
+			Applicazione monolitica in un singolo file = difficile riutilizzare componenti
+		\end{block}
+		
+		\begin{center}
+			\begin{tikzpicture}[scale=0.8]
+				% File monolitico
+				\node[draw, rectangle, fill=red!20, minimum width=2.5cm, minimum height=4cm] at (-2,0) {};
+				\node at (-2,1.5) {\texttt{App}};
+				\node at (-2,0.5) {\texttt{Display}};
+				\node at (-2,-0.5) {\texttt{Keyboard}};
+				\node at (-2,-1.5) {\small Monolitico};
+				
+				\draw[->, ultra thick] (-0.5,0) -- (0.5,0);
+				
+				% File separati
+				\node[draw, rectangle, fill=green!20, minimum width=2cm, minimum height=0.8cm] at (3,1.5) {\texttt{App.js}};
+				\node[draw, rectangle, fill=green!20, minimum width=2cm, minimum height=0.8cm] at (3,0.5) {\texttt{Display.js}};
+				\node[draw, rectangle, fill=green!20, minimum width=2cm, minimum height=0.8cm] at (3,-0.5) {\texttt{Keyboard.js}};
+				\node at (3,-1.5) {\small Modulare};
+				
+				\node[below=2.5cm] at (0.5,0) {$\checkmark$\ Riutilizzabile};
+			\end{tikzpicture}
+		\end{center}
+		
+		\begin{block}{Soluzione}
+			Creare file separati per ogni componente con import/export
+		\end{block}
+	\end{frame}
+	
+	% ========== SLIDE 25: IMPORT EXPORT ==========
+	\begin{frame}[fragile]{Import ed Export}
+		\textbf{Display.js:}
+		\begin{lstlisting}[language=JavaScript, basicstyle=\ttfamily\footnotesize]
+			import React from 'react';
+			
+			function Display(props) {
+				return <div>{props.value}</div>;
+			}
+			
+			export default Display;
+		\end{lstlisting}
+		
+		\textbf{App.js:}
+		\begin{lstlisting}[language=JavaScript, basicstyle=\ttfamily\footnotesize]
+			import React from 'react';
+			import Display from './Display';
+			import Keyboard from './Keyboard';
+			
+			class App extends React.Component {
+				// ...
+			}
+			
+			export default App;
+		\end{lstlisting}
+	\end{frame}
+	
+	% ========== SLIDE 26: TOOLCHAIN ==========
+	\begin{frame}{Toolchain di Sviluppo}
+		\begin{block}{Cos'è una Toolchain?}
+			Insieme di strumenti integrati che facilitano lo sviluppo professionale
+		\end{block}
+		
+		\begin{center}
+			\begin{tikzpicture}[
+				tool/.style={rectangle, draw, fill=blue!20, minimum width=2.5cm, minimum height=1cm},
+				node distance=1.5cm
+				]
+				\node[tool] (nodejs) {Node.js};
+				\node[tool, right=of nodejs] (webpack) {Webpack};
+				\node[tool, right=of webpack] (babel) {Babel};
+				
+				\node[below=0.3cm of nodejs, align=center] {\small Runtime\\JavaScript};
+				\node[below=0.3cm of webpack, align=center] {\small Module\\Bundler};
+				\node[below=0.3cm of babel, align=center] {\small JSX\\Compiler};
+				
+				\node[draw, rectangle, fill=green!20, minimum width=8cm, minimum height=0.8cm, below=2cm of webpack] {
+					\textbf{Create React App}
+				};
+			\end{tikzpicture}
+		\end{center}
+		
+		\begin{block}{Vantaggi}
+			\begin{itemize}
+				\item Hot reload durante sviluppo
+				\item Individuazione errori
+				\item Ottimizzazione per produzione
+				\item Configurazione zero
+			\end{itemize}
+		\end{block}
+	\end{frame}
+	
+	% ========== SLIDE 27: COMANDI NPM ==========
+	\begin{frame}[fragile]{Comandi NPM Principali}
+		\begin{block}{npm start}
+			\begin{lstlisting}[language=bash]
+				npm start
+			\end{lstlisting}
+			Avvia server di sviluppo su \texttt{localhost:3000}\\
+			Hot reload automatico delle modifiche
+		\end{block}
+		
+		\begin{block}{npm run build}
+			\begin{lstlisting}[language=bash]
+				npm run build
+			\end{lstlisting}
+			Crea directory \texttt{build/} con file ottimizzati per produzione\\
+			Pronta per deploy su web server
+		\end{block}
+		
+		\begin{center}
+			\begin{tikzpicture}[node distance=2.5cm]
+				\node[draw, rectangle, fill=blue!20] (src) {src/};
+				\node[draw, rectangle, fill=orange!20, right=of src] (build) {build/};
+				\node[draw, cloud, fill=green!20, right=of build] (server) {Web Server};
+				
+				\draw[->, ultra thick] (src) -- node[above] {\small npm build} (build);
+				\draw[->, ultra thick] (build) -- node[above] {\small deploy} (server);
+			\end{tikzpicture}
+		\end{center}
+	\end{frame}
+	
+	% ========== SLIDE 28: BUNDLING ==========
+	\begin{frame}{Application Bundling}
+		\begin{center}
+			\begin{tikzpicture}[
+				file/.style={rectangle, draw, fill=blue!20, minimum width=1.5cm, minimum height=0.6cm},
+				node distance=1cm
+				]
+				% File sorgenti
+				\node[file] (app) {\small App.js};
+				\node[file, below=of app] (display) {\small Display.js};
+				\node[file, below=of display] (keyboard) {\small Keyboard.js};
+				\node[file, below=of keyboard] (utils) {\small utils.js};
+				\node at (0,-3.5) {\small + 100 altri file...};
+				
+				% Webpack
+				\node[draw, rectangle, fill=orange!30, minimum width=2cm, minimum height=5cm] at (3.5,-1) {};
+				\node at (3.5,0) {\textbf{Webpack}};
+				\node[rotate=90] at (3.5,-1.5) {\small bundling};
+				
+				% Bundle output
+				\node[draw, rectangle, fill=green!20, minimum width=2cm, minimum height=1.5cm] at (7,-1) {
+					\textbf{bundle.js}
+				};
+				
+				\draw[->, ultra thick] (app) -- (3,0.5);
+				\draw[->, ultra thick] (display) -- (3,-0.2);
+				\draw[->, ultra thick] (keyboard) -- (3,-0.9);
+				\draw[->, ultra thick] (utils) -- (3,-1.6);
+				
+				\draw[->, ultra thick] (4.5,-1) -- (6,-1);
+			\end{tikzpicture}
+		\end{center}
+		
+		\begin{block}{Webpack}
+			Tool che combina tutti i moduli JavaScript in un unico file ottimizzato
+		\end{block}
+	\end{frame}
+	
+	% ========== SLIDE 29: ESERCIZI ==========
+	\begin{frame}{Esercizi Proposti}
+		\begin{block}{Esercizio 1: Doppio Display}
+			Modificare la calcolatrice per avere:
+			\begin{itemize}
+				\item Display 1: mostra l'espressione in composizione
+				\item Display 2: mostra il risultato finale
+				\item Tasto 'C': resetta entrambi i display
+			\end{itemize}
+			\textbf{Suggerimento}: riutilizzare il componente Display esistente!
+		\end{block}
+		
+		\begin{block}{Esercizio 2: Calcolatrice Scientifica}
+			Aggiungere funzionalità scientifiche:
+			\begin{itemize}
+				\item Nuovo tastierino con: $\log_e(x)$, $\sqrt{x}$, $e^x$, $\frac{1}{x}$
+				\item Applicare operatori all'espressione corrente
+				\item Posizionare sotto la tastiera esistente
+			\end{itemize}
+		\end{block}
+	\end{frame}
+	
+	% ========== SLIDE 30: BEST PRACTICES ==========
+	\begin{frame}{Best Practices React}
+		\begin{columns}
+			\column{0.5\textwidth}
+			\textbf{Struttura:}
+			\begin{itemize}
+				\item $\checkmark$\ Componenti piccoli e focalizzati
+				\item $\checkmark$\ Separare logica e presentazione
+				\item $\checkmark$\ Un componente per file
+				\item $\checkmark$\ Naming chiaro e consistente
+			\end{itemize}
+			
+			\vspace{0.5cm}
+			
+			\textbf{State Management:}
+			\begin{itemize}
+				\item $\checkmark$\ Minimizzare componenti stateful
+				\item $\checkmark$\ State il più in alto possibile
+				\item $\checkmark$\ Props per passare dati in basso
+			\end{itemize}
+			
+			\column{0.5\textwidth}
+			\textbf{Performance:}
+			\begin{itemize}
+				\item $\checkmark$\ Evitare binding in render
+				\item $\checkmark$\ Usare keys nelle liste
+				\item $\checkmark$\ Componenti puri quando possibile
+			\end{itemize}
+			
+			\vspace{0.5cm}
+			
+			\textbf{Codice:}
+			\begin{itemize}
+				\item $\checkmark$\ JSX leggibile e indentato
+				\item $\checkmark$\ Commenti dove necessario
+				\item $\checkmark$\ PropTypes per validazione
+				\item $\checkmark$\ Testing dei componenti
+			\end{itemize}
+		\end{columns}
+	\end{frame}
+	
+	% ========== SLIDE 31: RISORSE ==========
+	\begin{frame}{Risorse Utili}
+		\begin{block}{Documentazione Ufficiale}
+			\begin{itemize}
+				\item \textbf{React}: \url{https://reactjs.org/docs}
+				\item \textbf{Create React App}: \url{https://create-react-app.dev/}
+				\item \textbf{Babel}: \url{https://babeljs.io/}
+			\end{itemize}
+		\end{block}
+		
+		\begin{block}{Tutorial e Guide}
+			\begin{itemize}
+				\item React Tutorial ufficiale
+				\item FreeCodeCamp React Course
+				\item React Patterns
+				\item Awesome React (GitHub)
+			\end{itemize}
+		\end{block}
+		
+		\begin{block}{Tools}
+			\begin{itemize}
+				\item React Developer Tools (Chrome/Firefox)
+				\item VS Code + ES7 React snippets
+				\item CodeSandbox per prototipazione rapida
+			\end{itemize}
+		\end{block}
+	\end{frame}
+	
+	% ========== SLIDE 32: CONCLUSIONI ==========
+	\begin{frame}{Conclusioni}
+		\begin{center}
+			\begin{tikzpicture}[scale=0.6]
+				% React logo
+				\draw[reactblue, ultra thick] (0,0) circle (2);
+				\fill[reactblue] (0,0) circle (0.4);
+				\draw[reactblue, ultra thick, rotate=60] (0,0) ellipse (4 and 1);
+				\draw[reactblue, ultra thick, rotate=-60] (0,0) ellipse (4 and 1);
+			\end{tikzpicture}
+		\end{center}
+		
+		\begin{block}{Cosa abbiamo imparato}
+			\begin{itemize}
+				\item Fondamenti di React.js e Single Page Applications
+				\item Componenti function e class
+				\item Props e State
+				\item Gestione eventi
+				\item Sviluppo modulare con toolchain
+				\item Pattern di composizione
+			\end{itemize}
+		\end{block}
+		
+		\begin{center}
+			\Large\textbf{Buon lavoro con React!}
+		\end{center}
+	\end{frame}
+	
+	% ========== SLIDE 33: CONTATTI ==========
+	\begin{frame}{Riferimenti}
+		\begin{center}
+			\Large\textbf{Tecnologie Web T}\\
+			\large A.A. 2020--2021
+			
+			\vspace{1cm}
+			
+			\normalsize
+			Home Page del corso:\\
+			\url{http://lia.disi.unibo.it/Courses/twt2021-info/}
+			
+			\vspace{0.5cm}
+			
+			Versione elettronica:\\
+			\texttt{L.06.React.pdf}\\
+			\texttt{L.06.React-2p.pdf}
+			
+			\vspace{1cm}
+			
+			\begin{tikzpicture}
+				\node[draw, circle, fill=reactblue!30, minimum size=1.5cm] {\Huge R};
+			\end{tikzpicture}
+		\end{center}
+	\end{frame}
+	
+\end{document}
