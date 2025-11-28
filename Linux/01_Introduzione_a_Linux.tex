@@ -1,0 +1,1337 @@
+\documentclass[aspectratio=169]{beamer}
+\usetheme{Madrid}
+\usecolortheme{default}
+
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\usetikzlibrary{shapes.geometric, arrows, positioning, calc}
+
+% Configurazione listing per codice
+\lstset{
+	basicstyle=\ttfamily\small,
+	keywordstyle=\color{blue},
+	commentstyle=\color{green!60!black},
+	stringstyle=\color{red},
+	breaklines=true,
+	frame=single
+}
+
+\title{Sistemi Operativi: Concetti Fondamentali}
+\subtitle{Kernel, Shell e Distribuzioni Linux}
+\author{Prof. Massimo Fedeli}
+\institute{ITS Academy - Fabbrica Digitale}
+\date{\today}
+
+\begin{document}
+	
+	% Slide 1: Titolo
+	\frame{\titlepage}
+	
+	% Slide 2: Indice
+	\begin{frame}{Indice}
+		\tableofcontents
+	\end{frame}
+	
+	\section{Introduzione ai Sistemi Operativi}
+	
+	% Slide 3: Cos'è un Sistema Operativo
+	\begin{frame}{Cos'è un Sistema Operativo?}
+		\begin{columns}
+			\column{0.6\textwidth}
+			\textbf{Definizione:} Un sistema operativo (SO) è un software di base che:
+			\begin{itemize}
+				\item Gestisce le risorse hardware del computer
+				\item Fornisce servizi ai programmi applicativi
+				\item Fa da intermediario tra utente e hardware
+				\item Coordina l'esecuzione dei programmi
+			\end{itemize}
+			\column{0.4\textwidth}
+			\begin{tikzpicture}[scale=0.8]
+				\node[draw, rectangle, fill=blue!20, minimum width=3cm, minimum height=0.8cm] (hw) at (0,0) {Hardware};
+				\node[draw, rectangle, fill=green!20, minimum width=3cm, minimum height=0.8cm] (so) at (0,1.2) {Sistema Operativo};
+				\node[draw, rectangle, fill=yellow!20, minimum width=3cm, minimum height=0.8cm] (app) at (0,2.4) {Applicazioni};
+				\node[draw, rectangle, fill=red!20, minimum width=3cm, minimum height=0.8cm] (user) at (0,3.6) {Utente};
+				
+				\draw[->, thick] (hw) -- (so);
+				\draw[->, thick] (so) -- (app);
+				\draw[->, thick] (app) -- (user);
+			\end{tikzpicture}
+		\end{columns}
+	\end{frame}
+	
+	% Slide 4: Funzioni principali del SO
+	\begin{frame}{Funzioni Principali del Sistema Operativo}
+		\begin{enumerate}
+			\item \textbf{Gestione dei processi}
+			\begin{itemize}
+				\item Creazione, scheduling, terminazione
+				\item Sincronizzazione e comunicazione tra processi
+			\end{itemize}
+			
+			\item \textbf{Gestione della memoria}
+			\begin{itemize}
+				\item Allocazione e deallocazione
+				\item Memoria virtuale
+			\end{itemize}
+			
+			\item \textbf{Gestione del file system}
+			\begin{itemize}
+				\item Organizzazione dei file
+				\item Controllo degli accessi
+			\end{itemize}
+			
+			\item \textbf{Gestione I/O}
+			\begin{itemize}
+				\item Driver dei dispositivi
+				\item Buffering e caching
+			\end{itemize}
+		\end{enumerate}
+	\end{frame}
+	
+	% Slide 5: Tipi di Sistemi Operativi
+	\begin{frame}{Tipologie di Sistemi Operativi}
+		\begin{columns}
+			\column{0.5\textwidth}
+			\textbf{Per struttura:}
+			\begin{itemize}
+				\item Monolitici
+				\item A microkernel
+				\item Ibridi
+				\item A strati
+			\end{itemize}
+			
+			\textbf{Per utilizzo:}
+			\begin{itemize}
+				\item Desktop (Windows, macOS, Linux)
+				\item Server
+				\item Mobile (Android, iOS)
+				\item Embedded
+				\item Real-time
+			\end{itemize}
+			
+			\column{0.5\textwidth}
+			\begin{tikzpicture}[scale=0.7]
+				% SO Monolitico
+				\node[draw, circle, fill=blue!30, minimum size=2.5cm] at (0,2) {\begin{tabular}{c}Kernel\\Monolitico\end{tabular}};
+				\node at (0,0.5) {\small Tutto nel kernel};
+				
+				% SO Microkernel
+				\node[draw, circle, fill=green!30, minimum size=1cm] at (4,2.5) {\tiny Kernel};
+				\node[draw, rectangle, fill=yellow!20] at (3.2,1.2) {\tiny Servizio};
+				\node[draw, rectangle, fill=yellow!20] at (4.8,1.2) {\tiny Servizio};
+				\node at (4,0.5) {\small Microkernel};
+			\end{tikzpicture}
+		\end{columns}
+	\end{frame}
+	
+	\section{Il Kernel}
+	
+	% Slide 6: Il Kernel - Introduzione
+	\begin{frame}{Il Kernel: Cuore del Sistema Operativo}
+		\begin{block}{Definizione}
+			Il \textbf{kernel} è il nucleo del sistema operativo, il componente che ha controllo completo su tutto il sistema.
+		\end{block}
+		
+		\vspace{0.3cm}
+		
+		\textbf{Responsabilità principali:}
+		\begin{itemize}
+			\item Gestione della CPU e scheduling dei processi
+			\item Gestione della memoria RAM
+			\item Gestione dei dispositivi hardware (driver)
+			\item Gestione delle chiamate di sistema (system calls)
+			\item Gestione della sicurezza e dei permessi
+		\end{itemize}
+	\end{frame}
+	
+	% Slide 7: Modalità di esecuzione
+	\begin{frame}{Modalità di Esecuzione: User Mode vs Kernel Mode}
+		\begin{columns}
+			\column{0.5\textwidth}
+			\textbf{User Mode (Modalità utente):}
+			\begin{itemize}
+				\item Accesso limitato alle risorse
+				\item Esecuzione applicazioni utente
+				\item Protezione del sistema
+				\item Necessita system calls per operazioni privilegiate
+			\end{itemize}
+			
+			\vspace{0.3cm}
+			
+			\textbf{Kernel Mode (Modalità kernel):}
+			\begin{itemize}
+				\item Accesso completo all'hardware
+				\item Esecuzione codice kernel
+				\item Nessuna restrizione
+				\item Operazioni critiche del sistema
+			\end{itemize}
+			
+			\column{0.5\textwidth}
+			\begin{tikzpicture}[scale=0.9]
+				% User Space
+				\draw[fill=blue!10] (0,3) rectangle (4,5);
+				\node at (2,4.5) {User Space};
+				\node[draw, fill=white] at (1,3.7) {\tiny App 1};
+				\node[draw, fill=white] at (2,3.7) {\tiny App 2};
+				\node[draw, fill=white] at (3,3.7) {\tiny App 3};
+				
+				% Kernel Space
+				\draw[fill=red!10] (0,0) rectangle (4,2.8);
+				\node at (2,2.3) {Kernel Space};
+				\node at (2,1.5) {\small Kernel};
+				\node at (2,0.8) {\tiny Hardware};
+				
+				% Freccia system call
+				\draw[->, very thick, blue] (2,3) -- (2,2.8);
+				\node[right] at (2.1,2.9) {\tiny syscall};
+			\end{tikzpicture}
+		\end{columns}
+	\end{frame}
+	
+	% Slide 8: Architetture del Kernel
+	\begin{frame}{Architetture del Kernel}
+		\begin{columns}
+			\column{0.5\textwidth}
+			\textbf{1. Kernel Monolitico}
+			\begin{itemize}
+				\item Tutto il codice in un unico blocco
+				\item Alte prestazioni
+				\item Più difficile da manutenere
+				\item Esempio: Linux, Unix tradizionale
+			\end{itemize}
+			
+			\vspace{0.3cm}
+			
+			\textbf{2. Microkernel}
+			\begin{itemize}
+				\item Kernel minimale
+				\item Servizi in user space
+				\item Maggiore stabilità
+				\item Esempio: Minix, QNX
+			\end{itemize}
+			
+			\column{0.5\textwidth}
+			\textbf{3. Kernel Ibrido}
+			\begin{itemize}
+				\item Compromesso tra i due
+				\item Alcuni servizi nel kernel
+				\item Altri in user space
+				\item Esempio: Windows NT, macOS
+			\end{itemize}
+			
+			\vspace{0.3cm}
+			
+			\begin{tikzpicture}[scale=0.6]
+				\node[draw, rectangle, fill=blue!30, minimum width=2cm, minimum height=1.5cm] at (0,0) {\begin{tabular}{c}\tiny FS\\\tiny Driver\\\tiny Net\end{tabular}};
+				\node at (0,-1.2) {\tiny Monolitico};
+				
+				\node[draw, rectangle, fill=green!30, minimum width=1cm, minimum height=0.5cm] at (3,0) {\tiny Core};
+				\node[draw, rectangle, fill=yellow!20, minimum width=0.4cm, minimum height=0.3cm] at (2.5,0.7) {\tiny};
+				\node[draw, rectangle, fill=yellow!20, minimum width=0.4cm, minimum height=0.3cm] at (3.5,0.7) {\tiny};
+				\node at (3,-1.2) {\tiny Micro};
+			\end{tikzpicture}
+		\end{columns}
+	\end{frame}
+	
+	% Slide 9: Il Kernel Linux
+	\begin{frame}{Il Kernel Linux}
+		\begin{columns}
+			\column{0.6\textwidth}
+			\textbf{Caratteristiche:}
+			\begin{itemize}
+				\item Architettura monolitica modulare
+				\item Open Source (GPL v2)
+				\item Supporto multipiattaforma
+				\item Altamente configurabile
+				\item Sviluppo collaborativo
+			\end{itemize}
+			
+			\vspace{0.3cm}
+			
+			\textbf{Componenti principali:}
+			\begin{itemize}
+				\item Process scheduler
+				\item Memory manager
+				\item Virtual File System (VFS)
+				\item Network stack
+				\item Device drivers
+			\end{itemize}
+			
+			\column{0.4\textwidth}
+			\begin{block}{Storia}
+				\begin{itemize}
+					\item Creato da Linus Torvalds nel 1991
+					\item Versione 0.01: 10.000 righe
+					\item Oggi: oltre 27 milioni di righe
+					\item Migliaia di contribuitori
+				\end{itemize}
+			\end{block}
+			
+			\vspace{0.2cm}
+			
+			\begin{tikzpicture}[scale=0.7]
+				\node[draw, ellipse, fill=orange!30, minimum width=2.5cm, minimum height=1.5cm] at (0,0) {Kernel Linux};
+				\node[draw, rectangle, fill=blue!20] at (-1.5,1.2) {\tiny Moduli};
+				\node[draw, rectangle, fill=blue!20] at (1.5,1.2) {\tiny Driver};
+				\node[draw, rectangle, fill=blue!20] at (-1.5,-1.2) {\tiny FS};
+				\node[draw, rectangle, fill=blue!20] at (1.5,-1.2) {\tiny Network};
+			\end{tikzpicture}
+		\end{columns}
+	\end{frame}
+	
+	% Slide 10: Versioning del Kernel Linux
+	\begin{frame}{Versioning del Kernel Linux}
+		\textbf{Schema di numerazione:}
+		\begin{center}
+			\Large X.Y.Z
+		\end{center}
+		
+		\begin{itemize}
+			\item \textbf{X} = Versione principale (major)
+			\item \textbf{Y} = Versione minore (minor)
+			\item \textbf{Z} = Revisione (patch level)
+		\end{itemize}
+		
+		\vspace{0.3cm}
+		
+		\textbf{Esempi:}
+		\begin{itemize}
+			\item 5.15.0 → Versione 5, release 15, nessuna patch
+			\item 6.1.38 → Versione 6, release 1, patch 38
+		\end{itemize}
+		
+		\vspace{0.3cm}
+		
+		\textbf{Tipi di rilascio:}
+		\begin{itemize}
+			\item \textbf{Mainline:} versione in sviluppo attivo
+			\item \textbf{Stable:} versioni stabili per produzione
+			\item \textbf{Longterm (LTS):} supporto esteso (2-6 anni)
+		\end{itemize}
+	\end{frame}
+	
+	\section{La Shell}
+	
+	% Slide 11: La Shell - Introduzione
+	\begin{frame}{La Shell: Interfaccia a Riga di Comando}
+		\begin{block}{Definizione}
+			La \textbf{shell} è un interprete di comandi che fornisce un'interfaccia tra l'utente e il kernel del sistema operativo.
+		\end{block}
+		
+		\vspace{0.3cm}
+		
+		\textbf{Funzioni principali:}
+		\begin{itemize}
+			\item Interpreta ed esegue comandi
+			\item Gestisce input/output
+			\item Supporta scripting e automazione
+			\item Gestisce variabili d'ambiente
+			\item Controllo dei processi
+			\item Espansione di caratteri speciali (wildcards)
+		\end{itemize}
+	\end{frame}
+	
+	% Slide 12: Tipi di Shell
+	\begin{frame}[fragile]{Tipi di Shell in Linux}
+		\begin{columns}
+			\column{0.5\textwidth}
+			\textbf{Shell principali:}
+			
+			\begin{enumerate}
+				\item \textbf{sh (Bourne Shell)}
+				\begin{itemize}
+					\item Shell originale Unix
+					\item Standard POSIX
+				\end{itemize}
+				
+				\item \textbf{bash (Bourne Again Shell)}
+				\begin{itemize}
+					\item Shell predefinita in molte distro
+					\item Compatibile con sh
+					\item Funzionalità avanzate
+				\end{itemize}
+				
+				\item \textbf{zsh (Z Shell)}
+				\begin{itemize}
+					\item Altamente personalizzabile
+					\item Auto-completamento avanzato
+				\end{itemize}
+				
+				\item \textbf{fish (Friendly Interactive Shell)}
+				\begin{itemize}
+					\item Sintassi user-friendly
+					\item Suggerimenti automatici
+				\end{itemize}
+			\end{enumerate}
+			
+			\column{0.5\textwidth}
+			\textbf{Altre shell:}
+			\begin{itemize}
+				\item csh (C Shell)
+				\item tcsh (TENEX C Shell)
+				\item ksh (Korn Shell)
+				\item dash (Debian Almquist Shell)
+			\end{itemize}
+			
+			\vspace{0.3cm}
+			
+			\textbf{Controllare la shell corrente:}
+			\begin{lstlisting}[language=bash]
+				echo $SHELL
+				# Output: /bin/bash
+				
+				ps -p $$
+			\end{lstlisting}
+		\end{columns}
+	\end{frame}
+	
+	% Slide 13: Componenti della Shell
+	\begin{frame}{Componenti e Funzionalità della Shell}
+		\begin{enumerate}
+			\item \textbf{Prompt dei comandi}
+			\begin{itemize}
+				\item Indica che la shell è pronta
+				\item Personalizzabile (PS1)
+				\item Mostra info utili (utente, path, ecc.)
+			\end{itemize}
+			
+			\item \textbf{Interprete di comandi}
+			\begin{itemize}
+				\item Parsing della linea di comando
+				\item Esecuzione programmi
+			\end{itemize}
+			
+			\item \textbf{Espansione e sostituzione}
+			\begin{itemize}
+				\item Wildcards: *, ?, [ ]
+				\item Variabili: \$VAR
+				\item Command substitution: \$(comando)
+			\end{itemize}
+			
+			\item \textbf{Redirezione I/O}
+			\begin{itemize}
+				\item Input: <
+				\item Output: >, >>
+				\item Pipe: |
+			\end{itemize}
+		\end{enumerate}
+	\end{frame}
+	
+	% Slide 14: Comandi Shell fondamentali
+	\begin{frame}[fragile]{Comandi Shell Fondamentali}
+		\begin{columns}
+			\column{0.5\textwidth}
+			\textbf{Navigazione file system:}
+			\begin{lstlisting}[language=bash]
+				pwd      # stampa directory corrente
+				ls       # elenca file
+				cd /path # cambia directory
+				mkdir    # crea directory
+				rmdir    # rimuove directory
+			\end{lstlisting}
+			
+			\textbf{Gestione file:}
+			\begin{lstlisting}[language=bash]
+				cp       # copia
+				mv       # sposta/rinomina
+				rm       # rimuove
+				touch    # crea file vuoto
+				cat      # mostra contenuto
+			\end{lstlisting}
+			
+			\column{0.5\textwidth}
+			\textbf{Informazioni di sistema:}
+			\begin{lstlisting}[language=bash]
+				uname -a # info sistema
+				whoami   # utente corrente
+				date     # data e ora
+				df -h    # spazio disco
+				free -h  # memoria
+			\end{lstlisting}
+			
+			\textbf{Gestione processi:}
+			\begin{lstlisting}[language=bash]
+				ps       # processi attivi
+				top      # monitor processi
+				kill PID # termina processo
+				bg/fg    # background/foreground
+			\end{lstlisting}
+		\end{columns}
+	\end{frame}
+	
+	% Slide 15: Scripting Shell
+	\begin{frame}[fragile]{Shell Scripting}
+		\textbf{Uno script shell è un file di testo con una sequenza di comandi.}
+		
+		\begin{lstlisting}[language=bash]
+			#!/bin/bash
+			# Primo script di esempio
+			
+			# Variabili
+			NOME="Mario"
+			echo "Ciao $NOME!"
+			
+			# Controllo condizionale
+			if [ -f /etc/passwd ]; then
+			echo "Il file esiste"
+			fi
+			
+			# Ciclo
+			for i in {1..5}; do
+			echo "Iterazione $i"
+			done
+		\end{lstlisting}
+		
+		\textbf{Esecuzione:}
+		\begin{lstlisting}[language=bash]
+			chmod +x script.sh
+			./script.sh
+		\end{lstlisting}
+	\end{frame}
+	
+	% Slide 16: Variabili d'ambiente
+	\begin{frame}[fragile]{Variabili d'Ambiente}
+		\textbf{Variabili che influenzano il comportamento del sistema e dei programmi.}
+		
+		\begin{columns}
+			\column{0.5\textwidth}
+			\textbf{Variabili comuni:}
+			\begin{itemize}
+				\item \texttt{PATH} - percorsi eseguibili
+				\item \texttt{HOME} - directory home
+				\item \texttt{USER} - nome utente
+				\item \texttt{SHELL} - shell corrente
+				\item \texttt{LANG} - lingua sistema
+				\item \texttt{PWD} - directory corrente
+			\end{itemize}
+			
+			\column{0.5\textwidth}
+			\textbf{Gestione variabili:}
+			\begin{lstlisting}[language=bash]
+				# Visualizzare
+				echo $PATH
+				env | grep PATH
+				
+				# Impostare (temporanea)
+				export MYVAR="valore"
+				
+				# Impostare (permanente)
+				# Aggiungere in ~/.bashrc
+				export EDITOR=vim
+				
+				# Rimuovere
+				unset MYVAR
+			\end{lstlisting}
+		\end{columns}
+	\end{frame}
+	
+	\section{GNU/Linux}
+	
+	% Slide 17: Storia di GNU/Linux
+	\begin{frame}{Storia di GNU/Linux}
+		\begin{columns}
+			\column{0.5\textwidth}
+			\textbf{Progetto GNU (1983)}
+			\begin{itemize}
+				\item Fondato da Richard Stallman
+				\item Sistema operativo libero
+				\item Filosofia Free Software
+				\item GNU's Not Unix
+				\item Strumenti: gcc, glibc, bash, ecc.
+			\end{itemize}
+			
+			\vspace{0.3cm}
+			
+			\textbf{Linux Kernel (1991)}
+			\begin{itemize}
+				\item Creato da Linus Torvalds
+				\item Inizialmente hobby personale
+				\item Rilasciato con licenza GPL
+				\item Completa il sistema GNU
+			\end{itemize}
+			
+			\column{0.5\textwidth}
+			\textbf{Timeline:}
+			\begin{itemize}
+				\item 1983 - Progetto GNU inizia
+				\item 1991 - Linux 0.01 rilasciato
+				\item 1992 - Licenza GPL per Linux
+				\item 1993 - Slackware (prima distro)
+				\item 1993 - Debian fondata
+				\item 1994 - Red Hat fondata
+				\item 2004 - Ubuntu rilasciata
+				\item 2011 - Linux 3.0
+				\item 2022 - Linux 6.0
+			\end{itemize}
+			
+			\vspace{0.2cm}
+			
+			\begin{block}{GNU/Linux}
+				Sistema operativo completo = Kernel Linux + Strumenti GNU + Altro software
+			\end{block}
+		\end{columns}
+	\end{frame}
+	
+	% Slide 18: Filosofia Free Software
+	\begin{frame}{Filosofia del Software Libero}
+		\textbf{Le Quattro Libertà Fondamentali:}
+		
+		\begin{enumerate}
+			\item[0.] \textbf{Libertà di eseguire} il programma per qualsiasi scopo
+			
+			\item[1.] \textbf{Libertà di studiare} come funziona il programma e modificarlo
+			
+			\item[2.] \textbf{Libertà di redistribuire} copie del programma
+			
+			\item[3.] \textbf{Libertà di migliorare} il programma e distribuire i miglioramenti
+		\end{enumerate}
+		
+		\vspace{0.5cm}
+		
+		\begin{block}{Open Source vs Free Software}
+			\begin{itemize}
+				\item \textbf{Free Software:} enfasi sulle libertà etiche
+				\item \textbf{Open Source:} enfasi sui vantaggi pratici
+				\item Spesso sovrapposti ma filosofie diverse
+			\end{itemize}
+		\end{block}
+	\end{frame}
+	
+	% Slide 19: Licenze Open Source
+	\begin{frame}{Principali Licenze Open Source}
+		\begin{columns}
+			\column{0.5\textwidth}
+			\textbf{Licenze Copyleft:}
+			\begin{itemize}
+				\item \textbf{GPL (GNU General Public License)}
+				\begin{itemize}
+					\item Versioni: GPLv2, GPLv3
+					\item Derivati devono essere GPL
+					\item Usata da Linux
+				\end{itemize}
+				
+				\item \textbf{LGPL (Lesser GPL)}
+				\begin{itemize}
+					\item Permette linking con software proprietario
+					\item Usata per librerie
+				\end{itemize}
+				
+				\item \textbf{AGPL}
+				\begin{itemize}
+					\item Come GPL ma per software web
+				\end{itemize}
+			\end{itemize}
+			
+			\column{0.5\textwidth}
+			\textbf{Licenze Permissive:}
+			\begin{itemize}
+				\item \textbf{MIT License}
+				\begin{itemize}
+					\item Molto permissiva
+					\item Breve e semplice
+				\end{itemize}
+				
+				\item \textbf{BSD License}
+				\begin{itemize}
+					\item 2-clause, 3-clause
+					\item Simile a MIT
+				\end{itemize}
+				
+				\item \textbf{Apache License 2.0}
+				\begin{itemize}
+					\item Include protezione brevetti
+					\item Usata da Apache, Android
+				\end{itemize}
+			\end{itemize}
+		\end{columns}
+		
+		\vspace{0.3cm}
+		\textbf{Differenza chiave:} Copyleft richiede che i derivati mantengano la stessa licenza; permissive permettono uso anche in software proprietario.
+	\end{frame}
+	
+	\section{Distribuzioni Linux}
+	
+	% Slide 20: Cosa sono le Distribuzioni
+	\begin{frame}{Distribuzioni Linux: Concetto}
+		\begin{block}{Definizione}
+			Una \textbf{distribuzione Linux} (distro) è un sistema operativo completo basato sul kernel Linux, che include:
+		\end{block}
+		
+		\begin{itemize}
+			\item Kernel Linux
+			\item Strumenti GNU e utilità di sistema
+			\item Package manager
+			\item Desktop environment (opzionale)
+			\item Applicazioni preinstallate
+			\item Strumenti di configurazione
+			\item Sistema di init (systemd, OpenRC, ecc.)
+		\end{itemize}
+		
+		\vspace{0.3cm}
+		
+		\textbf{Perché esistono tante distribuzioni?}
+		\begin{itemize}
+			\item Scopi diversi (desktop, server, embedded)
+			\item Filosofie diverse
+			\item Target di utenza diverso
+			\item Cicli di rilascio diversi
+		\end{itemize}
+	\end{frame}
+	
+	% Slide 21: Famiglie di Distribuzioni
+	\begin{frame}{Famiglie di Distribuzioni Linux}
+		\begin{columns}
+			\column{0.5\textwidth}
+			\textbf{1. Famiglia Debian}
+			\begin{itemize}
+				\item Debian
+				\item Ubuntu (e derivate)
+				\item Linux Mint
+				\item Pop!\_OS
+				\item Package: .deb (apt)
+			\end{itemize}
+			
+			\vspace{0.3cm}
+			
+			\textbf{2. Famiglia Red Hat}
+			\begin{itemize}
+				\item Red Hat Enterprise Linux (RHEL)
+				\item Fedora
+				\item CentOS / Rocky Linux / AlmaLinux
+				\item Package: .rpm (dnf/yum)
+			\end{itemize}
+			
+			\column{0.5\textwidth}
+			\textbf{3. Famiglia Arch}
+			\begin{itemize}
+				\item Arch Linux
+				\item Manjaro
+				\item EndeavourOS
+				\item Package: pacman
+			\end{itemize}
+			
+			\vspace{0.3cm}
+			
+			\textbf{4. Altre famiglie}
+			\begin{itemize}
+				\item SUSE (openSUSE, SLES)
+				\item Gentoo (source-based)
+				\item Slackware
+				\item Alpine Linux
+				\item Distribuzioni indipendenti
+			\end{itemize}
+		\end{columns}
+	\end{frame}
+	
+	% Slide 22: Ubuntu
+	\begin{frame}{Ubuntu: La Distribuzione più Popolare}
+		\begin{columns}
+			\column{0.6\textwidth}
+			\textbf{Caratteristiche:}
+			\begin{itemize}
+				\item Basata su Debian
+				\item Sviluppata da Canonical
+				\item Focus su usabilità
+				\item Rilasci ogni 6 mesi
+				\item LTS ogni 2 anni (5 anni supporto)
+				\item Desktop environment: GNOME (default)
+			\end{itemize}
+			
+			\vspace{0.3cm}
+			
+			\textbf{Varianti ufficiali:}
+			\begin{itemize}
+				\item Kubuntu (KDE)
+				\item Xubuntu (Xfce)
+				\item Lubuntu (LXQt)
+				\item Ubuntu MATE
+				\item Ubuntu Server
+			\end{itemize}
+			
+			\column{0.4\textwidth}
+			\textbf{Versioni LTS:}
+			\begin{itemize}
+				\item 18.04 (Bionic Beaver)
+				\item 20.04 (Focal Fossa)
+				\item 22.04 (Jammy Jellyfish)
+				\item 24.04 (Noble Numbat)
+			\end{itemize}
+			
+			\vspace{0.3cm}
+			
+			\textbf{Punti di forza:}
+			\begin{itemize}
+				\item Documentazione eccellente
+				\item Comunità molto attiva
+				\item Ampio supporto hardware
+				\item Repository ricco
+				\item Installazione semplice
+			\end{itemize}
+		\end{columns}
+	\end{frame}
+	
+	% Slide 23: Fedora
+	\begin{frame}{Fedora: Innovazione e Cutting Edge}
+		\begin{columns}
+			\column{0.6\textwidth}
+			\textbf{Caratteristiche:}
+			\begin{itemize}
+				\item Sponsorizzata da Red Hat
+				\item Tecnologie all'avanguardia
+				\item Rilascio ogni ~6 mesi
+				\item Base per RHEL
+				\item Desktop environment: GNOME (Workstation)
+				\item Package manager: DNF
+			\end{itemize}
+			
+			\vspace{0.3cm}
+			
+			\textbf{Edizioni:}
+			\begin{itemize}
+				\item Fedora Workstation (desktop)
+				\item Fedora Server
+				\item Fedora IoT
+				\item Fedora CoreOS
+			\end{itemize}
+			
+			\column{0.4\textwidth}
+			\textbf{Spin ufficiali:}
+			\begin{itemize}
+				\item KDE Plasma
+				\item Xfce
+				\item LXQt
+				\item MATE-Compiz
+				\item Cinnamon
+				\item LXDE
+				\item i3 (tiling WM)
+			\end{itemize}
+			
+			\vspace{0.3cm}
+			
+			\textbf{Filosofia:}
+			\begin{itemize}
+				\item Software libero prioritario
+				\item Innovazione
+				\item "First" - prime implementazioni
+				\item SELinux di default
+			\end{itemize}
+		\end{columns}
+	\end{frame}
+	
+	% Slide 24: Debian
+	\begin{frame}{Debian: Stabilità e Affidabilità}
+		\begin{columns}
+			\column{0.6\textwidth}
+			\textbf{Caratteristiche:}
+			\begin{itemize}
+				\item Progetto comunitario (no azienda)
+				\item Rilasci "when ready"
+				\item Contratto sociale
+				\item Supporto multi-architettura
+				\item Repository enormi (59.000+ pacchetti)
+			\end{itemize}
+			
+			\vspace{0.3cm}
+			
+			\textbf{Rami (branches):}
+			\begin{itemize}
+				\item \textbf{Stable} - produzione
+				\item \textbf{Testing} - test per prossima stable
+				\item \textbf{Unstable (Sid)} - sviluppo
+				\item \textbf{Experimental} - sperimentale
+			\end{itemize}
+			
+			\column{0.4\textwidth}
+			\textbf{Versioni recenti:}
+			\begin{itemize}
+				\item Debian 10 (Buster)
+				\item Debian 11 (Bullseye)
+				\item Debian 12 (Bookworm)
+			\end{itemize}
+			
+			\vspace{0.3cm}
+			
+			\textbf{Punti di forza:}
+			\begin{itemize}
+				\item Estrema stabilità
+				\item Vasta scelta di software
+				\item Base per molte distro
+				\item Governata democraticamente
+				\item Supporto lungo
+			\end{itemize}
+		\end{columns}
+	\end{frame}
+	
+	% Slide 25: Arch Linux
+	\begin{frame}{Arch Linux: Semplicità e Controllo}
+		\begin{columns}
+			\column{0.6\textwidth}
+			\textbf{Caratteristiche:}
+			\begin{itemize}
+				\item Rolling release
+				\item Configurazione manuale
+				\item Filosofia KISS (Keep It Simple, Stupid)
+				\item Sempre aggiornata
+				\item Pacman come package manager
+				\item AUR (Arch User Repository)
+			\end{itemize}
+			
+			\vspace{0.3cm}
+			
+			\textbf{Filosofia:}
+			\begin{itemize}
+				\item L'utente controlla tutto
+				\item Documentazione eccellente (ArchWiki)
+				\item Software vanilla (non modificato)
+				\item Installazione da zero
+			\end{itemize}
+			
+			\column{0.4\textwidth}
+			\textbf{Vantaggi:}
+			\begin{itemize}
+				\item Software sempre recente
+				\item Massima personalizzazione
+				\item Leggera e veloce
+				\item Imparare Linux a fondo
+			\end{itemize}
+			
+			\vspace{0.3cm}
+			
+			\textbf{Derivate user-friendly:}
+			\begin{itemize}
+				\item Manjaro
+				\item EndeavourOS
+				\item Garuda Linux
+				\item ArcoLinux
+			\end{itemize}
+			
+			\vspace{0.3cm}
+			
+			\textbf{Target:} Utenti esperti
+		\end{columns}
+	\end{frame}
+	
+	% Slide 26: Package Management
+	\begin{frame}[fragile]{Gestione dei Pacchetti}
+		\textbf{I package manager gestiscono l'installazione, aggiornamento e rimozione del software.}
+		
+		\begin{columns}
+			\column{0.5\textwidth}
+			\textbf{APT (Debian/Ubuntu):}
+			\begin{lstlisting}[language=bash]
+				# Aggiornare repository
+				sudo apt update
+				
+				# Aggiornare sistema
+				sudo apt upgrade
+				
+				# Installare pacchetto
+				sudo apt install nome-pacchetto
+				
+				# Rimuovere pacchetto
+				sudo apt remove nome-pacchetto
+				
+				# Cercare pacchetto
+				apt search termine
+			\end{lstlisting}
+			
+			\column{0.5\textwidth}
+			\textbf{DNF (Fedora/RHEL):}
+			\begin{lstlisting}[language=bash]
+				# Aggiornare sistema
+				sudo dnf upgrade
+				
+				# Installare pacchetto
+				sudo dnf install nome-pacchetto
+				
+				# Rimuovere pacchetto
+				sudo dnf remove nome-pacchetto
+				
+				# Cercare pacchetto
+				dnf search termine
+				
+				# Info pacchetto
+				dnf info nome-pacchetto
+			\end{lstlisting}
+		\end{columns}
+	\end{frame}
+	
+	% Slide 27: Desktop Environments
+	\begin{frame}{Desktop Environment}
+		\textbf{Ambiente grafico che fornisce l'interfaccia utente.}
+		
+		\begin{columns}
+			\column{0.5\textwidth}
+			\textbf{GNOME}
+			\begin{itemize}
+				\item Moderno e minimalista
+				\item Workflow basato su attività
+				\item Richiede risorse medie-alte
+				\item Default: Ubuntu, Fedora
+			\end{itemize}
+			
+			\vspace{0.2cm}
+			
+			\textbf{KDE Plasma}
+			\begin{itemize}
+				\item Altamente personalizzabile
+				\item Look simile a Windows
+				\item Molte funzionalità
+				\item Default: Kubuntu
+			\end{itemize}
+			
+			\vspace{0.2cm}
+			
+			\textbf{Xfce}
+			\begin{itemize}
+				\item Leggero e veloce
+				\item Tradizionale
+				\item Poche risorse
+				\item Default: Xubuntu
+			\end{itemize}
+			
+			\column{0.5\textwidth}
+			\textbf{MATE}
+			\begin{itemize}
+				\item Fork di GNOME 2
+				\item Tradizionale
+				\item Medio-leggero
+				\item Default: Ubuntu MATE
+			\end{itemize}
+			
+			\vspace{0.2cm}
+			
+			\textbf{Cinnamon}
+			\begin{itemize}
+				\item Da Linux Mint
+				\item Simile a Windows
+				\item Elegante
+				\item Default: Linux Mint
+			\end{itemize}
+			
+			\vspace{0.2cm}
+			
+			\textbf{LXQt / LXDE}
+			\begin{itemize}
+				\item Leggerissimi
+				\item Per hardware datato
+				\item Essenziali
+				\item Default: Lubuntu
+			\end{itemize}
+		\end{columns}
+	\end{frame}
+	
+	% Slide 28: File System Hierarchy
+	\begin{frame}{File System Hierarchy Standard (FHS)}
+		\textbf{Struttura standard delle directory in Linux:}
+		
+		\begin{columns}
+			\column{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{/} - root, radice del filesystem
+				\item \textbf{/bin} - comandi essenziali
+				\item \textbf{/boot} - file boot loader
+				\item \textbf{/dev} - file dispositivi
+				\item \textbf{/etc} - configurazioni sistema
+				\item \textbf{/home} - directory utenti
+				\item \textbf{/lib} - librerie condivise
+				\item \textbf{/media} - mount point removibili
+			\end{itemize}
+			
+			\column{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{/mnt} - mount point temporanei
+				\item \textbf{/opt} - software opzionale
+				\item \textbf{/proc} - filesystem virtuale
+				\item \textbf{/root} - home dell'utente root
+				\item \textbf{/sbin} - comandi amministrazione
+				\item \textbf{/tmp} - file temporanei
+				\item \textbf{/usr} - programmi utente
+				\item \textbf{/var} - dati variabili
+			\end{itemize}
+		\end{columns}
+		
+		\vspace{0.3cm}
+		\textbf{Tutto è un file} in Linux: dispositivi, processi, configurazioni...
+	\end{frame}
+	
+	% Slide 29: Systemd
+	\begin{frame}{Systemd: Sistema di Init Moderno}
+		\begin{columns}
+			\column{0.6\textwidth}
+			\textbf{Cos'è systemd?}
+			\begin{itemize}
+				\item Sistema di init e service manager
+				\item Sostituisce SysV init
+				\item Avvio parallelo dei servizi
+				\item Gestione dipendenze
+				\item Logging centralizzato (journald)
+			\end{itemize}
+			
+			\vspace{0.3cm}
+			
+			\textbf{Componenti principali:}
+			\begin{itemize}
+				\item systemd - processo init (PID 1)
+				\item systemctl - gestione servizi
+				\item journalctl - visualizza log
+				\item Unit files - configurazione servizi
+			\end{itemize}
+			
+			\column{0.4\textwidth}
+			\textbf{Comandi comuni:}
+			\begin{itemize}
+				\item \texttt{systemctl start servizio}
+				\item \texttt{systemctl stop servizio}
+				\item \texttt{systemctl restart servizio}
+				\item \texttt{systemctl status servizio}
+				\item \texttt{systemctl enable servizio}
+				\item \texttt{systemctl disable servizio}
+			\end{itemize}
+			
+			\vspace{0.3cm}
+			
+			\textbf{Visualizzare log:}
+			\begin{itemize}
+				\item \texttt{journalctl -xe}
+				\item \texttt{journalctl -u servizio}
+				\item \texttt{journalctl -f}
+			\end{itemize}
+		\end{columns}
+	\end{frame}
+	
+	% Slide 30: Permessi e Utenti
+	\begin{frame}[fragile]{Sistema di Permessi in Linux}
+		\textbf{Linux è un sistema multiutente con controllo degli accessi.}
+		
+		\begin{columns}
+			\column{0.5\textwidth}
+			\textbf{Tipi di permessi:}
+			\begin{itemize}
+				\item \textbf{r} (read) - lettura
+				\item \textbf{w} (write) - scrittura
+				\item \textbf{x} (execute) - esecuzione
+			\end{itemize}
+			
+			\vspace{0.2cm}
+			
+			\textbf{Categorie:}
+			\begin{itemize}
+				\item \textbf{u} (user) - proprietario
+				\item \textbf{g} (group) - gruppo
+				\item \textbf{o} (others) - altri
+			\end{itemize}
+			
+			\vspace{0.2cm}
+			
+			\textbf{Esempio:}
+			\begin{lstlisting}
+				-rwxr-xr-x 1 user group
+			\end{lstlisting}
+			\begin{itemize}
+				\item user: rwx (7)
+				\item group: r-x (5)
+				\item others: r-x (5)
+			\end{itemize}
+			
+			\column{0.5\textwidth}
+			\textbf{Modificare permessi:}
+			\begin{lstlisting}[language=bash]
+				# Simbolico
+				chmod u+x file
+				chmod go-w file
+				chmod a+r file
+				
+				# Numerico (ottale)
+				chmod 755 file
+				chmod 644 file
+				chmod 600 file
+			\end{lstlisting}
+			
+			\textbf{Cambiare proprietà:}
+			\begin{lstlisting}[language=bash]
+				chown user:group file
+				chown user file
+				chgrp group file
+			\end{lstlisting}
+			
+			\textbf{sudo:}
+			\begin{lstlisting}[language=bash]
+				sudo comando
+				# Esegue comando come root
+			\end{lstlisting}
+		\end{columns}
+	\end{frame}
+	
+	% Slide 31: Vantaggi di Linux
+	\begin{frame}{Vantaggi di GNU/Linux}
+		\begin{columns}
+			\column{0.5\textwidth}
+			\textbf{Libertà e Apertura:}
+			\begin{itemize}
+				\item Codice sorgente disponibile
+				\item Nessun costo di licenza
+				\item Personalizzazione totale
+				\item Privacy e controllo
+			\end{itemize}
+			
+			\vspace{0.3cm}
+			
+			\textbf{Stabilità e Sicurezza:}
+			\begin{itemize}
+				\item Meno malware
+				\item Sistema di permessi robusto
+				\item Aggiornamenti frequenti
+				\item Server affidabili
+			\end{itemize}
+			
+			\column{0.5\textwidth}
+			\textbf{Prestazioni:}
+			\begin{itemize}
+				\item Efficiente nell'uso risorse
+				\item Ottimizzabile
+				\item Lunga durata hardware
+				\item Veloce anche su PC datati
+			\end{itemize}
+			
+			\vspace{0.3cm}
+			
+			\textbf{Flessibilità:}
+			\begin{itemize}
+				\item Molteplici distribuzioni
+				\item Desktop environments vari
+				\item Adatto a ogni utilizzo
+				\item Da embedded a supercomputer
+			\end{itemize}
+		\end{columns}
+		
+		\vspace{0.3cm}
+		\begin{center}
+			\textbf{Linux domina:} Server (96\% top500 supercomputer), Cloud, Android, IoT
+		\end{center}
+	\end{frame}
+	
+	% Slide 32: Casi d'uso di Linux
+	\begin{frame}{Casi d'Uso di Linux}
+		\begin{enumerate}
+			\item \textbf{Server e Data Center}
+			\begin{itemize}
+				\item Web server (Apache, Nginx)
+				\item Database server (MySQL, PostgreSQL)
+				\item Cloud computing (AWS, Azure, Google Cloud)
+			\end{itemize}
+			
+			\item \textbf{Sviluppo Software}
+			\begin{itemize}
+				\item Ambienti di sviluppo
+				\item DevOps e CI/CD
+				\item Container (Docker, Kubernetes)
+			\end{itemize}
+			
+			\item \textbf{Sistemi Embedded}
+			\begin{itemize}
+				\item Router e dispositivi di rete
+				\item Smart TV
+				\item Dispositivi IoT
+			\end{itemize}
+			
+			\item \textbf{Desktop e Workstation}
+			\begin{itemize}
+				\item Programmazione
+				\item Grafica e multimedia
+				\item Uso quotidiano
+			\end{itemize}
+			
+			\item \textbf{Educazione e Ricerca}
+			\begin{itemize}
+				\item Laboratori didattici
+				\item Calcolo scientifico
+				\item Supercomputer
+			\end{itemize}
+		\end{enumerate}
+	\end{frame}
+	
+	% Slide 33: Risorse e Community
+	\begin{frame}{Risorse per Imparare Linux}
+		\textbf{Documentazione ufficiale:}
+		\begin{itemize}
+			\item Man pages (comando \texttt{man})
+			\item Info pages (\texttt{info})
+			\item \texttt{/usr/share/doc}
+			\item Wiki delle distribuzioni
+		\end{itemize}
+		
+		\vspace{0.3cm}
+		
+		\textbf{Risorse online:}
+		\begin{itemize}
+			\item ArchWiki - documentazione eccellente
+			\item Linux Documentation Project
+			\item Ubuntu Documentation
+			\item Stack Overflow / Unix StackExchange
+		\end{itemize}
+		
+		\vspace{0.3cm}
+		
+		\textbf{Community:}
+		\begin{itemize}
+			\item Forum delle distribuzioni
+			\item Reddit (r/linux, r/linuxquestions)
+			\item IRC e Discord
+			\item Linux User Groups (LUG) locali
+		\end{itemize}
+	\end{frame}
+	
+	% Slide 34: Conclusioni
+	\begin{frame}{Conclusioni}
+		\textbf{Punti chiave:}
+		\begin{itemize}
+			\item Il \textbf{sistema operativo} è il software fondamentale che gestisce l'hardware
+			\item Il \textbf{kernel} è il cuore del SO, con accesso diretto all'hardware
+			\item La \textbf{shell} fornisce l'interfaccia a riga di comando per interagire con il sistema
+			\item \textbf{GNU/Linux} combina il kernel Linux con gli strumenti GNU
+			\item Le \textbf{distribuzioni} offrono sistemi completi per diverse esigenze
+			\item Linux è \textbf{libero, sicuro, stabile e flessibile}
+		\end{itemize}
+		
+		\vspace{0.5cm}
+		
+		\begin{center}
+			\Large{Linux non è solo un sistema operativo,\\è una filosofia di libertà e condivisione!}
+		\end{center}
+	\end{frame}
+	
+	% Slide 35: Bibliografia
+	\begin{frame}{Bibliografia}
+		\small
+		\textbf{Libri:}
+		\begin{itemize}
+			\item Silberschatz, A., Galvin, P. B., \& Gagne, G. (2018). \textit{Operating System Concepts} (10th ed.). Wiley.
+			\item Tanenbaum, A. S., \& Bos, H. (2014). \textit{Modern Operating Systems} (4th ed.). Pearson.
+			\item Love, R. (2010). \textit{Linux Kernel Development} (3rd ed.). Addison-Wesley.
+			\item Shotts, W. (2019). \textit{The Linux Command Line} (2nd ed.). No Starch Press.
+			\item Ward, B. (2021). \textit{How Linux Works} (3rd ed.). No Starch Press.
+		\end{itemize}
+		
+		\textbf{Risorse Online:}
+		\begin{itemize}
+			\item Linux Kernel Archives: \texttt{https://www.kernel.org/}
+			\item The Linux Documentation Project: \texttt{https://tldp.org/}
+			\item ArchWiki: \texttt{https://wiki.archlinux.org/}
+			\item GNU Project: \texttt{https://www.gnu.org/}
+			\item Free Software Foundation: \texttt{https://www.fsf.org/}
+		\end{itemize}
+		
+		\textbf{Standard:}
+		\begin{itemize}
+			\item POSIX Standard: IEEE Std 1003.1
+			\item Filesystem Hierarchy Standard (FHS): \texttt{https://refspecs.linuxfoundation.org/fhs.shtml}
+		\end{itemize}
+	\end{frame}
+	
+\end{document}
