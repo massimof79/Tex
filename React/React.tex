@@ -30,6 +30,7 @@
 \usepackage{tikz}
 \usetikzlibrary{positioning}      % per "right=2cm of ..."
 
+\usetikzlibrary{positioning,arrows.meta}
 
 % Configurazione listing per codice
 \lstdefinelanguage{JavaScript}{
@@ -342,47 +343,19 @@
 		
 	\end{frame}
 	% ========== SLIDE 8: JSX ==========
-\begin{frame}[fragile]{JSX - JavaScript XML}
-	\begin{block}{Cos'è JSX?}
-		Sintassi che permette di scrivere tag HTML all'interno di codice JavaScript
-	\end{block}
-	
-	\begin{columns}
-		\column{0.5\textwidth}
-		\textbf{Senza JSX:}
-		\begin{tcolorbox}
-			\begin{lstlisting}[language=JavaScript, basicstyle=\ttfamily\tiny]
-				const element = 
-				React.createElement(
-				'h1',
-				{className: 'greeting'},
-				'Hello, World!'
-				);
-			\end{lstlisting}
-		\end{tcolorbox}
-		
-		\column{0.5\textwidth}
-		\textbf{Con JSX:}
-		\begin{tcolorbox}
-			\begin{lstlisting}[language=JavaScript, basicstyle=\ttfamily\tiny]
-				const element = (
-				<h1 className="greeting">
-				Hello, World!
-				</h1>
-				);
-			\end{lstlisting}
-		\end{tcolorbox}
-	\end{columns}
-	
-	\vspace{0.5cm}
-	\begin{center}
-		\begin{tikzpicture}
-			\node[draw, rectangle, fill=yellow!20] (jsx) {JSX};
-			\node[draw, rectangle, fill=blue!20, right=2cm of jsx] (js) {JavaScript};
-			\draw[->, ultra thick] (jsx) -- node[above] {Babel} (js);
-		\end{tikzpicture}
-	\end{center}
-\end{frame}
+
+		\begin{frame}[fragile]{JSX in React}
+		\begin{block}{Cos'è JSX}
+			JSX è un'estensione sintattica di JavaScript che permette di descrivere l'interfaccia utente
+			utilizzando una sintassi simile all'HTML.  
+			Viene compilato in chiamate a \texttt{React.createElement}.
+		\end{block}
+		\begin{itemize}
+			\item JSX non è obbligatorio, ma rende il codice più leggibile.
+			\item Il browser non lo interpreta direttamente: serve una fase di trasformazione (Babel).
+			\item Permette di combinare logica JavaScript e struttura dell'interfaccia.
+		\end{itemize}
+	\end{frame}
 	
 	
 	\begin{frame}[fragile]{JSX - JavaScript XML}
@@ -395,33 +368,36 @@
 			\textbf{Senza JSX:}
 			\begin{tcblisting}{listing engine=listings, breakable, left=2mm, right=2mm, top=1mm, bottom=1mm}
 				const element = 
-				React.createElement(
-				'h1',
-				{className: 'greeting'},
+				React.createElement('h1',
+				{classNam6e: 'greeting'},
 				'Hello, World!'
 				);
 			\end{tcblisting}
-			
 			\column{0.5\textwidth}
 			\textbf{Con JSX:}
 			\begin{tcblisting}{listing engine=listings, breakable, left=2mm, right=2mm, top=1mm, bottom=1mm}
-				const element = (
-				<h1 className="greeting">
-				Hello, World!
-				</h1>
+				const element = (<h1 
+				className="greeting">
+				Hello, World! </h1>
 				);
 			\end{tcblisting}
 		\end{columns}
-		
-		\vspace{0.5cm}
-		\begin{center}
-			\begin{tikzpicture}
-				\node[draw, rectangle, fill=yellow!20] (jsx) {JSX};
-				\node[draw, rectangle, fill=blue!20, right=2cm of jsx] (js) {JavaScript};
-				\draw[->, ultra thick] (jsx) -- node[above] {Babel} (js);
-			\end{tikzpicture}
-		\end{center}
+	
 	\end{frame}
+	
+	\begin{frame}
+	\begin{center}
+	\begin{tikzpicture}
+		\node[draw, rectangle, fill=yellow!20] (jsx) {JSX};
+		\node[draw, rectangle, fill=blue!20, right=2cm of jsx] (js) {JavaScript};
+		\draw[->, ultra thick] (jsx) -- node[above] {Babel} (js);
+	\end{tikzpicture}
+\end{center}
+	\end{frame}
+	
+	
+
+	
 	
 	% ========== SLIDE 9: COMPONENTI INTRO ==========
 	\begin{frame}{Approccio a Componenti}
@@ -449,15 +425,144 @@
 				\node[font=\small] at (5.75,3.6) {Sub-Component};
 			\end{tikzpicture}
 		\end{center}
-		
-		\begin{block}{Vantaggi}
-			\begin{itemize}
-				\item \textbf{Riusabilità}: componenti utilizzabili ovunque
-				\item \textbf{Modularità}: costruzione per composizione
-				\item \textbf{Manutenibilità}: focus su logica e layout
-			\end{itemize}
-		\end{block}
 	\end{frame}
+\begin{frame}[fragile]
+	\frametitle{Vantaggi dei Componenti React}
+	
+	\begin{block}{Riusabilità}
+		\textbf{Componenti utilizzabili ovunque nell'applicazione}
+		\begin{itemize}
+			\item Scrivi una volta, usa molte volte
+			\item Risparmio di tempo e codice duplicato
+			\item Coerenza visiva e funzionale in tutta l'app
+		\end{itemize}
+	\end{block}
+	
+	\vspace{0.3cm}
+	
+	\textbf{Esempio:}
+	\begin{lstlisting}[basicstyle=\ttfamily\tiny]
+		// Definisci il componente una volta
+		function Button({ testo, onClick }) {
+			return <button onClick={onClick}>{testo}</button>;
+		}
+		
+		// Riutilizzalo ovunque
+		<Button testo="Salva" onClick={handleSave} />
+		<Button testo="Elimina" onClick={handleDelete} />
+		<Button testo="Annulla" onClick={handleCancel} />
+	\end{lstlisting}
+	
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Vantaggi dei Componenti React (continua)}
+	
+	\begin{block}{Modularità}
+		\textbf{Costruzione dell'interfaccia per composizione}
+		\begin{itemize}
+			\item Suddivisione in unità piccole e gestibili
+			\item Ogni componente ha una responsabilità specifica
+			\item Facile combinare componenti per creare UI complesse
+			\item Sviluppo parallelo e isolato
+		\end{itemize}
+	\end{block}
+	
+	\vspace{0.3cm}
+	
+	\textbf{Esempio di composizione:}
+	\begin{lstlisting}[basicstyle=\ttfamily\tiny]
+		function App() {
+			return (
+			<div>
+			<Header />
+			<Sidebar />
+			<MainContent>
+			<ArticleList />
+			<Pagination />
+			</MainContent>
+			<Footer />
+			</div>
+			);
+		}
+	\end{lstlisting}
+	
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Vantaggi dei Componenti React (continua)}
+	
+	\begin{block}{Manutenibilità}
+		\textbf{Focus separato su logica e layout}
+		\begin{itemize}
+			\item Codice organizzato e facilmente comprensibile
+			\item Bug più facili da individuare e correggere
+			\item Testing semplificato (componenti isolati)
+			\item Aggiornamenti localizzati senza effetti collaterali
+			\item Documentazione più chiara
+		\end{itemize}
+	\end{block}
+	
+	\vspace{0.3cm}	
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Esempio: Componente Manutenibile}
+	
+	\begin{lstlisting}
+		// Modifica solo il componente necessario
+		function UserCard({ user }) {
+			// Logica isolata
+			const formattedDate = formatDate(user.registrationDate);
+			
+			// Layout chiaro
+			return (
+			<div className="card">
+			<img src={user.avatar} alt={user.name} />
+			<h3>{user.name}</h3>
+			<p>Iscritto dal: {formattedDate}</p>
+			</div>
+			);
+		}
+	\end{lstlisting}
+	
+\end{frame}
+
+\begin{frame}
+\begin{block}{Vantaggi di questo approccio}
+	\begin{itemize}
+		\item Logica separata dalla presentazione
+		\item Facile da testare e modificare
+		\item Codice chiaro e leggibile
+	\end{itemize}
+\end{block}
+
+\end{frame}
+
+\begin{frame}
+	\frametitle{Riepilogo Vantaggi}
+	
+	\begin{center}
+		\begin{tabular}{|l|p{8cm}|}
+			\hline
+			\textbf{Vantaggio} & \textbf{Beneficio Pratico} \\
+			\hline
+			\textbf{Riusabilità} & Riduzione del codice duplicato e tempi di sviluppo più brevi \\
+			\hline
+			\textbf{Modularità} & Architettura scalabile e sviluppo team più efficiente \\
+			\hline
+			\textbf{Manutenibilità} & Debug più rapido e aggiornamenti sicuri \\
+			\hline
+		\end{tabular}
+	\end{center}
+	
+	\vspace{0.5cm}
+	
+	\begin{alertblock}{Best Practice}
+		Mantieni i componenti piccoli, focalizzati e con responsabilità singole (Single Responsibility Principle)
+	\end{alertblock}
+	
+\end{frame}
 	
 	% ========== SLIDE 10: TIPI DI COMPONENTI ==========
 	\begin{frame}{Tipi di Componenti}
@@ -506,38 +611,353 @@
 		\end{alertblock}
 	\end{frame}
 	
-	% ========== SLIDE 11: FUNCTION COMPONENT ==========
-	\begin{frame}[fragile]{Function Component - Esempio}
-		\begin{lstlisting}[language=JavaScript]
-			function Welcome(props) {
-				return <h1>Benvenuto, {props.name}!</h1>;
+	
+	\begin{frame}[fragile]
+		\frametitle{Cosa sono i Componenti React?}
+		
+		\begin{block}{Definizione}
+			I componenti sono i \textbf{mattoni fondamentali} di un'applicazione React. Ogni componente è una funzione o classe JavaScript che accetta input (props) e restituisce elementi React che descrivono l'interfaccia utente.
+		\end{block}
+		
+		\vspace{0.5cm}
+		
+		\begin{columns}[T]
+			\column{0.48\textwidth}
+			\textbf{Caratteristiche:}
+			\begin{itemize}
+				\item Indipendenti e riutilizzabili
+				\item Accettano input (props)
+				\item Restituiscono JSX
+				\item Possono avere stato interno
+			\end{itemize}
+			
+			\column{0.48\textwidth}
+			\textbf{Analogia:}
+			\begin{alertblock}{Componenti = Funzioni}
+				Come le funzioni in matematica, i componenti trasformano input in output
+			\end{alertblock}
+		\end{columns}
+		
+	\end{frame}
+	
+	\begin{frame}[fragile]
+		\frametitle{Tipi di Componenti}
+		
+		\begin{columns}
+			\column{0.5\textwidth}
+			\begin{block}{Function Component}
+				\begin{center}
+					\begin{tikzpicture}
+						\node[draw, rectangle, fill=blue!20, minimum width=3cm, minimum height=2cm, align=center] {
+							\textbf{Function}\\[0.3cm]
+							Props \\
+							Return JSX
+						};
+					\end{tikzpicture}
+				\end{center}
+				\begin{itemize}
+					\item Più semplici
+					\item Moderni (con Hooks)
+					\item Raccomandati oggi
+				\end{itemize}
+			\end{block}
+			
+			\column{0.5\textwidth}
+			\begin{block}{Class Component}
+				\begin{center}
+					\begin{tikzpicture}
+						\node[draw, rectangle, fill=green!20, minimum width=3cm, minimum height=2cm, align=center] {
+							\textbf{Class}\\[0.3cm]
+							Props + State\\
+							Lifecycle\\
+							Return JSX
+						};
+					\end{tikzpicture}
+				\end{center}
+				\begin{itemize}
+					\item Più complessi
+					\item Approccio tradizionale
+					\item Meno usati oggi
+				\end{itemize}
+			\end{block}
+		\end{columns}
+		
+	\end{frame}
+	
+	\begin{frame}[fragile]
+		\frametitle{Function Component - Esempio}
+		
+		\textbf{Componente semplice:}
+		\begin{lstlisting}
+			function Benvenuto(props) {
+				return <h1>Ciao, {props.nome}!</h1>;
 			}
 			
 			// Utilizzo
-			<Welcome name="Massimo" />
+			<Benvenuto nome="Mario" />
 		\end{lstlisting}
 		
 		\vspace{0.3cm}
 		
-		\begin{center}
-			\begin{tikzpicture}[node distance=1.5cm]
-				\node[draw, rectangle, fill=blue!20, minimum width=2cm] (props) {props.name};
-				\node[draw, rectangle, fill=green!20, right=of props, minimum width=2cm] (func) {Function};
-				\node[draw, rectangle, fill=yellow!20, right=of func, minimum width=2cm] (jsx) {JSX Output};
+		\textbf{Con destructuring (più comune):}
+		\begin{lstlisting}
+			function Benvenuto({ nome }) {
+				return <h1>Ciao, {nome}!</h1>;
+			}
+		\end{lstlisting}
+		
+		\vspace{0.3cm}
+		
+		\textbf{Arrow function (sintassi moderna):}
+		\begin{lstlisting}
+			const Benvenuto = ({ nome }) => {
+				return <h1>Ciao, {nome}!</h1>;
+			};
+		\end{lstlisting}
+		
+	\end{frame}
+	
+	\begin{frame}[fragile]
+		\frametitle{Function Component con Hooks}
+		
+		\textbf{Componente con stato (useState):}
+		\begin{lstlisting}
+			import { useState } from 'react';
+			
+			function Contatore() {
+				const [count, setCount] = useState(0);
 				
-				\draw[->, thick] (props) -- (func);
-				\draw[->, thick] (func) -- (jsx);
-			\end{tikzpicture}
+				return (
+				<div>
+				<p>Hai cliccato {count} volte</p>
+				<button onClick={() => setCount(count + 1)}>
+				Incrementa
+				</button>
+				</div>
+				);
+			}
+		\end{lstlisting}
+		
+		\vspace{0.3cm}
+		
+		\begin{block}{Hooks}
+			Gli Hooks permettono ai function component di avere stato e altre funzionalità che prima erano disponibili solo nei class component.
+		\end{block}
+		
+	\end{frame}
+	
+	\begin{frame}[fragile]
+		\frametitle{Class Component - Esempio}
+		
+		\begin{lstlisting}
+			import React, { Component } from 'react';
+			
+			class Contatore extends Component {
+				constructor(props) {
+					super(props);
+					this.state = { count: 0 };
+				}
+				
+				incrementa = () => {
+					this.setState({ count: this.state.count + 1 });
+				}
+				
+				render() {
+					return (
+					<div>
+					<p>Hai cliccato {this.state.count} volte</p>
+					<button onClick={this.incrementa}>
+					Incrementa
+					</button>
+					</div>
+					);
+				}
+			}
+		\end{lstlisting}
+		
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{Confronto: Function vs Class Component}
+		
+		\begin{center}
+			\begin{tabular}{|l|p{3.5cm}|p{3.5cm}|}
+				\hline
+				\textbf{Aspetto} & \textbf{Function Component} & \textbf{Class Component} \\
+				\hline
+				Sintassi & Più semplice & Più verbosa \\
+				\hline
+				Stato & Hooks (useState) & this.state \\
+				\hline
+				Props & Parametro funzione & this.props \\
+				\hline
+				Lifecycle & useEffect & componentDidMount, ecc. \\
+				\hline
+				Performance & Leggermente migliori & Buone \\
+				\hline
+				Trend & \textcolor{green}{\textbf{Raccomandati}} & Legacy \\
+				\hline
+			\end{tabular}
 		\end{center}
 		
-		\begin{block}{Caratteristiche}
-			\begin{itemize}
-				\item Sintassi più concisa
-				\item Ricevono props come parametro
-				\item Ideali per componenti di presentazione
-			\end{itemize}
-		\end{block}
+		\vspace{0.5cm}
+		
+		\begin{alertblock}{Best Practice Attuale}
+			React raccomanda l'uso di \textbf{Function Component con Hooks} per tutti i nuovi progetti.
+		\end{alertblock}
+		
 	\end{frame}
+	
+	\begin{frame}[fragile]
+		\frametitle{Anatomia di un Componente}
+		
+		\begin{lstlisting}
+			// 1. Import necessari
+			import React, { useState } from 'react';
+			
+			// 2. Definizione del componente
+			function MioComponente({ titolo, descrizione }) {
+				// 3. Stato locale (opzionale)
+				const [attivo, setAttivo] = useState(false);
+				
+				// 4. Funzioni helper (opzionale)
+				const handleClick = () => {
+					setAttivo(!attivo);
+				};
+				
+				// 5. Return del JSX
+				return (
+				<div className={attivo ? 'active' : ''}>
+				<h2>{titolo}</h2>
+				<p>{descrizione}</p>
+				<button onClick={handleClick}>Toggle</button>
+				</div>
+				);
+			}
+			
+			// 6. Export del componente
+			export default MioComponente;
+		\end{lstlisting}
+		
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{Props: Comunicazione tra Componenti}
+		
+		\begin{block}{Cosa sono le Props?}
+			Le \textbf{props} (properties) sono gli argomenti passati ai componenti React. Funzionano come i parametri delle funzioni JavaScript.
+		\end{block}
+		
+		\vspace{0.3cm}
+		
+		\textbf{Caratteristiche delle props:}
+		\begin{itemize}
+			\item \textbf{Read-only}: non possono essere modificate dal componente
+			\item \textbf{Unidirezionali}: fluiscono dal genitore al figlio
+			\item \textbf{Qualsiasi tipo}: stringhe, numeri, oggetti, funzioni, componenti
+			\item \textbf{Dinamiche}: possono cambiare nel tempo
+		\end{itemize}
+		
+		\vspace{0.3cm}
+		
+		\begin{alertblock}{Regola d'oro}
+			Un componente non deve mai modificare le proprie props. Deve comportarsi come una funzione pura rispetto ai suoi input.
+		\end{alertblock}
+		
+	\end{frame}
+	
+	\begin{frame}[fragile]
+		\frametitle{Esempio Completo: Card Component}
+		
+		\begin{lstlisting}
+			function UserCard({ nome, email, avatar, isOnline }) {
+				return (
+				<div className="user-card">
+				<img src={avatar} alt={nome} />
+				<div className="user-info">
+				<h3>{nome}</h3>
+				<p>{email}</p>
+				{isOnline && <span className="badge">Online</span>}
+				</div>
+				</div>
+				);
+			}
+			
+			// Utilizzo
+			function App() {
+				return (
+				<div>
+				<UserCard 
+				nome="Mario Rossi"
+				email="mario@example.com"
+				avatar="/img/mario.jpg"
+				isOnline={true}
+				/>
+				</div>
+				);
+			}
+		\end{lstlisting}
+		
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{Riepilogo Componenti}
+		
+		\begin{block}{Punti Chiave}
+			\begin{enumerate}
+				\item I componenti sono i \textbf{blocchi costruttivi} di React
+				\item Possono essere \textbf{Function} o \textbf{Class} (usa Function!)
+				\item Accettano \textbf{props} come input
+				\item Restituiscono \textbf{JSX} come output
+				\item Possono avere \textbf{stato interno} (con Hooks)
+				\item Sono \textbf{componibili} e \textbf{riutilizzabili}
+			\end{enumerate}
+		\end{block}
+		
+		\vspace{0.5cm}
+		
+		\begin{center}
+			\Large{\textbf{Componente = Input (Props) + Logica + Output (JSX)}}
+		\end{center}
+		
+	\end{frame}
+	
+	
+	% ========== SLIDE 11: FUNCTION COMPONENT ==========
+\begin{frame}[fragile]{Function Component --- Esempio}
+	\begin{lstlisting}[language=JavaScript]
+		function Welcome(props) {
+			return <h1>Benvenuto, {props.name}!</h1>;
+		}
+		
+		// Utilizzo
+		<Welcome name="Massimo" />
+	\end{lstlisting}
+	
+	\vspace{0.4cm}
+	
+	\begin{center}
+		\begin{tikzpicture}[node distance=1cm,
+			box/.style={draw, rectangle, rounded corners, minimum width=2.4cm, align=center},
+			arrow/.style={-{Stealth[length=3mm]}, thick}]
+			\node[box, fill=blue!20] (props) {props.name};
+			\node[box, fill=green!20, right=of props] (func) {Function component\\(Welcome)};
+			\node[box, fill=yellow!20, right=of func] (jsx) {JSX output\\\texttt{<h1>Benvenuto, \{props.name\}!</h1>}};
+			
+			\draw[arrow] (props) -- (func);
+			\draw[arrow] (func) -- (jsx);
+		\end{tikzpicture}
+	\end{center}
+	
+	\begin{block}{Caratteristiche}
+		\begin{itemize}
+			\item Componenti definite come funzioni: accettano \texttt{props} e restituiscono JSX.
+			\item Il nome del componente deve iniziare con lettera maiuscola (convenzione di React).
+			\item Ideali per componenti di presentazione; facilmente combinabili con Hooks.
+		\end{itemize}
+	\end{block}
+\end{frame}
+
 	
 	% ========== SLIDE 12: CLASS COMPONENT ==========
 	\begin{frame}[fragile]{Class Component - Esempio}
@@ -594,50 +1014,69 @@
 	\end{frame}
 	
 	% ========== SLIDE 14: STATE ==========
-	\begin{frame}[fragile]{State - Stato del Componente}
-		\begin{columns}
-			\column{0.5\textwidth}
-			\begin{lstlisting}[language=JavaScript, basicstyle=\ttfamily\tiny]
-				class Counter extends 
-				React.Component {
-					constructor(props) {
-						super(props);
-						this.state = {
-							count: 0
-						};
+	% Richiede nel preambolo:
+	% \usepackage{tikz}
+	% \usetikzlibrary{positioning,arrows.meta}
+	\begin{frame}[fragile]{State — Stato del componente}
+		\begin{columns}[T]
+			\begin{column}{0.50\textwidth}
+				\begin{lstlisting}[language=JavaScript,basicstyle=\ttfamily\small]
+					class Counter extends React.Component {
+						constructor(props) {
+							super(props);
+							this.state = { count: 0 };
+							this.increment = this.increment.bind(this);
+						}
+						
+						increment() {
+							this.setState((prevState) => ({ count: prevState.count + 1 }));
+						}
+						
+						render() {
+							return (
+							<div>
+							<p>{this.state.count}</p>
+							<button onClick={this.increment}>Aggiungi</button>
+							</div>
+							);
+						}
 					}
-					
-					render() {
-						return (
-						<div>
-						{this.state.count}
-						</div>
-						);
-					}
-				}
-			\end{lstlisting}
+				\end{lstlisting}
+			\end{column}
 			
-			\column{0.5\textwidth}
-			\begin{block}{Cos'è lo State?}
-				Dati che cambiano nel tempo durante il ciclo di vita del componente
-			\end{block}
-			
-			\vspace{0.3cm}
-			
-			\begin{tikzpicture}[scale=0.7]
-				\node[draw, circle, fill=yellow!30, minimum size=1.5cm] (state) {State};
-				\node[draw, rectangle, fill=blue!20, above=1cm of state, minimum width=2cm] (event) {Evento};
-				\node[draw, rectangle, fill=green!20, below=1cm of state, minimum width=2cm] (render) {Re-render};
+			\begin{column}{0.50\textwidth}
+				\begin{block}{Cos'è lo \texttt{state}}
+					Lo \texttt{state} è l'insieme di dati locali al componente che possono cambiare
+					nel tempo e provocare il re-render del componente stesso.
+				\end{block}
 				
-				\draw[->, thick] (event) -- (state);
-				\draw[->, thick] (state) -- (render);
-			\end{tikzpicture}
+				\vspace{0.3cm}
+				
+				\begin{tikzpicture}[node distance=8mm,
+					box/.style={draw, rectangle, rounded corners, minimum width=2.6cm, align=center, inner sep=4pt},
+					arrow/.style={-{Stealth[length=3mm]}, thick}]
+					\node[box, fill=yellow!20] (state) {State\\(\texttt{count})};
+					\node[box, fill=blue!20, above=of state] (event) {Evento\\(click)};
+					\node[box, fill=green!20, below=of state] (render) {Re-render};
+					
+					\draw[arrow] (event) -- (state) node[midway, right] {aggiorna};
+					\draw[arrow] (state) -- (render);
+				\end{tikzpicture}
+			\end{column}
 		\end{columns}
 		
 		\begin{alertblock}{Importante}
-			Usare \texttt{this.setState()} per modificare lo state, mai modificare direttamente!
+			Modificare lo \texttt{state} esclusivamente tramite \texttt{this.setState()} (o tramite
+			la callback di setState quando il nuovo valore dipende dallo stato precedente). Non modificare
+			direttamente \texttt{this.state}.
 		\end{alertblock}
+		
+		\begin{block}{Nota}
+			In componenti funzionali si usa l'hook \texttt{useState} per lo stesso scopo: \\
+			\texttt{const [count, setCount] = useState(0);} e \texttt{setCount(c => c + 1)}.
+		\end{block}
 	\end{frame}
+	
 	
 	% ========== SLIDE 15: STATE VS PROPS ==========
 	\begin{frame}{State vs Props}
