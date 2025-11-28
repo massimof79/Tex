@@ -5,13 +5,15 @@
 \usepackage{amssymb}
 \usepackage{array}
 \usepackage{booktabs}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric}
 
 \usetheme{Madrid}
 \usecolortheme{default}
 
 \title{Circuiti Logici Digitali}
 \subtitle{Operatori Logici e Porte Logiche}
-\author{Corso di Scienze e Tecnologie Applicate}
+\author{Prof. Fedeli Massimo}
 \institute{IIS Fermi Sacconi Ceci}
 \date{\today}
 
@@ -32,7 +34,8 @@
 		\frametitle{Introduzione alla Logica Digitale}
 		\begin{itemize}
 			\item La logica formale studia le proposizioni dichiarative
-			\item Una proposizione può essere \textbf{Vera} o \textbf{Falsa}
+			\item Per proposizione si intende insieme di \textbf{soggetto} e \textbf{verbo}
+			\item Una proposizione dichiarativa può essere \textbf{Vera} o \textbf{Falsa}
 			\item Rappresentazione numerica:
 			\begin{itemize}
 				\item Falso = 0 = 0V
@@ -42,6 +45,54 @@
 			\item Gli operatori logici connettono i valori tra loro
 		\end{itemize}
 	\end{frame}
+	
+		\begin{frame}
+		\frametitle{Introduzione alla Logica Digitale}
+		\begin{itemize}
+			\item Un proposizione che non si può dividere in altre proposizioni si dice \textbf{elementare}
+			\item Il valore di una proposizione dichiarativa (Vero o Falso) può essere
+			espresso in vari modi, a seconda del contesto. 
+			\item Generalmente, si at-
+			tribuisce alla cifra numerica uno il significato di \textbf{Vero}, mentre a zero
+			si attribuisce il valore \textbf{Falso}.
+		\end{itemize}
+	\end{frame}
+	
+\begin{frame}
+	\frametitle{Operatori logici}
+	\begin{columns}
+		\column{0.5\textwidth}
+		\begin{itemize}
+			\item Si distinguono generalmente gli operatori logici in \textbf{«unari» }e in \textbf{«connettivi logici»}
+			\item Gli operatori logici si possono
+			vedere come delle scatoline, aventi uno o più ingressi, ma con una
+			sola uscita: in tal caso, si chiamano porte logiche.
+		\end{itemize}
+		
+		\column{0.5\textwidth}
+		\centering
+		\begin{tikzpicture}[scale=0.8]
+			% Porta NOT (operatore unario)
+			\draw[thick] (0,3) -- (0.5,3) -- (1.5,3.5) -- (1.5,2.5) -- (0.5,3) -- cycle;
+			\draw[thick] (1.5,3) circle (0.15);
+			\draw[<-] (-0.5,3) -- (0,3);
+			\draw[->] (1.65,3) -- (2.2,3);
+			\node[left] at (-0.5,3) {A};
+			\node[right] at (2.2,3) {$\overline{A}$};
+			\node[below] at (0.75,2.3) {\small NOT (unario)};
+			
+			% Porta AND (connettivo)
+			\draw[thick] (0,0.5) -- (0.8,0.5) arc (-90:90:0.5) -- (0,1.5) -- cycle;
+			\draw[<-] (-0.5,1.2) -- (0,1.2);
+			\draw[<-] (-0.5,0.8) -- (0,0.8);
+			\draw[->] (1.3,1) -- (1.9,1);
+			\node[left] at (-0.5,1.2) {A};
+			\node[left] at (-0.5,0.8) {B};
+			\node[right] at (1.9,1) {A$\cdot$B};
+			\node[below] at (0.65,0.2) {\small AND (connettivo)};
+		\end{tikzpicture}
+	\end{columns}
+\end{frame}
 	
 	% Slide 4: Operatori Unari
 	\section{Operatori Logici}
@@ -260,6 +311,9 @@
 	\section{Algebra di Boole}
 	\begin{frame}
 		\frametitle{Equivalenze dell'Algebra di Boole (1/2)}
+		Attraverso gli operatori logici si possono costruire delle espressioni
+		complesse, nelle quali esiste la facoltà di applicare delle trasformazioni, di solito con lo scopo di cercare di semplificarle, mantenendo
+		però lo stesso risultato.
 		\begin{block}{Proprietà Fondamentali}
 			\begin{columns}[T]
 				\column{0.5\textwidth}
@@ -324,12 +378,29 @@
 		\end{block}
 	\end{frame}
 	
+	\begin{frame}
+		\frametitle{Funzioni logiche e somma dei prodotti}
+		
+		Una funzione logica può essere descritta attraverso la \textbf{tabella di verità} che abbina i valori delle variabili al risultato atteso per ogni combinazione.
+		
+		\vspace{0.3cm}
+		
+		\textbf{Metodo di sintesi - Somma dei prodotti:}
+		
+		\begin{enumerate}
+			\item Si parte dalla tabella di verità desiderata
+			\item Si elencano i \textbf{prodotti fondamentali logici} che descrivono ogni condizione degli ingressi
+			\item Si sommano (OR) tutti i prodotti ottenuti
+		\end{enumerate}
+		
+	\end{frame}
+	
 	% Slide 14: Somma dei prodotti
 	\section{Forme Canoniche}
 	\begin{frame}
 		\frametitle{Somma dei Prodotti (SOP)}
 		\begin{itemize}
-			\item Ogni funzione logica può essere espressa come somma di prodotti
+			\item Ogni \textbf{funzione logica} può essere espressa come somma di prodotti
 			\item Si parte dalla tabella di verità
 			\item Si considerano solo le righe con output = 1
 			\item Si crea un prodotto (AND) per ogni riga
@@ -352,6 +423,134 @@
 		
 		$$F = A' \cdot B' + A \cdot B$$
 	\end{frame}
+	
+	\begin{frame}
+		\frametitle{Somma dei Prodotti (SOP) - Altro esempio}
+		
+		\textbf{Esempio:} Funzione di maggioranza a 3 ingressi
+		
+		\begin{columns}
+			\column{0.45\textwidth}
+			\begin{center}
+				\begin{tabular}{ccc|c}
+					\hline
+					A & B & C & F \\
+					\hline
+					0 & 0 & 0 & 0 \\
+					0 & 0 & 1 & 0 \\
+					0 & 1 & 0 & 0 \\
+					0 & 1 & 1 & \textcolor{blue}{1} \\
+					1 & 0 & 0 & 0 \\
+					1 & 0 & 1 & \textcolor{blue}{1} \\
+					1 & 1 & 0 & \textcolor{blue}{1} \\
+					1 & 1 & 1 & \textcolor{blue}{1} \\
+					\hline
+				\end{tabular}
+			\end{center}
+			
+			\column{0.55\textwidth}
+			\small
+			\textbf{Procedimento:}
+			\begin{enumerate}
+				\item Righe con output = 1:
+				\begin{itemize}
+					\item Riga 4: $A' \cdot B \cdot C$
+					\item Riga 6: $A \cdot B' \cdot C$
+					\item Riga 7: $A \cdot B \cdot C'$
+					\item Riga 8: $A \cdot B \cdot C$
+				\end{itemize}
+				\item Somma dei prodotti:
+			\end{enumerate}
+		\end{columns}
+		
+		\vspace{0.3cm}
+		$$F = A' \cdot B \cdot C + A \cdot B' \cdot C + A \cdot B \cdot C' + A \cdot B \cdot C$$
+		
+		\small
+		\textit{La funzione restituisce 1 quando almeno due ingressi su tre sono uguali a 1}
+	\end{frame}
+	
+	
+	\begin{frame}
+		\frametitle{A cosa servono le funzioni logiche?}
+		
+		\textbf{Definizione:}
+		Una funzione logica è una relazione che associa ad ogni combinazione di valori binari in ingresso (0 o 1) un valore binario in uscita.
+		
+		\vspace{0.2cm}
+		
+		\textbf{Utilizzi pratici:}
+		\begin{itemize}
+			\item \textbf{Circuiti digitali}: progettare componenti elettronici (CPU, memorie, controller)
+			\item \textbf{Controllo automatico}: sistemi di allarme, semafori, automazione industriale
+			\item \textbf{Programmazione}: condizioni nei programmi (if, while, etc.)
+			\item \textbf{Crittografia}: algoritmi di sicurezza e codifica
+		\end{itemize}
+				\textbf{Esempio concreto - Sistema di allarme auto:}
+		\begin{center}
+			\small
+			\begin{tabular}{ccc|c}
+				\hline
+				Porta aperta & Chiave inserita & Cintura allacciata & Allarme sonoro \\
+				\hline
+				0 & 0 & 0 & 0 \\
+				0 & 0 & 1 & 0 \\
+				0 & 1 & 0 & 0 \\
+				0 & 1 & 1 & 0 \\
+				1 & 0 & X & 1 \\
+				1 & 1 & 0 & 1 \\
+				1 & 1 & 1 & 0 \\
+				\hline
+			\end{tabular}
+		\end{center}
+		
+		\small
+		L'allarme suona se: porta aperta E (chiave NON inserita O cintura NON allacciata)
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{Come si usa una funzione logica?}
+		
+		\begin{columns}
+			\column{0.5\textwidth}
+			\textbf{Il processo:}
+			\begin{enumerate}
+				\item \textbf{Analisi}: identificare ingressi e uscita desiderata
+				\item \textbf{Tabella di verità}: elencare tutti i casi possibili
+				\item \textbf{Funzione logica}: ricavare l'espressione matematica
+				\item \textbf{Implementazione}: realizzare il circuito con porte logiche
+			\end{enumerate}
+			
+			\column{0.5\textwidth}
+			\textbf{Esempio - Lampada scale:}
+			\begin{center}
+				\small
+				Due interruttori (A, B) controllano una lampada (L)
+				
+				\vspace{0.3cm}
+				
+				\begin{tabular}{cc|c}
+					\hline
+					Int. A & Int. B & Lampada \\
+					\hline
+					0 & 0 & 0 \\
+					0 & 1 & 1 \\
+					1 & 0 & 1 \\
+					1 & 1 & 0 \\
+					\hline
+				\end{tabular}
+				
+				\vspace{0.3cm}
+				
+				$L = A \oplus B$ (XOR)
+				
+				\vspace{0.2cm}
+				
+				\textit{Cambiando uno qualsiasi dei due interruttori, la lampada cambia stato}
+			\end{center}
+		\end{columns}
+	\end{frame}
+	
 	
 	% Slide 15: Mintermini
 	\begin{frame}
@@ -377,6 +576,91 @@
 				\hline
 			\end{tabular}
 		\end{center}
+	\end{frame}
+
+\begin{frame}
+	\frametitle{Come realizzare una mappa di Karnaugh}
+	
+	\textbf{Procedimento passo-passo:}
+	
+	\begin{enumerate}
+		\item \textbf{Determinare il numero di variabili}
+		\begin{itemize}
+			\item 2 variabili → mappa 2×2 (4 celle)
+			\item 3 variabili → mappa 2×4 (8 celle)
+			\item 4 variabili → mappa 4×4 (16 celle)
+		\end{itemize}
+		
+		\item \textbf{Creare la griglia con codifica Gray}
+		\begin{itemize}
+			\item Etichettare righe e colonne con combinazioni delle variabili
+			\item Usare il codice Gray: tra celle adiacenti cambia un solo bit
+		\end{itemize}
+		
+		\item \textbf{Riempire la mappa}
+		\begin{itemize}
+			\item Inserire il valore della funzione (0 o 1) in ogni cella
+			\item Corrispondenza con la tabella di verità
+		\end{itemize}
+		
+		\item \textbf{Raggruppare gli 1}
+		\begin{itemize}
+			\item Creare gruppi di 1, 2, 4, 8... celle adiacenti contenenti 1
+			\item I gruppi devono essere rettangolari e di dimensione potenza di 2
+		\end{itemize}
+	\end{enumerate}
+	
+\end{frame}
+
+\begin{frame}
+	\frametitle{Regole per i raggruppamenti nella mappa di Karnaugh}
+	
+	\textbf{Regole fondamentali:}
+	
+	\begin{enumerate}
+		\item I gruppi devono contenere \textbf{solo celle con valore 1}
+		
+		\item Le dimensioni dei gruppi devono essere \textbf{potenze di 2}: 1, 2, 4, 8, 16...
+		
+		\item I gruppi devono essere \textbf{rettangolari} (non diagonali)
+		
+		\item Si devono formare i \textbf{gruppi più grandi possibili}
+		
+		\item Ogni 1 deve essere coperto da \textbf{almeno un gruppo}
+		
+		\item Gli 1 possono appartenere a \textbf{più gruppi contemporaneamente}
+		
+		\item I gruppi possono \textbf{"avvolgersi"} ai bordi della mappa (le celle ai bordi opposti sono adiacenti)
+	\end{enumerate}
+	
+	\vspace{0.3cm}
+	
+	\textbf{Risultato:}
+	Ogni gruppo corrisponde a un termine della funzione semplificata. Le variabili che cambiano nel gruppo vengono eliminate.
+	
+\end{frame}
+	
+	\begin{frame}
+		\frametitle{Mappa di Karnaugh}
+		
+		\begin{block}{Rappresentazione e semplificazione}
+			Una funzione logica può essere rappresentata in una \textbf{mappa di Karnaugh}, a partire dalla sua tabella di verità.
+		\end{block}
+		
+		\vspace{0.3cm}
+		
+		\textbf{Obiettivo:}
+		\begin{itemize}
+			\item Semplificare l'espressione che sintetizza la funzione
+			\item Ridurre la complessità del circuito che la realizza
+		\end{itemize}
+		
+		\vspace{0.3cm}
+		
+		\textbf{Come funziona:}
+		
+		La mappa di Karnaugh è una \textbf{rappresentazione bidimensionale} dei prodotti fondamentali di una tabella di verità: si dividono a metà i prodotti fondamentali e si rappresentano in un rettangolo.
+		
 	\end{frame}
 	
 	% Slide 16: Introduzione alle mappe di Karnaugh
