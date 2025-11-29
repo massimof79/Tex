@@ -1,0 +1,1219 @@
+\documentclass[aspectratio=169]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{tikz}
+
+% Tema e colori
+\usetheme{Madrid}
+\usecolortheme{default}
+
+% Definizione colori personalizzati
+\definecolor{codebg}{RGB}{245,245,245}
+\definecolor{codetext}{RGB}{0,0,128}
+\definecolor{keywordcolor}{RGB}{128,0,128}
+\definecolor{commentcolor}{RGB}{0,128,0}
+
+% Configurazione listings per SQL
+\lstset{
+    language=SQL,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{keywordcolor}\bfseries,
+    commentstyle=\color{commentcolor}\itshape,
+    stringstyle=\color{red},
+    backgroundcolor=\color{codebg},
+    frame=single,
+    breaklines=true,
+    showstringspaces=false,
+    columns=flexible,
+    numbers=none,
+    tabsize=2
+}
+
+% Informazioni documento
+\title{Le basi del linguaggio SQL}
+\subtitle{}
+\author{Prof. Fedeli Massimo - Tutti i diritti riservati}
+\date{}
+\institute{
+IIS Fermi Sacconi Ceci Cpia
+}
+
+\begin{document}
+
+% Slide titolo
+\begin{frame}
+\titlepage
+\end{frame}
+
+% Slide 2: SQL - caratteristiche generali
+\begin{frame}
+\frametitle{SQL: caratteristiche generali}
+\begin{itemize}
+    \item SQL (Structured Query Language) è il linguaggio standard \emph{de facto} per DBMS relazionali, che riunisce in sé funzionalità di DDL, DML e DCL
+    \item SQL è un linguaggio \textbf{dichiarativo} (non-procedurale), ovvero non specifica la sequenza di operazioni da compiere per ottenere il risultato
+    \item SQL è ``relazionalmente completo'', nel senso che ogni espressione dell'algebra relazionale può essere tradotta in SQL
+    \item \ldots inoltre SQL fa molte altre cose\ldots
+    \item Il modello dei dati di SQL è basato su \textbf{tabelle} anziché relazioni:
+    \begin{itemize}
+        \item Possono essere presenti righe (tuple) duplicate
+        \item In alcuni casi l'ordine delle colonne (attributi) ha rilevanza
+        \item \ldots il motivo è pragmatico (ossia legato a considerazioni sull'efficienza)
+    \end{itemize}
+    \item SQL adotta la logica a 3 valori introdotta con l'Algebra Relazionale
+\end{itemize}
+\end{frame}
+
+% Slide 3: SQL - standard e dialetti
+\begin{frame}
+\frametitle{SQL: standard e dialetti}
+\begin{itemize}
+    \item Il processo di standardizzazione di SQL è iniziato nel 1986
+    \item Nel 1992 è stato definito lo standard \textbf{SQL-2} (o SQL-92) da parte dell'ISO (International Standards Organization), e dell'ANSI (American National Standards Institute), rispettivamente descritti nei documenti ISO/IEC 9075:1992 e ANSI X3.135-1992 (identici!)
+    \item Del 1999 è lo standard \textbf{SQL:1999}, che rende SQL un linguaggio computazionalmente completo (e quindi con istruzioni di controllo!) per il supporto di oggetti persistenti\ldots
+    \item Allo stato attuale ogni sistema ha ancora un suo dialetto:
+    \begin{itemize}
+        \item supporta (in larga parte) SQL-2
+        \item ha già elementi di SQL:1999
+        \item ha anche costrutti non standard
+    \end{itemize}
+    \item Quello che vediamo è la parte più ``diffusa''
+\end{itemize}
+\end{frame}
+
+% Slide 4: Organizzazione del materiale
+\begin{frame}
+\frametitle{Organizzazione del materiale}
+La trattazione di SQL viene suddivisa in più parti come segue:
+\begin{itemize}
+    \item \textbf{DDL di base} e \textbf{DML} ``per gli operatori dell'algebra'' e per le operazioni di modifica dei dati
+    \begin{itemize}
+        \item Per fare ``quello che si fa anche in algebra''
+    \end{itemize}
+    \item \textbf{DML per il raggruppamento dei dati}
+    \begin{itemize}
+        \item Per derivare informazioni di sintesi dai dati
+    \end{itemize}
+    \item \textbf{DML con blocchi innestati}
+    \begin{itemize}
+        \item Per scrivere richieste complesse
+    \end{itemize}
+    \item \textbf{DDL per la definizione di viste e vincoli generici}
+    \begin{itemize}
+        \item Per migliorare la qualità dei dati
+    \end{itemize}
+    \item \textbf{Utilizzo di SQL da linguaggio ospite}
+    \begin{itemize}
+        \item Per scrivere applicazioni
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+% Slide 5: Data Definition Language (DDL)
+\begin{frame}
+\frametitle{Data Definition Language (DDL)}
+\begin{itemize}
+    \item Il DDL di SQL permette di definire schemi di relazioni (o ``table'', tabelle), modificarli ed eliminarli
+    \item Permette inoltre di specificare vincoli, sia a livello di tupla (o ``riga'') che a livello di tabella
+    \item Permette di definire nuovi domini, oltre a quelli predefiniti
+    \begin{itemize}
+        \item Per vincoli e domini si può anche fare uso del DML (quindi inizialmente non si trattano completamente)
+    \end{itemize}
+    \item Inoltre si possono definire viste (``view''), ovvero tabelle virtuali, e indici, per accedere efficientemente ai dati (questi ultimi li vedremo in SI L-B)
+\end{itemize}
+
+\vspace{1em}
+\textit{Per quanto non trattato nel seguito si faccia riferimento al materiale di laboratorio}
+\end{frame}
+
+% Slide 6: Creazione ed eliminazione di tabelle
+\begin{frame}[fragile]
+\frametitle{Creazione ed eliminazione di tabelle}
+\begin{itemize}
+    \item Mediante l'istruzione \texttt{CREATE TABLE} si definisce lo schema di una tabella e se ne crea un'istanza vuota
+    \item Per ogni attributo va specificato il dominio, un eventuale valore di default e eventuali vincoli
+    \item Infine possono essere espressi altri vincoli a livello di tabella
+    \item Mediante l'istruzione \texttt{DROP TABLE} è possibile eliminare lo schema di una tabella (e conseguentemente la corrispondente istanza)
+\end{itemize}
+
+\vspace{1em}
+\begin{lstlisting}
+DROP TABLE Imp
+\end{lstlisting}
+\end{frame}
+
+% Slide 7: Definizione di tabelle - esempio
+\begin{frame}[fragile]
+\frametitle{Definizione di tabelle: esempio}
+\begin{lstlisting}[basicstyle=\ttfamily\footnotesize]
+CREATE TABLE Imp (
+    CodImp char(4) PRIMARY KEY,
+    CF char(16) NOT NULL UNIQUE, -- chiave
+    Cognome varchar(60) NOT NULL,
+    Nome varchar(30) NOT NULL,
+    Sede char(3) REFERENCES Sedi(Sede), -- FK
+    Ruolo char(20) DEFAULT 'Programmatore',
+    Stipendio int CHECK (Stipendio > 0),
+    UNIQUE (Cognome, Nome) -- chiave
+)
+
+CREATE TABLE Prog (
+    CodProg char(3),
+    Citta varchar(40),
+    PRIMARY KEY (CodProg,Citta)
+)
+\end{lstlisting}
+\end{frame}
+
+% Slide 8: Valori nulli e valori di default
+\begin{frame}[fragile]
+\frametitle{Valori nulli e valori di default}
+\begin{itemize}
+    \item Per vietare la presenza di valori nulli, è sufficiente imporre il vincolo \texttt{NOT NULL}
+\end{itemize}
+
+\begin{lstlisting}
+CF char(16) NOT NULL,
+\end{lstlisting}
+
+\begin{itemize}
+    \item Per ogni attributo è inoltre possibile specificare un valore di default, che verrà usato se all'atto dell'inserimento di una tupla non viene fornito esplicitamente un valore per l'attributo relativo
+\end{itemize}
+
+\begin{lstlisting}
+Ruolo char(20) DEFAULT 'Programmatore'
+\end{lstlisting}
+\end{frame}
+
+% Slide 9: Chiavi
+\begin{frame}[fragile]
+\frametitle{Chiavi}
+\begin{itemize}
+    \item La definizione di una chiave avviene esprimendo un vincolo \texttt{UNIQUE}, che si può specificare in linea, se la chiave consiste di un singolo attributo
+\end{itemize}
+
+\begin{lstlisting}
+CF char(16) UNIQUE,
+\end{lstlisting}
+
+\begin{itemize}
+    \item o dopo aver dichiarato tutti gli attributi, se la chiave consiste di uno o più attributi:
+\end{itemize}
+
+\begin{lstlisting}
+UNIQUE(Cognome,Nome)
+\end{lstlisting}
+
+\begin{itemize}
+    \item Ovviamente, specificare
+\end{itemize}
+
+\begin{lstlisting}
+UNIQUE(Cognome),
+UNIQUE(Nome)
+\end{lstlisting}
+
+\begin{itemize}
+    \item sarebbe molto più restrittivo
+\end{itemize}
+\end{frame}
+
+% Slide 10: Chiavi primarie
+\begin{frame}[fragile]
+\frametitle{Chiavi primarie}
+\begin{itemize}
+    \item La definizione della chiave primaria di una tabella avviene specificando un vincolo \texttt{PRIMARY KEY}, o in linea o come vincolo di tabella
+\end{itemize}
+
+\begin{lstlisting}
+CodImp char(4) PRIMARY KEY
+
+PRIMARY KEY (CodProg,Citta)
+\end{lstlisting}
+
+\begin{itemize}
+    \item Va osservato che:
+    \begin{itemize}
+        \item La specifica di una chiave primaria non è obbligatoria
+        \item Si può specificare al massimo una chiave primaria per tabella
+        \item Non è necessario specificare \texttt{NOT NULL} per gli attributi della primary key
+    \end{itemize}
+\end{itemize}
+
+\vspace{1em}
+\fbox{\parbox{0.9\textwidth}{\footnotesize\textbf{DB2:} In DB2 è necessario specificare il vincolo \texttt{NOT NULL} sia per definire chiavi sia per definire chiavi primarie!}}
+\end{frame}
+
+% Slide 11: Chiavi straniere
+\begin{frame}[fragile]
+\frametitle{Chiavi straniere (``foreign key'')}
+\begin{itemize}
+    \item La definizione di una foreign key avviene specificando un vincolo \texttt{FOREIGN KEY}, e indicando quale chiave viene referenziata
+\end{itemize}
+
+\begin{lstlisting}
+Sede char(3) REFERENCES Sedi(Sede)
+\end{lstlisting}
+
+\begin{itemize}
+    \item Ovvero
+\end{itemize}
+
+\begin{lstlisting}
+FOREIGN KEY (Sede) REFERENCES Sedi(Sede)
+\end{lstlisting}
+
+\begin{itemize}
+    \item Nell'esempio, \texttt{Imp} è detta tabella di riferimento e \texttt{Sedi} tabella di destinazione (analoga terminologia per gli attributi coinvolti)
+    \item Le colonne di destinazione devono essere una chiave della tabella destinazione (non necessariamente la chiave primaria)
+    \item Se si omettono gli attributi destinazione, vengono assunti quelli della chiave primaria
+\end{itemize}
+
+\begin{lstlisting}
+Sede char(3) REFERENCES Sedi
+\end{lstlisting}
+\end{frame}
+
+% Slide 12: Vincoli generici
+\begin{frame}[fragile]
+\frametitle{Vincoli generici (``check constraint'')}
+\begin{itemize}
+    \item Mediante la clausola \texttt{CHECK} è possibile esprimere vincoli di tupla arbitrari, sfruttando tutto il potere espressivo di SQL
+    \item La sintassi è: \texttt{CHECK (<condizione>)}
+    \item Il vincolo è violato se esiste almeno una tupla che rende falsa la \texttt{<condizione>}. Pertanto
+\end{itemize}
+
+\begin{lstlisting}
+Stipendio int CHECK (Stipendio > 0),
+\end{lstlisting}
+
+\begin{itemize}
+    \item non permette tuple con stipendio negativo, ma ammette valori nulli per l'attributo \texttt{Stipendio}
+    \item Se \texttt{CHECK} viene espresso a livello di tabella (anziché nella definizione dell'attributo) è possibile fare riferimento a più attributi della tabella stessa
+\end{itemize}
+
+\begin{lstlisting}
+CHECK (ImportoLordo = Netto + Ritenute)
+\end{lstlisting}
+
+\vspace{0.5em}
+\fbox{\parbox{0.9\textwidth}{\footnotesize\textbf{DB2:} In DB2 il \texttt{CHECK} può usare solo condizioni valutabili sulla singola tupla}}
+\end{frame}
+
+% Slide 13: Vincoli con nomi
+\begin{frame}[fragile]
+\frametitle{Vincoli con nomi}
+\begin{itemize}
+    \item A fini diagnostici (e di documentazione) è spesso utile sapere quale vincolo è stato violato a seguito di un'azione sul DB
+    \item A tale scopo è possibile associare dei nomi ai vincoli, ad esempio:
+\end{itemize}
+
+\begin{lstlisting}
+Stipendio int CONSTRAINT StipendioPositivo
+              CHECK (Stipendio > 0),
+
+CONSTRAINT ForeignKeySedi
+    FOREIGN KEY (Sede) REFERENCES Sedi
+\end{lstlisting}
+\end{frame}
+
+% Slide 14: Modifica di tabelle
+\begin{frame}[fragile]
+\frametitle{Modifica di tabelle}
+\begin{itemize}
+    \item Mediante l'istruzione \texttt{ALTER TABLE} è possibile modificare lo schema di una tabella, in particolare:
+    \begin{itemize}
+        \item Aggiungendo attributi
+        \item Aggiungendo o rimuovendo vincoli
+    \end{itemize}
+\end{itemize}
+
+\begin{lstlisting}[basicstyle=\ttfamily\footnotesize]
+ALTER TABLE Imp
+    ADD COLUMN Sesso char(1) CHECK (Sesso IN ('M','F'))
+    ADD CONSTRAINT StipendioMax CHECK (Stipendio < 4000)
+    DROP CONSTRAINT StipendioPositivo
+    DROP UNIQUE(Cognome,Nome);
+\end{lstlisting}
+
+\begin{itemize}
+    \item Se si aggiunge un attributo con vincolo \texttt{NOT NULL}, bisogna prevedere un valore di default, che il sistema assegnerà automaticamente a tutte le tuple già presenti
+\end{itemize}
+
+\begin{lstlisting}
+ADD COLUMN Istruzione char(10) NOT NULL DEFAULT 'Laurea'
+\end{lstlisting}
+\end{frame}
+
+% Slide 15: Data Manipulation Language (DML)
+\begin{frame}[fragile]
+\frametitle{Data Manipulation Language (DML)}
+\begin{itemize}
+    \item Le istruzioni principali del DML di SQL sono
+    \begin{description}
+        \item[\texttt{SELECT}] esegue interrogazioni (query) sul DB
+        \item[\texttt{INSERT}] inserisce nuove tuple nel DB
+        \item[\texttt{DELETE}] cancella tuple dal DB
+        \item[\texttt{UPDATE}] modifica tuple del DB
+    \end{description}
+    \item \texttt{INSERT} può usare il risultato di una query per eseguire inserimenti multipli
+    \item \texttt{DELETE} e \texttt{UPDATE} possono fare uso di condizioni per specificare le tuple da cancellare o modificare
+\end{itemize}
+\end{frame}
+
+% Slide 16: DB di riferimento per gli esempi
+\begin{frame}
+\frametitle{DB di riferimento per gli esempi}
+\begin{center}
+\scriptsize
+\textbf{Imp}\\
+\begin{tabular}{|l|l|l|l|l|}
+\hline
+\textbf{CodImp} & \textbf{Nome} & \textbf{Sede} & \textbf{Ruolo} & \textbf{Stipendio} \\
+\hline
+E001 & Rossi & S01 & Analista & 2000 \\
+E002 & Verdi & S02 & Sistemista & 1500 \\
+E003 & Bianchi & S01 & Programmatore & 1000 \\
+E004 & Gialli & S03 & Programmatore & 1000 \\
+E005 & Neri & S02 & Analista & 2500 \\
+E006 & Grigi & S01 & Sistemista & 1100 \\
+E007 & Violetti & S01 & Programmatore & 1000 \\
+E008 & Aranci & S02 & Programmatore & 1200 \\
+\hline
+\end{tabular}
+
+\vspace{1em}
+\textbf{Sedi}\\
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Sede} & \textbf{Responsabile} & \textbf{Citta} \\
+\hline
+S01 & Biondi & Milano \\
+S02 & Mori & Bologna \\
+S03 & Fulvi & Milano \\
+\hline
+\end{tabular}
+
+\vspace{1em}
+\textbf{Prog}\\
+\begin{tabular}{|l|l|}
+\hline
+\textbf{CodProg} & \textbf{Citta} \\
+\hline
+P01 & Milano \\
+P01 & Bologna \\
+P02 & Bologna \\
+\hline
+\end{tabular}
+\end{center}
+\end{frame}
+
+% Slide 17: L'istruzione SELECT
+\begin{frame}[fragile]
+\frametitle{L'istruzione SELECT}
+\begin{itemize}
+    \item È l'istruzione che permette di eseguire interrogazioni (query) sul DB
+    \item La forma di base è:
+\end{itemize}
+
+\begin{lstlisting}
+SELECT A1, A2, .., Am
+FROM   R1, R2, .., Rn
+WHERE  <condizione>
+\end{lstlisting}
+
+\begin{itemize}
+    \item ovvero:
+    \begin{itemize}
+        \item \texttt{SELECT} (o TARGET) list (cosa si vuole come risultato)
+        \item clausola \texttt{FROM} (da dove si prende)
+        \item clausola \texttt{WHERE} (che condizioni deve soddisfare)
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+% Slide 18: SELECT su singola tabella
+\begin{frame}[fragile]
+\frametitle{SELECT su singola tabella}
+\textit{Codice, nome e ruolo dei dipendenti della sede S01}
+
+\begin{lstlisting}
+SELECT CodImp, Nome, Ruolo
+FROM   Imp
+WHERE  Sede = 'S01'
+\end{lstlisting}
+
+\begin{itemize}
+    \item Si ottiene in questo modo:
+    \begin{itemize}
+        \item La clausola \texttt{FROM} dice di prendere la tabella \texttt{IMP}
+        \item La clausola \texttt{WHERE} dice di prendere solo le tuple per cui \texttt{Sede='S01'}
+        \item Infine, si estraggono i valori degli attributi (o ``colonne'') nella \texttt{SELECT} list
+    \end{itemize}
+    \item Equivale a $\pi_{CodImp,Nome,Ruolo}(\sigma_{Sede = S01}(Imp))$
+\end{itemize}
+
+\begin{center}
+\scriptsize
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{CodImp} & \textbf{Nome} & \textbf{Ruolo} \\
+\hline
+E001 & Rossi & Analista \\
+E003 & Bianchi & Programmatore \\
+E006 & Grigi & Sistemista \\
+E007 & Violetti & Programmatore \\
+\hline
+\end{tabular}
+\end{center}
+\end{frame}
+
+% Slide 19: SELECT senza proiezione
+\begin{frame}[fragile]
+\frametitle{SELECT senza proiezione}
+\begin{itemize}
+    \item Se si vogliono tutti gli attributi:
+\end{itemize}
+
+\begin{lstlisting}
+SELECT CodImp, Nome, Sede, Ruolo, Stipendio
+FROM   Imp
+WHERE  Sede = 'S01'
+\end{lstlisting}
+
+\begin{itemize}
+    \item si può abbreviare con:
+\end{itemize}
+
+\begin{lstlisting}
+SELECT *
+FROM   Imp
+WHERE  Sede = 'S01'
+\end{lstlisting}
+\end{frame}
+
+% Slide 20: SELECT senza condizione
+\begin{frame}[fragile]
+\frametitle{SELECT senza condizione}
+\begin{itemize}
+    \item Se si vogliono tutte le tuple:
+\end{itemize}
+
+\begin{lstlisting}
+SELECT CodImp, Nome, Ruolo
+FROM   Imp
+\end{lstlisting}
+
+\begin{itemize}
+    \item Quindi
+\end{itemize}
+
+\begin{lstlisting}
+SELECT *
+FROM   Imp
+\end{lstlisting}
+
+\begin{itemize}
+    \item restituisce tutta l'istanza di \texttt{Imp}
+\end{itemize}
+\end{frame}
+
+% Slide 21: Tabelle vs Relazioni
+\begin{frame}[fragile]
+\frametitle{Tabelle vs Relazioni}
+\begin{itemize}
+    \item Il risultato di una query SQL può contenere righe duplicate:
+\end{itemize}
+
+\begin{lstlisting}
+SELECT Ruolo
+FROM   Imp
+WHERE  Sede = 'S01'
+\end{lstlisting}
+
+\begin{columns}
+\begin{column}{0.4\textwidth}
+\scriptsize
+\begin{tabular}{|l|}
+\hline
+\textbf{Ruolo} \\
+\hline
+Analista \\
+Programmatore \\
+Sistemista \\
+Programmatore \\
+\hline
+\end{tabular}
+\end{column}
+\begin{column}{0.6\textwidth}
+\begin{itemize}
+    \item Per eliminarle si usa l'opzione \texttt{DISTINCT} nella \texttt{SELECT} list
+\end{itemize}
+
+\begin{lstlisting}[basicstyle=\ttfamily\tiny]
+SELECT DISTINCT Ruolo
+FROM   Imp
+WHERE  Sede = 'S01'
+\end{lstlisting}
+
+\scriptsize
+\begin{tabular}{|l|}
+\hline
+\textbf{Ruolo} \\
+\hline
+Analista \\
+Programmatore \\
+Sistemista \\
+\hline
+\end{tabular}
+\end{column}
+\end{columns}
+\end{frame}
+
+% Slide 22: Espressioni nella clausola SELECT
+\begin{frame}[fragile]
+\frametitle{Espressioni nella clausola SELECT}
+\begin{itemize}
+    \item La \texttt{SELECT} list può contenere non solo attributi, ma anche espressioni:
+\end{itemize}
+
+\begin{lstlisting}
+SELECT CodImp, Stipendio*12
+FROM   Imp
+WHERE  Sede = 'S01'
+\end{lstlisting}
+
+\begin{itemize}
+    \item Si noti che in questo caso la seconda colonna non ha un nome
+\end{itemize}
+
+\begin{center}
+\scriptsize
+\begin{tabular}{|l|r|}
+\hline
+\textbf{CodImp} & \\
+\hline
+E001 & 24000 \\
+E003 & 12000 \\
+E006 & 13200 \\
+E007 & 12000 \\
+\hline
+\end{tabular}
+\end{center}
+\end{frame}
+
+% Slide 23: Ridenominazione delle colonne
+\begin{frame}[fragile]
+\frametitle{Ridenominazione delle colonne}
+\begin{itemize}
+    \item Ad ogni elemento della \texttt{SELECT} list è possibile associare un nome a piacere:
+\end{itemize}
+
+\begin{lstlisting}
+SELECT CodImp AS Codice, 
+       Stipendio*12 AS StipendioAnnuo
+FROM   Imp
+WHERE  Sede = 'S01'
+\end{lstlisting}
+
+\begin{itemize}
+    \item La parola chiave \texttt{AS} può anche essere omessa:
+\end{itemize}
+
+\begin{lstlisting}
+SELECT CodImp Codice, ...
+\end{lstlisting}
+
+\begin{center}
+\scriptsize
+\begin{tabular}{|l|r|}
+\hline
+\textbf{Codice} & \textbf{StipendioAnnuo} \\
+\hline
+E001 & 24000 \\
+E003 & 12000 \\
+E006 & 13200 \\
+E007 & 12000 \\
+\hline
+\end{tabular}
+\end{center}
+\end{frame}
+
+% Slide 24: Pseudonimi
+\begin{frame}[fragile]
+\frametitle{Pseudonimi}
+\begin{itemize}
+    \item Per chiarezza, ogni nome di colonna può essere scritto prefissandolo con il nome della tabella:
+\end{itemize}
+
+\begin{lstlisting}[basicstyle=\ttfamily\footnotesize]
+SELECT Imp.CodImp AS Codice,
+       Imp.Stipendio*12 AS StipendioAnnuo
+FROM   Imp
+WHERE  Imp.Sede = 'S01'
+\end{lstlisting}
+
+\begin{itemize}
+    \item \ldots e si può anche usare uno pseudonimo (alias) in luogo del nome della tabella
+\end{itemize}
+
+\begin{lstlisting}[basicstyle=\ttfamily\footnotesize]
+SELECT I.CodImp AS Codice,
+       I.Stipendio*12 AS StipendioAnnuo
+FROM   Imp I -- oppure Imp AS I
+WHERE  I.Sede = 'S01'
+\end{lstlisting}
+\end{frame}
+
+% Slide 25: Operatore LIKE
+\begin{frame}[fragile]
+\frametitle{Operatore LIKE}
+\begin{itemize}
+    \item L'operatore \texttt{LIKE}, mediante le ``wildcard'' \texttt{\_} (un carattere arbitrario) e \texttt{\%} (una stringa arbitraria), permette di esprimere dei ``pattern'' su stringhe
+\end{itemize}
+
+\textit{Nomi degli impiegati che finiscono con una `i' e hanno una `i' in seconda posizione}
+
+\begin{lstlisting}
+SELECT Nome
+FROM   Imp
+WHERE  Nome LIKE '_i%i'
+\end{lstlisting}
+
+\begin{center}
+\scriptsize
+\begin{tabular}{|l|}
+\hline
+\textbf{Nome} \\
+\hline
+Bianchi \\
+Gialli \\
+Violetti \\
+\hline
+\end{tabular}
+\end{center}
+\end{frame}
+
+% Slide 26: Operatore BETWEEN
+\begin{frame}[fragile]
+\frametitle{Operatore BETWEEN}
+\begin{itemize}
+    \item L'operatore \texttt{BETWEEN} permette di esprimere condizioni di appartenenza a un intervallo
+\end{itemize}
+
+\textit{Nome e stipendio degli impiegati che hanno uno stipendio compreso tra 1300 e 2000 Euro (estremi inclusi)}
+
+\begin{lstlisting}
+SELECT Nome, Stipendio
+FROM   Imp
+WHERE  Stipendio BETWEEN 1300 AND 2000
+\end{lstlisting}
+
+\begin{center}
+\scriptsize
+\begin{tabular}{|l|r|}
+\hline
+\textbf{Nome} & \textbf{Stipendio} \\
+\hline
+Rossi & 2000 \\
+Verdi & 1500 \\
+\hline
+\end{tabular}
+\end{center}
+\end{frame}
+
+% Slide 27: Operatore IN
+\begin{frame}[fragile]
+\frametitle{Operatore IN}
+\begin{itemize}
+    \item L'operatore \texttt{IN} permette di esprimere condizioni di appartenenza a un insieme
+\end{itemize}
+
+\textit{Codici e sedi degli impiegati delle sedi S02 e S03}
+
+\begin{lstlisting}
+SELECT CodImp, Sede
+FROM   Imp
+WHERE  Sede IN ('S02','S03')
+\end{lstlisting}
+
+\begin{itemize}
+    \item Lo stesso risultato si ottiene scrivendo:
+\end{itemize}
+
+\begin{lstlisting}
+SELECT CodImp, Sede
+FROM   Imp
+WHERE  Sede = 'S02' OR Sede = 'S03'
+\end{lstlisting}
+
+\begin{center}
+\scriptsize
+\begin{tabular}{|l|l|}
+\hline
+\textbf{CodImp} & \textbf{Sede} \\
+\hline
+E002 & S02 \\
+E004 & S03 \\
+E005 & S02 \\
+E008 & S02 \\
+\hline
+\end{tabular}
+\end{center}
+\end{frame}
+
+% Slide 28: Valori nulli
+\begin{frame}[fragile]
+\frametitle{Valori nulli}
+\begin{itemize}
+    \item Il trattamento dei valori nulli si basa su quanto già visto in algebra relazionale, quindi
+\end{itemize}
+
+\begin{lstlisting}
+SELECT CodImp
+FROM   Imp
+WHERE  Stipendio > 1500
+    OR Stipendio <= 1500
+\end{lstlisting}
+
+\begin{itemize}
+    \item restituisce solo
+\end{itemize}
+
+\begin{columns}
+\begin{column}{0.5\textwidth}
+\scriptsize
+\textbf{Imp}\\
+\begin{tabular}{|l|l|r|}
+\hline
+\textbf{CodImp} & \ldots & \textbf{Stipendio} \\
+\hline
+E001 & \ldots & 2000 \\
+E002 & \ldots & 1500 \\
+E003 & \ldots & 1000 \\
+E004 & \ldots & NULL \\
+E005 & \ldots & 2500 \\
+E006 & \ldots & NULL \\
+E007 & \ldots & 1000 \\
+E008 & \ldots & 1200 \\
+\hline
+\end{tabular}
+\end{column}
+\begin{column}{0.5\textwidth}
+\scriptsize
+\begin{tabular}{|l|}
+\hline
+\textbf{CodImp} \\
+\hline
+E001 \\
+E002 \\
+E003 \\
+E005 \\
+E007 \\
+E008 \\
+\hline
+\end{tabular}
+\end{column}
+\end{columns}
+\end{frame}
+
+% Slide 29: Logica a 3 valori in SQL
+\begin{frame}[fragile]
+\frametitle{Logica a 3 valori in SQL}
+\begin{itemize}
+    \item Nel caso di espressioni complesse, SQL ricorre alla logica a 3 valori: vero (V), falso (F) e ``sconosciuto'' (?)
+\end{itemize}
+
+\begin{lstlisting}
+SELECT CodImp, Sede, Stipendio
+FROM   Imp
+WHERE  (Sede = 'S03')
+    OR (Stipendio > 1500)
+\end{lstlisting}
+
+\begin{columns}
+\begin{column}{0.5\textwidth}
+\begin{itemize}
+    \item Per verificare se un valore è \texttt{NULL} si usa l'operatore \texttt{IS}
+    \item \texttt{NOT (A IS NULL)} si scrive anche \texttt{A IS NOT NULL}
+\end{itemize}
+\end{column}
+\begin{column}{0.5\textwidth}
+\scriptsize
+\begin{tabular}{|l|l|r|}
+\hline
+\textbf{CodImp} & \textbf{Sede} & \textbf{Stipendio} \\
+\hline
+E001 & S01 & 2000 \\
+E004 & S03 & NULL \\
+E005 & S02 & 2500 \\
+\hline
+\end{tabular}
+\end{column}
+\end{columns}
+
+\vspace{1em}
+
+\begin{lstlisting}
+SELECT CodImp
+FROM   Imp
+WHERE  Stipendio IS NULL
+\end{lstlisting}
+
+\begin{center}
+\scriptsize
+\begin{tabular}{|l|}
+\hline
+\textbf{CodImp} \\
+\hline
+E004 \\
+E006 \\
+\hline
+\end{tabular}
+\end{center}
+\end{frame}
+
+% Slide 30: Ordinamento del risultato
+\begin{frame}[fragile]
+\frametitle{Ordinamento del risultato}
+\begin{itemize}
+    \item Per ordinare il risultato di una query secondo i valori di una o più colonne si introduce la clausola \texttt{ORDER BY}, e per ogni colonna si specifica se l'ordinamento è per valori ``ascendenti'' (\texttt{ASC}, il default) o ``discendenti'' (\texttt{DESC})
+\end{itemize}
+
+\begin{lstlisting}
+SELECT Nome, Stipendio
+FROM   Imp
+ORDER BY Stipendio DESC, Nome
+\end{lstlisting}
+
+\begin{center}
+\scriptsize
+\begin{tabular}{|l|r|}
+\hline
+\textbf{Nome} & \textbf{Stipendio} \\
+\hline
+Neri & 2500 \\
+Rossi & 2000 \\
+Verdi & 1500 \\
+Aranci & 1200 \\
+Grigi & 1100 \\
+Bianchi & 1000 \\
+Gialli & 1000 \\
+Violetti & 1000 \\
+\hline
+\end{tabular}
+\end{center}
+\end{frame}
+
+% Slide 31: Interrogazioni su più tabelle
+\begin{frame}[fragile]
+\frametitle{Interrogazioni su più tabelle}
+\begin{itemize}
+    \item L'interrogazione
+\end{itemize}
+
+\begin{lstlisting}
+SELECT I.Nome, I.Sede, S.Citta
+FROM   Imp I, Sedi S
+WHERE  I.Sede = S.Sede
+   AND I.Ruolo = 'Programmatore'
+\end{lstlisting}
+
+\begin{itemize}
+    \item si interpreta come segue:
+    \begin{itemize}
+        \item Si esegue il prodotto Cartesiano di \texttt{Imp} e \texttt{Sedi}
+        \item Si applicano i predicati della clausola \texttt{WHERE}
+        \item Si estraggono le colonne della \texttt{SELECT} list
+    \end{itemize}
+    \item Il predicato \texttt{I.Sede = S.Sede} è detto \textbf{predicato di join}, in quanto stabilisce il criterio con cui le tuple di \texttt{Imp} e di \texttt{Sedi} devono essere combinate
+\end{itemize}
+\end{frame}
+
+% Slide 32: Interrogazioni su più tabelle - risultato
+\begin{frame}
+\frametitle{Interrogazioni su più tabelle: risultato}
+\begin{itemize}
+    \item Dopo avere applicato il predicato \texttt{I.Sede = S.Sede}:
+\end{itemize}
+
+\begin{center}
+\tiny
+\begin{tabular}{|l|l|l|l|l|l|l|l|l|}
+\hline
+\textbf{I.CodImp} & \textbf{I.Nome} & \textbf{I.Sede} & \textbf{I.Ruolo} & \textbf{I.Stipendio} & \textbf{S.Sede} & \textbf{S.Responsabile} & \textbf{S.Citta} \\
+\hline
+E001 & Rossi & S01 & Analista & 2000 & S01 & Biondi & Milano \\
+E002 & Verdi & S02 & Sistemista & 1500 & S02 & Mori & Bologna \\
+E003 & Bianchi & S01 & Programmatore & 1000 & S01 & Biondi & Milano \\
+E004 & Gialli & S03 & Programmatore & 1000 & S03 & Fulvi & Milano \\
+E005 & Neri & S02 & Analista & 2500 & S02 & Mori & Bologna \\
+E006 & Grigi & S01 & Sistemista & 1100 & S01 & Biondi & Milano \\
+E007 & Violetti & S01 & Programmatore & 1000 & S01 & Biondi & Milano \\
+E008 & Aranci & S02 & Programmatore & 1200 & S02 & Mori & Bologna \\
+\hline
+\end{tabular}
+\end{center}
+\end{frame}
+
+% Slide 33: Ridenominazione del risultato
+\begin{frame}[fragile]
+\frametitle{Ridenominazione del risultato}
+\begin{itemize}
+    \item Se la \texttt{SELECT} list contiene 2 o più colonne con lo stesso nome, è necessario operare una ridenominazione per ottenere un output con tutte le colonne intestate
+\end{itemize}
+
+\begin{lstlisting}
+SELECT I.Sede AS SedeE001, S.Sede AS AltraSede
+FROM   Imp I, Sedi S
+WHERE  I.Sede <> S.Sede
+   AND I.CodImp = 'E001'
+\end{lstlisting}
+
+\begin{center}
+\scriptsize
+\begin{tabular}{|l|l|}
+\hline
+\textbf{SedeE001} & \textbf{AltraSede} \\
+\hline
+S01 & S02 \\
+S01 & S03 \\
+\hline
+\end{tabular}
+\end{center}
+\end{frame}
+
+% Slide 34: Self Join
+\begin{frame}[fragile]
+\frametitle{Self Join}
+\begin{itemize}
+    \item L'uso di alias è forzato quando si deve eseguire un self-join
+\end{itemize}
+
+\textit{Chi sono i nonni di Anna?}
+
+\begin{lstlisting}
+SELECT G1.Genitore AS Nonno
+FROM   Genitori G1, Genitori G2
+WHERE  G1.Figlio = G2.Genitore
+   AND G2.Figlio = 'Anna'
+\end{lstlisting}
+
+\begin{columns}
+\begin{column}{0.45\textwidth}
+\scriptsize
+\textbf{Genitori G1}\\
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Genitore} & \textbf{Figlio} \\
+\hline
+Luca & Anna \\
+Enzo & Maria \\
+Silvia & Maria \\
+Giorgio & Luca \\
+Maria & Anna \\
+\hline
+\end{tabular}
+\end{column}
+\begin{column}{0.45\textwidth}
+\scriptsize
+\textbf{Genitori G2}\\
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Genitore} & \textbf{Figlio} \\
+\hline
+Luca & Anna \\
+Enzo & Maria \\
+Silvia & Maria \\
+Giorgio & Luca \\
+Maria & Anna \\
+\hline
+\end{tabular}
+\end{column}
+\end{columns}
+\end{frame}
+
+% Slide 35: Join espliciti
+\begin{frame}[fragile]
+\frametitle{Join espliciti}
+\begin{itemize}
+    \item Anziché scrivere i predicati di join nella clausola \texttt{WHERE}, è possibile ``costruire'' una \emph{joined table} direttamente nella clausola \texttt{FROM}
+\end{itemize}
+
+\begin{lstlisting}
+SELECT I.Nome, I.Sede, S.Citta
+FROM   Imp I JOIN Sedi S ON (I.Sede = S.Sede)
+WHERE  I.Ruolo = 'Programmatore'
+\end{lstlisting}
+
+\begin{itemize}
+    \item in cui \texttt{JOIN} si può anche scrivere \texttt{INNER JOIN}
+    \item Altri tipi di join espliciti sono:
+    \begin{itemize}
+        \item \texttt{LEFT [OUTER] JOIN}
+        \item \texttt{RIGHT [OUTER] JOIN}
+        \item \texttt{FULL [OUTER] JOIN}
+        \item \texttt{NATURAL JOIN}
+    \end{itemize}
+\end{itemize}
+
+\vspace{0.5em}
+\fbox{\parbox{0.9\textwidth}{\footnotesize\textbf{DB2:} DB2 non supporta il join naturale}}
+\end{frame}
+
+% Slide 36: Operatori insiemistici
+\begin{frame}[fragile]
+\frametitle{Operatori insiemistici}
+\begin{itemize}
+    \item L'istruzione \texttt{SELECT} non permette di eseguire unione, intersezione e differenza di tabelle
+    \item Ciò che si può fare è combinare in modo opportuno i risultati di due istruzioni \texttt{SELECT}, mediante gli operatori
+\end{itemize}
+
+\begin{center}
+\texttt{UNION}, \texttt{INTERSECT}, \texttt{EXCEPT}
+\end{center}
+
+\begin{itemize}
+    \item In tutti i casi gli elementi delle \texttt{SELECT} list devono avere tipi compatibili e gli stessi nomi se si vogliono colonne con un'intestazione definita
+    \item L'ordine degli elementi è importante (notazione posizionale)
+    \item Il risultato è in ogni caso privo di duplicati, per mantenerli occorre aggiungere l'opzione \texttt{ALL}:
+\end{itemize}
+
+\begin{center}
+\texttt{UNION ALL}, \texttt{INTERSECT ALL}, \texttt{EXCEPT ALL}
+\end{center}
+\end{frame}
+
+% Slide 37: Operatori insiemistici - esempi (1)
+
+
+% Slide 39: Istruzioni di aggiornamento dei dati
+\begin{frame}[fragile]
+\frametitle{Istruzioni di aggiornamento dei dati}
+\begin{itemize}
+    \item Le istruzioni che permettono di aggiornare il DB sono
+    \begin{description}
+        \item[\texttt{INSERT}] inserisce nuove tuple nel DB
+        \item[\texttt{DELETE}] cancella tuple dal DB
+        \item[\texttt{UPDATE}] modifica tuple del DB
+    \end{description}
+    \item \texttt{INSERT} può usare il risultato di una query per eseguire inserimenti multipli
+    \item \texttt{DELETE} e \texttt{UPDATE} possono fare uso di condizioni per specificare le tuple da cancellare o modificare
+    \item In ogni caso gli aggiornamenti riguardano una sola relazione
+\end{itemize}
+\end{frame}
+
+% Slide 40: Inserimento di tuple - caso singolo
+\begin{frame}[fragile]
+\frametitle{Inserimento di tuple: caso singolo}
+\begin{itemize}
+    \item È possibile inserire una nuova tupla specificandone i valori
+\end{itemize}
+
+\begin{lstlisting}
+INSERT INTO Sedi(Sede, Responsabile, Citta)
+VALUES ('S04', 'Bruni', 'Firenze')
+\end{lstlisting}
+
+\begin{itemize}
+    \item Ci deve essere corrispondenza tra attributi e valori
+    \item La lista degli attributi si può omettere, nel qual caso vale l'ordine con cui sono stati definiti
+    \item Se la lista non include tutti gli attributi, i restanti assumono valore \texttt{NULL} (se ammesso) o il valore di default (se specificato)
+\end{itemize}
+
+\begin{lstlisting}
+INSERT INTO Sedi(Sede, Citta) -- sede senza responsabile
+VALUES ('S04', 'Firenze')
+\end{lstlisting}
+\end{frame}
+
+% Slide 41: Inserimento di tuple - caso multiplo
+\begin{frame}[fragile]
+\frametitle{Inserimento di tuple: caso multiplo}
+\begin{itemize}
+    \item È possibile anche inserire le tuple che risultano da una query
+\end{itemize}
+
+\begin{lstlisting}
+INSERT INTO SediBologna(SedeBO, Resp)
+SELECT Sede, Responsabile
+FROM   Sedi
+WHERE  Citta = 'Bologna'
+\end{lstlisting}
+
+\begin{itemize}
+    \item Valgono ancora le regole viste per il caso singolo
+    \item Gli schemi del risultato e della tabella in cui si inseriscono le tuple possono essere diversi, l'importante è che i tipi delle colonne siano compatibili
+\end{itemize}
+\end{frame}
+
+% Slide 42: Cancellazione di tuple
+\begin{frame}[fragile]
+\frametitle{Cancellazione di tuple}
+\begin{itemize}
+    \item L'istruzione \texttt{DELETE} può fare uso di una condizione per specificare le tuple da cancellare
+\end{itemize}
+
+\begin{lstlisting}
+DELETE FROM Sedi -- elimina le sedi di Bologna
+WHERE Citta = 'Bologna'
+\end{lstlisting}
+
+\begin{itemize}
+    \item Che succede se la cancellazione porta a violare il vincolo di integrità referenziale? (ad es.: che accade agli impiegati delle sedi di Bologna?)
+    \item \ldots lo vediamo tra 2 minuti
+\end{itemize}
+\end{frame}
+
+% Slide 43: Modifica di tuple
+\begin{frame}[fragile]
+\frametitle{Modifica di tuple}
+\begin{itemize}
+    \item Anche l'istruzione \texttt{UPDATE} può fare uso di una condizione per specificare le tuple da modificare e di espressioni per determinare i nuovi valori
+\end{itemize}
+
+\begin{lstlisting}
+UPDATE Sedi
+SET    Responsabile = 'Bruni',
+       Citta = 'Firenze'
+WHERE  Sede = 'S01'
+\end{lstlisting}
+
+\begin{lstlisting}
+UPDATE Imp
+SET    Stipendio = 1.1*Stipendio
+WHERE  Ruolo = 'Programmatore'
+\end{lstlisting}
+
+\begin{itemize}
+    \item Anche l'\texttt{UPDATE} può portare a violare il vincolo di integrità referenziale
+\end{itemize}
+\end{frame}
+
+% Slide 44: Politiche di "reazione"
+\begin{frame}[fragile]
+\frametitle{Politiche di ``reazione''}
+\begin{itemize}
+    \item Anziché lasciare al programmatore il compito di garantire che a fronte di cancellazioni e modifiche i vincoli di integrità referenziale siano rispettati, si possono specificare opportune politiche di reazione in fase di definizione degli schemi
+\end{itemize}
+
+\begin{lstlisting}
+CREATE TABLE Imp (
+    CodImp char(4) PRIMARY KEY,
+    Sede char(3),
+    ...
+    FOREIGN KEY Sede REFERENCES Sedi
+        ON DELETE CASCADE    -- cancellazione in cascata
+        ON UPDATE NO ACTION  -- modifiche non permesse
+)
+\end{lstlisting}
+
+\begin{itemize}
+    \item Altre politiche: \texttt{SET NULL} e \texttt{SET DEFAULT}
+\end{itemize}
+\end{frame}
+
+
+\end{document}

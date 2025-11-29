@@ -1,0 +1,19 @@
+\frametitle{Politiche di ``reazione''}
+\begin{itemize}
+    \item Anziché lasciare al programmatore il compito di garantire che a fronte di cancellazioni e modifiche i vincoli di integrità referenziale siano rispettati, si possono specificare opportune politiche di reazione in fase di definizione degli schemi
+\end{itemize}
+
+\begin{lstlisting}
+CREATE TABLE Imp (
+    CodImp char(4) PRIMARY KEY,
+    Sede char(3),
+    ...
+    FOREIGN KEY Sede REFERENCES Sedi
+        ON DELETE CASCADE    -- cancellazione in cascata
+        ON UPDATE NO ACTION  -- modifiche non permesse
+)
+\end{lstlisting}
+
+\begin{itemize}
+    \item Altre politiche: \texttt{SET NULL} e \texttt{SET DEFAULT}
+\end{itemize}
