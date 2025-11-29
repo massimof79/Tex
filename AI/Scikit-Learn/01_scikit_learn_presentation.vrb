@@ -1,0 +1,25 @@
+\frametitle{Gradient Boosting}
+\begin{lstlisting}
+from sklearn.ensemble import GradientBoostingClassifier
+
+# Gradient Boosting
+gb = GradientBoostingClassifier(
+    n_estimators=100,
+    learning_rate=0.1,
+    max_depth=3,
+    random_state=42
+)
+
+gb.fit(X_train, y_train)
+
+# Feature importance
+importances = gb.feature_importances_
+
+# Curve di apprendimento
+train_scores = []
+test_scores = []
+for i, y_pred in enumerate(gb.staged_predict(X_test)):
+    test_scores.append(accuracy_score(y_test, y_pred))
+
+print(f"Final accuracy: {gb.score(X_test, y_test):.3f}")
+\end{lstlisting}

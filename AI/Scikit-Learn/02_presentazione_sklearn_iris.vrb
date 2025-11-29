@@ -1,0 +1,30 @@
+\frametitle{Il Parametro \texttt {random\_state}}
+\begin{block}{Cos'è?}
+			Un numero "seme" che controlla la casualità per rendere i risultati \textbf{riproducibili}.
+		\end{block}
+		
+		\vspace{0.3cm}
+		
+		\textbf{Senza random\_state:}
+		\begin{lstlisting}[numbers=none]
+			train_test_split(X, y, test_size=0.2)
+			
+			# Risultati diversi ogni volta!
+			# Esecuzione 1: accuratezza 96%
+			# Esecuzione 2: accuratezza 100%
+			# Esecuzione 3: accuratezza 93%
+		\end{lstlisting}
+		
+		\textbf{Con random\_state=42:}
+		\begin{lstlisting}[numbers=none]
+			train_test_split(X, y, test_size=0.2, random_state=42)
+			
+			# Sempre lo stesso risultato!
+			# Esecuzione 1: accuratezza 100%
+			# Esecuzione 2: accuratezza 100%
+			# Esecuzione 3: accuratezza 100%
+		\end{lstlisting}
+		
+		\begin{alertblock}{Nota}
+			Il valore 42 non è speciale, puoi usare qualsiasi numero (0, 1, 100, ecc.)
+		\end{alertblock}

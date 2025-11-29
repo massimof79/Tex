@@ -1,0 +1,1681 @@
+\documentclass[aspectratio=169]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{array}
+\usetikzlibrary{shapes.geometric, arrows, positioning, fit, backgrounds}
+
+% Tema
+\usetheme{Madrid}
+\usecolortheme{default}
+
+% Configurazione listing per Python
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\footnotesize,
+    keywordstyle=\color{blue}\bfseries,
+    commentstyle=\color{green!60!black},
+    stringstyle=\color{red},
+    showstringspaces=false,
+    breaklines=true,
+    frame=single,
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    backgroundcolor=\color{gray!10}
+}
+
+% Informazioni titolo
+\title{Scikit-Learn}
+\subtitle{Machine Learning in Python}
+\author{Prof. Massimo Fedeli}
+\institute{IIS Fermi Sacconi Cpia}
+\date{\today}
+
+\begin{document}
+
+% Slide 1: Titolo
+\begin{frame}
+\titlepage
+\end{frame}
+
+% Slide 2: Indice
+\begin{frame}{Indice}
+\tableofcontents
+\end{frame}
+
+% SEZIONE 1: INTRODUZIONE
+\section{Introduzione a Scikit-Learn}
+
+% Slide 3: Cos'è Scikit-Learn
+\begin{frame}{Cos'è Scikit-Learn?}
+\begin{itemize}
+    \item \textbf{Libreria open-source} per Machine Learning in Python
+    \item Costruita su NumPy, SciPy e Matplotlib
+    \item Sviluppata inizialmente da David Cournapeau nel 2007
+    \item Attualmente mantenuta da una grande comunità
+    \item Licenza BSD (permissiva)
+\end{itemize}
+
+\vspace{0.5cm}
+\begin{block}{Caratteristiche principali}
+    \begin{itemize}
+        \item API semplice e consistente
+        \item Ottima documentazione
+        \item Algoritmi efficienti e testati
+        \item Integrazione con l'ecosistema Python scientifico
+    \end{itemize}
+\end{block}
+\end{frame}
+
+% Slide 4: Installazione
+\begin{frame}[fragile]{Installazione}
+\begin{block}{Metodi di installazione}
+\begin{lstlisting}
+# Usando pip
+pip install scikit-learn
+
+# Usando conda
+conda install scikit-learn
+
+# Installazione con dipendenze complete
+pip install scikit-learn numpy scipy matplotlib pandas
+\end{lstlisting}
+\end{block}
+
+\vspace{0.3cm}
+\begin{block}{Verifica installazione}
+\begin{lstlisting}
+import sklearn
+print(sklearn.__version__)
+\end{lstlisting}
+\end{block}
+\end{frame}
+
+% Slide 5: Ambiti di applicazione
+\begin{frame}{Ambiti di Applicazione}
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{Supervised Learning}
+\begin{itemize}
+    \item Classificazione
+    \item Regressione
+    \item Predizione
+\end{itemize}
+
+\vspace{0.5cm}
+\textbf{Unsupervised Learning}
+\begin{itemize}
+    \item Clustering
+    \item Riduzione dimensionalità
+    \item Anomaly detection
+\end{itemize}
+
+\column{0.5\textwidth}
+\textbf{Altri ambiti}
+\begin{itemize}
+    \item Preprocessing dei dati
+    \item Feature engineering
+    \item Model selection
+    \item Cross-validation
+    \item Ensemble methods
+\end{itemize}
+\end{columns}
+\end{frame}
+
+% SEZIONE 2: STRUTTURA E WORKFLOW
+\section{Struttura e Workflow}
+
+% Slide 6: API di Scikit-Learn
+\begin{frame}{API Unificata di Scikit-Learn}
+\begin{center}
+\begin{tikzpicture}[
+    box/.style={rectangle, draw, fill=blue!20, text width=3cm, align=center, minimum height=1cm},
+    arrow/.style={->, >=stealth, thick}
+]
+    \node[box] (estimator) {Estimator};
+    \node[box, below=0.5cm of estimator] (fit) {fit(X, y)};
+    \node[box, below=0.5cm of fit] (predict) {predict(X)};
+    \node[box, right=2cm of predict] (transform) {transform(X)};
+    \node[box, above=0.5cm of transform] (score) {score(X, y)};
+    
+    \draw[arrow] (estimator) -- (fit);
+    \draw[arrow] (fit) -- (predict);
+    \draw[arrow] (fit) -- (transform);
+    \draw[arrow] (fit) -- (score);
+\end{tikzpicture}
+\end{center}
+
+\vspace{0.3cm}
+\textbf{Metodi principali:}
+\begin{itemize}
+    \item \texttt{fit()}: addestra il modello
+    \item \texttt{predict()}: effettua predizioni
+    \item \texttt{transform()}: trasforma i dati
+    \item \texttt{score()}: valuta le prestazioni
+\end{itemize}
+\end{frame}
+
+% Slide 7: Dettaglio Metodi Principali
+\begin{frame}[fragile]{Metodi Principali: Dettaglio}
+
+\begin{block}{\texttt{fit(X, y)} - Addestramento}
+\begin{itemize}
+    \item Impara dai dati di training
+    \item \texttt{X}: features (matrice n\_samples × n\_features)
+    \item \texttt{y}: target (vettore n\_samples)
+    \item Restituisce l'oggetto stesso per method chaining
+\end{itemize}
+\end{block}
+
+\begin{block}{\texttt{predict(X)} - Predizione}
+\begin{itemize}
+    \item Effettua predizioni su nuovi dati
+    \item Richiede \texttt{fit()} precedente
+    \item Restituisce array di predizioni
+\end{itemize}
+\end{block}
+
+\end{frame}
+
+% Slide 8: Dettaglio Metodi Principali (continua)
+\begin{frame}[fragile]{Metodi Principali: Dettaglio (continua)}
+
+\begin{block}{\texttt{transform(X)} - Trasformazione}
+\begin{itemize}
+    \item Trasforma i dati secondo le regole apprese con \texttt{fit()}
+    \item Usato principalmente nei preprocessor (scaler, encoder, etc.)
+    \item Restituisce array trasformato
+    \item Spesso combinato con \texttt{fit\_transform()} per training
+\end{itemize}
+\end{block}
+
+\begin{block}{\texttt{score(X, y)} - Valutazione}
+\begin{itemize}
+    \item Valuta le prestazioni del modello
+    \item Per classificatori: restituisce l'accuracy
+    \item Per regressori: restituisce R\textsuperscript{2} score
+    \item Range tipico: [0, 1] (più alto = migliore)
+\end{itemize}
+\end{block}
+
+\end{frame}
+
+% Slide 9: Esempio Pratico dei Metodi
+\begin{frame}[fragile]{Esempio Pratico: Utilizzo dei Metodi}
+
+\begin{lstlisting}
+from sklearn.datasets import load_iris
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split
+
+# Caricamento dati
+X, y = load_iris(return_X_y=True)
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.3, random_state=42
+)
+
+# Preprocessing: transform
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)  # fit + transform
+X_test_scaled = scaler.transform(X_test)        # solo transform
+
+# Classificazione: fit, predict, score
+clf = DecisionTreeClassifier()
+clf.fit(X_train_scaled, y_train)                # addestramento
+predictions = clf.predict(X_test_scaled)        # predizione
+accuracy = clf.score(X_test_scaled, y_test)     # valutazione
+print(f"Accuracy: {accuracy:.2f}")
+\end{lstlisting}
+
+\end{frame}
+
+% Slide 10: Workflow Machine Learning
+\begin{frame}{Workflow Tipico del Machine Learning}
+\begin{center}
+\begin{tikzpicture}[
+    node distance=1.5cm,
+    every node/.style={font=\small},
+    startstop/.style={rectangle, rounded corners, minimum width=2.5cm, minimum height=0.8cm, text centered, draw=black, fill=red!30},
+    process/.style={rectangle, minimum width=2.5cm, minimum height=0.8cm, text centered, draw=black, fill=blue!30},
+    arrow/.style={thick,->,>=stealth}
+]
+    \node (start) [startstop] {Dati};
+    \node (split) [process, below of=start] {Train/Test Split};
+    \node (prep) [process, below of=split] {Preprocessing};
+    \node (train) [process, below of=prep] {Training};
+    \node (eval) [process, below of=train] {Valutazione};
+    \node (deploy) [startstop, below of=eval] {Deployment};
+    
+    \draw [arrow] (start) -- (split);
+    \draw [arrow] (split) -- (prep);
+    \draw [arrow] (prep) -- (train);
+    \draw [arrow] (train) -- (eval);
+    \draw [arrow] (eval) -- (deploy);
+    \draw [arrow] (eval.east) -- ++(1,0) |- (prep.east);
+\end{tikzpicture}
+\end{center}
+\end{frame}
+
+% Slide 11: Primo esempio completo
+\begin{frame}[fragile]{Primo Esempio: Classificazione Iris}
+\begin{lstlisting}
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import accuracy_score
+
+# Caricamento dataset
+iris = load_iris()
+X, y = iris.data, iris.target
+
+# Divisione train/test
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.3, random_state=42
+)
+
+# Addestramento modello
+clf = DecisionTreeClassifier()
+clf.fit(X_train, y_train)
+
+# Predizione e valutazione
+y_pred = clf.predict(X_test)
+print(f"Accuracy: {accuracy_score(y_test, y_pred):.2f}")
+\end{lstlisting}
+\end{frame}
+
+% SEZIONE 3: PREPROCESSING
+
+
+\section{Preprocessing dei Dati}
+
+% Slide 12: Importanza del Preprocessing
+\begin{frame}{Preprocessing dei Dati}
+\begin{block}{Perché è importante?}
+\begin{itemize}
+    \item Migliora le prestazioni dei modelli
+    \item Gestisce dati mancanti e outlier
+    \item Normalizza scale diverse
+    \item Codifica variabili categoriche
+\end{itemize}
+\end{block}
+
+\vspace{0.5cm}
+\textbf{Moduli principali:}
+\begin{itemize}
+    \item \texttt{sklearn.preprocessing}: scaling, encoding
+    \item \texttt{sklearn.impute}: gestione valori mancanti
+    \item \texttt{sklearn.feature\_selection}: selezione features
+\end{itemize}
+\end{frame}
+
+% Slide: Preprocessing - Concetti Fondamentali
+\begin{frame}{Preprocessing: Concetti Fondamentali}
+	
+	\begin{columns}
+		\column{0.5\textwidth}
+		\textbf{Cos'è il Preprocessing?}
+		\begin{itemize}
+			\item Trasformazione dei dati grezzi
+			\item Preparazione per il ML
+			\item Fase cruciale del workflow
+			\item Impatta direttamente i risultati
+		\end{itemize}
+		
+		\vspace{0.3cm}
+		\textbf{Quando applicarlo?}
+		\begin{itemize}
+			\item Prima del training
+			\item Su train e test set
+			\item Mai sul test prima del train!
+		\end{itemize}
+		
+		\column{0.5\textwidth}
+		\textbf{Problemi comuni risolti:}
+		\begin{itemize}
+			\item Scale diverse tra features
+			\item Valori mancanti (NaN)
+			\item Variabili categoriche
+			\item Outliers estremi
+			\item Features ridondanti
+			\item Distribuzioni non normali
+		\end{itemize}
+		
+	\end{columns}
+	
+	\vspace{0.3cm}
+	\begin{alertblock}{Regola d'oro}
+		\texttt{fit()} solo sul training set, \texttt{transform()} su train e test!
+	\end{alertblock}
+	
+\end{frame}
+
+% Slide: Preprocessing - Tecniche Principali
+\begin{frame}[fragile]{Preprocessing: Tecniche Principali}
+	
+	\begin{block}{1. Scaling e Normalizzazione}
+		\textbf{Problema:} Features con scale diverse (es: età 0-100, reddito 0-1M)\\
+		\textbf{Soluzioni:}
+		\begin{itemize}
+			\item \texttt{StandardScaler}: trasforma in media=0, std=1 → $z = \frac{x-\mu}{\sigma}$
+			\item \texttt{MinMaxScaler}: scala in range [0,1] → $x_{norm} = \frac{x-x_{min}}{x_{max}-x_{min}}$
+			\item \texttt{RobustScaler}: resistente agli outliers (usa mediana e IQR)
+		\end{itemize}
+	\end{block}
+	
+	\begin{block}{2. Encoding Variabili Categoriche}
+		\textbf{Problema:} ML lavora solo con numeri\\
+		\textbf{Soluzioni:}
+		\begin{itemize}
+			\item \texttt{LabelEncoder}: ordinali → [0, 1, 2, ...] (es: basso/medio/alto)
+			\item \texttt{OneHotEncoder}: nominali → vettori binari (es: rosso/verde/blu → [1,0,0])
+			\item \texttt{OrdinalEncoder}: come LabelEncoder ma per multiple colonne
+		\end{itemize}
+	\end{block}
+	
+\end{frame}
+
+% Slide 13: Scaling e Normalizzazione
+\begin{frame}[fragile]{Scaling e Normalizzazione}
+\begin{lstlisting}
+from sklearn.preprocessing import StandardScaler, MinMaxScaler
+
+# StandardScaler: media 0, varianza 1
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X_train)
+
+# MinMaxScaler: range [0, 1]
+min_max_scaler = MinMaxScaler()
+X_normalized = min_max_scaler.fit_transform(X_train)
+\end{lstlisting}
+
+\vspace{0.3cm}
+\begin{block}{Attenzione!}
+\begin{itemize}
+    \item Fai \texttt{fit()} solo sul training set
+    \item Usa \texttt{transform()} sul test set
+    \item Evita data leakage!
+\end{itemize}
+\end{block}
+\end{frame}
+
+% Slide: Scaling e Normalizzazione - Introduzione
+\begin{frame}{Scaling e Normalizzazione: Perché sono necessari?}
+	
+	\begin{columns}
+		\column{0.5\textwidth}
+		\textbf{Il Problema}
+		
+		Esempio: Dataset case
+		\begin{table}[h]
+			\centering
+			\small
+			\begin{tabular}{|l|r|r|}
+				\hline
+				\textbf{Casa} & \textbf{mq} & \textbf{Prezzo (€)} \\
+				\hline
+				A & 50 & 150.000 \\
+				B & 100 & 300.000 \\
+				C & 150 & 450.000 \\
+				\hline
+			\end{tabular}
+		\end{table}
+		
+		\vspace{0.2cm}
+		\begin{alertblock}{Attenzione!}
+			I mq variano [50-150], il prezzo [150k-450k]\\
+			→ Il prezzo domina il calcolo delle distanze!
+		\end{alertblock}
+		
+		\column{0.5\textwidth}
+		\textbf{Algoritmi Sensibili alla Scala}
+		\begin{itemize}
+			\item K-Nearest Neighbors (KNN)
+			\item Support Vector Machines (SVM)
+			\item Regressione Lineare/Logistica
+			\item Neural Networks
+			\item K-Means Clustering
+			\item Principal Component Analysis (PCA)
+		\end{itemize}
+		
+		\vspace{0.3cm}
+		\textbf{Algoritmi NON Sensibili}
+		\begin{itemize}
+			\item Decision Trees
+			\item Random Forest
+			\item Gradient Boosting
+		\end{itemize}
+		
+	\end{columns}
+	
+\end{frame}
+
+% Slide: StandardScaler
+\begin{frame}[fragile]{StandardScaler: Standardizzazione}
+	
+	\begin{block}{Formula}
+		$$z = \frac{x - \mu}{\sigma}$$
+		Dove: $\mu$ = media, $\sigma$ = deviazione standard
+	\end{block}
+	
+	\begin{columns}
+		\column{0.5\textwidth}
+		\textbf{Caratteristiche:}
+		\begin{itemize}
+			\item Media = 0
+			\item Deviazione standard = 1
+			\item Mantiene la distribuzione
+			\item Sensibile agli outliers
+			\item Range finale: circa [-3, +3]
+		\end{itemize}
+		
+		\vspace{0.3cm}
+		\textbf{Quando usarlo:}
+		\begin{itemize}
+			\item Dati con distribuzione normale
+			\item SVM, Neural Networks
+			\item PCA, Regressione Lineare
+		\end{itemize}
+		
+		\column{0.5\textwidth}
+		\begin{lstlisting}
+			from sklearn.preprocessing import StandardScaler
+			import numpy as np
+			# Dati originali
+			X = np.array([[50, 150000],
+			[100, 300000],
+			[150, 450000]])
+			
+			# Scaling
+			scaler = StandardScaler()
+			X_scaled = scaler.fit_transform(X)
+			
+			print("Media:", X_scaled.mean(axis=0))
+			# Output: [0. 0.]
+			
+			print("Std:", X_scaled.std(axis=0))
+			# Output: [1. 1.]
+		\end{lstlisting}
+		
+	\end{columns}
+	
+\end{frame}
+
+% Slide: MinMaxScaler
+\begin{frame}[fragile]{MinMaxScaler: Normalizzazione}
+	
+	\begin{block}{Formula}
+		$$x_{norm} = \frac{x - x_{min}}{x_{max} - x_{min}}$$
+		Risultato: range [0, 1] (o personalizzabile)
+	\end{block}
+	
+	\begin{columns}
+		\column{0.5\textwidth}
+		\textbf{Caratteristiche:}
+		\begin{itemize}
+			\item Range fisso [0, 1]
+			\item Preserva la forma della distribuzione
+			\item Molto sensibile agli outliers
+			\item Valori compressi in [0, 1]
+		\end{itemize}
+		
+		\vspace{0.3cm}
+		\textbf{Quando usarlo:}
+		\begin{itemize}
+			\item Neural Networks (input layer)
+			\item Algoritmi di immagini
+			\item Range limitato necessario
+			\item Pochi outliers
+		\end{itemize}
+		
+		\column{0.5\textwidth}
+\begin{lstlisting}
+	from sklearn.preprocessing import MinMaxScaler
+	
+	# Dati originali
+	X = np.array([[50, 150000],
+	[100, 300000],
+	[150, 450000]])
+	
+	# Normalizzazione
+	scaler = MinMaxScaler()
+	X_norm = scaler.fit_transform(X)
+	
+	print(X_norm)
+	# Output:
+	# [[0.  0. ]
+	#  [0.5 0.5]
+	#  [1.  1. ]]
+	
+	# Range personalizzato [-1, 1]
+	scaler2 = MinMaxScaler(
+	feature_range=(-1, 1)
+	)
+	X_norm2 = scaler2.fit_transform(X)
+\end{lstlisting}
+		
+	\end{columns}
+	
+\end{frame}
+
+% Slide: RobustScaler e Confronto
+\begin{frame}[fragile]{RobustScaler e Confronto delle Tecniche}
+	
+	\begin{block}{RobustScaler: Resistente agli Outliers}
+		$$x_{scaled} = \frac{x - Q_{50}}{Q_{75} - Q_{25}}$$
+		Usa mediana ($Q_{50}$) e IQR (Interquartile Range) invece di media e std
+	\end{block}
+	
+	\begin{columns}
+		\column{0.55\textwidth}
+\begin{lstlisting}
+	from sklearn.preprocessing import RobustScaler
+	
+	# Dati con outlier
+	X = np.array([[1], [2], [3], [4], [100]])
+	
+	# Confronto
+	standard = StandardScaler().fit_transform(X)
+	minmax = MinMaxScaler().fit_transform(X)
+	robust = RobustScaler().fit_transform(X)
+	
+	print("Standard:", standard.flatten())
+	# [-0.48, -0.47, -0.46, -0.45, 2.38]
+	# Outlier molto distante!
+	
+	print("Robust:", robust.flatten())
+	# [-0.67, -0.33, 0., 0.33, 32.]
+	# Outlier meno influente
+\end{lstlisting}
+		
+		\column{0.45\textwidth}
+		\begin{table}[h]
+			\centering
+			\tiny
+			\begin{tabular}{|p{2cm}|p{1.5cm}|p{1.5cm}|}
+				\hline
+				\textbf{Scaler} & \textbf{Pro} & \textbf{Contro} \\
+				\hline
+				Standard & Funziona bene con dist. normale & Sensibile outliers \\
+				\hline
+				MinMax & Range fisso [0,1] & Molto sensibile outliers \\
+				\hline
+				Robust & Resistente outliers & Range variabile \\
+				\hline
+			\end{tabular}
+		\end{table}
+		
+		\vspace{0.2cm}
+		\textbf{Regola pratica:}
+		\begin{itemize}
+			\item Dati puliti → StandardScaler
+			\item Range [0,1] → MinMaxScaler
+			\item Outliers → RobustScaler
+			\item Neural Networks → MinMaxScaler
+		\end{itemize}
+		
+	\end{columns}
+	
+\end{frame}
+
+% Slide 14: Encoding Variabili Categoriche
+\begin{frame}[fragile]{Encoding Variabili Categoriche}
+\begin{lstlisting}
+from sklearn.preprocessing import LabelEncoder, OneHotEncoder
+
+# LabelEncoder per variabili ordinali
+le = LabelEncoder()
+labels = ['rosso', 'verde', 'blu', 'rosso']
+encoded = le.fit_transform(labels)
+# Output: [2, 1, 0, 2]
+
+# OneHotEncoder per variabili nominali
+from sklearn.preprocessing import OneHotEncoder
+import numpy as np
+
+ohe = OneHotEncoder(sparse_output=False)
+colors = np.array([['rosso'], ['verde'], ['blu']])
+encoded_ohe = ohe.fit_transform(colors)
+# Output: [[0, 0, 1],
+#          [0, 1, 0],
+#          [1, 0, 0]]
+\end{lstlisting}
+\end{frame}
+
+% Slide: Encoding Variabili Categoriche - Introduzione
+\begin{frame}{Encoding Variabili Categoriche: Il Problema}
+	
+	\begin{columns}
+		\column{0.5\textwidth}
+		\textbf{Perché serve l'Encoding?}
+		\begin{itemize}
+			\item Gli algoritmi ML lavorano solo con numeri
+			\item Le variabili categoriche sono testo
+			\item Necessaria conversione numerica
+			\item Attenzione: non tutte le conversioni sono uguali!
+		\end{itemize}
+		
+		\vspace{0.3cm}
+		\textbf{Tipi di Variabili Categoriche:}
+		\begin{enumerate}
+			\item \textbf{Nominali}: nessun ordine\\
+			\small{Esempi: colore, città, marca}
+			\item \textbf{Ordinali}: ordine definito\\
+			\small{Esempi: taglia (S/M/L), voto (basso/medio/alto)}
+		\end{enumerate}
+		
+		\column{0.5\textwidth}
+		\textbf{Problema con encoding errato:}
+		
+		\begin{table}[h]
+			\centering
+			\small
+			\begin{tabular}{|l|c|}
+				\hline
+				\textbf{Colore} & \textbf{Codice} \\
+				\hline
+				Rosso & 0 \\
+				Verde & 1 \\
+				Blu & 2 \\
+				\hline
+			\end{tabular}
+		\end{table}
+		
+		\begin{alertblock}{Attenzione!}
+			Blu (2) > Verde (1) > Rosso (0)\\
+			→ L'algoritmo pensa che Blu sia "maggiore"!\\
+			→ Questo è SBAGLIATO per variabili nominali!
+		\end{alertblock}
+		
+		\vspace{0.2cm}
+		\textbf{Soluzione:} scegliere l'encoder giusto!
+		
+	\end{columns}
+	
+\end{frame}
+
+% Slide: LabelEncoder vs OneHotEncoder
+\begin{frame}[fragile]{LabelEncoder vs OneHotEncoder}
+	
+	\begin{columns}
+		\column{0.5\textwidth}
+		\begin{block}{LabelEncoder}
+			\textbf{Per variabili ORDINALI}\\
+			Converte categorie in numeri sequenziali
+		\end{block}
+		
+		\begin{lstlisting}
+			from sklearn.preprocessing import LabelEncoder
+			
+			le = LabelEncoder()
+			
+			# Esempio: taglie (ordine!)
+			sizes = ['S', 'M', 'L', 'M', 'S', 'L']
+			encoded = le.fit_transform(sizes)
+			print(encoded)
+			# Output: [2, 1, 0, 1, 2, 0]
+			# L=0, M=1, S=2 (ordine alfabetico)
+			
+			# Recuperare le categorie originali
+			original = le.inverse_transform(encoded)
+			print(original)
+			# ['S', 'M', 'L', 'M', 'S', 'L']
+			
+			# Vedere le classi
+			print(le.classes_)
+			# ['L', 'M', 'S']
+		\end{lstlisting}
+		
+		\column{0.5\textwidth}
+		\begin{block}{OneHotEncoder}
+			\textbf{Per variabili NOMINALI}\\
+			Crea una colonna binaria per ogni categoria
+		\end{block}
+		
+		\begin{lstlisting}
+			from sklearn.preprocessing import OneHotEncoder
+			import numpy as np
+			
+			ohe = OneHotEncoder(sparse_output=False)
+			
+			# Esempio: colori (no ordine!)
+			colors = np.array([['rosso'], 
+			['verde'], 
+			['blu'],
+			['rosso']])
+			
+			encoded = ohe.fit_transform(colors)
+			print(encoded)
+			# Output:
+			# [[0. 0. 1.]  <- rosso
+			#  [0. 1. 0.]  <- verde
+			#  [1. 0. 0.]  <- blu
+			#  [0. 0. 1.]] <- rosso
+			
+			print(ohe.categories_)
+			# [array(['blu', 'verde', 'rosso'])]
+		\end{lstlisting}
+		
+	\end{columns}
+	
+\end{frame}
+
+% Slide 15: Gestione Valori Mancanti
+\begin{frame}[fragile]{Gestione Valori Mancanti}
+\begin{lstlisting}
+from sklearn.impute import SimpleImputer
+import numpy as np
+
+# Dati con valori mancanti
+X = np.array([[1, 2], [np.nan, 3], [7, 6], [np.nan, np.nan]])
+
+# Strategia: media
+imputer = SimpleImputer(strategy='mean')
+X_imputed = imputer.fit_transform(X)
+
+# Altre strategie disponibili:
+# - 'median': mediana
+# - 'most_frequent': moda
+# - 'constant': valore costante
+\end{lstlisting}
+\end{frame}
+
+% SEZIONE 4: SUPERVISED LEARNING - CLASSIFICAZIONE
+\section{Supervised Learning: Classificazione}
+
+% Slide 16: Algoritmi di Classificazione
+\begin{frame}{Algoritmi di Classificazione in Scikit-Learn}
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{Algoritmi Lineari}
+\begin{itemize}
+    \item Logistic Regression
+    \item Linear SVM
+    \item Perceptron
+    \item SGD Classifier
+\end{itemize}
+
+\vspace{0.3cm}
+\textbf{Algoritmi Non Lineari}
+\begin{itemize}
+    \item Decision Trees
+    \item Random Forest
+    \item K-Nearest Neighbors
+\end{itemize}
+
+\column{0.5\textwidth}
+\textbf{Metodi Avanzati}
+\begin{itemize}
+    \item Support Vector Machines
+    \item Gradient Boosting
+    \item Neural Networks (MLP)
+    \item Naive Bayes
+\end{itemize}
+
+\vspace{0.3cm}
+\textbf{Ensemble Methods}
+\begin{itemize}
+    \item Bagging
+    \item AdaBoost
+    \item Voting Classifier
+\end{itemize}
+\end{columns}
+\end{frame}
+
+% Slide 17: Logistic Regression
+\begin{frame}[fragile]{Logistic Regression}
+\begin{lstlisting}
+from sklearn.linear_model import LogisticRegression
+from sklearn.datasets import make_classification
+from sklearn.model_selection import train_test_split
+
+# Generazione dataset
+X, y = make_classification(n_samples=1000, n_features=4, 
+                          n_classes=2, random_state=42)
+
+# Split dei dati
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+# Addestramento
+log_reg = LogisticRegression(max_iter=1000)
+log_reg.fit(X_train, y_train)
+
+# Predizione
+y_pred = log_reg.predict(X_test)
+print(f"Accuracy: {log_reg.score(X_test, y_test):.3f}")
+\end{lstlisting}
+\end{frame}
+
+% Slide 18: Decision Tree
+\begin{frame}[fragile]{Decision Tree Classifier}
+\begin{lstlisting}
+from sklearn.tree import DecisionTreeClassifier, plot_tree
+import matplotlib.pyplot as plt
+
+# Creazione e addestramento
+dt = DecisionTreeClassifier(max_depth=3, random_state=42)
+dt.fit(X_train, y_train)
+
+# Visualizzazione albero
+plt.figure(figsize=(15, 10))
+plot_tree(dt, filled=True, feature_names=['F1','F2','F3','F4'],
+          class_names=['Class 0', 'Class 1'])
+plt.show()
+
+# Importanza features
+importances = dt.feature_importances_
+for i, imp in enumerate(importances):
+    print(f"Feature {i}: {imp:.3f}")
+\end{lstlisting}
+\end{frame}
+
+% Slide 19: Random Forest
+\begin{frame}[fragile]{Random Forest Classifier}
+\begin{lstlisting}
+from sklearn.ensemble import RandomForestClassifier
+
+# Creazione Random Forest
+rf = RandomForestClassifier(
+    n_estimators=100,      # numero di alberi
+    max_depth=5,           # profondita massima
+    min_samples_split=5,   # min campioni per split
+    random_state=42
+)
+
+# Addestramento
+rf.fit(X_train, y_train)
+
+# Valutazione
+train_score = rf.score(X_train, y_train)
+test_score = rf.score(X_test, y_test)
+
+print(f"Train accuracy: {train_score:.3f}")
+print(f"Test accuracy: {test_score:.3f}")
+\end{lstlisting}
+\end{frame}
+
+% Slide 20: K-Nearest Neighbors
+\begin{frame}[fragile]{K-Nearest Neighbors (KNN)}
+\begin{lstlisting}
+from sklearn.neighbors import KNeighborsClassifier
+
+# Creazione modello KNN
+knn = KNeighborsClassifier(
+    n_neighbors=5,        # numero di vicini
+    weights='distance',   # peso in base alla distanza
+    metric='euclidean'    # metrica di distanza
+)
+
+# Addestramento
+knn.fit(X_train, y_train)
+
+# Predizione con probabilita
+y_pred_proba = knn.predict_proba(X_test)
+print("Probabilita prime 5 predizioni:")
+print(y_pred_proba[:5])
+
+# Accuracy
+accuracy = knn.score(X_test, y_test)
+print(f"Accuracy: {accuracy:.3f}")
+\end{lstlisting}
+\end{frame}
+
+% Slide 21: Support Vector Machine
+\begin{frame}[fragile]{Support Vector Machine (SVM)}
+\begin{lstlisting}
+from sklearn.svm import SVC
+
+# SVM lineare
+svm_linear = SVC(kernel='linear', C=1.0)
+svm_linear.fit(X_train, y_train)
+
+# SVM con kernel RBF
+svm_rbf = SVC(kernel='rbf', C=1.0, gamma='scale')
+svm_rbf.fit(X_train, y_train)
+
+# SVM polinomiale
+svm_poly = SVC(kernel='poly', degree=3, C=1.0)
+svm_poly.fit(X_train, y_train)
+
+# Confronto accuracy
+print(f"Linear SVM: {svm_linear.score(X_test, y_test):.3f}")
+print(f"RBF SVM: {svm_rbf.score(X_test, y_test):.3f}")
+print(f"Poly SVM: {svm_poly.score(X_test, y_test):.3f}")
+\end{lstlisting}
+\end{frame}
+
+% SEZIONE 5: SUPERVISED LEARNING - REGRESSIONE
+\section{Supervised Learning: Regressione}
+
+% Slide 22: Algoritmi di Regressione
+\begin{frame}{Algoritmi di Regressione}
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{Regressione Lineare}
+\begin{itemize}
+    \item Linear Regression
+    \item Ridge Regression
+    \item Lasso Regression
+    \item ElasticNet
+\end{itemize}
+
+\vspace{0.3cm}
+\textbf{Regressione Non Lineare}
+\begin{itemize}
+    \item Decision Tree Regressor
+    \item Random Forest Regressor
+    \item SVR
+\end{itemize}
+
+\column{0.5\textwidth}
+\textbf{Metodi Avanzati}
+\begin{itemize}
+    \item Gradient Boosting Regressor
+    \item AdaBoost Regressor
+    \item Multi-layer Perceptron
+\end{itemize}
+
+\vspace{0.3cm}
+\textbf{Polynomial Features}
+\begin{itemize}
+    \item Polynomial Regression
+    \item Feature Engineering
+\end{itemize}
+\end{columns}
+\end{frame}
+
+% Slide 23: Linear Regression
+\begin{frame}[fragile]{Linear Regression}
+\begin{lstlisting}
+from sklearn.linear_model import LinearRegression
+from sklearn.datasets import make_regression
+
+# Generazione dataset
+X, y = make_regression(n_samples=100, n_features=1, 
+                       noise=10, random_state=42)
+
+# Creazione e addestramento
+lr = LinearRegression()
+lr.fit(X, y)
+
+# Parametri del modello
+print(f"Coefficiente: {lr.coef_[0]:.3f}")
+print(f"Intercetta: {lr.intercept_:.3f}")
+
+# Predizione
+y_pred = lr.predict(X)
+
+# Metriche
+from sklearn.metrics import r2_score, mean_squared_error
+print(f"R\textsuperscript{2} Score: {r2_score(y, y_pred):.3f}")
+print(f"MSE: {mean_squared_error(y, y_pred):.3f}")
+\end{lstlisting}
+\end{frame}
+
+% Slide 24: Ridge e Lasso Regression
+\begin{frame}[fragile]{Ridge e Lasso Regression}
+\begin{lstlisting}
+from sklearn.linear_model import Ridge, Lasso
+
+# Ridge Regression (L2 regularization)
+ridge = Ridge(alpha=1.0)
+ridge.fit(X_train, y_train)
+ridge_score = ridge.score(X_test, y_test)
+
+# Lasso Regression (L1 regularization)
+lasso = Lasso(alpha=0.1)
+lasso.fit(X_train, y_train)
+lasso_score = lasso.score(X_test, y_test)
+
+# ElasticNet (combinazione L1 e L2)
+from sklearn.linear_model import ElasticNet
+elastic = ElasticNet(alpha=0.1, l1_ratio=0.5)
+elastic.fit(X_train, y_train)
+elastic_score = elastic.score(X_test, y_test)
+
+print(f"Ridge R\textsuperscript{2}: {ridge_score:.3f}")
+print(f"Lasso R\textsuperscript{2}: {lasso_score:.3f}")
+print(f"ElasticNet R\textsuperscript{2}: {elastic_score:.3f}")
+\end{lstlisting}
+\end{frame}
+
+% Slide 25: Polynomial Regression
+\begin{frame}[fragile]{Polynomial Regression}
+\begin{lstlisting}
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.pipeline import make_pipeline
+
+# Creazione pipeline con features polinomiali
+degree = 3
+poly_model = make_pipeline(
+    PolynomialFeatures(degree),
+    LinearRegression()
+)
+
+# Addestramento
+poly_model.fit(X_train, y_train)
+
+# Valutazione
+train_score = poly_model.score(X_train, y_train)
+test_score = poly_model.score(X_test, y_test)
+
+print(f"Training R\textsuperscript{2}: {train_score:.3f}")
+print(f"Test R\textsuperscript{2}: {test_score:.3f}")
+\end{lstlisting}
+\end{frame}
+
+% SEZIONE 6: UNSUPERVISED LEARNING
+\section{Unsupervised Learning}
+
+% Slide 26: Clustering
+\begin{frame}{Algoritmi di Clustering}
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{Algoritmi Principali}
+\begin{itemize}
+    \item K-Means
+    \item DBSCAN
+    \item Hierarchical Clustering
+    \item Mean Shift
+    \item Gaussian Mixture
+\end{itemize}
+
+\column{0.5\textwidth}
+\begin{center}
+\begin{tikzpicture}[scale=0.6]
+    % Cluster 1
+    \foreach \i in {1,...,5} {
+        \pgfmathsetmacro{\x}{rand*0.5 + 1}
+        \pgfmathsetmacro{\y}{rand*0.5 + 1}
+        \fill[blue] (\x,\y) circle (2pt);
+    }
+    % Cluster 2
+    \foreach \i in {1,...,5} {
+        \pgfmathsetmacro{\x}{rand*0.5 + 3}
+        \pgfmathsetmacro{\y}{rand*0.5 + 3}
+        \fill[red] (\x,\y) circle (2pt);
+    }
+    % Cluster 3
+    \foreach \i in {1,...,5} {
+        \pgfmathsetmacro{\x}{rand*0.5 + 1}
+        \pgfmathsetmacro{\y}{rand*0.5 + 3}
+        \fill[green] (\x,\y) circle (2pt);
+    }
+\end{tikzpicture}
+\end{center}
+\end{columns}
+\end{frame}
+
+% Slide 27: K-Means Clustering
+\begin{frame}[fragile]{K-Means Clustering}
+\begin{lstlisting}
+from sklearn.cluster import KMeans
+from sklearn.datasets import make_blobs
+
+# Generazione dataset
+X, _ = make_blobs(n_samples=300, centers=4, 
+                  cluster_std=0.6, random_state=42)
+
+# K-Means con 4 cluster
+kmeans = KMeans(n_clusters=4, random_state=42)
+labels = kmeans.fit_predict(X)
+
+# Centri dei cluster
+centers = kmeans.cluster_centers_
+print("Centri dei cluster:")
+print(centers)
+
+# Inerzia (somma distanze quadrate)
+print(f"Inerzia: {kmeans.inertia_:.2f}")
+\end{lstlisting}
+\end{frame}
+
+% Slide 28: DBSCAN
+\begin{frame}[fragile]{DBSCAN Clustering}
+\begin{lstlisting}
+from sklearn.cluster import DBSCAN
+
+# DBSCAN clustering
+dbscan = DBSCAN(eps=0.5, min_samples=5)
+labels = dbscan.fit_predict(X)
+
+# Numero di cluster trovati
+n_clusters = len(set(labels)) - (1 if -1 in labels else 0)
+n_noise = list(labels).count(-1)
+
+print(f"Numero di cluster: {n_clusters}")
+print(f"Punti noise: {n_noise}")
+
+# Core samples
+core_samples_mask = np.zeros_like(labels, dtype=bool)
+core_samples_mask[dbscan.core_sample_indices_] = True
+\end{lstlisting}
+
+\vspace{0.2cm}
+\textbf{Vantaggi DBSCAN:}
+\begin{itemize}
+    \item Non richiede numero cluster predefinito
+    \item Identifica outliers
+    \item Trova cluster di forma arbitraria
+\end{itemize}
+\end{frame}
+
+% Slide 29: Riduzione Dimensionalità
+\begin{frame}{Riduzione della Dimensionalità}
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{Metodi Lineari}
+\begin{itemize}
+    \item PCA (Principal Component Analysis)
+    \item TruncatedSVD
+    \item Factor Analysis
+\end{itemize}
+
+\vspace{0.3cm}
+\textbf{Metodi Non Lineari}
+\begin{itemize}
+    \item t-SNE
+    \item Isomap
+    \item Locally Linear Embedding
+\end{itemize}
+
+\column{0.5\textwidth}
+\textbf{Applicazioni}
+\begin{itemize}
+    \item Visualizzazione dati
+    \item Riduzione rumore
+    \item Feature extraction
+    \item Compressione dati
+    \item Miglioramento performance
+\end{itemize}
+\end{columns}
+\end{frame}
+
+% Slide 30: PCA
+\begin{frame}[fragile]{Principal Component Analysis (PCA)}
+\begin{lstlisting}
+from sklearn.decomposition import PCA
+
+# PCA con 2 componenti
+pca = PCA(n_components=2)
+X_pca = pca.fit_transform(X)
+
+# Varianza spiegata
+print("Varianza spiegata per componente:")
+print(pca.explained_variance_ratio_)
+print(f"Varianza totale: {sum(pca.explained_variance_ratio_):.3f}")
+
+# Componenti principali
+print("\nComponenti principali:")
+print(pca.components_)
+
+# PCA con soglia di varianza
+pca_var = PCA(n_components=0.95)  # 95% varianza
+X_reduced = pca_var.fit_transform(X)
+print(f"Dimensioni ridotte: {X_reduced.shape[1]}")
+\end{lstlisting}
+\end{frame}
+
+% SEZIONE 7: METRICHE E VALUTAZIONE
+\section{Metriche e Valutazione}
+
+% Slide 31: Metriche per Classificazione
+\begin{frame}[fragile]{Metriche per Classificazione}
+\begin{lstlisting}
+from sklearn.metrics import (accuracy_score, precision_score, 
+                             recall_score, f1_score, 
+                             confusion_matrix, classification_report)
+
+# Calcolo metriche
+accuracy = accuracy_score(y_test, y_pred)
+precision = precision_score(y_test, y_pred, average='weighted')
+recall = recall_score(y_test, y_pred, average='weighted')
+f1 = f1_score(y_test, y_pred, average='weighted')
+
+print(f"Accuracy: {accuracy:.3f}")
+print(f"Precision: {precision:.3f}")
+print(f"Recall: {recall:.3f}")
+print(f"F1-Score: {f1:.3f}")
+
+# Confusion Matrix
+cm = confusion_matrix(y_test, y_pred)
+print("\nConfusion Matrix:")
+print(cm)
+\end{lstlisting}
+\end{frame}
+
+% Slide 32: Classification Report
+\begin{frame}[fragile]{Classification Report}
+\begin{lstlisting}
+from sklearn.metrics import classification_report
+
+# Report completo
+report = classification_report(y_test, y_pred, 
+                               target_names=['Class 0', 'Class 1'])
+print(report)
+\end{lstlisting}
+
+\vspace{0.3cm}
+Output esempio:
+\begin{verbatim}
+              precision  recall  f1-score  support
+
+     Class 0      0.85    0.90      0.87       100
+     Class 1      0.89    0.83      0.86       100
+
+    accuracy                        0.87       200
+   macro avg      0.87    0.87      0.87       200
+weighted avg      0.87    0.87      0.87       200
+\end{verbatim}
+\end{frame}
+
+% Slide 33: ROC Curve e AUC
+\begin{frame}[fragile]{ROC Curve e AUC}
+\begin{lstlisting}
+from sklearn.metrics import roc_curve, roc_auc_score
+import matplotlib.pyplot as plt
+
+# Calcolo ROC
+y_proba = classifier.predict_proba(X_test)[:, 1]
+fpr, tpr, thresholds = roc_curve(y_test, y_proba)
+auc = roc_auc_score(y_test, y_proba)
+
+# Visualizzazione
+plt.figure(figsize=(8, 6))
+plt.plot(fpr, tpr, label=f'ROC curve (AUC = {auc:.2f})')
+plt.plot([0, 1], [0, 1], 'k--', label='Random')
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.title('ROC Curve')
+plt.legend()
+plt.grid(True)
+plt.show()
+\end{lstlisting}
+\end{frame}
+
+% Slide 34: Metriche per Regressione
+\begin{frame}[fragile]{Metriche per Regressione}
+\begin{lstlisting}
+from sklearn.metrics import (mean_squared_error, 
+                             mean_absolute_error,
+                             r2_score, 
+                             mean_absolute_percentage_error)
+
+# Calcolo metriche
+mse = mean_squared_error(y_test, y_pred)
+rmse = np.sqrt(mse)
+mae = mean_absolute_error(y_test, y_pred)
+r2 = r2_score(y_test, y_pred)
+mape = mean_absolute_percentage_error(y_test, y_pred)
+
+print(f"MSE: {mse:.3f}")
+print(f"RMSE: {rmse:.3f}")
+print(f"MAE: {mae:.3f}")
+print(f"R\textsuperscript{2} Score: {r2:.3f}")
+print(f"MAPE: {mape:.3f}")
+\end{lstlisting}
+\end{frame}
+
+% SEZIONE 8: MODEL SELECTION
+\section{Model Selection e Tuning}
+
+% Slide 35: Train-Test Split
+\begin{frame}[fragile]{Train-Test Split}
+\begin{lstlisting}
+from sklearn.model_selection import train_test_split
+
+# Split semplice
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, 
+    test_size=0.2,      # 20% test set
+    random_state=42,    # riproducibilita
+    stratify=y          # mantiene proporzioni classi
+)
+
+# Split triplo (train/validation/test)
+X_temp, X_test, y_temp, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+X_train, X_val, y_train, y_val = train_test_split(
+    X_temp, y_temp, test_size=0.25, random_state=42
+)
+# Risultato: 60% train, 20% val, 20% test
+\end{lstlisting}
+\end{frame}
+
+% Slide 36: Cross-Validation
+\begin{frame}[fragile]{Cross-Validation}
+\begin{lstlisting}
+from sklearn.model_selection import cross_val_score, KFold
+
+# K-Fold Cross-Validation
+kfold = KFold(n_splits=5, shuffle=True, random_state=42)
+scores = cross_val_score(model, X, y, cv=kfold, 
+                        scoring='accuracy')
+
+print(f"Scores per fold: {scores}")
+print(f"Media: {scores.mean():.3f}")
+print(f"Deviazione standard: {scores.std():.3f}")
+
+# Stratified K-Fold (per classificazione)
+from sklearn.model_selection import StratifiedKFold
+skfold = StratifiedKFold(n_splits=5, shuffle=True, 
+                         random_state=42)
+scores_strat = cross_val_score(model, X, y, cv=skfold)
+\end{lstlisting}
+\end{frame}
+
+% Slide 37: Grid Search
+\begin{frame}[fragile]{Grid Search CV}
+\begin{lstlisting}
+from sklearn.model_selection import GridSearchCV
+
+# Definizione griglia parametri
+param_grid = {
+    'n_estimators': [50, 100, 200],
+    'max_depth': [3, 5, 7, 10],
+    'min_samples_split': [2, 5, 10],
+    'min_samples_leaf': [1, 2, 4]
+}
+
+# Grid Search
+grid_search = GridSearchCV(
+    RandomForestClassifier(random_state=42),
+    param_grid,
+    cv=5,
+    scoring='accuracy',
+    n_jobs=-1,
+    verbose=1
+)
+
+grid_search.fit(X_train, y_train)
+
+print(f"Best parameters: {grid_search.best_params_}")
+print(f"Best score: {grid_search.best_score_:.3f}")
+\end{lstlisting}
+\end{frame}
+
+% Slide 38: Randomized Search
+\begin{frame}[fragile]{Randomized Search CV}
+\begin{lstlisting}
+from sklearn.model_selection import RandomizedSearchCV
+from scipy.stats import randint, uniform
+
+# Distribuzioni parametri
+param_distributions = {
+    'n_estimators': randint(50, 500),
+    'max_depth': randint(3, 20),
+    'min_samples_split': randint(2, 20),
+    'min_samples_leaf': randint(1, 10),
+    'max_features': uniform(0.1, 0.9)
+}
+
+# Randomized Search
+random_search = RandomizedSearchCV(
+    RandomForestClassifier(random_state=42),
+    param_distributions,
+    n_iter=100,         # numero iterazioni
+    cv=5,
+    random_state=42,
+    n_jobs=-1
+)
+
+random_search.fit(X_train, y_train)
+\end{lstlisting}
+\end{frame}
+
+% SEZIONE 9: PIPELINE E FEATURE ENGINEERING
+\section{Pipeline e Feature Engineering}
+
+% Slide 39: Pipeline
+\begin{frame}[fragile]{Pipeline: Workflow Integrato}
+\begin{lstlisting}
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
+
+# Creazione pipeline
+pipeline = Pipeline([
+    ('scaler', StandardScaler()),
+    ('pca', PCA(n_components=2)),
+    ('classifier', RandomForestClassifier())
+])
+
+# Addestramento pipeline
+pipeline.fit(X_train, y_train)
+
+# Predizione
+y_pred = pipeline.predict(X_test)
+
+# Accesso ai componenti
+scaler = pipeline.named_steps['scaler']
+pca = pipeline.named_steps['pca']
+print(f"Varianza spiegata: {pca.explained_variance_ratio_}")
+\end{lstlisting}
+\end{frame}
+
+% Slide 40: ColumnTransformer
+\begin{frame}[fragile]{ColumnTransformer}
+\begin{lstlisting}
+from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+
+# Definizione trasformazioni per colonne diverse
+preprocessor = ColumnTransformer(
+    transformers=[
+        ('num', StandardScaler(), ['age', 'salary']),
+        ('cat', OneHotEncoder(), ['city', 'gender'])
+    ]
+)
+
+# Pipeline completa
+full_pipeline = Pipeline([
+    ('preprocessor', preprocessor),
+    ('classifier', LogisticRegression())
+])
+
+# Addestramento
+full_pipeline.fit(X_train, y_train)
+score = full_pipeline.score(X_test, y_test)
+print(f"Accuracy: {score:.3f}")
+\end{lstlisting}
+\end{frame}
+
+% Slide 41: Feature Selection
+\begin{frame}[fragile]{Feature Selection}
+\begin{lstlisting}
+from sklearn.feature_selection import (SelectKBest, 
+                                       f_classif, RFE)
+
+# SelectKBest: seleziona k migliori features
+selector = SelectKBest(score_func=f_classif, k=5)
+X_selected = selector.fit_transform(X_train, y_train)
+
+# Recursive Feature Elimination
+from sklearn.linear_model import LogisticRegression
+rfe = RFE(estimator=LogisticRegression(), n_features_to_select=5)
+X_rfe = rfe.fit_transform(X_train, y_train)
+
+# Feature importance da Random Forest
+rf = RandomForestClassifier()
+rf.fit(X_train, y_train)
+importances = rf.feature_importances_
+
+# Selezione features importanti
+threshold = 0.1
+important_features = importances > threshold
+\end{lstlisting}
+\end{frame}
+
+% SEZIONE 10: ENSEMBLE METHODS
+\section{Ensemble Methods}
+
+% Slide 42: Ensemble Methods Overview
+\begin{frame}{Ensemble Methods}
+\begin{center}
+\begin{tikzpicture}[
+    node distance=2cm,
+    model/.style={rectangle, draw, fill=blue!20, minimum width=2cm, minimum height=0.8cm},
+    combine/.style={rectangle, draw, fill=green!20, minimum width=2cm, minimum height=0.8cm}
+]
+    \node[model] (m1) {Model 1};
+    \node[model, right of=m1] (m2) {Model 2};
+    \node[model, right of=m2] (m3) {Model 3};
+    \node[combine, below=1cm of m2] (comb) {Combinazione};
+    \node[below=1cm of comb] (out) {Predizione Finale};
+    
+    \draw[->, thick] (m1) -- (comb);
+    \draw[->, thick] (m2) -- (comb);
+    \draw[->, thick] (m3) -- (comb);
+    \draw[->, thick] (comb) -- (out);
+\end{tikzpicture}
+\end{center}
+
+\vspace{0.3cm}
+\textbf{Tipi principali:}
+\begin{itemize}
+    \item \textbf{Bagging}: Bootstrap Aggregating (Random Forest)
+    \item \textbf{Boosting}: AdaBoost, Gradient Boosting
+    \item \textbf{Voting}: Combinazione predizioni multiple
+    \item \textbf{Stacking}: Meta-learning
+\end{itemize}
+\end{frame}
+
+% Slide 43: Voting Classifier
+\begin{frame}[fragile]{Voting Classifier}
+\begin{lstlisting}
+from sklearn.ensemble import VotingClassifier
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.svm import SVC
+
+# Definizione modelli base
+clf1 = LogisticRegression(max_iter=1000)
+clf2 = DecisionTreeClassifier()
+clf3 = SVC(probability=True)
+
+# Voting Classifier
+voting_clf = VotingClassifier(
+    estimators=[('lr', clf1), ('dt', clf2), ('svc', clf3)],
+    voting='soft'  # 'hard' per majority voting
+)
+
+# Addestramento
+voting_clf.fit(X_train, y_train)
+
+# Valutazione
+for name, clf in voting_clf.named_estimators_.items():
+    print(f"{name}: {clf.score(X_test, y_test):.3f}")
+print(f"Voting: {voting_clf.score(X_test, y_test):.3f}")
+\end{lstlisting}
+\end{frame}
+
+% Slide 44: Gradient Boosting
+\begin{frame}[fragile]{Gradient Boosting}
+\begin{lstlisting}
+from sklearn.ensemble import GradientBoostingClassifier
+
+# Gradient Boosting
+gb = GradientBoostingClassifier(
+    n_estimators=100,
+    learning_rate=0.1,
+    max_depth=3,
+    random_state=42
+)
+
+gb.fit(X_train, y_train)
+
+# Feature importance
+importances = gb.feature_importances_
+
+# Curve di apprendimento
+train_scores = []
+test_scores = []
+for i, y_pred in enumerate(gb.staged_predict(X_test)):
+    test_scores.append(accuracy_score(y_test, y_pred))
+
+print(f"Final accuracy: {gb.score(X_test, y_test):.3f}")
+\end{lstlisting}
+\end{frame}
+
+% Slide 45: Considerazioni Finali
+\begin{frame}{Best Practices}
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{Do}
+\begin{itemize}
+    \item Normalizza i dati
+    \item Usa cross-validation
+    \item Valuta con metriche appropriate
+    \item Documenta il codice
+    \item Versiona i modelli
+    \item Monitora overfitting
+\end{itemize}
+
+\column{0.5\textwidth}
+\textbf{Don't}
+\begin{itemize}
+    \item Non fare fit su test set
+    \item Non ignorare data leakage
+    \item Non usare sempre accuracy
+    \item Non trascurare l'EDA
+    \item Non dimenticare feature engineering
+    \item Non saltare la validazione
+\end{itemize}
+\end{columns}
+\end{frame}
+
+% Slide 46: Risorse Utili
+\begin{frame}{Risorse Utili}
+\textbf{Documentazione Ufficiale}
+\begin{itemize}
+    \item \url{https://scikit-learn.org/}
+    \item \url{https://scikit-learn.org/stable/user_guide.html}
+\end{itemize}
+
+\vspace{0.3cm}
+\textbf{Tutorial e Corsi}
+\begin{itemize}
+    \item Scikit-Learn Tutorial ufficiale
+    \item Kaggle Learn
+    \item DataCamp, Coursera
+\end{itemize}
+
+\vspace{0.3cm}
+\textbf{Community}
+\begin{itemize}
+    \item Stack Overflow
+    \item GitHub Issues
+    \item Reddit r/MachineLearning
+\end{itemize}
+\end{frame}
+
+% Slide 47: Conclusioni
+\begin{frame}{Conclusioni}
+\begin{block}{Punti Chiave}
+\begin{itemize}
+    \item Scikit-Learn è la libreria standard per ML in Python
+    \item API semplice e consistente
+    \item Vasta gamma di algoritmi
+    \item Ottimi strumenti per preprocessing e valutazione
+    \item Integrazione perfetta con NumPy, Pandas, Matplotlib
+\end{itemize}
+\end{block}
+
+\vspace{0.5cm}
+\begin{center}
+\Large{\textbf{Grazie per l'attenzione!}}
+
+\vspace{0.3cm}
+\normalsize{Domande?}
+\end{center}
+\end{frame}
+
+\end{document}
