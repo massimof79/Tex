@@ -7,8 +7,10 @@
 \usepackage{xcolor}
 \usepackage{multicol}
 \usepackage{amssymb}
+\usepackage{colortbl}
+\usepackage{hyperref}
 
-\usetikzlibrary{shapes,arrows,positioning,shadows,calc,shapes.geometric}
+\usetikzlibrary{shapes,arrows,positioning,shadows,calc,shapes.geometric,mindmap,arrows.meta}
 
 % Tema e colori
 \usetheme{Madrid}
@@ -23,14 +25,9 @@
 \setbeamercolor{title}{fg=white,bg=darkblue}
 \setbeamercolor{frametitle}{fg=white,bg=darkblue}
 
-
-\usepackage[most]{tcolorbox}      % carica tcolorbox con molte librerie
-\tcbuselibrary{listings,breakable,skins} % per usare tcblisting e breakable
-\usepackage{listings}             % per lstlisting
-\usepackage{tikz}
-\usetikzlibrary{positioning}      % per "right=2cm of ..."
-
-\usetikzlibrary{positioning,arrows.meta}
+% tcolorbox per listing avanzati
+\usepackage[most]{tcolorbox}
+\tcbuselibrary{listings,breakable,skins}
 
 % Configurazione listing per codice
 \lstdefinelanguage{JavaScript}{
@@ -60,14 +57,7 @@
 \title[React.js]{React.js}
 \subtitle{Tecnologie del Web}
 \author{Prof. Fedeli Massimo}
-\institute{
-	IIS Fermi Sacconi Cpia
-}\usepackage[most]{tcolorbox}      % carica tcolorbox con molte librerie
-\tcbuselibrary{listings,breakable,skins} % per usare tcblisting e breakable
-\usepackage{listings}             % per lstlisting
-\usepackage{tikz}
-\usetikzlibrary{positioning}      % per "right=2cm of ..."
-
+\institute{IIS Fermi Sacconi Cpia}
 \date{\today}
 
 \begin{document}
@@ -2047,4 +2037,3 @@
 		\end{frame}
 		
 	\end{document}
-\end{document}

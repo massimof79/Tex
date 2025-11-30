@@ -1,0 +1,24 @@
+\frametitle{Immutabilit\`a dello State}
+\begin{alertblock}{Regola Importante}
+				\textbf{NON} modificare mai direttamente lo state!
+			\end{alertblock}
+			
+			\begin{columns}
+				\column{0.48\textwidth}
+				\textbf{\textcolor{red}{SBAGLIATO}}
+				\begin{lstlisting}[numbers=none]
+					// NON fare cosi!
+					tasks.push(newTask);
+					setTasks(tasks);
+				\end{lstlisting}
+				
+				\column{0.48\textwidth}
+				\textbf{\textcolor{green}{CORRETTO}}
+				\begin{lstlisting}[numbers=none]
+					// Crea nuovo array
+					setTasks([
+					...tasks,
+					newTask
+					]);
+				\end{lstlisting}
+			\end{columns}
