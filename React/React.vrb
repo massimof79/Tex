@@ -1,27 +1,24 @@
-\frametitle{Comandi NPM Principali}
-\begin{block}{npm start}
-			\begin{lstlisting}[language=bash]
-				npm start
-			\end{lstlisting}
-			Avvia server di sviluppo su \texttt{localhost:3000}\\
-			Hot reload automatico delle modifiche
-		\end{block}
-		
-		\begin{block}{npm run build}
-			\begin{lstlisting}[language=bash]
-				npm run build
-			\end{lstlisting}
-			Crea directory \texttt{build/} con file ottimizzati per produzione\\
-			Pronta per deploy su web server
-		\end{block}
-		
-		\begin{center}
-			\begin{tikzpicture}[node distance=2.5cm]
-				\node[draw, rectangle, fill=blue!20] (src) {src/};
-				\node[draw, rectangle, fill=orange!20, right=of src] (build) {build/};
-				\node[draw, cloud, fill=green!20, right=of build] (server) {Web Server};
+\frametitle{Immutabilit\`a dello State}
+\begin{alertblock}{Regola Importante}
+				\textbf{NON} modificare mai direttamente lo state!
+			\end{alertblock}
+			
+			\begin{columns}
+				\column{0.48\textwidth}
+				\textbf{\textcolor{red}{SBAGLIATO}}
+				\begin{lstlisting}[numbers=none]
+					// NON fare cosi!
+					tasks.push(newTask);
+					setTasks(tasks);
+				\end{lstlisting}
 				
-				\draw[->, ultra thick] (src) -- node[above] {\small npm build} (build);
-				\draw[->, ultra thick] (build) -- node[above] {\small deploy} (server);
-			\end{tikzpicture}
-		\end{center}
+				\column{0.48\textwidth}
+				\textbf{\textcolor{green}{CORRETTO}}
+				\begin{lstlisting}[numbers=none]
+					// Crea nuovo array
+					setTasks([
+					...tasks,
+					newTask
+					]);
+				\end{lstlisting}
+			\end{columns}

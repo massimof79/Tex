@@ -1708,4 +1708,398 @@
 		\end{center}
 	\end{frame}
 	
+	
+	\documentclass[aspectratio=169]{beamer}
+	\usepackage[utf8]{inputenc}
+	\usepackage[T1]{fontenc}
+	\usepackage{listings}
+	\usepackage{xcolor}
+	\usepackage{tikz}
+	\usetikzlibrary{shapes,arrows,positioning,mindmap}
+	
+	% Tema
+	\usetheme{Madrid}
+	\usecolortheme{default}
+	
+	% Colori personalizzati
+	\definecolor{reactblue}{RGB}{97,218,251}
+	\definecolor{reactdark}{RGB}{32,35,42}
+	\definecolor{codebg}{RGB}{40,44,52}
+	\definecolor{codegreen}{RGB}{152,195,121}
+	\definecolor{codepurple}{RGB}{198,120,221}
+	
+	\setbeamercolor{palette primary}{bg=reactblue,fg=white}
+	\setbeamercolor{palette secondary}{bg=reactdark,fg=white}
+	\setbeamercolor{structure}{fg=reactblue}
+	
+	% Configurazione listings con escape
+	\lstset{
+		language=Java,
+		backgroundcolor=\color{codebg},
+		basicstyle=\ttfamily\small\color{white},
+		keywordstyle=\color{codepurple}\bfseries,
+		stringstyle=\color{codegreen},
+		commentstyle=\color{gray}\itshape,
+		numbers=left,
+		numberstyle=\tiny\color{gray},
+		stepnumber=1,
+		numbersep=8pt,
+		showspaces=false,
+		showstringspaces=false,
+		breaklines=true,
+		frame=single,
+		rulecolor=\color{reactblue},
+		tabsize=2,
+		captionpos=b,
+		escapeinside={@}{@},
+		morekeywords={const, let, useState, useEffect, export, default, import, from, return, function}
+	}
+	
+	% Informazioni documento
+	\title{Introduzione a React.js}
+	\subtitle{Libreria JavaScript per Interfacce Utente}
+	\author{Prof. Massimo Fraticelli}
+	\institute{IIS Fermi Sacconi Ceci - Ascoli Piceno}
+	\date{\today}
+	
+	\begin{document}
+		
+		\begin{frame}
+			\titlepage
+		\end{frame}
+		
+		\begin{frame}{Indice}
+			\tableofcontents
+		\end{frame}
+		
+		\section{Introduzione a React}
+		
+		\begin{frame}{Cos'è React?}
+			\begin{columns}
+				\column{0.6\textwidth}
+				\begin{itemize}
+					\item \textbf{Libreria JavaScript} creata da Facebook (Meta) nel 2013
+					\item Per costruire \textbf{interfacce utente} interattive
+					\item Basata su \textbf{componenti riutilizzabili}
+					\item Approccio \textbf{dichiarativo}
+					\item Utilizzata da: Facebook, Instagram, Netflix, Airbnb
+				\end{itemize}
+				
+				\column{0.35\textwidth}
+				\begin{center}
+					\begin{tikzpicture}
+						\node[circle, fill=reactblue, minimum size=3cm] (react) {};
+						\node[white, font=\Large\bfseries] at (react) {React};
+					\end{tikzpicture}
+				\end{center}
+			\end{columns}
+		\end{frame}
+		
+		\begin{frame}{Perché React?}
+			\begin{block}{Vantaggi}
+				\begin{itemize}
+					\item [+] \textbf{Componenti riutilizzabili}: scrivi una volta, usa ovunque
+					\item [+] \textbf{Virtual DOM}: aggiornamenti efficienti
+					\item [+] \textbf{Flusso dati unidirezionale}: più facile da debuggare
+					\item [+] \textbf{Ecosistema ricco}: migliaia di librerie
+					\item [+] \textbf{Community enorme}: supporto e risorse abbondanti
+				\end{itemize}
+			\end{block}
+		\end{frame}
+		
+		\section{Concetti Fondamentali}
+		
+		\begin{frame}[fragile]{Componenti}
+			\begin{block}{Definizione}
+				I componenti sono funzioni che restituiscono JSX
+			\end{block}
+			
+			\begin{lstlisting}
+				// Componente semplice
+				function Benvenuto() @\{@
+				return <h1>Ciao, benvenuto in React!</h1>;
+				@\}@
+				
+				// Componente con props
+				function Saluto(@\{@ nome @\}@) @\{@
+				return <h1>Ciao, @\{@nome@\}@!</h1>;
+				@\}@
+			\end{lstlisting}
+		\end{frame}
+		
+		\begin{frame}[fragile]{Props - Proprietà}
+			\begin{block}{Definizione}
+				Le \textbf{props} sono dati passati dal padre al figlio. Sono \textbf{immutabili}.
+			\end{block}
+			
+			\begin{lstlisting}
+				function TaskItem(@\{@ task, onDelete @\}@) @\{@
+				return (
+				<div>
+				<span>@\{@task.text@\}@</span>
+				<button onClick=@\{@() => onDelete(task.id)@\}@>
+				Elimina
+				</button>
+				</div>
+				);
+				@\}@
+			\end{lstlisting}
+		\end{frame}
+		
+		\begin{frame}[fragile]{State - Lo Stato}
+			\begin{block}{Definizione}
+				Lo \textbf{state} contiene dati che cambiano e causano il ri-rendering.
+			\end{block}
+			
+			\begin{lstlisting}
+				import @\{@ useState @\}@ from 'react';
+				
+				function Contatore() @\{@
+				const [conteggio, setConteggio] = useState(0);
+				
+				return (
+				<div>
+				<p>Hai cliccato @\{@conteggio@\}@ volte</p>
+				<button onClick=@\{@() => setConteggio(conteggio + 1)@\}@>
+				Incrementa
+				</button>
+				</div>
+				);
+				@\}@
+			\end{lstlisting}
+		\end{frame}
+		
+		\begin{frame}{State vs Props}
+			\begin{center}
+				\begin{tabular}{|l|p{5cm}|p{5cm}|}
+					\hline
+					\rowcolor{reactblue!30}
+					\textbf{Caratteristica} & \textbf{Props} & \textbf{State} \\
+					\hline
+					Mutabilit\`a & Immutabili & Mutabili \\
+					\hline
+					Origine & Passate dal padre & Gestite dal componente \\
+					\hline
+					Modifica & NO & SI (con setState) \\
+					\hline
+					Re-render & NO & SI (quando cambia) \\
+					\hline
+				\end{tabular}
+			\end{center}
+			
+			\vspace{0.5cm}
+			\begin{alertblock}{Regola d'oro}
+				Se un dato \textbf{cambia} $\rightarrow$ \texttt{useState}\\
+				Se un dato e \textbf{passato dal padre} $\rightarrow$ props
+			\end{alertblock}
+		\end{frame}
+		
+		\section{Hooks Principali}
+		
+		\begin{frame}[fragile]{useState Hook}
+			\begin{block}{Sintassi}
+				\texttt{const [stato, setStato] = useState(valoreIniziale);}
+			\end{block}
+			
+			\begin{lstlisting}
+				function FormEsempio() @\{@
+				const [nome, setNome] = useState('');
+				const [eta, setEta] = useState(0);
+				
+				return (
+				<input 
+				value=@\{@nome@\}@
+				onChange=@\{@(e) => setNome(e.target.value)@\}@
+				/>
+				);
+				@\}@
+			\end{lstlisting}
+		\end{frame}
+		
+		\begin{frame}[fragile]{useEffect Hook}
+			\begin{block}{Scopo}
+				Eseguire \textbf{effetti collaterali}: chiamate API, sottoscrizioni, timer
+			\end{block}
+			
+			\begin{lstlisting}
+				import @\{@ useState, useEffect @\}@ from 'react';
+				
+				function Esempio() @\{@
+				const [count, setCount] = useState(0);
+				
+				// Si esegue dopo ogni render
+				useEffect(() => @\{@
+				document.title = `Cliccato $@\{@count@\}@ volte`;
+				@\}@);
+				
+				// Si esegue solo al mount
+				useEffect(() => @\{@
+				console.log('Componente montato!');
+				@\}@, []);
+				@\}@
+			\end{lstlisting}
+		\end{frame}
+		
+		\section{Applicazione Pratica}
+		
+		\begin{frame}[fragile]{Task Manager - Esempio Completo}
+			\begin{lstlisting}[basicstyle=\ttfamily\footnotesize\color{white}]
+				function App() @\{@
+				const [tasks, setTasks] = useState([]);
+				const [inputValue, setInputValue] = useState('');
+				
+				const addTask = () => @\{@
+				if (inputValue.trim() === '') return;
+				setTasks([...tasks, @\{@
+				id: Date.now(),
+				text: inputValue,
+				completed: false
+				@\}@]);
+				setInputValue('');
+				@\}@;
+				
+				const deleteTask = (id) => @\{@
+				setTasks(tasks.filter(task => task.id !== id));
+				@\}@;
+				@\}@
+			\end{lstlisting}
+		\end{frame}
+		
+		\begin{frame}[fragile]{Immutabilit\`a dello State}
+			\begin{alertblock}{Regola Importante}
+				\textbf{NON} modificare mai direttamente lo state!
+			\end{alertblock}
+			
+			\begin{columns}
+				\column{0.48\textwidth}
+				\textbf{\textcolor{red}{SBAGLIATO}}
+				\begin{lstlisting}[numbers=none]
+					// NON fare cosi!
+					tasks.push(newTask);
+					setTasks(tasks);
+				\end{lstlisting}
+				
+				\column{0.48\textwidth}
+				\textbf{\textcolor{green}{CORRETTO}}
+				\begin{lstlisting}[numbers=none]
+					// Crea nuovo array
+					setTasks([
+					...tasks, 
+					newTask
+					]);
+				\end{lstlisting}
+			\end{columns}
+		\end{frame}
+		
+		\begin{frame}{Best Practices}
+			\begin{enumerate}
+				\item \textbf{Un componente, una responsabilit\`a}
+				\begin{itemize}
+					\item Mantieni i componenti piccoli e focalizzati
+				\end{itemize}
+				
+				\item \textbf{Denomina chiaramente}
+				\begin{itemize}
+					\item Componenti: PascalCase (\texttt{TaskItem})
+					\item Props/variabili: camelCase (\texttt{onDelete})
+				\end{itemize}
+				
+				\item \textbf{Immutabilit\`a dello state}
+				\begin{itemize}
+					\item Non modificare mai direttamente lo state
+				\end{itemize}
+				
+				\item \textbf{Key univoche nelle liste}
+				\begin{itemize}
+					\item Mai usare l'indice come key
+				\end{itemize}
+			\end{enumerate}
+		\end{frame}
+		
+		\begin{frame}{Errori Comuni da Evitare}
+			\begin{alertblock}{1. Modificare direttamente lo state}
+				Non fare: \texttt{tasks[0] = newTask;}
+			\end{alertblock}
+			
+			\begin{alertblock}{2. Chiamare hooks condizionalmente}
+				Gli hook vanno sempre in cima alla funzione
+			\end{alertblock}
+			
+			\begin{alertblock}{3. Dimenticare le dipendenze in useEffect}
+				Porta a bug difficili da trovare
+			\end{alertblock}
+			
+			\begin{alertblock}{4. Usare l'indice come key}
+				Usa ID univoci invece di indici
+			\end{alertblock}
+		\end{frame}
+		
+		\section{Prossimi Passi}
+		
+		\begin{frame}{Argomenti Avanzati}
+			\begin{columns}
+				\column{0.5\textwidth}
+				\textbf{Hooks Avanzati:}
+				\begin{itemize}
+					\item useContext
+					\item useReducer
+					\item useMemo
+					\item useCallback
+					\item useRef
+				\end{itemize}
+				
+				\column{0.5\textwidth}
+				\textbf{Concetti:}
+				\begin{itemize}
+					\item React Router
+					\item Form avanzati
+					\item Chiamate API
+					\item State Management
+					\item Testing
+				\end{itemize}
+			\end{columns}
+		\end{frame}
+		
+		\begin{frame}{Risorse per Imparare}
+			\begin{block}{Documentazione Ufficiale}
+				\url{https://react.dev/} - Tutorial interattivi
+			\end{block}
+			
+			\begin{block}{Pratica}
+				\begin{itemize}
+					\item Crea progetti reali (TODO app, blog)
+					\item Contribuisci a progetti open source
+					\item Partecipa a coding challenges
+				\end{itemize}
+			\end{block}
+		\end{frame}
+		
+		\begin{frame}{Riepilogo}
+			\begin{center}
+				\begin{tikzpicture}[mindmap, grow cyclic, every node/.style=concept, concept color=reactblue!40,
+					level 1/.append style={level distance=4.5cm,sibling angle=72}]
+					
+					\node[concept, font=\Large\bfseries] {React}
+					child [concept color=orange!40] { node {Componenti} }
+					child [concept color=green!40] { node {JSX} }
+					child [concept color=blue!40] { node {Props} }
+					child [concept color=purple!40] { node {State} }
+					child [concept color=red!40] { node {Hooks} };
+				\end{tikzpicture}
+			\end{center}
+		\end{frame}
+		
+		\begin{frame}
+			\Huge Domande?
+			\vspace{1cm}
+			
+			\normalsize
+			Email: fedeli.massimo@iisfermisacconiceciap.edu.it\\
+			GitHub: github.com/massimof79
+			
+			\vspace{1cm}
+			\Large Grazie per l'attenzione!
+		\end{frame}
+		
+	\end{document}
 \end{document}
