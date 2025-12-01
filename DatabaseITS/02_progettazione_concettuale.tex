@@ -1,0 +1,1657 @@
+\documentclass[aspectratio=169]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{colortbl}
+
+\usetikzlibrary{shapes,arrows,positioning,calc,fit,backgrounds,decorations.pathreplacing,shadows,patterns}
+\pgfplotsset{compat=1.16}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}[frame number]
+
+\definecolor{darkblue}{RGB}{0,51,102}
+\definecolor{lightblue}{RGB}{102,178,255}
+\definecolor{darkgreen}{RGB}{0,102,51}
+\definecolor{lightgreen}{RGB}{153,255,153}
+
+\title{La Progettazione delle Basi di Dati}
+\subtitle{Progettazione Concettuale - Modello Entità-Relazione}
+\author{Prof. Fedeli Massimo - Tutti i diritti riservati}
+\institute{ITS Academy - Fabbrica Digitale}
+\date{\today}
+
+\begin{document}
+
+% Slide 1: Titolo
+\begin{frame}
+\titlepage
+\end{frame}
+
+% Slide 2: Indice
+\begin{frame}{Sommario}
+\tableofcontents
+\end{frame}
+
+\section{Introduzione alla Progettazione}
+
+% Slide 3: La progettazione del database
+\begin{frame}{La Progettazione del Database}
+\begin{block}{I passi principali della progettazione}
+\begin{enumerate}
+\item Analisi del problema
+\item Progettazione concettuale del database $\rightarrow$ \textbf{modello E-R}
+\item Progettazione logica del database $\rightarrow$ \textbf{schema logico}
+\item Progettazione fisica e implementazione
+\item Realizzazione delle applicazioni (Java, VB, PHP, etc.)
+\end{enumerate}
+\end{block}
+
+\vspace{0.5cm}
+\begin{alertblock}{Complessità}
+Ognuno di questi passi presenta criticità e implica operazioni complesse
+\end{alertblock}
+\end{frame}
+
+% Slide 4: Fasi di sviluppo
+\begin{frame}{Fasi di Sviluppo}
+\begin{center}
+\begin{tikzpicture}[scale=0.9]
+\node[rectangle, draw, fill=lightblue, minimum width=3cm, minimum height=1cm] (db) at (0,2) {Sviluppo Database};
+\node[rectangle, draw, fill=lightgreen, minimum width=3cm, minimum height=1cm] (app) at (0,0) {Sviluppo Applicazione};
+\node[rectangle, draw, fill=orange!30, minimum width=3cm, minimum height=1cm] (test) at (0,-2) {Test e Collaudo};
+
+\draw[->, thick] (db) -- (app);
+\draw[->, thick] (app) -- (test);
+\end{tikzpicture}
+\end{center}
+
+\begin{itemize}
+\item Fase di sviluppo del database
+\item Fase di sviluppo dell'applicazione
+\item Test di funzionamento ed collaudo
+\end{itemize}
+\end{frame}
+
+% Slide 5: Schema delle fasi
+\begin{frame}{Le Fasi della Progettazione}
+\begin{center}
+\begin{tikzpicture}[node distance=2cm, scale=0.8, every node/.style={transform shape}]
+\node[rectangle, draw, fill=yellow!30, text width=3cm, align=center] (analisi) {Analisi dei Requisiti};
+\node[rectangle, draw, fill=green!30, text width=3cm, align=center, below of=analisi] (concettuale) {Progettazione Concettuale};
+\node[rectangle, draw, fill=blue!30, text width=3cm, align=center, below of=concettuale] (logica) {Progettazione Logica};
+\node[rectangle, draw, fill=red!30, text width=3cm, align=center, below of=logica] (fisica) {Progettazione Fisica};
+
+\draw[->, very thick] (analisi) -- (concettuale);
+\draw[->, very thick] (concettuale) -- (logica);
+\draw[->, very thick] (logica) -- (fisica);
+\end{tikzpicture}
+\end{center}
+\end{frame}
+
+% Slide 6: Output progettazione concettuale
+\begin{frame}{Output della Progettazione}
+\begin{block}{Progettazione Concettuale}
+L'output della progettazione concettuale è il \textbf{modello concettuale}
+\end{block}
+
+\begin{center}
+\begin{tikzpicture}
+\node[rectangle, draw, fill=green!40, minimum width=4cm, minimum height=2cm, rounded corners] (input) at (0,0) {
+\begin{tabular}{c}
+\textbf{Input:} \\
+Requisiti \\
+Specifiche
+\end{tabular}
+};
+
+\node[rectangle, draw, fill=blue!40, minimum width=4cm, minimum height=2cm, rounded corners] (output) at (6,0) {
+\begin{tabular}{c}
+\textbf{Output:} \\
+Modello \\
+Concettuale E-R
+\end{tabular}
+};
+
+\draw[->, ultra thick] (input) -- (output) node[midway, above] {Progettazione};
+\end{tikzpicture}
+\end{center}
+\end{frame}
+
+\section{Livelli di Astrazione}
+
+% Slide 7: Livelli di astrazione
+\begin{frame}{I Livelli di Astrazione}
+\begin{block}{Tre livelli di rappresentazione}
+La progettazione avviene a diversi livelli di astrazione:
+\end{block}
+
+\begin{enumerate}
+\item \textbf{Livello Concettuale} (livello di oggetti)
+\begin{itemize}
+\item Rappresenta la realtà dei dati e le relazioni
+\item Usa uno schema astratto
+\end{itemize}
+
+\item \textbf{Livello Logico} (livello di record)
+\begin{itemize}
+\item Organizzazione dei dati negli archivi
+\item Descrive composizione e formato dei dati
+\end{itemize}
+
+\item \textbf{Livello Fisico}
+\begin{itemize}
+\item Installazione fisica su disco
+\item Ubicazione nelle memorie di massa
+\end{itemize}
+\end{enumerate}
+\end{frame}
+
+% Slide 8: Visualizzazione livelli
+\begin{frame}{Schema dei Livelli di Astrazione}
+\begin{center}
+\begin{tikzpicture}[scale=0.9]
+% Livello Concettuale
+\draw[fill=red!30, draw=black, thick] (0,6) rectangle (8,8);
+\node at (4,7) {\Large \textbf{Livello Concettuale}};
+\node[align=center] at (4,6.5) {Schema E-R, Oggetti, Relazioni};
+
+% Livello Logico
+\draw[fill=blue!30, draw=black, thick] (0,3.5) rectangle (8,5.5);
+\node at (4,4.7) {\Large \textbf{Livello Logico}};
+\node[align=center] at (4,4.1) {Tabelle, Record, Campi};
+
+% Livello Fisico
+\draw[fill=green!30, draw=black, thick] (0,1) rectangle (8,3);
+\node at (4,2.3) {\Large \textbf{Livello Fisico}};
+\node[align=center] at (4,1.7) {File, Blocchi, Indici, Puntatori};
+
+% Frecce
+\draw[->, ultra thick] (4,5.9) -- (4,5.5);
+\draw[->, ultra thick] (4,3.4) -- (4,3);
+\end{tikzpicture}
+\end{center}
+\end{frame}
+
+% Slide 9: Livello fisico dettaglio
+\begin{frame}{Il Livello Fisico}
+\begin{block}{Implementazione fisica dei dati}
+Il livello fisico è l'implementazione del livello logico sui supporti di memorizzazione fisica
+\end{block}
+
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{Si occupa di:}
+\begin{itemize}
+\item Partizioni
+\item Puntatori
+\item Blocchi fisici
+\item Cluster
+\item Indici
+\end{itemize}
+
+\column{0.5\textwidth}
+\begin{center}
+\begin{tikzpicture}[scale=0.7]
+\draw[fill=gray!30] (0,0) circle (2cm);
+\node at (0,0) {\Large DISCO};
+\draw[fill=blue!20] (-1.5,0.5) rectangle (-0.5,1.5);
+\draw[fill=blue!20] (0.5,0.5) rectangle (1.5,1.5);
+\draw[fill=blue!20] (-1.5,-1.5) rectangle (-0.5,-0.5);
+\draw[fill=blue!20] (0.5,-1.5) rectangle (1.5,-0.5);
+\node at (0,-2.5) {Blocchi fisici};
+\end{tikzpicture}
+\end{center}
+\end{columns}
+\end{frame}
+
+\section{Analisi Preliminare}
+
+% Slide 10: Analisi preliminare
+\begin{frame}{Analisi Preliminare alla Modellazione}
+\begin{block}{Obiettivi dell'analisi}
+Individuare le esigenze del cliente o il dominio dell'applicazione
+\end{block}
+
+\begin{alertblock}{Domande chiave}
+\begin{itemize}
+\item Quali informazioni devono essere salvate?
+\item In che modo queste informazioni verranno manipolate?
+\item Chi sono gli utenti finali?
+\end{itemize}
+\end{alertblock}
+
+\vspace{0.3cm}
+\textbf{Approcci:}
+\begin{itemize}
+\item \textcolor{blue}{Top-down}: dalla visione generale ai dettagli
+\item \textcolor{red}{Bottom-up}: dai dati ai concetti (preferibile per DB)
+\end{itemize}
+\end{frame}
+
+% Slide 11: Top-down vs Bottom-up
+\begin{frame}{Approcci di Analisi}
+\begin{columns}
+\column{0.5\textwidth}
+\begin{center}
+\textbf{\large Top-Down}
+\begin{tikzpicture}[scale=0.6]
+\node[circle, draw, fill=red!30] (top) at (0,3) {Sistema};
+\node[circle, draw, fill=orange!30] (m1) at (-1.5,1.5) {A};
+\node[circle, draw, fill=orange!30] (m2) at (1.5,1.5) {B};
+\node[circle, draw, fill=yellow!30] (b1) at (-2,0) {1};
+\node[circle, draw, fill=yellow!30] (b2) at (-1,0) {2};
+\node[circle, draw, fill=yellow!30] (b3) at (1,0) {3};
+\node[circle, draw, fill=yellow!30] (b4) at (2,0) {4};
+
+\draw[->, thick] (top) -- (m1);
+\draw[->, thick] (top) -- (m2);
+\draw[->, thick] (m1) -- (b1);
+\draw[->, thick] (m1) -- (b2);
+\draw[->, thick] (m2) -- (b3);
+\draw[->, thick] (m2) -- (b4);
+\end{tikzpicture}
+\end{center}
+
+\column{0.5\textwidth}
+\begin{center}
+\textbf{\large Bottom-Up}
+\begin{tikzpicture}[scale=0.6]
+\node[circle, draw, fill=yellow!30] (b1) at (-2,0) {1};
+\node[circle, draw, fill=yellow!30] (b2) at (-1,0) {2};
+\node[circle, draw, fill=yellow!30] (b3) at (1,0) {3};
+\node[circle, draw, fill=yellow!30] (b4) at (2,0) {4};
+\node[circle, draw, fill=orange!30] (m1) at (-1.5,1.5) {A};
+\node[circle, draw, fill=orange!30] (m2) at (1.5,1.5) {B};
+\node[circle, draw, fill=red!30] (top) at (0,3) {Sistema};
+
+\draw[->, thick] (b1) -- (m1);
+\draw[->, thick] (b2) -- (m1);
+\draw[->, thick] (b3) -- (m2);
+\draw[->, thick] (b4) -- (m2);
+\draw[->, thick] (m1) -- (top);
+\draw[->, thick] (m2) -- (top);
+\end{tikzpicture}
+\end{center}
+\end{columns}
+\end{frame}
+
+\section{Modello Entità-Relazione}
+
+% Slide 12: Fase di modellazione
+\begin{frame}{La Fase di Modellazione}
+\begin{block}{Modelli disponibili}
+Al termine dell'analisi, si può ricorrere a:
+\end{block}
+
+\begin{enumerate}
+\item \textbf{Modello Entità-Relazione (E-R)}
+\begin{itemize}
+\item Approccio classico e più diffuso
+\item Ampiamente utilizzato nell'industria
+\item Standard de facto
+\end{itemize}
+
+\vspace{0.3cm}
+
+\item \textbf{Modello a Oggetti}
+\begin{itemize}
+\item Approccio più recente
+\item Interessante dal punto di vista accademico
+\item Meno diffuso commercialmente
+\end{itemize}
+\end{enumerate}
+
+\begin{alertblock}{Scelta consigliata}
+La stragrande maggioranza delle applicazioni usa l'\textbf{approccio E-R}
+\end{alertblock}
+\end{frame}
+
+% Slide 13: Vantaggi modello E-R
+\begin{frame}{Modello Entità-Relazione: Vantaggi}
+\begin{block}{Indipendenza dal linguaggio}
+Il modello E-R supera le barriere linguistiche essendo:
+\begin{itemize}
+\item Assolutamente indipendente dal linguaggio scritto o parlato
+\item Comprensibile a tutti gli stakeholder
+\item Rappresentazione grafica universale
+\end{itemize}
+\end{block}
+
+\begin{center}
+\begin{tikzpicture}
+\node[rectangle, draw, fill=green!30, rounded corners, minimum width=3cm, minimum height=1cm] at (0,0) {Modello E-R};
+\node[rectangle, draw, fill=blue!20, text width=2cm, align=center] at (-3,-1.5) {Cliente Italiano};
+\node[rectangle, draw, fill=blue!20, text width=2cm, align=center] at (0,-1.5) {Developer USA};
+\node[rectangle, draw, fill=blue!20, text width=2cm, align=center] at (3,-1.5) {Team India};
+
+\draw[->, thick] (0,-0.5) -- (-3,-1.2);
+\draw[->, thick] (0,-0.5) -- (0,-1.2);
+\draw[->, thick] (0,-0.5) -- (3,-1.2);
+\end{tikzpicture}
+\end{center}
+\end{frame}
+
+% Slide 14: Documentazione tecnica
+\begin{frame}{Documentazione Associata}
+\begin{alertblock}{Importante}
+Al modello E-R viene \textbf{sempre} affiancato un documento tecnico
+\end{alertblock}
+
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{Il documento descrive:}
+\begin{itemize}
+\item Dettagli degli oggetti
+\item Vincoli di integrità
+\item Regole di business
+\item Casi particolari
+\item Assunzioni fatte
+\end{itemize}
+
+\column{0.5\textwidth}
+\begin{center}
+\begin{tikzpicture}[scale=0.7]
+\draw[fill=white, draw=black, thick] (0,0) rectangle (3,4);
+\draw[thick] (0.3,3.5) -- (2.7,3.5);
+\draw[thick] (0.3,3) -- (2.7,3);
+\draw[thick] (0.3,2.5) -- (2.7,2.5);
+\draw[thick] (0.3,2) -- (2.7,2);
+\draw[thick] (0.3,1.5) -- (2.7,1.5);
+\draw[thick] (0.3,1) -- (2.7,1);
+\node at (1.5,0.3) {\small Documentazione};
+\end{tikzpicture}
+\end{center}
+\end{columns}
+\end{frame}
+
+% Slide 15: Scopi del modello E-R
+\begin{frame}{Progettazione Concettuale: Scopi}
+\begin{block}{Primo scopo}
+Fornire la \textbf{rappresentazione grafica} di tutti gli oggetti del database
+\begin{itemize}
+\item Visualizzazione completa della struttura
+\item Verifica del flusso delle informazioni
+\item Controllo prima dello sviluppo
+\end{itemize}
+\end{block}
+
+\begin{block}{Secondo scopo}
+Base per la \textbf{creazione del database fisico}
+\begin{itemize}
+\item Gli sviluppatori lo usano come blueprint
+\item Guida per creare tabelle e relazioni
+\item Riferimento per tutti gli oggetti
+\end{itemize}
+\end{block}
+\end{frame}
+
+% Slide 16: Principi qualità
+\begin{frame}{Principi di Qualità del Modello}
+Un buon modello concettuale deve rispettare quattro principi:
+
+\begin{enumerate}
+\item \textbf{Correttezza}
+\begin{itemize}
+\item Uso appropriato degli strumenti di modellazione
+\end{itemize}
+
+\item \textbf{Completezza}
+\begin{itemize}
+\item Rappresentazione di tutti gli aspetti rilevanti
+\end{itemize}
+
+\item \textbf{Chiarezza}
+\begin{itemize}
+\item Modello leggibile e comprensibile
+\end{itemize}
+
+\item \textbf{Indipendenza}
+\begin{itemize}
+\item Non dipendente da strumenti specifici
+\end{itemize}
+\end{enumerate}
+\end{frame}
+
+% Slide 17: Correttezza
+\begin{frame}{Correttezza del Modello}
+\begin{block}{Utilizzo appropriato degli strumenti}
+Il modello deve usare gli strumenti secondo la loro finalità specifica
+\end{block}
+
+\begin{exampleblock}{Esempio}
+Un diagramma E-R serve a rappresentare \textbf{relazioni tra entità}, non flussi di processo
+\begin{itemize}
+\item Corretto: rappresentare studenti e corsi con la loro relazione
+\item Errato: usarlo per descrivere un workflow aziendale
+\end{itemize}
+\end{exampleblock}
+
+\begin{alertblock}{Coerenza semantica}
+Ogni simbolo deve rispettare le convenzioni:
+\begin{itemize}
+\item Rettangoli per le entità
+\item Rombi per le relazioni
+\item Ovali per gli attributi
+\end{itemize}
+\end{alertblock}
+\end{frame}
+
+% Slide 18: Completezza
+\begin{frame}{Completezza del Modello}
+\begin{block}{Modellazione completa}
+Rappresentare \textbf{tutti} gli aspetti significativi del dominio applicativo
+\end{block}
+
+\begin{itemize}
+\item Tutte le entità rilevanti
+\item Tutte le relazioni importanti
+\item Tutti gli attributi necessari
+\item Tutti i vincoli di integrità
+\end{itemize}
+
+\vspace{0.5cm}
+
+\begin{center}
+\begin{tikzpicture}[scale=0.8]
+\draw[fill=red!20] (0,0) circle (2cm);
+\node at (0,0.5) {\textbf{Dominio}};
+\node at (0,-0.5) {\textbf{Applicativo}};
+
+\draw[fill=blue!30, opacity=0.7] (0,0) circle (1.8cm);
+\node at (0,0) {\small Modello};
+\node at (0,-0.3) {\small E-R};
+\end{tikzpicture}
+\end{center}
+\end{frame}
+
+% Slide 19: Chiarezza
+\begin{frame}{Chiarezza del Modello}
+\begin{block}{Leggibilità e comprensibilità}
+Il modello deve essere facilmente leggibile e le informazioni comprensibili
+\end{block}
+
+\textbf{Come ottenere chiarezza:}
+\begin{itemize}
+\item Nomi significativi per entità e attributi
+\item Layout ordinato e ben organizzato
+\item Evitare sovrapposizioni di linee
+\item Raggruppare concetti correlati
+\item Usare colori o evidenziazioni (quando possibile)
+\item Limitare la complessità di ogni diagramma
+\end{itemize}
+
+\begin{alertblock}{Regola pratica}
+Se un diagramma non è comprensibile a prima vista, va semplificato!
+\end{alertblock}
+\end{frame}
+
+% Slide 20: Indipendenza
+\begin{frame}{Indipendenza del Modello}
+\begin{block}{Astrazione tecnologica}
+Il modello concettuale deve essere \textbf{astratto e neutrale}
+\end{block}
+
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{NON dipendente da:}
+\begin{itemize}
+\item DBMS specifici
+\item Linguaggi di programmazione
+\item Tecnologie particolari
+\item Piattaforme hardware
+\end{itemize}
+
+\column{0.5\textwidth}
+\textbf{Vantaggi:}
+\begin{itemize}
+\item Longevità del modello
+\item Flessibilità implementativa
+\item Portabilità
+\item Manutenibilità
+\end{itemize}
+\end{columns}
+
+\vspace{0.5cm}
+
+\begin{exampleblock}{Cosa descrivere}
+\textbf{Cosa} fare, non \textbf{come} implementarlo
+\end{exampleblock}
+\end{frame}
+
+% Slide 21: Esempio indipendenza
+\begin{frame}{Indipendenza: Esempio Pratico}
+\begin{columns}
+\column{0.5\textwidth}
+\begin{alertblock}{Dipendente}
+``Usare PostgreSQL con trigger per gestire cancellazioni''
+\begin{itemize}
+\item Riferimento a tecnologia specifica
+\item Dettagli implementativi
+\item Non portabile
+\end{itemize}
+\end{alertblock}
+
+\column{0.5\textwidth}
+\begin{exampleblock}{Indipendente}
+``Una prenotazione cancellata deve aggiornare la disponibilità della risorsa''
+\begin{itemize}
+\item Regola di business
+\item Tecnologicamente neutrale
+\item Implementabile ovunque
+\end{itemize}
+\end{exampleblock}
+\end{columns}
+\end{frame}
+
+% Slide 22: Fasi progettazione concettuale
+\begin{frame}{Fasi della Progettazione Concettuale}
+\begin{center}
+\begin{tikzpicture}[node distance=1.5cm, scale=0.75, every node/.style={transform shape}]
+\node[rectangle, draw, fill=yellow!30, text width=3.5cm, align=center] (req) {Raccolta Requisiti};
+\node[rectangle, draw, fill=orange!30, text width=3.5cm, align=center, below of=req] (analisi) {Analisi Requisiti};
+\node[rectangle, draw, fill=green!30, text width=3.5cm, align=center, below of=analisi] (entita) {Identificazione Entità};
+\node[rectangle, draw, fill=blue!30, text width=3.5cm, align=center, below of=entita] (relazioni) {Identificazione Relazioni};
+\node[rectangle, draw, fill=purple!30, text width=3.5cm, align=center, below of=relazioni] (attributi) {Definizione Attributi};
+\node[rectangle, draw, fill=red!30, text width=3.5cm, align=center, below of=attributi] (schema) {Schema E-R Completo};
+
+\draw[->, very thick] (req) -- (analisi);
+\draw[->, very thick] (analisi) -- (entita);
+\draw[->, very thick] (entita) -- (relazioni);
+\draw[->, very thick] (relazioni) -- (attributi);
+\draw[->, very thick] (attributi) -- (schema);
+\end{tikzpicture}
+\end{center}
+\end{frame}
+
+% Slide 23: Caratteristiche progettazione
+\begin{frame}{Caratteristiche della Progettazione Concettuale}
+\begin{block}{Rigorosa}
+Per non lasciare dubbi sulle caratteristiche della base di dati
+\begin{itemize}
+\item Precisione nelle definizioni
+\item Specifiche non ambigue
+\item Documentazione dettagliata
+\end{itemize}
+\end{block}
+
+\begin{block}{Semplice nei formalismi}
+Per consentire lettura e comprensione anche agli utenti non tecnici
+\begin{itemize}
+\item Notazione grafica intuitiva
+\item Simboli standard
+\item Documentazione in linguaggio naturale
+\end{itemize}
+\end{block}
+
+\begin{alertblock}{Importante}
+Gli utenti devono essere certi che i progettisti abbiano compreso le loro esigenze
+\end{alertblock}
+\end{frame}
+
+% Slide 24: Modello concettuale
+\begin{frame}{Il Modello Concettuale}
+\begin{block}{Aspetti rilevanti}
+Concetti e formalismi utilizzati nella costruzione del modello entità/associazioni
+\end{block}
+
+\textbf{Caratteristiche:}
+\begin{itemize}
+\item Molto utilizzato nella progettazione
+\item \alert{Non ha rappresentazione standardizzata}
+\item Composto da: entità, associazioni e attributi
+\item Diversi modi di rappresentazione
+\end{itemize}
+
+\vspace{0.3cm}
+
+\textbf{Notazioni principali:}
+\begin{enumerate}
+\item Notazione classica (Chen)
+\item Notazione standard UML
+\end{enumerate}
+\end{frame}
+
+% Slide 25: Database designer
+\begin{frame}{Chi Realizza il Modello? Il Database Designer}
+\begin{block}{Ruolo del Database Designer}
+Responsabile dell'astrazione dei dati dal mondo reale
+\end{block}
+
+\begin{center}
+\begin{tikzpicture}[scale=0.8]
+\node[circle, draw, fill=blue!30, minimum size=2cm] (designer) at (0,0) {
+\begin{tabular}{c}
+Database \\
+Designer
+\end{tabular}
+};
+
+\node[rectangle, draw, fill=yellow!30, text width=2cm, align=center] (req) at (-3,2) {Analisi Requisiti};
+\node[rectangle, draw, fill=green!30, text width=2cm, align=center] (conc) at (3,2) {Schema Concettuale};
+\node[rectangle, draw, fill=red!30, text width=2cm, align=center] (log) at (3,-2) {Schema Logico};
+
+\draw[->, thick] (req) -- (designer);
+\draw[->, thick] (designer) -- (conc);
+\draw[->, thick] (designer) -- (log);
+\end{tikzpicture}
+\end{center}
+\end{frame}
+
+% Slide 26: Schema logico
+\begin{frame}{Schema Logico}
+\begin{center}
+\begin{tikzpicture}[scale=0.9]
+% Modello E-R
+\node[rectangle, draw, fill=green!30, text width=3cm, align=center, minimum height=2cm] (er) at (0,2) {
+\textbf{Schema E-R} \\[0.3cm]
+Entità \\
+Relazioni \\
+Attributi
+};
+
+% Freccia trasformazione
+\draw[->, ultra thick] (er) -- (0,-0.5) node[midway, right] {Trasformazione};
+
+% Schema Logico
+\node[rectangle, draw, fill=blue!30, text width=4cm, align=center, minimum height=2.5cm] (log) at (0,-3) {
+\textbf{Schema Logico} \\[0.3cm]
+Tabelle \\
+Chiavi Primarie/Esterne \\
+Vincoli di Integrità \\
+Indici
+};
+\end{tikzpicture}
+\end{center}
+\end{frame}
+
+% Slide 27: Compiti database designer
+\begin{frame}{I Compiti del Database Designer}
+\begin{block}{Primo compito}
+Analizzare le informazioni raccolte durante l'analisi dei requisiti
+\end{block}
+
+\begin{block}{Obiettivo principale}
+Costruire il modello di base, da raffinare fino al completamento
+\end{block}
+
+\vspace{0.3cm}
+
+\textbf{Prime operazioni:}
+\begin{enumerate}
+\item Classificare gli oggetti come \textbf{entità} o \textbf{attributi}
+\item Partire dalla documentazione del progetto
+\begin{itemize}
+\item Raccolta e analisi della documentazione
+\item Definizione del glossario dei termini
+\end{itemize}
+\end{enumerate}
+\end{frame}
+
+% Slide 28: Analisi documentazione
+\begin{frame}{Analisi della Documentazione}
+\begin{block}{Tipi di documentazione}
+\end{block}
+
+\textbf{Documentazione specifica del progetto:}
+\begin{itemize}
+\item Note delle riunioni tecniche
+\item Richieste del cliente
+\item Appunti dalle interviste agli utenti
+\item Documentazione scritta ad hoc
+\end{itemize}
+
+\textbf{Documentazione esistente:}
+\begin{itemize}
+\item Normative generali e del settore
+\item Regolamenti interni
+\item Procedure aziendali
+\end{itemize}
+
+\textbf{Sistema esistente:}
+\begin{itemize}
+\item Sistema da rimpiazzare
+\item Specifiche di integrazione con sistemi esistenti
+\end{itemize}
+\end{frame}
+
+\section{Entità e Attributi}
+
+% Slide 29: Identificare entità
+\begin{frame}{Identificare le Entità}
+\begin{block}{Che cos'è un'entità?}
+Un'entità rappresenta un \textbf{oggetto} (concreto o astratto) del mondo reale che ha un'esistenza autonoma
+\end{block}
+
+\begin{center}
+\begin{tikzpicture}[scale=0.8]
+% Entità
+\node[rectangle, draw, fill=yellow!30, minimum width=2.5cm, minimum height=1cm] (stud) at (0,2) {\textbf{STUDENTE}};
+\node[rectangle, draw, fill=blue!30, minimum width=2.5cm, minimum height=1cm] (corso) at (4,2) {\textbf{CORSO}};
+\node[rectangle, draw, fill=green!30, minimum width=2.5cm, minimum height=1cm] (prof) at (0,-0.5) {\textbf{PROFESSORE}};
+\node[rectangle, draw, fill=red!30, minimum width=2.5cm, minimum height=1cm] (aula) at (4,-0.5) {\textbf{AULA}};
+
+% Esempi
+\node[below of=stud, node distance=1.2cm, font=\small] {Mario Rossi};
+\node[below of=corso, node distance=1.2cm, font=\small] {Basi di Dati};
+\node[below of=prof, node distance=1.2cm, font=\small] {Prof. Bianchi};
+\node[below of=aula, node distance=1.2cm, font=\small] {Aula 101};
+\end{tikzpicture}
+\end{center}
+\end{frame}
+
+% Slide 30: Entità - esempi
+\begin{frame}{Esempi di Entità}
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{Entità Concrete:}
+\begin{itemize}
+\item Persona
+\item Automobile
+\item Edificio
+\item Prodotto
+\item Computer
+\end{itemize}
+
+\column{0.5\textwidth}
+\textbf{Entità Astratte:}
+\begin{itemize}
+\item Corso universitario
+\item Prenotazione
+\item Transazione
+\item Progetto
+\item Evento
+\end{itemize}
+\end{columns}
+
+\vspace{0.5cm}
+
+\begin{alertblock}{Caratteristica comune}
+Tutte hanno proprietà (attributi) che le descrivono e un'identità univoca
+\end{alertblock}
+\end{frame}
+
+% Slide 31: Identificare attributi
+\begin{frame}{Identificare gli Attributi}
+\begin{block}{Che cos'è un attributo?}
+Gli attributi \textbf{descrivono} un'entità: corrispondono ai campi dei record
+\end{block}
+
+\textbf{Regole per individuare gli attributi:}
+\begin{enumerate}
+\item Gli attributi devono essere \textbf{atomici}
+\begin{itemize}
+\item Non ulteriormente scomponibili
+\end{itemize}
+
+\item Gli attributi \textbf{derivati} non dovrebbero essere memorizzati
+\begin{itemize}
+\item Esempio: età (derivabile dalla data di nascita)
+\end{itemize}
+
+\item Utilizzare \textbf{codici} per classificare gli attributi
+\begin{itemize}
+\item Quando si presenta l'opportunità
+\end{itemize}
+\end{enumerate}
+\end{frame}
+
+% Slide 32: Esempio attributi
+\begin{frame}{Esempio di Attributi}
+\begin{center}
+\begin{tikzpicture}[scale=0.85]
+% Entità centrale
+\node[rectangle, draw, fill=yellow!30, minimum width=2.5cm, minimum height=1.5cm] (stud) at (0,0) {\Large \textbf{STUDENTE}};
+
+% Attributi
+\node[ellipse, draw, fill=blue!20] (matr) at (-3,2) {Matricola};
+\node[ellipse, draw, fill=blue!20] (nome) at (-1,2.5) {Nome};
+\node[ellipse, draw, fill=blue!20] (cogn) at (1,2.5) {Cognome};
+\node[ellipse, draw, fill=blue!20] (data) at (3,2) {DataNascita};
+\node[ellipse, draw, fill=blue!20] (email) at (-3,-2) {Email};
+\node[ellipse, draw, fill=blue!20] (tel) at (3,-2) {Telefono};
+
+% Collegamenti
+\draw[thick] (stud) -- (matr);
+\draw[thick] (stud) -- (nome);
+\draw[thick] (stud) -- (cogn);
+\draw[thick] (stud) -- (data);
+\draw[thick] (stud) -- (email);
+\draw[thick] (stud) -- (tel);
+
+% Sottolineatura chiave
+\draw[thick] (matr.south west) -- (matr.south east);
+\end{tikzpicture}
+\end{center}
+\end{frame}
+
+% Slide 33: Atomicità attributi
+\begin{frame}{Atomicità degli Attributi}
+\begin{exampleblock}{Esempio CORRETTO}
+\textbf{PERSONA:} Nome, Cognome, Via, Città, CAP
+\end{exampleblock}
+
+\begin{alertblock}{Esempio ERRATO}
+\textbf{PERSONA:} NomeCompleto, Indirizzo
+\begin{itemize}
+\item NomeCompleto non è atomico (contiene nome e cognome)
+\item Indirizzo non è atomico (contiene via, città, CAP)
+\end{itemize}
+\end{alertblock}
+
+\vspace{0.3cm}
+
+\textbf{Perché l'atomicità è importante:}
+\begin{itemize}
+\item Facilita le ricerche specifiche
+\item Migliora l'ordinamento
+\item Evita ridondanza
+\item Semplifica aggiornamenti
+\end{itemize}
+\end{frame}
+
+% Slide 34: Scegliere nomi
+\begin{frame}{Scegliere Correttamente i Nomi}
+\begin{block}{Regole per i nomi}
+\end{block}
+
+\textbf{I nomi degli oggetti devono essere unici}
+\begin{itemize}
+\item Evitare ambiguità
+\item Nessuna duplicazione nel modello
+\end{itemize}
+
+\textbf{Devono avere significato per l'utente finale}
+\begin{itemize}
+\item Usare terminologia del dominio
+\item Comprensibili senza spiegazioni
+\end{itemize}
+
+\textbf{Contenere il minimo numero di parole necessarie}
+\begin{itemize}
+\item Descrizione univoca e accurata
+\item Bilanciare brevità e chiarezza
+\end{itemize}
+\end{frame}
+
+% Slide 35: Esempi nomi
+\begin{frame}{Esempi di Denominazione}
+\begin{columns}
+\column{0.5\textwidth}
+\begin{exampleblock}{Nomi CORRETTI}
+\begin{itemize}
+\item Studente
+\item DataIscrizione
+\item CorsoDiLaurea
+\item NumeroMatricola
+\item IndirizzoEmail
+\end{itemize}
+\end{exampleblock}
+
+\column{0.5\textwidth}
+\begin{alertblock}{Nomi da EVITARE}
+\begin{itemize}
+\item S (troppo generico)
+\item Data1 (non significativo)
+\item CorsoDiLaureaTriennaleInInformatica (troppo lungo)
+\item Num (abbreviazione oscura)
+\item x\_email (non user-friendly)
+\end{itemize}
+\end{alertblock}
+\end{columns}
+\end{frame}
+
+\section{Chiavi}
+
+% Slide 36: Concetto di chiave
+\begin{frame}{Il Concetto di Chiave}
+\begin{block}{Definizione}
+Una \textbf{chiave} è un attributo (o insieme di attributi) che identifica univocamente un'istanza di un'entità
+\end{block}
+
+\begin{center}
+\begin{tikzpicture}[scale=0.8]
+\node[rectangle, draw, fill=yellow!30, minimum width=3cm, minimum height=1.2cm] (ent) at (0,0) {\textbf{STUDENTE}};
+
+\node[ellipse, draw, fill=green!40] (key) at (-3,0) {
+\begin{tabular}{c}
+\underline{Matricola} \\
+\small (CHIAVE)
+\end{tabular}
+};
+
+\node[ellipse, draw, fill=blue!20] (attr1) at (0,2) {Nome};
+\node[ellipse, draw, fill=blue!20] (attr2) at (3,0) {Cognome};
+
+\draw[ultra thick] (key) -- (ent);
+\draw (attr1) -- (ent);
+\draw (attr2) -- (ent);
+\end{tikzpicture}
+\end{center}
+
+\textbf{Proprietà della chiave:}
+\begin{itemize}
+\item \textcolor{red}{Univocità}: nessun duplicato
+\item \textcolor{blue}{Minimalità}: minimo numero di attributi necessari
+\end{itemize}
+\end{frame}
+
+% Slide 37: Tipi di chiavi
+\begin{frame}{Tipi di Chiavi}
+\begin{enumerate}
+\item \textbf{Chiave Primaria (Primary Key - PK)}
+\begin{itemize}
+\item Identifica univocamente ogni istanza
+\item Non può contenere valori NULL
+\item Unica per ogni entità
+\end{itemize}
+
+\vspace{0.3cm}
+
+\item \textbf{Chiave Candidata}
+\begin{itemize}
+\item Potenziale chiave primaria
+\item Soddisfa requisiti di univocità
+\end{itemize}
+
+\vspace{0.3cm}
+
+\item \textbf{Chiave Esterna (Foreign Key - FK)}
+\begin{itemize}
+\item Riferisce la chiave primaria di un'altra entità
+\item Stabilisce relazioni tra entità
+\end{itemize}
+\end{enumerate}
+\end{frame}
+
+% Slide 38: Chiave primaria esempio
+\begin{frame}{Esempio di Chiave Primaria}
+\begin{center}
+\begin{tikzpicture}[scale=0.9]
+% Tabella concettuale
+\node[rectangle, draw, fill=yellow!30, minimum width=8cm, minimum height=0.8cm] at (0,2) {
+\textbf{AUTOMOBILE}
+};
+
+\node[rectangle, draw, minimum width=8cm, minimum height=2.5cm] (tab) at (0,0) {};
+
+\node[align=left] at (0,0.8) {
+\textcolor{red}{\underline{Targa}} $\leftarrow$ \textbf{Chiave Primaria} \\[0.2cm]
+Marca \\[0.2cm]
+Modello \\[0.2cm]
+Anno \\[0.2cm]
+Colore
+};
+
+\draw[thick, red] (-3.5,1.2) -- (3.5,1.2);
+\end{tikzpicture}
+\end{center}
+
+La \textbf{Targa} identifica univocamente ogni automobile
+\end{frame}
+
+% Slide 39: Chiavi composte
+\begin{frame}{Chiavi Composte}
+\begin{block}{Definizione}
+Una chiave composta è formata da \textbf{più attributi} che insieme identificano univocamente un'istanza
+\end{block}
+
+\begin{exampleblock}{Esempio}
+Entità \textbf{ESAME}:
+\begin{itemize}
+\item Matricola (da sola non univoca)
+\item CodiceCorso (da solo non univoco)
+\item \textcolor{red}{\textbf{(Matricola, CodiceCorso)}} $\rightarrow$ Chiave composta univoca
+\end{itemize}
+\end{exampleblock}
+
+\vspace{0.3cm}
+
+\begin{center}
+\begin{tikzpicture}[scale=0.7]
+\node[rectangle, draw, fill=blue!30] (esame) at (0,0) {\textbf{ESAME}};
+\node[ellipse, draw, fill=red!30] (matr) at (-2,1.5) {\underline{Matricola}};
+\node[ellipse, draw, fill=red!30] (cod) at (2,1.5) {\underline{CodiceCorso}};
+\node[ellipse, draw, fill=green!20] (voto) at (0,-1.5) {Voto};
+
+\draw[thick] (esame) -- (matr);
+\draw[thick] (esame) -- (cod);
+\draw (esame) -- (voto);
+\end{tikzpicture}
+\end{center}
+\end{frame}
+
+% Slide 40: Entità forti e deboli
+\begin{frame}{Entità Forti e Deboli}
+\begin{block}{Entità Forti}
+Hanno una chiave primaria propria e esistenza autonoma
+\end{block}
+
+\begin{block}{Entità Deboli}
+Non hanno chiave primaria propria, dipendono da altre entità
+\end{block}
+
+\begin{center}
+\begin{tikzpicture}[scale=0.8]
+% Entità forte
+\node[rectangle, draw, thick, fill=green!30, minimum width=2.5cm, minimum height=1cm] (forte) at (-2,0) {
+\begin{tabular}{c}
+\textbf{CLIENTE} \\
+\underline{CodiceFiscale}
+\end{tabular}
+};
+
+% Relazione
+\node[diamond, draw, thick, fill=yellow!30, minimum width=1cm] (rel) at (1.5,0) {effettua};
+
+% Entità debole
+\node[rectangle, draw, thick, double, fill=red!30, minimum width=2.5cm, minimum height=1cm] (debole) at (5,0) {
+\begin{tabular}{c}
+\textbf{ORDINE} \\
+NumeroOrdine
+\end{tabular}
+};
+
+\draw[thick] (forte) -- (rel);
+\draw[thick] (rel) -- (debole);
+\end{tikzpicture}
+\end{center}
+
+Nota: il doppio bordo indica un'entità debole
+\end{frame}
+
+% Slide 41: Esempio entità debole
+\begin{frame}{Esempio: Conto Corrente}
+\begin{center}
+\begin{tikzpicture}[scale=0.8]
+% Entità forte
+\node[rectangle, draw, thick, fill=green!30, minimum width=2.5cm, minimum height=1.2cm] (conto) at (0,2) {
+\begin{tabular}{c}
+\textbf{CONTO} \\
+\underline{NumeroConto}
+\end{tabular}
+};
+
+% Relazione
+\node[diamond, draw, thick, fill=yellow!30] (ha) at (0,0) {ha};
+
+% Entità debole
+\node[rectangle, draw, thick, double, fill=red!30, minimum width=2.5cm, minimum height=1.5cm] (mov) at (0,-2.5) {
+\begin{tabular}{c}
+\textbf{MOVIMENTO} \\
+Data \\
+Causale \\
+Importo
+\end{tabular}
+};
+
+\draw[thick] (conto) -- (ha);
+\draw[thick] (ha) -- (mov);
+
+\node[right of=mov, node distance=4cm, text width=3cm, font=\small] {
+Movimento non ha chiave primaria propria: dipende da Conto
+};
+\end{tikzpicture}
+\end{center}
+\end{frame}
+
+% Slide 42: Soluzione entità debole
+\begin{frame}{Soluzione: Aggiunta di Contatore}
+\begin{alertblock}{Problema}
+Entità deboli possono creare complessità nella gestione
+\end{alertblock}
+
+\begin{exampleblock}{Soluzione}
+Aggiungere un attributo \textbf{numero progressivo} auto-generato
+\end{exampleblock}
+
+\begin{center}
+\begin{tikzpicture}[scale=0.75]
+\node[rectangle, draw, thick, fill=green!30, minimum width=2.5cm, minimum height=1.8cm] (mov) at (0,0) {
+\begin{tabular}{c}
+\textbf{MOVIMENTO} \\
+\textcolor{red}{\underline{IdMovimento}} \\
+Data \\
+Causale \\
+Importo
+\end{tabular}
+};
+
+\node[right of=mov, node distance=5cm, text width=4cm, align=left] {
+\textbf{Vantaggi:}
+\begin{itemize}
+\item Entità diventa forte
+\item Ordinamento cronologico
+\item Identificazione univoca
+\end{itemize}
+};
+\end{tikzpicture}
+\end{center}
+\end{frame}
+
+% Slide 43: Notazioni a confronto
+\begin{frame}{Chiavi: Notazione Classica vs UML}
+\begin{columns}
+\column{0.5\textwidth}
+\begin{center}
+\textbf{Notazione Classica}
+\begin{tikzpicture}[scale=0.65]
+\node[rectangle, draw, fill=yellow!30, minimum width=2.5cm, minimum height=1cm] (ent) at (0,1) {\textbf{STUDENTE}};
+\node[ellipse, draw, fill=green!30] (key) at (0,-0.5) {\underline{Matricola}};
+\draw[thick] (ent) -- (key);
+\end{tikzpicture}
+
+Chiave sottolineata nell'ovale
+\end{center}
+
+\column{0.5\textwidth}
+\begin{center}
+\textbf{Notazione UML}
+\begin{tikzpicture}[scale=0.65]
+\node[rectangle, draw, fill=yellow!30, minimum width=2.5cm, minimum height=1.8cm] (ent) at (0,0) {
+\begin{tabular}{l}
+\textbf{STUDENTE} \\
+\hline
+\textcolor{red}{\textbf{PK}} \underline{Matricola} \\
+Nome \\
+Cognome
+\end{tabular}
+};
+\end{tikzpicture}
+
+Chiave con marcatore PK
+\end{center}
+\end{columns}
+
+\vspace{0.5cm}
+\begin{alertblock}{Nota}
+Entrambe le notazioni sono valide e ampiamente usate
+\end{alertblock}
+\end{frame}
+
+% Slide 44: Tool online
+\begin{frame}{Tool per Diagrammi E-R}
+\begin{block}{Designer Online}
+Disponibile gratuitamente:
+\begin{center}
+\large
+\textcolor{blue}{\texttt{https://designer-basic.polito.it/}}
+\end{center}
+\end{block}
+
+\begin{center}
+\begin{tikzpicture}
+\draw[fill=white, draw=black, thick] (0,0) rectangle (8,4);
+\node at (4,3.5) {\Large Designer E-R Online};
+\draw[fill=blue!20] (0.5,0.5) rectangle (3.5,2.5);
+\node at (2,1.5) {Entità};
+\draw[fill=green!20] (4.5,0.5) rectangle (7.5,2.5);
+\node at (6,1.5) {Relazioni};
+\draw[->, ultra thick] (3.5,1.5) -- (4.5,1.5);
+\end{tikzpicture}
+\end{center}
+\end{frame}
+
+\section{Relazioni}
+
+% Slide 45: Molteplicità relazioni
+\begin{frame}{Molteplicità delle Relazioni}
+\begin{block}{Definizione}
+La molteplicità indica il numero di possibili istanze di un'entità associate ad un'istanza dell'altra entità
+\end{block}
+
+\textbf{Rappresentazione:} coppia di valori \texttt{min..max}
+\begin{itemize}
+\item \texttt{1..1} - esattamente uno
+\item \texttt{0..1} - zero o uno (opzionale)
+\item \texttt{1..N} - uno o molti
+\item \texttt{0..N} - zero o molti
+\end{itemize}
+
+\vspace{0.3cm}
+
+\begin{exampleblock}{Concetti importanti}
+\begin{itemize}
+\item \textbf{Valore minimo} $\rightarrow$ Obbligatorietà (0=facoltativo, 1=obbligatorio)
+\item \textbf{Valore massimo} $\rightarrow$ Cardinalità (1=uno, N=molti)
+\end{itemize}
+\end{exampleblock}
+\end{frame}
+
+% Slide 46: Cardinalità notazione classica
+\begin{frame}{Cardinalità - Notazione Classica}
+\begin{center}
+\begin{tikzpicture}[scale=0.9]
+% Esempio 1:1
+\node[rectangle, draw, fill=blue!30, minimum width=2cm] (e1) at (0,3) {Entità A};
+\node[diamond, draw, fill=yellow!30] (r1) at (3,3) {R};
+\node[rectangle, draw, fill=blue!30, minimum width=2cm] (e2) at (6,3) {Entità B};
+\draw[thick] (e1) -- (r1) node[midway, above] {\small 1};
+\draw[thick] (r1) -- (e2) node[midway, above] {\small 1};
+\node at (3,2.3) {Relazione 1:1};
+
+% Esempio 1:N
+\node[rectangle, draw, fill=green!30, minimum width=2cm] (e3) at (0,0) {Entità C};
+\node[diamond, draw, fill=yellow!30] (r2) at (3,0) {S};
+\node[rectangle, draw, fill=green!30, minimum width=2cm] (e4) at (6,0) {Entità D};
+\draw[thick] (e3) -- (r2) node[midway, above] {\small 1};
+\draw[thick] (r2) -- (e4) node[midway, above] {\small N};
+\node at (3,-0.7) {Relazione 1:N};
+
+% Esempio N:M
+\node[rectangle, draw, fill=red!30, minimum width=2cm] (e5) at (0,-3) {Entità E};
+\node[diamond, draw, fill=yellow!30] (r3) at (3,-3) {T};
+\node[rectangle, draw, fill=red!30, minimum width=2cm] (e6) at (6,-3) {Entità F};
+\draw[thick] (e5) -- (r3) node[midway, above] {\small N};
+\draw[thick] (r3) -- (e6) node[midway, above] {\small M};
+\node at (3,-3.7) {Relazione N:M};
+\end{tikzpicture}
+\end{center}
+\end{frame}
+
+% Slide 47: Relazione 1:1
+\begin{frame}{Le Relazioni di Tipo 1:1}
+\begin{block}{Definizione}
+Ad ogni istanza della prima entità corrisponde \textbf{al più} un'istanza della seconda, e viceversa
+\end{block}
+
+\begin{center}
+\begin{tikzpicture}[scale=0.9]
+\node[rectangle, draw, fill=yellow!30, minimum width=2.5cm, minimum height=1cm] (naz) at (0,0) {\textbf{NAZIONE}};
+\node[diamond, draw, fill=blue!30, minimum width=1.5cm] (rel) at (4,0) {ha capitale};
+\node[rectangle, draw, fill=green!30, minimum width=2.5cm, minimum height=1cm] (cit) at (8,0) {\textbf{CITTÀ}};
+
+\draw[thick] (naz) -- (rel) node[midway, above] {1};
+\draw[thick] (rel) -- (cit) node[midway, above] {1};
+\end{tikzpicture}
+\end{center}
+
+\begin{exampleblock}{Esempio}
+\begin{itemize}
+\item Ogni nazione ha \textbf{una} capitale (1 $\rightarrow$ 1)
+\item Ogni capitale appartiene a \textbf{una} nazione (1 $\leftarrow$ 1)
+\end{itemize}
+\end{exampleblock}
+\end{frame}
+
+% Slide 48: Esempio relazione 1:1
+\begin{frame}{Relazione 1:1 - Altro Esempio}
+\begin{center}
+\begin{tikzpicture}[scale=0.85]
+\node[rectangle, draw, fill=blue!30, minimum width=2.5cm, minimum height=1cm] (pers) at (0,0) {\textbf{PERSONA}};
+\node[diamond, draw, fill=yellow!30, minimum width=1.5cm] (rel) at (4,0) {possiede};
+\node[rectangle, draw, fill=green!30, minimum width=2.5cm, minimum height=1cm] (cf) at (8,0) {\textbf{CODICE\_FISCALE}};
+
+\draw[thick] (pers) -- (rel) node[midway, above] {1};
+\draw[thick] (rel) -- (cf) node[midway, above] {1};
+
+\node[below of=pers, node distance=1.5cm, text width=3cm, font=\small, align=center] {
+Partecipazione obbligatoria \\
+Molteplicità 1
+};
+
+\node[below of=cf, node distance=1.5cm, text width=3cm, font=\small, align=center] {
+Partecipazione obbligatoria \\
+Molteplicità 1
+};
+\end{tikzpicture}
+\end{center}
+\end{frame}
+
+% Slide 49: Relazione 1:N
+\begin{frame}{Relazioni Uno a Molti (1:N)}
+\begin{block}{Definizione}
+Ad un'istanza della prima entità corrispondono \textbf{più istanze} della seconda, ma ad ogni istanza della seconda corrisponde \textbf{al più una} istanza della prima
+\end{block}
+
+\begin{center}
+\begin{tikzpicture}[scale=0.85]
+\node[rectangle, draw, fill=yellow!30, minimum width=2.5cm, minimum height=1cm] (citta) at (0,0) {\textbf{CITTÀ}};
+\node[diamond, draw, fill=blue!30, minimum width=1.5cm] (rel) at (4,0) {risiede};
+\node[rectangle, draw, fill=green!30, minimum width=2.5cm, minimum height=1cm] (pers) at (8,0) {\textbf{PERSONA}};
+
+\draw[thick] (citta) -- (rel) node[midway, above] {1};
+\draw[thick] (rel) -- (pers) node[midway, above] {N};
+\end{tikzpicture}
+\end{center}
+
+\begin{exampleblock}{Interpretazione}
+\begin{itemize}
+\item Una città ha \textbf{molte} persone residenti
+\item Una persona risiede in \textbf{una sola} città
+\end{itemize}
+\end{exampleblock}
+\end{frame}
+
+% Slide 50: Relazione N:M
+\begin{frame}{Relazioni Molti a Molti (N:M)}
+\begin{block}{Definizione}
+Ad un'istanza della prima entità corrispondono \textbf{più istanze} della seconda, e viceversa
+\end{block}
+
+\begin{center}
+\begin{tikzpicture}[scale=0.85]
+\node[rectangle, draw, fill=yellow!30, minimum width=2.5cm, minimum height=1cm] (stud) at (0,0) {\textbf{STUDENTE}};
+\node[diamond, draw, fill=blue!30, minimum width=1.5cm] (rel) at (4,0) {frequenta};
+\node[rectangle, draw, fill=green!30, minimum width=2.5cm, minimum height=1cm] (corso) at (8,0) {\textbf{CORSO}};
+
+\draw[thick] (stud) -- (rel) node[midway, above] {N};
+\draw[thick] (rel) -- (corso) node[midway, above] {M};
+\end{tikzpicture}
+\end{center}
+
+\begin{exampleblock}{Interpretazione}
+\begin{itemize}
+\item Uno studente frequenta \textbf{più corsi}
+\item Un corso è frequentato da \textbf{più studenti}
+\end{itemize}
+\end{exampleblock}
+\end{frame}
+
+% Slide 51: Esistenza obbligatoria
+\begin{frame}{Esistenza Obbligatoria}
+\begin{block}{Definizione}
+Un'istanza di un'entità \textbf{deve necessariamente} partecipare alla relazione
+\end{block}
+
+\begin{center}
+\begin{tikzpicture}[scale=0.85]
+\node[rectangle, draw, fill=yellow!30, minimum width=2.5cm, minimum height=1cm] (ord) at (0,0) {\textbf{ORDINE}};
+\node[diamond, draw, fill=blue!30, minimum width=1.5cm] (rel) at (4,0) {effettuato da};
+\node[rectangle, draw, fill=green!30, minimum width=2.5cm, minimum height=1cm] (cli) at (8,0) {\textbf{CLIENTE}};
+
+\draw[ultra thick] (ord) -- (rel) node[midway, above] {(1,1)};
+\draw[thick] (rel) -- (cli) node[midway, above] {(0,N)};
+
+\node[below of=ord, node distance=1.5cm, font=\small, text width=3cm, align=center] {
+\textcolor{red}{Partecipazione OBBLIGATORIA} \\
+(minimo = 1)
+};
+\end{tikzpicture}
+\end{center}
+
+Un ordine DEVE avere un cliente
+\end{frame}
+
+% Slide 52: Esistenza opzionale
+\begin{frame}{Esistenza Opzionale}
+\begin{block}{Definizione}
+Un'istanza di un'entità \textbf{può} partecipare facoltativamente alla relazione
+\end{block}
+
+\begin{center}
+\begin{tikzpicture}[scale=0.85]
+\node[rectangle, draw, fill=yellow!30, minimum width=2.5cm, minimum height=1cm] (utente) at (0,0) {\textbf{UTENTE}};
+\node[diamond, draw, fill=blue!30, minimum width=1.5cm] (rel) at (4,0) {prende prestito};
+\node[rectangle, draw, fill=green!30, minimum width=2.5cm, minimum height=1cm] (libro) at (8,0) {\textbf{LIBRO}};
+
+\draw[thick, dashed] (utente) -- (rel) node[midway, above] {(0,1)};
+\draw[thick] (rel) -- (libro) node[midway, above] {(1,N)};
+
+\node[below of=utente, node distance=1.5cm, font=\small, text width=3cm, align=center] {
+\textcolor{blue}{Partecipazione OPZIONALE} \\
+(minimo = 0)
+};
+\end{tikzpicture}
+\end{center}
+
+Un utente PUÒ prendere in prestito un libro (o anche nessuno)
+\end{frame}
+
+% Slide 53: Molteplicità - sintesi
+\begin{frame}{Molteplicità - Sintesi}
+\begin{center}
+\begin{tikzpicture}[scale=0.7]
+\node[rectangle, draw, fill=blue!30, minimum width=2.5cm, minimum height=1cm] (e1) at (0,4) {\textbf{Entità A}};
+\node[diamond, draw, fill=yellow!30] (r1) at (4,4) {R1};
+\node[rectangle, draw, fill=blue!30, minimum width=2.5cm, minimum height=1cm] (e2) at (8,4) {\textbf{Entità B}};
+\draw[thick] (e1) -- (r1) node[midway, above] {(1,1)};
+\draw[thick] (r1) -- (e2) node[midway, above] {(1,1)};
+\node at (4,3) {\small Obbligatorio-Scalare};
+
+\node[rectangle, draw, fill=green!30, minimum width=2.5cm, minimum height=1cm] (e3) at (0,1.5) {\textbf{Entità C}};
+\node[diamond, draw, fill=yellow!30] (r2) at (4,1.5) {R2};
+\node[rectangle, draw, fill=green!30, minimum width=2.5cm, minimum height=1cm] (e4) at (8,1.5) {\textbf{Entità D}};
+\draw[thick] (e3) -- (r2) node[midway, above] {(0,1)};
+\draw[thick] (r2) -- (e4) node[midway, above] {(1,N)};
+\node at (4,0.5) {\small Opzionale-Multiplo};
+
+\node[rectangle, draw, fill=red!30, minimum width=2.5cm, minimum height=1cm] (e5) at (0,-1) {\textbf{Entità E}};
+\node[diamond, draw, fill=yellow!30] (r3) at (4,-1) {R3};
+\node[rectangle, draw, fill=red!30, minimum width=2.5cm, minimum height=1cm] (e6) at (8,-1) {\textbf{Entità F}};
+\draw[thick] (e5) -- (r3) node[midway, above] {(1,N)};
+\draw[thick] (r3) -- (e6) node[midway, above] {(0,N)};
+\node at (4,-2) {\small Obbligatorio-Opzionale Multiplo};
+\end{tikzpicture}
+\end{center}
+\end{frame}
+
+% Slide 54: Vincoli cardinalità esempio
+\begin{frame}{Esempi di Vincoli di Cardinalità}
+\begin{exampleblock}{Esempio 1: Persona - Codice Fiscale}
+\begin{itemize}
+\item Una persona possiede \textbf{almeno 1 e massimo 1} codice fiscale ($\rightarrow$)
+\item Un codice fiscale appartiene a \textbf{almeno 1 e massimo 1} persona ($\leftarrow$)
+\end{itemize}
+\end{exampleblock}
+
+\begin{exampleblock}{Esempio 2: Persona - Città}
+\begin{itemize}
+\item Una persona risiede in \textbf{almeno 1 e al massimo 1} città ($\rightarrow$)
+\item In una città risiedono \textbf{almeno 1 e al massimo N} persone ($\leftarrow$)
+\end{itemize}
+\end{exampleblock}
+\end{frame}
+
+% Slide 55: Direzione relazione
+\begin{frame}{Direzione della Relazione}
+\begin{block}{Concetto di "padre"}
+Nella relazione uno-a-molti, l'entità con cardinalità 1 è detta \textbf{padre}
+\end{block}
+
+\begin{center}
+\begin{tikzpicture}[scale=0.9]
+\node[rectangle, draw, fill=green!40, minimum width=2.5cm, minimum height=1cm] (citta) at (0,0) {
+\begin{tabular}{c}
+\textbf{CITTÀ} \\
+\small (PADRE)
+\end{tabular}
+};
+\node[diamond, draw, fill=yellow!30] (rel) at (4,0) {risiede};
+\node[rectangle, draw, fill=blue!30, minimum width=2.5cm, minimum height=1cm] (stud) at (8,0) {
+\begin{tabular}{c}
+\textbf{STUDENTE} \\
+\small (FIGLIO)
+\end{tabular}
+};
+
+\draw[->, ultra thick, red] (citta) -- (rel) node[midway, above] {1};
+\draw[thick] (rel) -- (stud) node[midway, above] {N};
+
+\node[below of=rel, node distance=1.5cm, text width=4cm, align=center] {
+La direzione va da CITTÀ a STUDENTE \\
+\small (dal padre al figlio)
+};
+\end{tikzpicture}
+\end{center}
+\end{frame}
+
+% Slide 56: Regole lettura
+\begin{frame}{Le Regole di Lettura}
+\begin{center}
+\begin{tikzpicture}[scale=0.85]
+\node[rectangle, draw, fill=yellow!30, minimum width=2.5cm, minimum height=1cm] (ut) at (0,0) {\textbf{UTENTE}};
+\node[diamond, draw, fill=blue!30, text width=2cm, align=center] (rel) at (4,0) {prende in prestito};
+\node[rectangle, draw, fill=green!30, minimum width=2.5cm, minimum height=1cm] (lib) at (8,0) {\textbf{LIBRO}};
+
+\draw[thick] (ut) -- (rel) node[midway, above] {(0,1)};
+\draw[thick] (rel) -- (lib) node[midway, above] {(1,N)};
+\end{tikzpicture}
+\end{center}
+
+\textbf{Lettura da sinistra (UTENTE):}
+\begin{itemize}
+\item \textcolor{red}{(0,} $\rightarrow$ può prendere in prestito
+\item \textcolor{red}{,1)} $\rightarrow$ un solo libro
+\end{itemize}
+
+\textbf{Lettura da destra (LIBRO):}
+\begin{itemize}
+\item \textcolor{blue}{(1,} $\rightarrow$ un libro deve essere prestato
+\item \textcolor{blue}{,N)} $\rightarrow$ a uno o più utenti (nel tempo)
+\end{itemize}
+\end{frame}
+
+\section{Relazioni Gerarchiche}
+
+% Slide 57: Gerarchia tra entità
+\begin{frame}{Relazione Gerarchica tra Entità}
+\begin{block}{Definizione}
+Situazioni in cui tra le entità può essere stabilita una gerarchia, simile alle classi nella programmazione OOP
+\end{block}
+
+\begin{center}
+\begin{tikzpicture}[scale=0.8]
+\node[rectangle, draw, fill=blue!30, minimum width=2.5cm, minimum height=1cm] (alfa) at (0,2) {\textbf{ALFA}};
+\node[rectangle, draw, fill=green!30, minimum width=2cm, minimum height=0.8cm] (beta1) at (-2,0) {\textbf{BETA1}};
+\node[rectangle, draw, fill=green!30, minimum width=2cm, minimum height=0.8cm] (beta2) at (2,0) {\textbf{BETA2}};
+
+\draw[->, ultra thick] (beta1) -- (alfa);
+\draw[->, ultra thick] (beta2) -- (alfa);
+
+\node[left of=alfa, node distance=3.5cm, text width=3cm, font=\small] {
+\textbf{Superclasse} \\
+(Generalizzazione)
+};
+
+\node[left of=beta1, node distance=3cm, text width=2.5cm, font=\small] {
+\textbf{Sottoclassi} \\
+(Specializzazioni)
+};
+\end{tikzpicture}
+\end{center}
+\end{frame}
+
+% Slide 58: Vincoli gerarchia
+\begin{frame}{Vincoli nelle Gerarchie}
+\begin{block}{Due vincoli fondamentali:}
+\end{block}
+
+\textbf{1. Vincolo di Struttura (Ereditarietà)}
+\begin{itemize}
+\item La sottoclasse eredita tutti gli attributi della superclasse
+\item La sottoclasse partecipa a tutte le associazioni della superclasse
+\item La sottoclasse può avere attributi e associazioni aggiuntive
+\end{itemize}
+
+\vspace{0.3cm}
+
+\textbf{2. Vincolo di Insieme (Subset)}
+\begin{itemize}
+\item Ogni oggetto della sottoclasse è anche un oggetto della superclasse
+\item La sottoclasse è un \textbf{sottoinsieme} della superclasse
+\end{itemize}
+\end{frame}
+
+% Slide 59: Esempio gerarchia veicoli
+\begin{frame}{Esempio: Gerarchia Veicoli}
+\begin{center}
+\begin{tikzpicture}[scale=0.75]
+\node[rectangle, draw, fill=blue!30, minimum width=2.5cm, minimum height=1.2cm] (veic) at (0,3) {
+\begin{tabular}{c}
+\textbf{VEICOLO} \\
+\small Targa, Marca
+\end{tabular}
+};
+
+\node[rectangle, draw, fill=green!30, minimum width=2cm, minimum height=1cm] (auto) at (-3,0.5) {
+\begin{tabular}{c}
+\textbf{AUTO} \\
+\small NumPorte
+\end{tabular}
+};
+
+\node[rectangle, draw, fill=green!30, minimum width=2cm, minimum height=1cm] (moto) at (0,0.5) {
+\begin{tabular}{c}
+\textbf{MOTO} \\
+\small Cilindrata
+\end{tabular}
+};
+
+\node[rectangle, draw, fill=green!30, minimum width=2cm, minimum height=1cm] (bici) at (3,0.5) {
+\begin{tabular}{c}
+\textbf{BICICLETTA} \\
+\small NumMarce
+\end{tabular}
+};
+
+\draw[->, thick] (auto) -- (veic);
+\draw[->, thick] (moto) -- (veic);
+\draw[->, thick] (bici) -- (veic);
+
+\node[below of=veic, node distance=1cm, font=\small] {$\triangle$ Generalizzazione};
+\end{tikzpicture}
+\end{center}
+
+Auto, Moto e Bicicletta \textbf{specializzano} Veicolo
+\end{frame}
+
+% Slide 60: Copertura generalizzazioni
+\begin{frame}{Copertura delle Generalizzazioni}
+\begin{block}{Concetto di Copertura}
+Le sottoentità non sempre contemplano tutti gli elementi della classe padre
+\end{block}
+
+\textbf{Due dimensioni indipendenti:}
+
+\begin{enumerate}
+\item \textbf{Confronto con l'unione:}
+\begin{itemize}
+\item \textcolor{red}{Totale}: la superclasse è l'unione delle sottoclassi
+\item \textcolor{blue}{Parziale}: la superclasse contiene l'unione delle sottoclassi
+\end{itemize}
+
+\vspace{0.3cm}
+
+\item \textbf{Confronto tra sottoclassi:}
+\begin{itemize}
+\item \textcolor{green}{Esclusiva}: le sottoclassi sono disgiunte
+\item \textcolor{orange}{Sovrapposta}: può esistere intersezione tra sottoclassi
+\end{itemize}
+\end{enumerate}
+\end{frame}
+
+% Slide 61: Grazie
+\begin{frame}[plain]
+\begin{center}
+\Huge \textbf{Grazie per l'attenzione!}
+
+\vspace{1cm}
+
+\Large Domande?
+
+\vspace{1.5cm}
+
+\normalsize
+Prof. Fedeli Massimo \\
+ITS Academy - Fabbrica Digitale
+
+\vspace{0.5cm}
+
+\begin{tikzpicture}
+\draw[fill=blue!20, draw=blue, thick] (0,0) circle (1.5cm);
+\node[font=\Large] at (0,0.3) {E-R};
+\node[font=\small] at (0,-0.3) {Modeling};
+\end{tikzpicture}
+\end{center}
+\end{frame}
+
+\end{document}
