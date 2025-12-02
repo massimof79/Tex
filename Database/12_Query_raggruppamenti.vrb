@@ -1,0 +1,31 @@
+\frametitle{Limitazione delle Tuple Risultato}
+\begin{block}{Vantaggi di LIMIT}
+\begin{itemize}
+    \item \textbf{Performance:} riduce il carico sul database
+    \item \textbf{Memoria:} trasferisce meno dati
+    \item \textbf{Usabilità:} migliora l'esperienza utente
+    \item \textbf{Testing:} utile per testare query su grandi dataset
+\end{itemize}
+\end{block}
+
+\vspace{0.3cm}
+
+\begin{lstlisting}
+-- Query di test su tabella grande
+SELECT * FROM log_eventi
+WHERE data >= '2024-01-01'
+LIMIT 100;
+\end{lstlisting}
+
+\vspace{0.3cm}
+
+\begin{center}
+\begin{tikzpicture}[scale=0.6]
+    \draw[fill=red!30] (0,0) rectangle (4,1);
+    \node at (2,0.5) {1.000.000 righe};
+    \draw[->,thick] (4.5,0.5) -- (5.5,0.5);
+    \node[above] at (5,0.7) {\tiny LIMIT 100};
+    \draw[fill=green!30] (6,0.3) rectangle (7,0.7);
+    \node[right] at (7.2,0.5) {\tiny 100 righe};
+\end{tikzpicture}
+\end{center}

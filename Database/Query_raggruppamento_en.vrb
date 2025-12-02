@@ -1,0 +1,31 @@
+\frametitle{Limiting Result Tuples}
+\begin{block}{Advantages of LIMIT}
+			\begin{itemize}
+				\item \textbf{Performance:} reduces database load
+				\item \textbf{Memory:} transfers less data
+				\item \textbf{Usability:} improves user experience
+				\item \textbf{Testing:} useful for testing queries on large datasets
+			\end{itemize}
+		\end{block}
+		
+		\vspace{0.3cm}
+		
+		\begin{lstlisting}
+			-- Test query on large table
+			SELECT * FROM event_logs
+			WHERE date >= '2024-01-01'
+			LIMIT 100;
+		\end{lstlisting}
+		
+		\vspace{0.3cm}
+		
+		\begin{center}
+			\begin{tikzpicture}[scale=0.6]
+				\draw[fill=red!30] (0,0) rectangle (4,1);
+				\node at (2,0.5) {1,000,000 rows};
+				\draw[->,thick] (4.5,0.5) -- (5.5,0.5);
+				\node[above] at (5,0.7) {\tiny LIMIT 100};
+				\draw[fill=green!30] (6,0.3) rectangle (7,0.7);
+				\node[right] at (7.2,0.5) {\tiny 100 rows};
+			\end{tikzpicture}
+		\end{center}
