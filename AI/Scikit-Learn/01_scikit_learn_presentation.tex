@@ -160,6 +160,62 @@ print(sklearn.__version__)
 \end{itemize}
 \end{frame}
 
+\begin{frame}{Cos'è un Estimator?}
+	\textbf{Definizione:} Un Estimator è il concetto fondamentale di Scikit-Learn
+	
+	\vspace{0.5cm}
+	
+	Un Estimator è \textbf{qualsiasi oggetto che può imparare dai dati} e implementa il metodo \texttt{fit()}.
+	
+	\vspace{0.5cm}
+	
+	\textbf{Tipologie di Estimator:}
+	\begin{itemize}
+		\item \textbf{Modelli di ML}: regressione lineare, alberi decisionali, SVM, reti neurali
+		\item \textbf{Transformer}: scalatori, encoder, PCA, selettori di feature
+		\item \textbf{Preprocessori}: normalizzatori, gestori di valori mancanti
+		\item \textbf{Pipeline}: combinazioni di più estimator
+	\end{itemize}
+	
+	\vspace{0.5cm}
+	
+	\textbf{Vantaggi dell'API unificata:}
+	\begin{itemize}
+		\item \textcolor{blue}{Uniformità}: stesso pattern per tutti gli algoritmi
+		\item \textcolor{blue}{Semplicità}: facile passare da un modello all'altro
+		\item \textcolor{blue}{Composabilità}: possibilità di combinare estimator
+	\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Esempio: Utilizzo degli Estimator}
+	\textbf{Tutti gli estimator seguono lo stesso pattern:}
+	
+	\vspace{0.3cm}
+	
+	\begin{lstlisting}[language=Python, basicstyle=\small\ttfamily]
+		from sklearn.linear_model import LinearRegression
+		from sklearn.tree import DecisionTreeClassifier
+		from sklearn.preprocessing import StandardScaler
+		
+		# Pattern identico per tutti gli estimator:
+		
+		# 1. Creazione
+		model = LinearRegression()
+		
+		# 2. Addestramento
+		model.fit(X_train, y_train)
+		
+		# 3. Utilizzo
+		predictions = model.predict(X_test)
+		accuratezza = model.score(X_test, y_test)
+	\end{lstlisting}
+	
+	\vspace{0.3cm}
+	
+	\textbf{Nota:} Cambiare algoritmo richiede solo la modifica della prima riga!
+\end{frame}
+
+
 % Slide 7: Dettaglio Metodi Principali
 \begin{frame}[fragile]{Metodi Principali: Dettaglio}
 
