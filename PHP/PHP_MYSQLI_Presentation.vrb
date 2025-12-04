@@ -1,0 +1,26 @@
+\frametitle{Prepared Statement con SELECT}
+\begin{lstlisting}[style=phpstyle]
+<?php
+// Preparazione SELECT
+$sql = "SELECT nome, cognome, email FROM studenti
+        WHERE anno = ?";
+$stmt = $conn->prepare($sql);
+
+// Binding parametro
+$anno = 2024;
+$stmt->bind_param("i", $anno);
+
+// Esecuzione
+$stmt->execute();
+
+// Ottenere i risultati
+$result = $stmt->get_result();
+
+while($row = $result->fetch_assoc()) {
+    echo $row["nome"] . " " . $row["cognome"];
+    echo "<br>";
+}
+
+$stmt->close();
+?>
+\end{lstlisting}
