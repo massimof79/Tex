@@ -1,128 +1,64 @@
-\frametitle{Snap: Sistema Pacchetti Canonical}
+\frametitle{Strumenti Utili per Amministrazione}
 \begin{columns}
 \column{0.5\textwidth}
-\textbf{Caratteristiche Snap:}
+\textbf{Monitoraggio sistema:}
 
-\begin{itemize}
-    \item Sviluppato da Canonical
-    \item Pacchetti autocontenuti
-    \item Aggiornamenti automatici
-    \item Rollback versioni precedenti
-    \item Canali: stable, candidate, beta, edge
-\end{itemize}
+\begin{lstlisting}[language=bash, basicstyle=\ttfamily\tiny, escapeinside={(*}{*)}]
+(*\#*) Processi
+htop
+top
+
+(*\#*) Disco
+df -h
+du -sh *
+ncdu
+
+(*\#*) Memoria
+free -h
+
+(*\#*) Rete
+iftop
+nethogs
+\end{lstlisting}
 
 \vspace{0.3cm}
 
-\textbf{Installazione snapd:}
+\textbf{Log:}
 
 \begin{lstlisting}[language=bash, basicstyle=\ttfamily\tiny, escapeinside={(*}{*)}]
-(*\#*) Ubuntu (preinstallato)
+(*\#*) Journalctl
+journalctl -xe
+journalctl -f
+journalctl -u servizio
 
-(*\#*) Debian
-sudo apt install snapd
-sudo systemctl enable --now snapd
-
-(*\#*) Fedora
-sudo dnf install snapd
-sudo ln -s /var/lib/snapd/snap /snap
+(*\#*) Log tradizionali
+/var/log/syslog
+/var/log/auth.log
 \end{lstlisting}
 
 \column{0.5\textwidth}
-\textbf{Comandi snap:}
+\textbf{Backup:}
 
 \begin{lstlisting}[language=bash, basicstyle=\ttfamily\tiny, escapeinside={(*}{*)}]
-(*\#*) Cercare snap
-snap find termine
+(*\#*) Timeshift (snapshot sistema)
+sudo apt install timeshift
 
-(*\#*) Installare snap
-sudo snap install nome-snap
+(*\#*) Rsync backup
+rsync -av /source/ /destination/
 
-(*\#*) Installare da canale specifico
-sudo snap install nome --edge
-
-(*\#*) Lista snap installati
-snap list
-
-(*\#*) Info snap
-snap info nome-snap
-
-(*\#*) Aggiornare snap
-sudo snap refresh nome-snap
-
-(*\#*) Rimuovere snap
-sudo snap remove nome-snap
-
-(*\#*) Disabilitare aggiornamenti auto
-sudo snap refresh --hold
+(*\#*) Compressione
+tar -czf backup.tar.gz /directory/
 \end{lstlisting}
 
-\vspace{0.2cm}
-
-\textbf{Confinamento:}
-\begin{itemize}
-    \item strict - Isolamento completo
-    \item classic - Accesso completo
-    \item devmode - Sviluppo
-\end{itemize}
-\end{columns}
-\end{frame>
-
-% Slide 25: AppImage
-\begin{frame}{AppImage: Applicazioni Portable}
-\begin{columns}
-\column{0.5\textwidth}
-\textbf{Cos'è AppImage?}
-
-\begin{itemize}
-    \item Formato applicazioni portatili
-    \item Un file eseguibile
-    \item Nessuna installazione richiesta
-    \item Tutte dipendenze incluse
-    \item Esecuzione diretta
-\end{itemize}
-
 \vspace{0.3cm}
 
-\textbf{Utilizzo:}
-
-\begin{enumerate}
-    \item Scaricare file .AppImage
-    \item Rendere eseguibile:
-    \begin{itemize}
-        \item GUI: Click destro → Proprietà → Permessi
-        \item CLI: \texttt{chmod +x file.AppImage}
-    \end{itemize}
-    \item Eseguire: \texttt{./file.AppImage}
-\end{enumerate}
-
-\column{0.5\textwidth}
-\textbf{Vantaggi:}
+\textbf{Utilities:}
 
 \begin{itemize}
-    \item Semplicità estrema
-    \item Nessuna modifica al sistema
-    \item Facilmente rimovibile
-    \item Versioni multiple convivono
-    \item Funziona su quasi tutte le distro
-\end{itemize}
-
-\vspace{0.3cm}
-
-\textbf{Svantaggi:}
-
-\begin{itemize}
-    \item File più grandi
-    \item Aggiornamenti manuali
-    \item Nessuna integrazione sistema
-    \item Possibile duplicazione librerie
-\end{itemize}
-
-\vspace{0.3cm}
-
-\textbf{AppImageLauncher:}
-\begin{itemize}
-    \item Integrazione nel sistema
-    \item Gestione AppImage
-    \item Creazione shortcut
+    \item \textbf{bleachbit} - Pulizia sistema
+    \item \textbf{gparted} - Partizionamento GUI
+    \item \textbf{synaptic} - Package manager GUI
+    \item \textbf{stacer} - Ottimizzazione sistema
+    \item \textbf{neofetch} - Info sistema
 \end{itemize}
 \end{columns}

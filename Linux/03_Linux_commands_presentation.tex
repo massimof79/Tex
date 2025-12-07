@@ -1,0 +1,1803 @@
+\documentclass[aspectratio=169]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows, positioning}
+
+% Tema
+\usetheme{Madrid}
+\usecolortheme{default}
+
+% Configurazione listing per codice
+\lstset{
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue},
+    commentstyle=\color{gray},
+    stringstyle=\color{red},
+    showstringspaces=false,
+    breaklines=true,
+    frame=single,
+    backgroundcolor=\color{lightgray!20}
+}
+
+% Informazioni documento
+\title[Comandi Linux]{I Comandi Fondamentali di Linux}
+\subtitle{Una guida pratica basata sull'approccio 80/20}
+\author{Basato su "The Linux Commands Handbook" di Flavio Copes}
+\institute{IIS Fermi Sacconi Ceci}
+\date{\today}
+
+\begin{document}
+
+% Slide 1: Titolo
+\frame{\titlepage}
+
+% Slide 2: Indice
+\begin{frame}{Indice dei Contenuti}
+\tableofcontents
+\end{frame}
+
+% Slide 3: Introduzione
+\section{Introduzione a Linux}
+
+\begin{frame}{Cos'è Linux?}
+\begin{itemize}
+    \item \textbf{Sistema Operativo} open source e libero
+    \item Nato nel 1991 in Finlandia da Linus Torvalds
+    \item Kernel del sistema GNU/Linux
+    \item Alimenta la maggior parte dei server di Internet
+    \item Base di Android
+    \item Disponibile in diverse \textbf{distribuzioni}: Debian, Ubuntu, Red Hat, Fedora, ecc.
+\end{itemize}
+
+\begin{center}
+\begin{tikzpicture}[scale=0.6]
+    \draw[fill=blue!20] (0,0) circle (2cm);
+    \node at (0,0) {\Large\textbf{Linux}};
+    \node at (0,-0.7) {Kernel};
+\end{tikzpicture}
+\end{center}
+\end{frame}
+
+% Slide 4: Filosofia Linux
+\begin{frame}{La Filosofia di Linux}
+\begin{block}{Libertà}
+\begin{itemize}
+    \item Libertà di fare qualsiasi cosa con il tuo computer
+    \item Nessuna azienda può dettare cosa puoi o non puoi fare
+    \item Codice sorgente completamente accessibile
+\end{itemize}
+\end{block}
+
+\begin{block}{Regola 80/20}
+Questo corso segue la regola 80/20:
+\begin{itemize}
+    \item Impara il 20\% dei comandi
+    \item Che userai l'80\% del tempo
+    \item Focus sui comandi essenziali
+\end{itemize}
+\end{block}
+\end{frame}
+
+% Slide 5: Shell
+\begin{frame}{Cos'è una Shell?}
+\begin{columns}
+\column{0.6\textwidth}
+\begin{itemize}
+    \item \textbf{Interprete di comandi} testuale
+    \item Interfaccia tra utente e sistema operativo
+    \item Permette di eseguire operazioni tramite comandi
+    \item Consente di creare \textbf{script} automatizzati
+    \item Più potente e veloce di una GUI
+\end{itemize}
+
+\column{0.4\textwidth}
+\begin{center}
+\begin{tikzpicture}
+    \draw[fill=green!20, rounded corners] (0,0) rectangle (3,2);
+    \node at (1.5,1.5) {\textbf{Shell}};
+    \node at (1.5,1) {\small Bash/Zsh/Fish};
+    \draw[->, thick] (1.5,0) -- (1.5,-0.5);
+    \draw[fill=blue!20, rounded corners] (0,-1.5) rectangle (3,-0.5);
+    \node at (1.5,-1) {\textbf{Kernel}};
+\end{tikzpicture}
+\end{center}
+\end{columns}
+\end{frame}
+
+% Slide 6: Tipi di Shell
+\begin{frame}{Principali Shell UNIX}
+\begin{itemize}
+    \item \textbf{sh} (Bourne Shell) - La shell originale di Steve Bourne
+    \item \textbf{Bash} (Bourne Again Shell) - Shell predefinita su molti sistemi Linux
+    \item \textbf{Zsh} (Z Shell) - Shell predefinita su macOS (da Catalina)
+    \item \textbf{Fish} (Friendly Interactive Shell) - Shell moderna e user-friendly
+    \item \textbf{Csh/Tcsh} - C Shell e TC Shell
+\end{itemize}
+
+\vspace{0.5cm}
+\begin{center}
+\fbox{\texttt{\$ echo \$SHELL}}
+\end{center}
+\end{frame}
+
+% Slide 7: man
+\section{Comandi di Base e Aiuto}
+
+\begin{frame}[fragile]{Il Comando \texttt{man}}
+\begin{block}{Manual Pages}
+Il primo comando da conoscere per imparare tutti gli altri!
+\end{block}
+
+\begin{lstlisting}[language=bash]
+$ man <comando>
+\end{lstlisting}
+
+\textbf{Esempio:}
+\begin{lstlisting}[language=bash]
+$ man ls
+\end{lstlisting}
+
+\begin{alertblock}{Alternativa Moderna: tldr}
+\texttt{tldr} (Too Long; Didn't Read) fornisce esempi pratici e concisi:
+\begin{lstlisting}[language=bash]
+$ tldr ls
+\end{lstlisting}
+\end{alertblock}
+\end{frame}
+
+% Slide 8: Navigazione - ls
+\section{Navigazione nel Filesystem}
+
+\begin{frame}[fragile]{Comando \texttt{ls} - Listare File}
+\textbf{Lista i file in una directory}
+
+\begin{lstlisting}[language=bash]
+$ ls                    # lista file directory corrente
+$ ls /bin              # lista file in /bin
+$ ls -l                # formato lungo (dettagliato)
+$ ls -a                # mostra anche file nascosti
+$ ls -al               # combinazione opzioni
+$ ls -lh               # dimensioni human-readable
+\end{lstlisting}
+
+\begin{block}{Output \texttt{ls -l}}
+\texttt{-rw-r--r--  1  user  group  1234  Dec 7 10:30  file.txt}
+\begin{itemize}
+    \item Permessi, link, proprietario, gruppo, dimensione, data, nome
+\end{itemize}
+\end{block}
+\end{frame}
+
+% Slide 9: cd
+\begin{frame}[fragile]{Comando \texttt{cd} - Cambiare Directory}
+\textbf{Change Directory - Naviga tra le cartelle}
+
+\begin{lstlisting}[language=bash]
+$ cd cartella          # entra nella cartella
+$ cd /etc              # percorso assoluto
+$ cd ..                # torna alla directory padre
+$ cd ~                 # vai alla home directory
+$ cd -                 # torna alla directory precedente
+\end{lstlisting}
+
+\begin{block}{Percorsi Speciali}
+\begin{itemize}
+    \item \texttt{.} = directory corrente
+    \item \texttt{..} = directory padre
+    \item \texttt{\textasciitilde} = home directory dell'utente
+    \item \texttt{/} = directory radice (root)
+\end{itemize}
+\end{block}
+\end{frame}
+
+% Slide 10: pwd
+\begin{frame}[fragile]{Comando \texttt{pwd} - Posizione Corrente}
+\textbf{Print Working Directory - Dove mi trovo?}
+
+\begin{lstlisting}[language=bash]
+$ pwd
+/home/username/documents
+\end{lstlisting}
+
+\begin{center}
+\begin{tikzpicture}[scale=0.8]
+    \node[draw, circle] (root) at (0,0) {/};
+    \node[draw, circle] (home) at (-2,-1.5) {home};
+    \node[draw, circle] (etc) at (2,-1.5) {etc};
+    \node[draw, circle, fill=yellow!30] (user) at (-2,-3) {user};
+    
+    \draw[-] (root) -- (home);
+    \draw[-] (root) -- (etc);
+    \draw[-] (home) -- (user);
+    
+    \node[below] at (user) {\small\texttt{pwd}: /home/user};
+\end{tikzpicture}
+\end{center}
+\end{frame}
+
+% Slide 11: Gestione Directory
+\section{Gestione File e Directory}
+
+\begin{frame}[fragile]{Comando \texttt{mkdir} - Creare Directory}
+\textbf{Make Directory - Crea nuove cartelle}
+
+\begin{lstlisting}[language=bash]
+$ mkdir cartella       # crea una cartella
+$ mkdir doc img src    # crea più cartelle
+$ mkdir -p path/to/dir # crea percorso completo
+\end{lstlisting}
+
+\begin{exampleblock}{Esempio con \texttt{-p}}
+\begin{lstlisting}[language=bash]
+$ mkdir -p progetti/web/frontend
+# Crea tutte le directory intermedie se non esistono
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+% Slide 12: rmdir
+\begin{frame}[fragile]{Comando \texttt{rmdir} - Eliminare Directory}
+\textbf{Remove Directory - Elimina cartelle vuote}
+
+\begin{lstlisting}[language=bash]
+$ rmdir cartella       # elimina cartella vuota
+$ rmdir dir1 dir2      # elimina più cartelle
+\end{lstlisting}
+
+\begin{alertblock}{Attenzione!}
+\texttt{rmdir} funziona solo con directory vuote. Per eliminare directory con contenuto:
+\begin{lstlisting}[language=bash]
+$ rm -rf cartella      # -r ricorsivo, -f forza
+\end{lstlisting}
+\textbf{Usare con cautela!} Nessuna conferma richiesta.
+\end{alertblock}
+\end{frame}
+
+% Slide 13: cp
+\begin{frame}[fragile]{Comando \texttt{cp} - Copiare File}
+\textbf{Copy - Copia file e directory}
+
+\begin{lstlisting}[language=bash]
+$ cp file1 file2           # copia file1 in file2
+$ cp file /path/to/dest    # copia in altra directory
+$ cp -r dir1 dir2          # copia directory ricorsivamente
+$ cp -i file dest          # chiede conferma prima di sovrascrivere
+$ cp -v file dest          # verbose, mostra cosa fa
+\end{lstlisting}
+
+\begin{block}{Opzioni Comuni}
+\begin{itemize}
+    \item \texttt{-r} o \texttt{-R}: ricorsivo (per directory)
+    \item \texttt{-i}: interattivo (chiede conferma)
+    \item \texttt{-v}: verbose (mostra dettagli)
+    \item \texttt{-p}: preserva attributi (permessi, timestamp)
+\end{itemize}
+\end{block}
+\end{frame}
+
+% Slide 14: mv
+\begin{frame}[fragile]{Comando \texttt{mv} - Spostare/Rinominare}
+\textbf{Move - Sposta o rinomina file e directory}
+
+\begin{lstlisting}[language=bash]
+$ mv file1 file2           # rinomina file1 in file2
+$ mv file /path/to/dest    # sposta file in altra directory
+$ mv -i file dest          # chiede conferma
+$ mv dir1 dir2             # rinomina/sposta directory
+\end{lstlisting}
+
+\begin{exampleblock}{Esempi}
+\begin{lstlisting}[language=bash]
+$ mv documento.txt backup/documento.txt
+$ mv vecchionome.txt nuovonome.txt
+$ mv *.txt documenti/      # sposta tutti i file .txt
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+% Slide 15: touch
+\begin{frame}[fragile]{Comando \texttt{touch} - Creare File}
+\textbf{Touch - Crea file vuoti o aggiorna timestamp}
+
+\begin{lstlisting}[language=bash]
+$ touch file.txt           # crea file vuoto
+$ touch file1 file2 file3  # crea più file
+$ touch existing.txt       # aggiorna data modifica
+\end{lstlisting}
+
+\begin{block}{Usi Comuni}
+\begin{itemize}
+    \item Creare file vuoti rapidamente
+    \item Aggiornare timestamp di file esistenti
+    \item Creare file placeholder per test
+\end{itemize}
+\end{block}
+\end{frame}
+
+% Slide 16: find
+\begin{frame}[fragile]{Comando \texttt{find} - Cercare File}
+\textbf{Find - Potente strumento di ricerca}
+
+\begin{lstlisting}[language=bash]
+$ find . -name "*.txt"         # cerca file .txt
+$ find /home -name documento   # cerca nella directory
+$ find . -type f               # solo file
+$ find . -type d               # solo directory
+$ find . -size +1M             # file > 1 MB
+$ find . -mtime -7             # modificati ultimi 7 giorni
+\end{lstlisting}
+
+\begin{exampleblock}{Esempio Complesso}
+\begin{lstlisting}[language=bash]
+$ find . -name "*.log" -type f -mtime +30 -delete
+# Trova ed elimina file .log più vecchi di 30 giorni
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+% Slide 17: ln
+\begin{frame}[fragile]{Comando \texttt{ln} - Link}
+\textbf{Link - Crea collegamenti tra file}
+
+\begin{lstlisting}[language=bash]
+$ ln file link             # hard link
+$ ln -s file link          # symbolic link (soft link)
+$ ln -s /path/to/file link # link simbolico
+\end{lstlisting}
+
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{Hard Link}
+\begin{itemize}
+    \item Stesso inode del file
+    \item Indistinguibile dall'originale
+    \item Rimane anche se l'originale è eliminato
+\end{itemize}
+
+\column{0.5\textwidth}
+\textbf{Symbolic Link}
+\begin{itemize}
+    \item Puntatore al file
+    \item Come un "collegamento"
+    \item Si rompe se l'originale è eliminato
+\end{itemize}
+\end{columns}
+\end{frame}
+
+% Slide 18: open
+\begin{frame}[fragile]{Comando \texttt{open} - Aprire File}
+\textbf{Open - Apre file con applicazione predefinita (macOS)}
+
+\begin{lstlisting}[language=bash]
+$ open file.txt            # apre con editor predefinito
+$ open image.jpg           # apre con visualizzatore immagini
+$ open -a "TextEdit" file  # apre con app specifica
+$ open .                   # apre directory corrente nel Finder
+\end{lstlisting}
+
+\begin{alertblock}{Linux}
+Su Linux, usare:
+\begin{lstlisting}[language=bash]
+$ xdg-open file.txt
+\end{lstlisting}
+\end{alertblock}
+\end{frame}
+
+% Slide 19: Compressione
+\section{Compressione e Archiviazione}
+
+\begin{frame}[fragile]{Comando \texttt{gzip} - Compressione}
+\textbf{Gzip - Comprime file}
+
+\begin{lstlisting}[language=bash]
+$ gzip file.txt            # crea file.txt.gz
+$ gzip -k file.txt         # mantiene file originale
+$ gzip -v file.txt         # verbose
+$ gzip -9 file.txt         # massima compressione
+\end{lstlisting}
+
+\vspace{0.3cm}
+\textbf{Decompressione:}
+\begin{lstlisting}[language=bash]
+$ gunzip file.txt.gz       # decomprime
+$ gzip -d file.txt.gz      # equivalente
+\end{lstlisting}
+\end{frame}
+
+% Slide 20: tar
+\begin{frame}[fragile]{Comando \texttt{tar} - Archiviazione}
+\textbf{Tape Archive - Crea e gestisce archivi}
+
+\begin{lstlisting}[language=bash]
+$ tar -cvf archive.tar dir/     # crea archivio
+$ tar -xvf archive.tar          # estrae archivio
+$ tar -czvf archive.tar.gz dir/ # comprimi con gzip
+$ tar -xzvf archive.tar.gz      # estrai .tar.gz
+$ tar -tf archive.tar           # lista contenuto
+\end{lstlisting}
+
+\begin{block}{Opzioni Principali}
+\begin{itemize}
+    \item \texttt{c}: create (crea)
+    \item \texttt{x}: extract (estrai)
+    \item \texttt{v}: verbose (dettagliato)
+    \item \texttt{f}: file (specifica nome file)
+    \item \texttt{z}: gzip (compressione)
+\end{itemize}
+\end{block}
+\end{frame}
+
+% Slide 21: alias
+\section{Personalizzazione e Utilità}
+
+\begin{frame}[fragile]{Comando \texttt{alias} - Scorciatoie}
+\textbf{Alias - Crea abbreviazioni per comandi}
+
+\begin{lstlisting}[language=bash]
+$ alias ll='ls -alh'           # crea alias
+$ alias gs='git status'
+$ alias ..='cd ..'
+$ alias                        # mostra tutti gli alias
+$ unalias ll                   # rimuove alias
+\end{lstlisting}
+
+\begin{exampleblock}{Alias Permanenti}
+Aggiungi nel file \texttt{\textasciitilde/.bashrc} o \texttt{\textasciitilde/.zshrc}:
+\begin{lstlisting}[language=bash]
+alias update='sudo apt update && sudo apt upgrade'
+alias cls='clear'
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+% Slide 22: Visualizzazione Testo
+\section{Visualizzazione e Manipolazione Testo}
+
+\begin{frame}[fragile]{Comando \texttt{cat} - Visualizzare File}
+\textbf{Concatenate - Visualizza e concatena file}
+
+\begin{lstlisting}[language=bash]
+$ cat file.txt             # visualizza contenuto
+$ cat file1 file2          # concatena file
+$ cat file1 file2 > nuovo  # concatena in nuovo file
+$ cat -n file.txt          # con numeri di riga
+\end{lstlisting}
+
+\begin{exampleblock}{Creare File al Volo}
+\begin{lstlisting}[language=bash]
+$ cat > newfile.txt
+Digita il testo...
+(premi Ctrl+D per terminare)
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+% Slide 23: less
+\begin{frame}[fragile]{Comando \texttt{less} - Visualizzatore Paginato}
+\textbf{Less - Visualizza file grandi con navigazione}
+
+\begin{lstlisting}[language=bash]
+$ less file.txt            # apre visualizzatore
+$ less -N file.txt         # con numeri di riga
+\end{lstlisting}
+
+\begin{block}{Navigazione in less}
+\begin{itemize}
+    \item \texttt{Spazio}: pagina successiva
+    \item \texttt{b}: pagina precedente
+    \item \texttt{/parola}: cerca parola
+    \item \texttt{n}: prossima occorrenza
+    \item \texttt{q}: esci
+    \item \texttt{G}: vai alla fine
+    \item \texttt{g}: vai all'inizio
+\end{itemize}
+\end{block}
+\end{frame}
+
+% Slide 24: tail
+\begin{frame}[fragile]{Comando \texttt{tail} - Fine File}
+\textbf{Tail - Mostra le ultime righe di un file}
+
+\begin{lstlisting}[language=bash]
+$ tail file.txt            # ultime 10 righe
+$ tail -n 20 file.txt      # ultime 20 righe
+$ tail -f logfile.log      # segue il file in tempo reale
+$ tail -f -n 50 log.txt    # segue con 50 righe iniziali
+\end{lstlisting}
+
+\begin{alertblock}{Monitoraggio Log}
+\texttt{tail -f} è essenziale per monitorare file di log in tempo reale:
+\begin{lstlisting}[language=bash]
+$ tail -f /var/log/syslog
+\end{lstlisting}
+\end{alertblock}
+\end{frame}
+
+% Slide 25: head
+\begin{frame}[fragile]{Comando \texttt{head} - Inizio File}
+\textbf{Head - Mostra le prime righe di un file}
+
+\begin{lstlisting}[language=bash]
+$ head file.txt            # prime 10 righe
+$ head -n 20 file.txt      # prime 20 righe
+$ head -n 5 *.txt          # prime 5 righe di più file
+\end{lstlisting}
+
+\begin{exampleblock}{Combinazione head e tail}
+\begin{lstlisting}[language=bash]
+$ head -n 100 file.txt | tail -n 10
+# Mostra le righe dalla 91 alla 100
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+% Slide 26: wc
+\begin{frame}[fragile]{Comando \texttt{wc} - Contare}
+\textbf{Word Count - Conta righe, parole e caratteri}
+
+\begin{lstlisting}[language=bash]
+$ wc file.txt              # righe parole caratteri
+$ wc -l file.txt           # solo righe
+$ wc -w file.txt           # solo parole
+$ wc -c file.txt           # solo byte
+$ wc -m file.txt           # solo caratteri
+\end{lstlisting}
+
+\begin{exampleblock}{Output}
+\begin{lstlisting}[language=bash]
+$ wc document.txt
+  142  1024  7891  document.txt
+  |     |     |
+righe parole byte
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+% Slide 27: grep
+\begin{frame}[fragile]{Comando \texttt{grep} - Cercare Testo}
+\textbf{Global Regular Expression Print - Cerca pattern}
+
+\begin{lstlisting}[language=bash]
+$ grep "parola" file.txt       # cerca parola
+$ grep -i "parola" file.txt    # case insensitive
+$ grep -r "pattern" dir/       # ricorsivo
+$ grep -n "text" file.txt      # con numeri riga
+$ grep -v "pattern" file.txt   # righe NON corrispondenti
+$ grep -c "word" file.txt      # conta occorrenze
+\end{lstlisting}
+
+\begin{exampleblock}{Con Pipe}
+\begin{lstlisting}[language=bash]
+$ ps aux | grep firefox
+$ ls -l | grep "\.txt$"
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+% Slide 28: sort
+\begin{frame}[fragile]{Comando \texttt{sort} - Ordinare}
+\textbf{Sort - Ordina righe di testo}
+
+\begin{lstlisting}[language=bash]
+$ sort file.txt            # ordina alfabeticamente
+$ sort -r file.txt         # ordine inverso
+$ sort -n file.txt         # ordine numerico
+$ sort -u file.txt         # rimuove duplicati
+$ sort -k 2 file.txt       # ordina per colonna 2
+\end{lstlisting}
+
+\begin{exampleblock}{Esempio Pratico}
+\begin{lstlisting}[language=bash]
+$ du -h * | sort -h        # ordina per dimensione
+$ ls -l | sort -k 5 -n     # ordina per dimensione file
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+% Slide 29: uniq
+\begin{frame}[fragile]{Comando \texttt{uniq} - Righe Uniche}
+\textbf{Unique - Rimuove o conta righe duplicate}
+
+\begin{lstlisting}[language=bash]
+$ uniq file.txt            # rimuove duplicati adiacenti
+$ uniq -c file.txt         # conta occorrenze
+$ uniq -d file.txt         # mostra solo duplicati
+$ uniq -u file.txt         # mostra solo righe uniche
+\end{lstlisting}
+
+\begin{alertblock}{Nota Importante}
+\texttt{uniq} funziona solo su righe adiacenti! Usare con \texttt{sort}:
+\begin{lstlisting}[language=bash]
+$ sort file.txt | uniq
+$ sort file.txt | uniq -c | sort -nr  # più frequenti
+\end{lstlisting}
+\end{alertblock}
+\end{frame}
+
+% Slide 30: diff
+\begin{frame}[fragile]{Comando \texttt{diff} - Differenze}
+\textbf{Diff - Confronta file}
+
+\begin{lstlisting}[language=bash]
+$ diff file1.txt file2.txt     # mostra differenze
+$ diff -u file1 file2          # formato unified (Git)
+$ diff -y file1 file2          # side by side
+$ diff -r dir1/ dir2/          # ricorsivo per directory
+$ diff -q dir1/ dir2/          # solo nomi file diversi
+\end{lstlisting}
+
+\begin{block}{Simboli Output}
+\begin{itemize}
+    \item \texttt{<}: riga presente solo nel primo file
+    \item \texttt{>}: riga presente solo nel secondo file
+    \item \texttt{a}: aggiunta
+    \item \texttt{c}: cambiamento
+    \item \texttt{d}: cancellazione
+\end{itemize}
+\end{block}
+\end{frame}
+
+% Slide 31: echo
+\begin{frame}[fragile]{Comando \texttt{echo} - Stampare Testo}
+\textbf{Echo - Stampa argomenti sull'output}
+
+\begin{lstlisting}[language=bash]
+$ echo "Hello World"           # stampa testo
+$ echo "text" > file.txt       # scrive in file (sovrascrive)
+$ echo "text" >> file.txt      # aggiunge a file
+$ echo $HOME                   # stampa variabile ambiente
+$ echo $(pwd)                  # esegue comando
+$ echo {1..10}                 # espansione range
+\end{lstlisting}
+
+\begin{exampleblock}{Utilizzi Creativi}
+\begin{lstlisting}[language=bash]
+$ echo *.txt                   # espansione wildcard
+$ echo "PATH is $PATH"         # interpolazione variabili
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+% Slide 32: Permessi - chown
+\section{Permessi e Proprietà}
+
+\begin{frame}[fragile]{Comando \texttt{chown} - Cambiare Proprietario}
+\textbf{Change Owner - Cambia proprietario di file/directory}
+
+\begin{lstlisting}[language=bash]
+$ chown user file.txt          # cambia proprietario
+$ chown user:group file.txt    # cambia owner e group
+$ chown -R user dir/           # ricorsivo
+$ sudo chown root file.txt     # richiede permessi
+\end{lstlisting}
+
+\begin{block}{Uso Comune}
+Spesso necessario dopo aver copiato file come root o da altri utenti.
+\begin{lstlisting}[language=bash]
+$ sudo chown $USER:$USER file.txt
+\end{lstlisting}
+\end{block}
+\end{frame}
+
+% Slide 33: chmod
+\begin{frame}[fragile]{Comando \texttt{chmod} - Permessi File (1/2)}
+\textbf{Change Mode - Modifica permessi di accesso}
+
+\begin{block}{Permessi Unix}
+Tre tipi di permessi per tre categorie:
+\begin{itemize}
+    \item \textbf{r} (read): lettura (4)
+    \item \textbf{w} (write): scrittura (2)
+    \item \textbf{x} (execute): esecuzione (1)
+\end{itemize}
+
+Tre categorie:
+\begin{itemize}
+    \item \textbf{u} (user): proprietario
+    \item \textbf{g} (group): gruppo
+    \item \textbf{o} (others): altri
+    \item \textbf{a} (all): tutti
+\end{itemize}
+\end{block}
+\end{frame}
+
+% Slide 34: chmod parte 2
+\begin{frame}[fragile]{Comando \texttt{chmod} - Permessi File (2/2)}
+
+\textbf{Modalità Simbolica:}
+\begin{lstlisting}[language=bash]
+$ chmod u+x script.sh          # aggiungi esecuzione owner
+$ chmod g-w file.txt           # rimuovi scrittura group
+$ chmod a+r file.txt           # aggiungi lettura tutti
+$ chmod o-rwx file.txt         # rimuovi tutti per others
+\end{lstlisting}
+
+\textbf{Modalità Numerica:}
+\begin{lstlisting}[language=bash]
+$ chmod 755 script.sh          # rwxr-xr-x
+$ chmod 644 file.txt           # rw-r--r--
+$ chmod 777 file.txt           # rwxrwxrwx (sconsigliato!)
+\end{lstlisting}
+
+\begin{center}
+\small
+\texttt{755} = \texttt{7} (rwx) + \texttt{5} (r-x) + \texttt{5} (r-x)
+\end{center}
+\end{frame}
+
+% Slide 35: umask
+\begin{frame}[fragile]{Comando \texttt{umask} - Permessi Predefiniti}
+\textbf{Umask - Imposta permessi predefiniti}
+
+\begin{lstlisting}[language=bash]
+$ umask                    # mostra umask corrente
+0022
+$ umask -S                 # formato simbolico
+u=rwx,g=rx,o=rx
+$ umask 002                # imposta nuova umask
+\end{lstlisting}
+
+\begin{block}{Valori Umask Comuni}
+\begin{itemize}
+    \item \texttt{0022}: file creati con rw-r--r-- (644)
+    \item \texttt{0002}: file creati con rw-rw-r-- (664)
+    \item \texttt{0077}: file creati con rw------- (600)
+\end{itemize}
+\end{block}
+\end{frame}
+
+% Slide 36: Spazio Disco
+\section{Gestione Spazio Disco}
+
+\begin{frame}[fragile]{Comando \texttt{du} - Uso Disco}
+\textbf{Disk Usage - Calcola spazio occupato}
+
+\begin{lstlisting}[language=bash]
+$ du                       # spazio directory corrente
+$ du -h                    # human readable (KB, MB, GB)
+$ du -sh *                 # sommario di ogni elemento
+$ du -sh dir/              # spazio totale directory
+$ du -ah                   # include file singoli
+$ du -h | sort -h          # ordina per dimensione
+\end{lstlisting}
+
+\begin{exampleblock}{Top 10 Directory Più Grandi}
+\begin{lstlisting}[language=bash]
+$ du -h /home | sort -hr | head -10
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+% Slide 37: df
+\begin{frame}[fragile]{Comando \texttt{df} - Spazio Filesystem}
+\textbf{Disk Free - Mostra spazio disponibile su filesystem}
+
+\begin{lstlisting}[language=bash]
+$ df                       # mostra tutti i filesystem
+$ df -h                    # formato human readable
+$ df -h /home              # spazio su filesystem specifico
+$ df -T                    # mostra tipo filesystem
+\end{lstlisting}
+
+\begin{block}{Output Tipico}
+\begin{center}
+\small
+\begin{tabular}{lrrrrr}
+Filesystem & Size & Used & Avail & Use\% & Mounted \\
+/dev/sda1 & 50G & 35G & 13G & 73\% & / \\
+/dev/sdb1 & 200G & 120G & 72G & 63\% & /home \\
+\end{tabular}
+\end{center}
+\end{block}
+\end{frame}
+
+% Slide 38: Utilità Path
+\section{Utilità di Path}
+
+\begin{frame}[fragile]{Comandi \texttt{basename} e \texttt{dirname}}
+
+\textbf{basename - Estrae nome file da path:}
+\begin{lstlisting}[language=bash]
+$ basename /usr/local/bin/script.sh
+script.sh
+$ basename /home/user/
+user
+\end{lstlisting}
+
+\vspace{0.5cm}
+\textbf{dirname - Estrae directory da path:}
+\begin{lstlisting}[language=bash]
+$ dirname /usr/local/bin/script.sh
+/usr/local/bin
+$ dirname /home/user/file.txt
+/home/user
+\end{lstlisting}
+\end{frame}
+
+% Slide 39: Gestione Processi
+\section{Gestione dei Processi}
+
+\begin{frame}[fragile]{Comando \texttt{ps} - Processi in Esecuzione}
+\textbf{Process Status - Mostra processi attivi}
+
+\begin{lstlisting}[language=bash]
+$ ps                       # processi utente corrente
+$ ps aux                   # tutti i processi
+$ ps axww                  # con comandi completi
+$ ps aux | grep firefox    # cerca processo specifico
+$ ps -u username           # processi di un utente
+\end{lstlisting}
+
+\begin{block}{Colonne Importanti}
+\begin{itemize}
+    \item \textbf{PID}: Process ID (identificatore)
+    \item \textbf{USER}: utente proprietario
+    \item \textbf{\%CPU}: utilizzo CPU
+    \item \textbf{\%MEM}: utilizzo memoria
+    \item \textbf{STAT}: stato (R=running, S=sleeping, Z=zombie)
+    \item \textbf{COMMAND}: comando eseguito
+\end{itemize}
+\end{block}
+\end{frame}
+
+% Slide 40: top
+\begin{frame}[fragile]{Comando \texttt{top} - Monitor Processi}
+\textbf{Top - Monitor interattivo processi in tempo reale}
+
+\begin{lstlisting}[language=bash]
+$ top                      # avvia monitor
+$ top -o mem               # ordina per memoria
+$ top -n 1                 # un refresh e poi esci
+\end{lstlisting}
+
+\begin{block}{Comandi Interattivi in top}
+\begin{itemize}
+    \item \texttt{q}: esci
+    \item \texttt{k}: kill processo (chiede PID)
+    \item \texttt{M}: ordina per memoria
+    \item \texttt{P}: ordina per CPU
+    \item \texttt{1}: mostra ogni CPU
+    \item \texttt{h}: help
+\end{itemize}
+\end{block}
+\end{frame}
+
+% Slide 41: kill
+\begin{frame}[fragile]{Comando \texttt{kill} - Terminare Processi}
+\textbf{Kill - Invia segnali ai processi}
+
+\begin{lstlisting}[language=bash]
+$ kill PID                 # termina processo (SIGTERM)
+$ kill -9 PID              # termina forzatamente (SIGKILL)
+$ kill -15 PID             # SIGTERM (default)
+$ kill -l                  # lista tutti i segnali
+\end{lstlisting}
+
+\begin{block}{Segnali Principali}
+\begin{itemize}
+    \item \textbf{SIGTERM (15)}: terminazione gentile
+    \item \textbf{SIGKILL (9)}: terminazione immediata
+    \item \textbf{SIGHUP (1)}: ricarica configurazione
+    \item \textbf{SIGINT (2)}: interruzione (come Ctrl+C)
+    \item \textbf{SIGSTOP}: pausa processo
+    \item \textbf{SIGCONT}: riprendi processo
+\end{itemize}
+\end{block}
+\end{frame}
+
+% Slide 42: killall
+\begin{frame}[fragile]{Comando \texttt{killall} - Kill per Nome}
+\textbf{Killall - Termina processi per nome}
+
+\begin{lstlisting}[language=bash]
+$ killall firefox          # termina tutti i Firefox
+$ killall -9 chrome        # termina forzatamente Chrome
+$ killall -u username      # termina processi di un utente
+$ killall -i process       # chiede conferma
+\end{lstlisting}
+
+\begin{alertblock}{Attenzione!}
+\texttt{killall} termina TUTTI i processi con quel nome. Usare con cautela!
+\end{alertblock}
+\end{frame}
+
+% Slide 43: jobs bg fg
+\begin{frame}[fragile]{Comandi \texttt{jobs}, \texttt{bg}, \texttt{fg}}
+\textbf{Gestione Job in Background e Foreground}
+
+\begin{lstlisting}[language=bash]
+$ command &                # esegui in background
+$ jobs                     # lista job attivi
+$ fg                       # porta ultimo job in foreground
+$ fg %1                    # porta job 1 in foreground
+$ bg                       # riprendi job in background
+$ bg %2                    # riprendi job 2 in background
+\end{lstlisting}
+
+\begin{block}{Control Keys}
+\begin{itemize}
+    \item \texttt{Ctrl+Z}: sospendi job corrente
+    \item \texttt{Ctrl+C}: termina job corrente
+\end{itemize}
+\end{block}
+\end{frame}
+
+% Slide 44: type which
+\begin{frame}[fragile]{Comandi \texttt{type} e \texttt{which}}
+
+\textbf{type - Tipo di comando:}
+\begin{lstlisting}[language=bash]
+$ type ls
+ls is aliased to `ls --color=auto'
+$ type cd
+cd is a shell builtin
+$ type python
+python is /usr/bin/python
+\end{lstlisting}
+
+\textbf{which - Percorso eseguibile:}
+\begin{lstlisting}[language=bash]
+$ which python
+/usr/bin/python
+$ which -a python          # mostra tutti i path
+\end{lstlisting}
+\end{frame}
+
+% Slide 45: nohup xargs
+\begin{frame}[fragile]{Comandi \texttt{nohup} e \texttt{xargs}}
+
+\textbf{nohup - Esegui comando ignorando hangup:}
+\begin{lstlisting}[language=bash]
+$ nohup command &          # continua anche dopo logout
+$ nohup ./script.sh &
+# output in nohup.out
+\end{lstlisting}
+
+\textbf{xargs - Costruisci ed esegui comandi:}
+\begin{lstlisting}[language=bash]
+$ find . -name "*.tmp" | xargs rm
+$ echo "file1 file2" | xargs cat
+$ ls | xargs -I {} echo "File: {}"
+\end{lstlisting}
+\end{frame}
+
+% Slide 46: Editor di Testo
+\section{Editor di Testo}
+
+\begin{frame}[fragile]{Editor di Testo in Linux}
+
+\begin{columns}
+\column{0.33\textwidth}
+\textbf{vim}
+\begin{lstlisting}[language=bash]
+$ vim file.txt
+\end{lstlisting}
+\begin{itemize}
+    \item Molto potente
+    \item Curva apprendimento ripida
+    \item Modalità comando/inserimento
+\end{itemize}
+
+\column{0.33\textwidth}
+\textbf{nano}
+\begin{lstlisting}[language=bash]
+$ nano file.txt
+\end{lstlisting}
+\begin{itemize}
+    \item User-friendly
+    \item Comandi visibili
+    \item Ideale per principianti
+\end{itemize}
+
+\column{0.33\textwidth}
+\textbf{emacs}
+\begin{lstlisting}[language=bash]
+$ emacs file.txt
+\end{lstlisting}
+\begin{itemize}
+    \item Estremamente potente
+    \item Personalizzabile
+    \item Curva apprendimento
+\end{itemize}
+\end{columns}
+\end{frame}
+
+% Slide 47: vim basics
+\begin{frame}[fragile]{Vim - Comandi Essenziali}
+
+\begin{block}{Modalità}
+\begin{itemize}
+    \item \textbf{Normale}: navigazione e comandi
+    \item \textbf{Inserimento}: digitare testo (tasto \texttt{i})
+    \item \textbf{Visuale}: selezione testo (tasto \texttt{v})
+\end{itemize}
+\end{block}
+
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{Comandi Base:}
+\begin{itemize}
+    \item \texttt{i}: modalità inserimento
+    \item \texttt{ESC}: modalità normale
+    \item \texttt{:w}: salva
+    \item \texttt{:q}: esci
+    \item \texttt{:wq}: salva ed esci
+    \item \texttt{:q!}: esci senza salvare
+\end{itemize}
+
+\column{0.5\textwidth}
+\textbf{Navigazione:}
+\begin{itemize}
+    \item \texttt{h,j,k,l}: sinistra, giù, su, destra
+    \item \texttt{dd}: cancella riga
+    \item \texttt{yy}: copia riga
+    \item \texttt{p}: incolla
+    \item \texttt{u}: undo
+    \item \texttt{/text}: cerca
+\end{itemize}
+\end{columns}
+\end{frame}
+
+% Slide 48: nano
+\begin{frame}[fragile]{Nano - Editor Semplice}
+
+\begin{lstlisting}[language=bash]
+$ nano filename.txt
+\end{lstlisting}
+
+\begin{block}{Comandi Principali (^ = Ctrl)}
+\begin{itemize}
+    \item \texttt{Ctrl+O}: salva file (WriteOut)
+    \item \texttt{Ctrl+X}: esci dall'editor
+    \item \texttt{Ctrl+K}: taglia riga
+    \item \texttt{Ctrl+U}: incolla
+    \item \texttt{Ctrl+W}: cerca testo
+    \item \texttt{Ctrl+G}: mostra help
+    \item \texttt{Alt+/}: vai alla fine del file
+\end{itemize}
+\end{block}
+
+I comandi sono sempre visibili in basso allo schermo!
+\end{frame}
+
+% Slide 49: Utenti
+\section{Gestione Utenti}
+
+\begin{frame}[fragile]{Comandi Utente - Base}
+
+\textbf{whoami - Chi sono?}
+\begin{lstlisting}[language=bash]
+$ whoami
+username
+\end{lstlisting}
+
+\textbf{who - Chi è connesso?}
+\begin{lstlisting}[language=bash]
+$ who
+user1    pts/0    2024-12-07 10:30
+user2    pts/1    2024-12-07 11:15
+\end{lstlisting}
+
+\textbf{id - Informazioni utente}
+\begin{lstlisting}[language=bash]
+$ id
+uid=1000(user) gid=1000(user) groups=1000(user),27(sudo)
+\end{lstlisting}
+\end{frame}
+
+% Slide 50: su sudo
+\begin{frame}[fragile]{Comandi \texttt{su} e \texttt{sudo}}
+
+\textbf{su - Switch User:}
+\begin{lstlisting}[language=bash]
+$ su                       # diventa root (chiede password root)
+$ su username              # diventa altro utente
+$ su -                     # diventa root con ambiente
+\end{lstlisting}
+
+\textbf{sudo - Execute as SuperUser:}
+\begin{lstlisting}[language=bash]
+$ sudo command             # esegui comando come root
+$ sudo -i                  # shell root interattiva
+$ sudo -u user command     # esegui come altro utente
+$ sudo !!                  # riesegui ultimo comando come root
+\end{lstlisting}
+
+\begin{alertblock}{Sicurezza}
+Usa sempre \texttt{sudo} invece di \texttt{su -} quando possibile!
+\end{alertblock}
+\end{frame}
+
+% Slide 51: passwd
+\begin{frame}[fragile]{Comando \texttt{passwd} - Password}
+\textbf{Password - Cambia password utente}
+
+\begin{lstlisting}[language=bash]
+$ passwd                   # cambia la tua password
+$ sudo passwd username     # cambia password altro utente
+$ sudo passwd -l username  # blocca account
+$ sudo passwd -u username  # sblocca account
+$ sudo passwd -e username  # forza cambio al prossimo login
+\end{lstlisting}
+
+\begin{block}{Buone Pratiche}
+\begin{itemize}
+    \item Password lunghe (min 12 caratteri)
+    \item Mix di maiuscole, minuscole, numeri, simboli
+    \item Non riutilizzare password
+    \item Cambiare periodicamente
+\end{itemize}
+\end{block}
+\end{frame}
+
+% Slide 52: Networking
+\section{Comandi di Rete}
+
+\begin{frame}[fragile]{Comando \texttt{ping} - Test Connettività}
+\textbf{Ping - Verifica connessione di rete}
+
+\begin{lstlisting}[language=bash]
+$ ping google.com          # ping continuo
+$ ping -c 4 google.com     # 4 pacchetti e stop
+$ ping -i 2 host           # intervallo 2 secondi
+$ ping -W 1 host           # timeout 1 secondo
+\end{lstlisting}
+
+\begin{exampleblock}{Output Tipico}
+\begin{lstlisting}
+64 bytes from google.com: icmp_seq=1 ttl=117 time=12.4 ms
+64 bytes from google.com: icmp_seq=2 ttl=117 time=11.8 ms
+--- google.com ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss
+round-trip min/avg/max = 11.8/12.1/12.4 ms
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+% Slide 53: traceroute
+\begin{frame}[fragile]{Comando \texttt{traceroute} - Percorso Rete}
+\textbf{Traceroute - Traccia percorso pacchetti}
+
+\begin{lstlisting}[language=bash]
+$ traceroute google.com    # mostra tutti gli hop
+$ traceroute -m 15 host    # max 15 hop
+$ traceroute -n host       # non risolvere nomi
+\end{lstlisting}
+
+\begin{block}{Utilizzo}
+\begin{itemize}
+    \item Diagnostica problemi di rete
+    \item Identifica dove avviene il ritardo
+    \item Mostra il percorso attraverso router
+    \item Utile per troubleshooting
+\end{itemize}
+\end{block}
+
+Su alcuni sistemi Linux: \texttt{tracepath}
+\end{frame}
+
+% Slide 54: Altri comandi rete
+\begin{frame}[fragile]{Altri Comandi di Rete}
+
+\textbf{ifconfig/ip - Configurazione interfacce:}
+\begin{lstlisting}[language=bash]
+$ ifconfig                 # mostra interfacce (deprecato)
+$ ip addr show             # comando moderno
+$ ip link show             # mostra solo link
+\end{lstlisting}
+
+\textbf{netstat/ss - Connessioni:}
+\begin{lstlisting}[language=bash]
+$ netstat -tuln            # connessioni TCP/UDP
+$ ss -tuln                 # comando moderno
+$ ss -t                    # solo TCP
+\end{lstlisting}
+
+\textbf{wget/curl - Download:}
+\begin{lstlisting}[language=bash]
+$ wget http://example.com/file.zip
+$ curl -O http://example.com/file.zip
+\end{lstlisting}
+\end{frame}
+
+% Slide 55: Variabili Ambiente
+\section{Variabili d'Ambiente}
+
+\begin{frame}[fragile]{Comando \texttt{export} - Variabili Ambiente}
+\textbf{Export - Esporta variabili all'ambiente}
+
+\begin{lstlisting}[language=bash]
+$ export VAR="value"       # crea/esporta variabile
+$ export PATH=$PATH:/new/path  # aggiunge a PATH
+$ export                   # lista tutte le variabili
+$ export -n VAR            # rimuove export
+\end{lstlisting}
+
+\begin{block}{Variabili Comuni}
+\begin{itemize}
+    \item \texttt{PATH}: percorsi eseguibili
+    \item \texttt{HOME}: directory home utente
+    \item \texttt{USER}: nome utente
+    \item \texttt{SHELL}: shell corrente
+    \item \texttt{PWD}: directory corrente
+    \item \texttt{EDITOR}: editor predefinito
+\end{itemize}
+\end{block}
+\end{frame}
+
+% Slide 56: env printenv
+\begin{frame}[fragile]{Comandi \texttt{env} e \texttt{printenv}}
+
+\textbf{env - Esegui con ambiente specifico:}
+\begin{lstlisting}[language=bash]
+$ env                      # mostra tutte le variabili
+$ env VAR=value command    # esegui con variabile
+$ env -i command           # esegui con ambiente pulito
+$ env -u VAR command       # rimuovi variabile
+\end{lstlisting}
+
+\textbf{printenv - Stampa variabili:}
+\begin{lstlisting}[language=bash]
+$ printenv                 # tutte le variabili
+$ printenv PATH            # solo PATH
+$ printenv HOME USER       # più variabili
+\end{lstlisting}
+\end{frame}
+
+% Slide 57: Variabili - Esempi
+\begin{frame}[fragile]{Variabili d'Ambiente - Esempi}
+
+\textbf{Impostare Editor Predefinito:}
+\begin{lstlisting}[language=bash]
+$ export EDITOR=nano
+$ export VISUAL=nano
+\end{lstlisting}
+
+\textbf{Modificare PATH:}
+\begin{lstlisting}[language=bash]
+$ export PATH=$PATH:$HOME/bin
+$ export PATH="/usr/local/bin:$PATH"
+\end{lstlisting}
+
+\textbf{Variabili Personalizzate:}
+\begin{lstlisting}[language=bash]
+$ export API_KEY="abc123"
+$ export DB_HOST="localhost"
+$ echo $API_KEY
+\end{lstlisting}
+\end{frame}
+
+% Slide 58: File Configurazione
+\begin{frame}[fragile]{File di Configurazione Shell}
+
+\begin{block}{Bash}
+\begin{itemize}
+    \item \texttt{\textasciitilde/.bashrc}: configurazione shell interattiva
+    \item \texttt{\textasciitilde/.bash\_profile}: configurazione login
+    \item \texttt{\textasciitilde/.bash\_aliases}: alias personalizzati
+    \item \texttt{/etc/bash.bashrc}: configurazione sistema
+\end{itemize}
+\end{block}
+
+\begin{block}{Zsh}
+\begin{itemize}
+    \item \texttt{\textasciitilde/.zshrc}: configurazione principale
+    \item \texttt{\textasciitilde/.zshenv}: variabili d'ambiente
+    \item \texttt{\textasciitilde/.zprofile}: configurazione login
+\end{itemize}
+\end{block}
+
+\textbf{Ricaricare configurazione:}
+\begin{lstlisting}[language=bash]
+$ source ~/.bashrc
+\end{lstlisting}
+\end{frame}
+
+% Slide 59: crontab
+\section{Automazione}
+
+\begin{frame}[fragile]{Comando \texttt{crontab} - Job Schedulati}
+\textbf{Crontab - Pianifica esecuzione automatica comandi}
+
+\begin{lstlisting}[language=bash]
+$ crontab -l               # lista cron job
+$ crontab -e               # modifica cron job
+$ crontab -r               # rimuovi tutti i job
+$ crontab -u user -e       # edita per altro utente
+\end{lstlisting}
+
+\begin{block}{Sintassi Crontab}
+\begin{center}
+\texttt{minuto ora giorno mese giorno\_sett comando}
+\end{center}
+\begin{itemize}
+    \item \texttt{*}: ogni valore
+    \item \texttt{*/5}: ogni 5 unità
+    \item \texttt{1,5,9}: valori specifici
+    \item \texttt{1-5}: range di valori
+\end{itemize}
+\end{block}
+\end{frame}
+
+% Slide 60: crontab esempi
+\begin{frame}[fragile]{Crontab - Esempi Pratici}
+
+\begin{lstlisting}[language=bash]
+# Ogni giorno alle 2:30 AM
+30 2 * * * /path/to/backup.sh
+
+# Ogni ora
+0 * * * * /path/to/script.sh
+
+# Ogni 15 minuti
+*/15 * * * * /path/to/check.sh
+
+# Ogni lunedì alle 9:00
+0 9 * * 1 /path/to/weekly.sh
+
+# Primo giorno del mese alle 6:00
+0 6 1 * * /path/to/monthly.sh
+
+# Ogni 12 ore
+0 */12 * * * /path/to/script.sh
+\end{lstlisting}
+
+Usa: \url{https://crontab-generator.org/}
+\end{frame}
+
+% Slide 61: Utilità Sistema
+\section{Comandi di Sistema}
+
+\begin{frame}[fragile]{Comando \texttt{uname} - Info Sistema}
+\textbf{Unix Name - Informazioni sul sistema}
+
+\begin{lstlisting}[language=bash]
+$ uname                    # nome kernel
+$ uname -a                 # tutte le info
+$ uname -s                 # nome sistema operativo
+$ uname -r                 # release kernel
+$ uname -m                 # architettura hardware
+$ uname -p                 # tipo processore
+$ uname -n                 # nome host
+\end{lstlisting}
+
+\begin{exampleblock}{Output Esempio}
+\begin{lstlisting}
+$ uname -a
+Linux hostname 5.15.0-56 x86_64 GNU/Linux
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+% Slide 62: history
+\begin{frame}[fragile]{Comando \texttt{history} - Cronologia}
+\textbf{History - Cronologia comandi eseguiti}
+
+\begin{lstlisting}[language=bash]
+$ history                  # mostra cronologia
+$ history 20               # ultimi 20 comandi
+$ !123                     # esegui comando numero 123
+$ !!                       # ripeti ultimo comando
+$ !ping                    # ultimo comando che inizia con ping
+$ history -c               # pulisci cronologia
+\end{lstlisting}
+
+\begin{block}{Ricerca Incrementale}
+\begin{itemize}
+    \item \texttt{Ctrl+R}: ricerca nella cronologia
+    \item Digita parte del comando
+    \item \texttt{Ctrl+R} ancora per precedente
+    \item \texttt{Enter} per eseguire
+\end{itemize}
+\end{block}
+\end{frame}
+
+% Slide 63: clear
+\begin{frame}[fragile]{Comando \texttt{clear} - Pulire Schermo}
+\textbf{Clear - Pulisce il terminale}
+
+\begin{lstlisting}[language=bash]
+$ clear
+\end{lstlisting}
+
+\textbf{Scorciatoia da tastiera:}
+\begin{center}
+\Large
+\texttt{Ctrl + L}
+\end{center}
+
+\begin{block}{Altri Modi per "Pulire"}
+\begin{lstlisting}[language=bash]
+$ reset                    # reset completo terminale
+$ tput clear               # alternativa a clear
+\end{lstlisting}
+\end{block}
+\end{frame}
+
+% Slide 64: Redirezione
+\section{Redirezione e Pipe}
+
+\begin{frame}[fragile]{Redirezione Input/Output}
+
+\textbf{Output Redirection:}
+\begin{lstlisting}[language=bash]
+$ command > file.txt       # sovrascrive file
+$ command >> file.txt      # aggiunge a file
+$ command 2> error.log     # solo errori
+$ command &> all.log       # output ed errori
+$ command > /dev/null      # scarta output
+\end{lstlisting}
+
+\textbf{Input Redirection:}
+\begin{lstlisting}[language=bash]
+$ command < input.txt      # legge da file
+$ command << EOF           # heredoc
+Testo multiplo
+EOF
+\end{lstlisting}
+\end{frame}
+
+% Slide 65: Pipe
+\begin{frame}[fragile]{Pipe - Concatenare Comandi}
+\textbf{Pipe (|) - Output di un comando come input di un altro}
+
+\begin{lstlisting}[language=bash]
+$ ls -l | grep ".txt"          # filtra output
+$ cat file | grep "error" | wc -l
+$ ps aux | grep firefox | awk '{print $2}'
+$ history | tail -20 | head -10
+\end{lstlisting}
+
+\begin{exampleblock}{Esempi Complessi}
+\begin{lstlisting}[language=bash]
+# Top 10 processi per memoria
+$ ps aux | sort -nrk 4 | head -10
+
+# Conta file per tipo
+$ find . -type f | sed 's/.*\.//' | sort | uniq -c
+
+# Log errors nelle ultime 100 righe
+$ tail -100 app.log | grep ERROR | wc -l
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+% Slide 66: Wildcards
+\section{Wildcards e Pattern}
+
+\begin{frame}[fragile]{Wildcards - Pattern Matching}
+
+\begin{block}{Wildcards Comuni}
+\begin{itemize}
+    \item \texttt{*}: qualsiasi sequenza di caratteri
+    \item \texttt{?}: un singolo carattere
+    \item \texttt{[abc]}: uno tra a, b, o c
+    \item \texttt{[a-z]}: range di caratteri
+    \item \texttt{[!abc]}: qualsiasi tranne a, b, c
+\end{itemize}
+\end{block}
+
+\begin{lstlisting}[language=bash]
+$ ls *.txt                 # tutti i file .txt
+$ ls file?.txt             # file1.txt, fileA.txt, etc.
+$ ls [abc]*.txt            # iniziano con a, b, o c
+$ rm temp*                 # rimuove tutti temp...
+$ cp project[1-5].doc backup/
+\end{lstlisting}
+\end{frame}
+
+% Slide 67: Espansioni
+\begin{frame}[fragile]{Espansioni della Shell}
+
+\textbf{Brace Expansion:}
+\begin{lstlisting}[language=bash]
+$ echo {1..10}             # 1 2 3 ... 10
+$ echo file{1,2,3}.txt     # file1.txt file2.txt file3.txt
+$ mkdir -p dir/{sub1,sub2,sub3}
+$ echo {A..Z}              # A B C ... Z
+\end{lstlisting}
+
+\textbf{Command Substitution:}
+\begin{lstlisting}[language=bash]
+$ echo "Oggi è $(date)"
+$ files=$(ls *.txt)
+$ current_user=`whoami`    # vecchia sintassi
+\end{lstlisting}
+
+\textbf{Tilde Expansion:}
+\begin{lstlisting}[language=bash]
+$ cd ~/documents           # $HOME/documents
+\end{lstlisting}
+\end{frame}
+
+% Slide 68: Operatori Logici
+\begin{frame}[fragile]{Operatori Logici}
+
+\begin{lstlisting}[language=bash]
+# AND - esegui secondo solo se primo ha successo
+$ mkdir newdir && cd newdir
+
+# OR - esegui secondo solo se primo fallisce
+$ command1 || command2
+
+# Sequential - esegui entrambi indipendentemente
+$ command1 ; command2
+
+# Background
+$ long_task &
+\end{lstlisting}
+
+\begin{exampleblock}{Esempi Pratici}
+\begin{lstlisting}[language=bash]
+$ make && make install
+$ ping -c 1 google.com && echo "Online" || echo "Offline"
+$ cd /tmp && rm -f tempfile ; cd -
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+% Slide 69: Script Bash
+\section{Script Bash Basics}
+
+\begin{frame}[fragile]{Creare Script Bash}
+
+\begin{lstlisting}[language=bash]
+#!/bin/bash
+# Questo è un commento
+
+echo "Hello World!"
+echo "Utente: $USER"
+echo "Home: $HOME"
+
+# Variabili
+NOME="Mario"
+echo "Ciao $NOME"
+
+# Parametri
+echo "Primo argomento: $1"
+echo "Tutti gli argomenti: $@"
+echo "Numero argomenti: $#"
+\end{lstlisting}
+
+\textbf{Rendere eseguibile:}
+\begin{lstlisting}[language=bash]
+$ chmod +x script.sh
+$ ./script.sh arg1 arg2
+\end{lstlisting}
+\end{frame}
+
+% Slide 70: Script - Condizioni
+\begin{frame}[fragile]{Script Bash - Condizioni e Loop}
+
+\textbf{If Statement:}
+\begin{lstlisting}[language=bash]
+if [ -f "file.txt" ]; then
+    echo "File esiste"
+else
+    echo "File non trovato"
+fi
+\end{lstlisting}
+
+\textbf{For Loop:}
+\begin{lstlisting}[language=bash]
+for i in {1..5}; do
+    echo "Iterazione $i"
+done
+
+for file in *.txt; do
+    echo "Processing $file"
+done
+\end{lstlisting}
+\end{frame}
+
+% Slide 71: Best Practices
+\section{Best Practices}
+
+\begin{frame}{Best Practices - Sicurezza}
+
+\begin{alertblock}{Non Usare mai:}
+\begin{itemize}
+    \item \texttt{rm -rf /} (cancella tutto!)
+    \item \texttt{chmod 777} su file sensibili
+    \item Eseguire script da fonti non fidate
+    \item Usare \texttt{sudo} senza capire il comando
+\end{itemize}
+\end{alertblock}
+
+\begin{block}{Raccomandazioni}
+\begin{itemize}
+    \item Leggere \texttt{man} prima di usare comandi nuovi
+    \item Fare backup prima di operazioni distruttive
+    \item Usare \texttt{-i} (interactive) con \texttt{rm}, \texttt{mv}, \texttt{cp}
+    \item Verificare con \texttt{ls} prima di \texttt{rm *}
+    \item Non loggarsi come root se non necessario
+\end{itemize}
+\end{block}
+\end{frame}
+
+% Slide 72: Best Practices - Produttività
+\begin{frame}[fragile]{Best Practices - Produttività}
+
+\begin{block}{Alias Utili}
+\begin{lstlisting}[language=bash]
+alias ll='ls -alh'
+alias ..='cd ..'
+alias ...='cd ../..'
+alias grep='grep --color=auto'
+alias df='df -h'
+alias du='du -h'
+\end{lstlisting}
+\end{block}
+
+\begin{block}{Consigli}
+\begin{itemize}
+    \item Usa \texttt{Tab} per autocompletamento
+    \item Usa \texttt{Ctrl+R} per cercare nella cronologia
+    \item Impara le scorciatoie da tastiera
+    \item Crea script per task ripetitivi
+    \item Documenta i tuoi script
+\end{itemize}
+\end{block}
+\end{frame}
+
+% Slide 73: Scorciatoie Tastiera
+\begin{frame}{Scorciatoie da Tastiera Essenziali}
+
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{Controllo Processi:}
+\begin{itemize}
+    \item \texttt{Ctrl+C}: interrompi processo
+    \item \texttt{Ctrl+Z}: sospendi processo
+    \item \texttt{Ctrl+D}: EOF / logout
+\end{itemize}
+
+\textbf{Navigazione:}
+\begin{itemize}
+    \item \texttt{Ctrl+A}: inizio riga
+    \item \texttt{Ctrl+E}: fine riga
+    \item \texttt{Ctrl+U}: cancella fino a inizio
+    \item \texttt{Ctrl+K}: cancella fino a fine
+\end{itemize}
+
+\column{0.5\textwidth}
+\textbf{Editing:}
+\begin{itemize}
+    \item \texttt{Ctrl+W}: cancella parola
+    \item \texttt{Ctrl+L}: clear screen
+    \item \texttt{Ctrl+R}: ricerca cronologia
+    \item \texttt{Tab}: autocompletamento
+\end{itemize}
+
+\textbf{Altro:}
+\begin{itemize}
+    \item \texttt{!!}: ripeti ultimo comando
+    \item \texttt{!}: ultimo argomento
+    \item \texttt{!*}: tutti gli argomenti
+\end{itemize}
+\end{columns}
+\end{frame}
+
+% Slide 74: Risorse
+\begin{frame}{Risorse per Approfondire}
+
+\begin{block}{Documentazione}
+\begin{itemize}
+    \item \texttt{man} pages: documentazione locale
+    \item \texttt{info} pages: documentazione GNU
+    \item \texttt{help comando}: help builtin shell
+    \item \texttt{comando --help}: opzioni comando
+\end{itemize}
+\end{block}
+
+\begin{block}{Online}
+\begin{itemize}
+    \item \url{https://tldr.sh/} - Esempi pratici comandi
+    \item \url{https://explainshell.com/} - Spiega comandi
+    \item \url{https://www.gnu.org/software/bash/manual/} - Manuale Bash
+    \item \url{https://stackoverflow.com/} - Q\&A community
+\end{itemize}
+\end{block}
+\end{frame}
+
+% Slide 75: Riepilogo Comandi
+\begin{frame}{Riepilogo - Comandi Essenziali}
+
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{Navigazione:}
+\begin{itemize}
+    \item \texttt{ls, cd, pwd}
+    \item \texttt{mkdir, rmdir}
+    \item \texttt{find}
+\end{itemize}
+
+\textbf{File:}
+\begin{itemize}
+    \item \texttt{cp, mv, rm}
+    \item \texttt{touch, cat, less}
+    \item \texttt{grep, diff}
+\end{itemize}
+
+\textbf{Permessi:}
+\begin{itemize}
+    \item \texttt{chmod, chown}
+    \item \texttt{sudo, su}
+\end{itemize}
+
+\column{0.5\textwidth}
+\textbf{Processi:}
+\begin{itemize}
+    \item \texttt{ps, top, kill}
+    \item \texttt{jobs, bg, fg}
+\end{itemize}
+
+\textbf{Sistema:}
+\begin{itemize}
+    \item \texttt{df, du}
+    \item \texttt{uname, history}
+\end{itemize}
+
+\textbf{Rete:}
+\begin{itemize}
+    \item \texttt{ping, traceroute}
+\end{itemize}
+
+\textbf{Utility:}
+\begin{itemize}
+    \item \texttt{tar, gzip}
+    \item \texttt{export, env}
+\end{itemize}
+\end{columns}
+\end{frame}
+
+% Slide 76: Conclusioni
+\begin{frame}{Conclusioni}
+
+\begin{block}{Punti Chiave}
+\begin{itemize}
+    \item Linux è potente, flessibile e libero
+    \item La shell è più efficiente di una GUI per molte operazioni
+    \item Regola 80/20: pochi comandi coprono la maggior parte dei casi d'uso
+    \item \texttt{man} è il tuo migliore amico
+    \item Pratica costante è la chiave dell'apprendimento
+\end{itemize}
+\end{block}
+
+\begin{center}
+\Large
+\textbf{La linea di comando è uno strumento\\
+che richiede tempo per essere padroneggiato,\\
+ma ne vale assolutamente la pena!}
+\end{center}
+\end{frame}
+
+% Slide 77: Grazie
+\begin{frame}[plain]
+\begin{center}
+{\Huge Grazie per l'attenzione!}
+
+\vspace{1cm}
+
+{\Large Domande?}
+
+\vspace{1.5cm}
+
+\begin{tikzpicture}
+    \draw[fill=blue!20, rounded corners] (-4,-1.5) rectangle (4,1.5);
+    \node at (0,0.5) {\Large\textbf{Basato su:}};
+    \node at (0,-0.3) {"The Linux Commands Handbook"};
+    \node at (0,-0.8) {di Flavio Copes};
+\end{tikzpicture}
+
+\vspace{1cm}
+
+{\small Presentazione creata per IIS Fermi Sacconi Ceci}
+\end{center}
+\end{frame}
+
+\end{document}

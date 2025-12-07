@@ -1,0 +1,349 @@
+\documentclass[aspectratio=169,14pt]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{xcolor}
+
+% Tema e colori
+\usetheme{Madrid}
+\usecolortheme{default}
+
+% Definizione colori personalizzati
+\definecolor{primaryblue}{RGB}{0,51,102}
+\definecolor{secondaryblue}{RGB}{51,102,153}
+\definecolor{accentorange}{RGB}{255,102,0}
+\definecolor{lightgray}{RGB}{240,240,240}
+
+\setbeamercolor{structure}{fg=primaryblue}
+\setbeamercolor{title}{fg=white,bg=primaryblue}
+\setbeamercolor{frametitle}{fg=white,bg=secondaryblue}
+\setbeamercolor{block title}{fg=white,bg=primaryblue}
+\setbeamercolor{block body}{bg=lightgray}
+
+% Impostazioni piè di pagina
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}[frame number]
+
+% Logo nel footer
+\logo{\includegraphics[height=0.6cm]{logo_fermi_sacconi.png}\hspace{0.3cm}\includegraphics[height=0.6cm]{logo_its_turismo.png}}
+
+% Informazioni presentazione
+\title[Filiera 4+2 Informatica]{Filiera Formativa Tecnologico-Professionale 4+2}
+\subtitle{Indirizzo Informatica e Telecomunicazioni\\Intelligenza Artificiale e Cybersecurity}
+\author{IIS Fermi Sacconi CPIA -- Ascoli Piceno}
+\institute{In collaborazione con ITS Turismo Marche}
+\date{Anno Scolastico 2026/2027}
+
+\begin{document}
+
+% Slide 1: Titolo
+\begin{frame}
+\titlepage
+\begin{center}
+
+\end{center}
+\end{frame}
+
+% Slide 2: Monte ore quinquennale vs quadriennale
+\begin{frame}{Monte Ore: Quinquennale vs Quadriennale}
+\begin{block}{Monte ore su 5 anni (tradizionale)}
+32 h/settimana × 33 settimane × 5 anni = \textbf{5.280 ore}
+\end{block}
+
+\begin{block}{Rimodulazione su 4 anni}
+	\begin{itemize}
+		\item 40 h/settimana × 33 settimane × 4 anni = \textbf{5280 ore} - di cui -
+		\item 36 h/settimana × 33 settimane × 4 anni = \textbf{4752 ore frontali}
+		 
+	\end{itemize}
+\end{block}
+
+\vspace{0.3cm}
+\begin{alertblock}{Ore da redistribuire}
+5.280 -- 4.752 = \textbf{528 ore} da distribuire con modalità innovative
+\end{alertblock}
+
+
+\end{frame}
+
+
+\begin{frame}{Ore da redistribuire}
+	\vspace{0.3cm}
+	\small
+	\textit{Le 528 ore saranno redistribuite attraverso:}
+	\begin{itemize}
+		\item Attività pomeridiane e FAD
+		\item FSL potenziata
+	\end{itemize}
+\end{frame}
+% Slide 3: Distribuzione delle 528 ore
+\begin{frame}{Distribuzione delle 5281 Ore su 4 Anni}
+\small
+\begin{table}
+\centering
+\begin{tabular}{|l|c|p{10cm}|}
+\hline
+\rowcolor{primaryblue}
+\textcolor{white}{\textbf{Anno}} & \textcolor{white}{\textbf{Ore}} & \textcolor{white}{\textbf{Modalità}} \\
+\hline
+\textbf{1° anno} & 1122 & 34h p.sett. + 20h FSL + 66 potenz. \\
+\hline
+\textbf{2° anno} & 1221& 37h p.sett (di cui) 2h FAD pom. + 20h FSL  + 99 potenz. \\
+\hline
+\textbf{3° anno} & 1221 & 37h p.sett (di cui) 2h FAD pom. + 100h FSL + 66 potenz. 	\\
+\hline
+\textbf{4° anno} & 1188 & 38h p.sett (di cui) 2h FAD pom. + 100h FSL + 198 potenz. \\
+\hline
+\rowcolor{lightgray}
+\textbf{TOTALE} & \textbf{5281} & \\
+\hline
+\end{tabular}
+\end{table}
+
+\vspace{0.3cm}
+\textcolor{accentorange}{\textbf{Nota:}} Tutte le attività sono co-progettate con ITS e partner della filiera
+\end{frame}
+
+
+% Slide 5: Ore vincolate delle discipline di base
+
+% Slide 6: Ore di compresenza e potenziamento
+\begin{frame}{Ore di Compresenza, Potenziamento e Orientamento}
+\framesubtitle{Dal monte ore del V anno}
+
+\begin{table}
+\centering
+\begin{tabular}{|l|c|p{10.5cm}|}
+\hline
+\rowcolor{primaryblue}
+\textcolor{white}{\textbf{Anno}} & \textcolor{white}{\textbf{Ore}} & \textcolor{white}{\textbf{Attività}} \\
+\hline
+\textbf{1° anno} & 66 & Discipline di indirizzo + Lingua Inglese + Storia (2h/sett.)\\
+\hline
+\textbf{2° anno} & 99 & Discipline di indirizzo + compresenza Scienze motorie + Inglese (3h/sett.) \\
+\hline
+\textbf{3° anno} & 66 & Discipline di indirizzo + Lingua Italiana - Informatica(2h/sett.)  \\
+\hline
+\textbf{4° anno} & 198 & Discipline di indirizzo + Lingua Italiana - Inglese + Matematica (6h/sett.) \\
+\hline
+\end{tabular}
+\end{table}
+\end{frame}
+
+% Slide 7: L'offerta formativa integrata
+\begin{frame}{L'Offerta Formativa Integrata della Filiera}
+\small
+\begin{block}{Percorso Quadriennale}
+\textbf{Informatica e Telecomunicazioni} -- Articolazione Informatica\\
+Curvatura: \textcolor{accentorange}{\textbf{Intelligenza Artificiale e Cybersecurity}}
+\end{block}
+
+\begin{block}{Percorso Biennale ITS}
+\textbf{ITS Turismo Marche} -- Area Tecnologica 10: Informatica\\
+Corso: \textit{Full Stack Developer} (sede San Benedetto del Tronto)
+\end{block}
+
+
+\end{frame}
+
+\begin{frame}{L'Offerta Formativa Integrata della Filiera}
+\begin{block}{Prosecuzione universitaria}
+	Lauree triennali e magistrali in:
+	\begin{itemize}
+		\item Informatica / Informatica per la comunicazione digitale
+		\item Ingegneria Informatica / Computer Science
+	\end{itemize}
+	presso \textbf{Università di Camerino} e \textbf{Università Politecnica delle Marche}
+\end{block}
+\end{frame}
+
+
+% Slide 8: Partner della filiera
+\begin{frame}{Partner Strategici della Filiera}
+\small
+\begin{columns}[t]
+\column{0.5\textwidth}
+\textbf{Partner istituzionali:}
+\begin{itemize}
+\item \textcolor{primaryblue}{ITS Turismo Marche}
+\item Università di Camerino
+\item Università Politecnica Marche
+\item IIS Ulpiani (Service Learning)
+\item CPIA Ascoli Piceno
+\end{itemize}
+
+\column{0.5\textwidth}
+\textbf{Partner professionali:}
+\begin{itemize}
+\item \textcolor{accentorange}{Confindustria Servizi} (IFTS e formazione docenti)
+\item \textcolor{accentorange}{Cyber Evolution S.r.l.} (FSL e formazione)
+\item Ordine Ingegneri Ascoli Piceno
+\item Associazione Ex Allievi OdV
+\end{itemize}
+\end{columns}
+
+\vspace{0.5cm}
+\begin{center}
+\textcolor{primaryblue}{\textbf{Un ecosistema continuo e permeabile}}\\
+\textit{dalla scuola secondaria all'istruzione terziaria}
+\end{center}
+\end{frame}
+
+% Slide 9: Vantaggi della filiera
+\begin{frame}{Vantaggi della Filiera 4+2}
+\begin{itemize}
+\item[\checkmark] \textbf{Co-progettazione continua} con ITS e imprese del territorio
+\item[\checkmark] \textbf{Contatti precoci} con realtà lavorative (dal 1° anno)
+\item[\checkmark] \textbf{Orientamento strutturato} per il percorso ITS/universitario
+\item[\checkmark] \textbf{Compresenze potenziate} fin dal 1° anno
+\item[\checkmark] \textbf{Organico potenziato} (40/32 per classe, compresi ITP)
+\item[\checkmark] \textbf{240 ore di FSL} con possibilità di apprendistato formativo
+\item[\checkmark] \textbf{Allineamento europeo} nel conseguimento del titolo
+\item[\checkmark] \textbf{Maggiore esposizione} a competenze STEM e laboratorialità
+\end{itemize}
+
+\vspace{0.3cm}
+\begin{center}
+\textcolor{accentorange}{\textbf{Innovazione didattica radicale}} attraverso UDA, CLIL, metodologie attive
+\end{center}
+\end{frame}
+
+% Slide 10: Metodologie didattiche innovative
+\begin{frame}{Metodologie Didattiche Innovative}
+\begin{columns}
+\column{0.4\textwidth}
+\begin{block}{Approcci metodologici}
+\begin{itemize}
+\item UDA interdisciplinari
+\item CLIL (inglese + indirizzo)
+\item Project-based learning
+\item Service learning
+\item Apprendimento in contesti produttivi
+\end{itemize}
+\end{block}
+
+\column{0.4\textwidth}
+\begin{block}{Focus competenze}
+\begin{itemize}
+\item Intelligenza Artificiale
+\item Cybersecurity
+\item Cloud Computing
+\item Full Stack Development
+\item Big Data \& Machine Learning
+\end{itemize}
+\end{block}
+\end{columns}
+\end{frame}
+
+% Slide 10: Metodologie didattiche innovative
+\begin{frame}{Metodologie Didattiche Innovative}
+	\begin{alertblock}{Obiettivo}
+		Eliminare sovrapposizioni e duplicazioni tra discipline, valorizzando l'apprendimento attivo e contestualizzato
+	\end{alertblock}
+\end{frame}
+
+
+% Slide 11: Profili professionali in uscita
+\begin{frame}{Profili Professionali in Uscita}
+	\framesubtitle{Dopo il biennio ITS}
+	\begin{block}{Profili tecnici}
+		\begin{itemize}
+			\item {10.1.1 Tecnico superiore "Full Stack Developer e Cloud Specialist"}
+			\item {10.2.2 Tecnico superiore "System Cybersecurity"}
+			\item {10.3.1 Tecnico superiore per la "Digitalizzazione dei processi con soluzioni Artificial Intelligence based"}
+			\item {10.4.1 Tecnico Superiore in "Augmented, Virtual e Mixed Reality"}
+		\end{itemize}
+	\end{block}
+\end{frame}
+
+% Slide 12: Monitoraggio e valutazione
+\begin{frame}{Sistema di Monitoraggio e Valutazione}
+\begin{block}{Coordinamento}
+Sistema strutturato coordinato da IIS Fermi-Sacconi-CPIA\\
+con supporto dell'ITS Turismo Marche
+\end{block}
+
+\begin{columns}[t]
+\column{0.5\textwidth}
+\textbf{Ambiti di monitoraggio:}
+\begin{itemize}
+\item Qualità organizzazione didattica
+\item Efficacia moduli laboratoriali
+\item Esperienze on the job
+\item Esiti formativi studenti
+\end{itemize}
+
+\column{0.5\textwidth}
+\textbf{Strumenti:}
+\begin{itemize}
+\item Report trimestrali digitali
+\item Indicatori quanti/qualitativi
+\item Incontri periodici
+\item Revisione progettuale continua
+\end{itemize}
+\end{columns}
+
+\vspace{0.3cm}
+\textcolor{primaryblue}{\textbf{Cadenza:}} ottobre-dicembre / gennaio-marzo / aprile-giugno / luglio-settembre
+\end{frame}
+
+% Slide 13: Opportunità e impegni
+\begin{frame}{Opportunità e Adempimenti}
+\begin{block}{Innovazione didattica}
+\begin{itemize}
+\item Riprogrammazione disciplinare su 4 anni (UDA)
+\item Revisione curricolare verticale
+\item Adozione metodologie innovative
+\item Formazione continua docenti
+\end{itemize}
+\end{block}
+
+\begin{block}{Collaborazione territoriale}
+\begin{itemize}
+\item Accordi di rete con tutti i partner
+\item Co-progettazione costante con ITS Academy
+\item Partnership con almeno 1 azienda del settore
+\item Coinvolgimento consorzi di formazione
+\end{itemize}
+\end{block}
+
+\begin{alertblock}{Vincolo di accesso}
+Iscrizioni riservate a studenti con pregresso percorso scolastico di \textbf{almeno 8 anni}
+\end{alertblock}
+\end{frame}
+
+% Slide 14: Conclusioni e contatti
+\begin{frame}{Filiera 4+2 Informatica: Un Progetto Territoriale}
+\begin{center}
+\Large
+\textcolor{primaryblue}{\textbf{Un ecosistema formativo integrato}}\\[0.05cm]
+\normalsize
+che accompagna gli studenti dalla scuola secondaria\\
+all'istruzione terziaria non accademica
+\end{center}
+
+\vspace{0.1cm}
+\begin{block}{Contatti}
+\textbf{IIS Fermi Sacconi CPIA}\\
+Via della Repubblica, 31/A -- 63100 Ascoli Piceno\\
+\texttt{apis01100a@istruzione.it}\\
+\texttt{apis01100a@pec.istruzione.it}
+\end{block}
+
+\vspace{0.1cm}
+\begin{center}
+\includegraphics[height=1.2cm]{logo_fermi_sacconi.png}\hspace{1.5cm}
+\includegraphics[height=1.2cm]{logo_its_turismo.png}
+\end{center}
+
+\vspace{0.2cm}
+\begin{center}
+\textcolor{accentorange}{\textit{Avvio percorso: Anno Scolastico 2026/2027}}
+\end{center}
+\end{frame}
+
+\end{document}

@@ -1,0 +1,22 @@
+\frametitle{Best Practices - Produttività}
+
+\begin{block}{Alias Utili}
+\begin{lstlisting}[language=bash]
+alias ll='ls -alh'
+alias ..='cd ..'
+alias ...='cd ../..'
+alias grep='grep --color=auto'
+alias df='df -h'
+alias du='du -h'
+\end{lstlisting}
+\end{block}
+
+\begin{block}{Consigli}
+\begin{itemize}
+    \item Usa \texttt{Tab} per autocompletamento
+    \item Usa \texttt{Ctrl+R} per cercare nella cronologia
+    \item Impara le scorciatoie da tastiera
+    \item Crea script per task ripetitivi
+    \item Documenta i tuoi script
+\end{itemize}
+\end{block}
