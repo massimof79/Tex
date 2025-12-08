@@ -1,0 +1,24 @@
+\frametitle{Un esempio concreto di messaggio SOAP}
+Vediamo ora un esempio pratico di come appare un messaggio SOAP nel mondo reale. Immaginiamo di voler interrogare un servizio finanziario per ottenere l'ultimo prezzo di un'azione.
+
+\begin{lstlisting}[language=XML,basicstyle=\ttfamily\tiny]
+<?xml version="1.0"?>
+<soap:Envelope
+  xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+
+  <soap:Header>
+    <m:Authentication xmlns:m="http://www.stock.org/stock">
+      <m:Token>Bearer abc123xyz</m:Token>
+    </m:Authentication>
+  </soap:Header>
+
+  <soap:Body>
+    <m:GetLastTradePrice xmlns:m="http://www.stock.org/stock">
+      <m:Symbol>AAPL</m:Symbol>
+    </m:GetLastTradePrice>
+  </soap:Body>
+</soap:Envelope>
+\end{lstlisting}
+
+\vspace{0.2cm}
+Questo messaggio verrebbe inviato via HTTP POST all'endpoint del servizio, che risponderebbe con un altro messaggio SOAP contenente il prezzo richiesto.
