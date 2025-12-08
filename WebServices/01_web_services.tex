@@ -43,25 +43,6 @@
 
 \section{Introduzione}
 
-\begin{frame}{Obiettivi della presentazione}
-In questa presentazione esploreremo il mondo dei Web Services e delle architetture di integrazione enterprise. Partiremo dalle basi tecnologiche come SOAP, WSDL e UDDI per poi approfondire concetti più avanzati come l'Enterprise Service Bus e le architetture SOA.
-
-\vspace{0.3cm}
-Vedremo come questi strumenti hanno rivoluzionato il modo in cui le applicazioni enterprise comunicano tra loro, permettendo l'integrazione di sistemi eterogenei attraverso standard aperti e protocolli universalmente riconosciuti.
-
-\vspace{0.3cm}
-L'obiettivo finale è fornire una comprensione completa non solo degli aspetti tecnici, ma anche delle best practices architetturali e dei pattern di integrazione utilizzati nei moderni sistemi distribuiti.
-\end{frame}
-
-\begin{frame}{Servizi Web vs Web Services}
-È importante chiarire fin da subito una distinzione fondamentale che spesso genera confusione. Quando parliamo di ``servizi web'' in senso generico, ci riferiamo tipicamente alle applicazioni web che interagiscono con utenti umani attraverso un browser, presentando interfacce grafiche costruite con HTML, CSS e JavaScript.
-
-\vspace{0.3cm}
-I \textbf{Web Services}, invece, rappresentano qualcosa di completamente diverso. Si tratta di interfacce programmatiche progettate specificamente per la comunicazione macchina-macchina. Un Web Service non restituisce pagine web visualizzabili, ma dati strutturati che altre applicazioni possono elaborare automaticamente.
-
-\vspace{0.3cm}
-Questa distinzione è cruciale perché i Web Services sono la base dell'integrazione moderna tra sistemi enterprise, permettendo a sistemi sviluppati con tecnologie diverse di collaborare efficacemente senza intervento umano diretto.
-\end{frame}
 
 \begin{frame}{L'evoluzione del Middleware}
 Per comprendere appieno il valore dei Web Services, dobbiamo fare un passo indietro e osservare come sono evolute nel tempo le tecnologie di integrazione. Negli anni '80, il paradigma dominante era quello delle Remote Procedure Call (RPC), che permettevano di invocare funzioni su macchine remote come se fossero locali. Tuttavia, questo approccio presentava limiti significativi quando si trattava di integrare sistemi eterogenei.
@@ -76,59 +57,84 @@ L'avvento dei Web Services nei primi anni 2000 ha rappresentato una vera rivoluz
 \section{Middleware Tradizionali}
 
 \begin{frame}{Il modello Client-Server e RPC}
-Il Remote Procedure Call ha rappresentato uno dei primi tentativi di creare middleware per sistemi distribuiti. L'idea alla base era elegante nella sua semplicità: nascondere la complessità della rete al programmatore, permettendogli di chiamare una funzione remota esattamente come se fosse locale.
+Il \textbf{Remote Procedure Call} ha rappresentato uno dei primi tentativi di creare middleware per sistemi distribuiti. L'idea alla base era elegante nella sua semplicità: nascondere la complessità della rete al programmatore, permettendogli di chiamare una funzione remota esattamente come se fosse locale.
 
 \vspace{0.3cm}
-Questo approccio introduceva il concetto di \textit{stub} lato client e \textit{skeleton} lato server. Lo stub si occupava di serializzare i parametri della chiamata (marshalling) e inviarli attraverso la rete, mentre lo skeleton li deserializzava e invocava la funzione reale sul server. Il processo inverso gestiva il valore di ritorno.
+Questo approccio introduceva il concetto di \textit{\textbf{stub}} lato client e \textit{\textbf{skeleton}} lato server. Lo stub si occupava di serializzare i parametri della chiamata (marshalling) e inviarli attraverso la rete, mentre lo skeleton li deserializzava e invocava la funzione reale sul server. Il processo inverso gestiva il valore di ritorno.
 
 \vspace{0.3cm}
-Nonostante l'eleganza teorica, RPC presentava limiti pratici significativi. La comunicazione sincrona bloccante era problematica per sistemi ad alta latenza, mentre l'eterogeneità tecnologica e i firewall rappresentavano ostacoli quasi insormontabili nell'era di Internet.
+Nonostante l'eleganza teorica, RPC presentava limiti pratici significativi. La \textbf{comunicazione sincrona bloccante} era problematica per sistemi ad alta latenza, mentre l'eterogeneità tecnologica e i firewall rappresentavano ostacoli quasi insormontabili nell'era di Internet.
 \end{frame}
 
 \begin{frame}{CORBA: l'ambizione dell'interoperabilità}
-CORBA (Common Object Request Broker Architecture) rappresentò un tentativo ambizioso di creare un'infrastruttura universale per applicazioni distribuite orientate agli oggetti. Al centro dell'architettura stava l'Object Request Broker, un middleware intelligente capace di gestire la comunicazione tra oggetti distribuiti su reti eterogenee.
+\textbf{CORBA} (Common Object Request Broker Architecture) rappresentò un tentativo ambizioso di creare un'infrastruttura universale per applicazioni distribuite orientate agli oggetti. Al centro dell'architettura stava l'Object Request Broker, un middleware intelligente capace di gestire la comunicazione tra oggetti distribuiti su reti eterogenee.
 
 \vspace{0.3cm}
-L'IDL (Interface Definition Language) permetteva di definire interfacce in modo neutrale rispetto al linguaggio di programmazione, generando automaticamente stub e skeleton per diversi linguaggi come C++, Java e Python. Il protocollo IIOP gestiva la comunicazione effettiva tra ORB diversi.
+L'\textbf{IDL (Interface Definition Language) }permetteva di definire interfacce in modo neutrale rispetto al linguaggio di programmazione, generando automaticamente stub e skeleton per diversi linguaggi come C++, Java e Python. Il protocollo IIOP gestiva la comunicazione effettiva tra ORB diversi.
 
 \vspace{0.3cm}
-Nonostante le promesse iniziali, CORBA si è rivelato complesso da configurare e deployare. La necessità di porte dinamiche lo rendeva incompatibile con molte configurazioni firewall, limitandone l'uso principalmente a integrazioni intra-aziendali piuttosto che su Internet.
+Nonostante le promesse iniziali, CORBA si è rivelato \textbf{complesso da configurare }e deployare. La necessità di porte dinamiche lo rendeva incompatibile con molte configurazioni firewall, limitandone l'uso principalmente a integrazioni intra-aziendali piuttosto che su Internet.
 \end{frame}
 
 \begin{frame}{COM e DCOM: l'ecosistema Microsoft}
-In parallelo a CORBA, Microsoft sviluppava il proprio approccio ai componenti distribuiti con COM (Component Object Model) e la sua estensione distribuita DCOM. Profondamente integrato con Windows, COM offriva un modello elegante per la composizione di componenti software riutilizzabili.
+In parallelo a CORBA, Microsoft sviluppava il proprio approccio ai componenti distribuiti con \textbf{COM (Component Object Model) }e la sua estensione distribuita DCOM. Profondamente integrato con Windows, COM offriva un modello elegante per la composizione di componenti software riutilizzabili.
 
 \vspace{0.3cm}
-DCOM estendeva questo modello attraverso la rete, permettendo a componenti su macchine diverse di collaborare come se fossero locali. Active Directory forniva meccanismi di discovery, mentre il Registry di Windows gestiva la registrazione dei componenti.
+\textbf{DCOM} estendeva questo modello attraverso la rete, permettendo a componenti su macchine diverse di collaborare come se fossero locali. Active Directory forniva meccanismi di discovery, mentre il Registry di Windows gestiva la registrazione dei componenti.
 
 \vspace{0.3cm}
-Il limite principale di DCOM era la sua natura proprietaria e platform-dependent. Funzionava eccellentemente all'interno di ecosistemi Windows omogenei, ma l'integrazione con altre piattaforme richiedeva soluzioni complesse e spesso inaffidabili. Con l'avvento di .NET, Microsoft ha gradualmente spostato l'attenzione verso architetture più aperte basate su Web Services.
+\end{frame}
+
+
+\begin{frame}{NET Framework}
+	\begin{itemize}
+		\item Il limite principale di DCOM era la sua \textbf{natura proprietaria} e platform-dependent. 
+		\item Funzionava eccellentemente all'interno di ecosistemi Windows omogenei, ma l'integrazione con altre piattaforme richiedeva soluzioni complesse e spesso inaffidabili.
+		\item  \underline{Con l'avvento di .NET, Microsoft ha gradualmente} spostato l'attenzione verso architetture più aperte basate su Web Services.
+	\end{itemize}
+
 \end{frame}
 
 \begin{frame}{Confronto tra i sistemi Middleware}
-Osservando retrospettivamente queste tecnologie, emerge un quadro chiaro dei loro punti di forza e debolezza. CORBA eccelleva nell'interoperabilità multi-linguaggio ma pagava un prezzo alto in termini di complessità. DCOM offriva prestazioni eccellenti e facilità d'uso nell'ecosistema Windows, ma era praticamente inutilizzabile al di fuori di esso.
+Osservando retrospettivamente queste tecnologie, emerge un quadro chiaro dei loro punti di forza e debolezza. 
+\begin{itemize}
+\item \textbf{CORBA} eccelleva nell'interoperabilità multi-linguaggio ma pagava un prezzo alto in termini di complessità. DCOM offriva prestazioni eccellenti e facilità d'uso nell'ecosistema Windows, ma era praticamente inutilizzabile al di fuori di esso.
 
-\vspace{0.3cm}
-Il problema comune a tutte queste soluzioni era il \textit{tight coupling}: le applicazioni dovevano conoscere dettagli implementativi l'una dell'altra e utilizzare protocolli specifici non standard. Inoltre, l'uso di formati binari proprietari e porte di rete dinamiche rendeva quasi impossibile l'attraversamento dei firewall.
+\item 
+Il problema comune a tutte queste soluzioni era il \textit{\textbf{tight coupling}}: le applicazioni dovevano conoscere dettagli implementativi l'una dell'altra e utilizzare protocolli specifici non standard. Inoltre, l'uso di formati binari proprietari e porte di rete dinamiche rendeva quasi impossibile l'attraversamento dei firewall.
 
-\vspace{0.3cm}
-I Web Services hanno risolto questi problemi adottando XML come formato di scambio universale, HTTP come protocollo di trasporto firewall-friendly, e standard aperti definiti da W3C e OASIS. Questo ha permesso finalmente di realizzare l'integrazione veramente universale che le tecnologie precedenti avevano solo promesso.
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Confronto tra i sistemi Middleware}
+	\vspace{0.3cm}
+	I Web Services hanno risolto questi problemi adottando \textbf{XML} come formato di scambio universale, HTTP come protocollo di trasporto firewall-friendly, e standard aperti definiti da W3C e OASIS. 
+	
+	Questo ha permesso finalmente di realizzare l'integrazione veramente universale che le tecnologie precedenti avevano solo promesso.
 \end{frame}
 
 \section{XML e Standard Web Services}
 
 \begin{frame}{XML: il fondamento dei Web Services}
-XML (eXtensible Markup Language) ha giocato un ruolo centrale nel successo dei Web Services. A differenza dei formati binari proprietari usati da CORBA e DCOM, XML è testuale, human-readable e completamente estensibile. Questo lo rende ideale per la comunicazione tra sistemi eterogenei.
+\textbf{XML (eXtensible Markup Language) }ha giocato un ruolo centrale nel successo dei Web Services. A differenza dei formati binari proprietari usati da CORBA e DCOM, XML è \underline{testuale, human-readable e completamente estensibile}. Questo lo rende ideale per la comunicazione tra sistemi eterogenei.
 
 \vspace{0.3cm}
 La forza di XML sta nella sua capacità di essere contemporaneamente semplice e potente. Attraverso i namespaces, permette di combinare vocabolari diversi senza conflitti. Con gli schemi XSD, offre validazione formale della struttura dei documenti, garantendo che mittente e destinatario condividano la stessa comprensione dei dati scambiati.
-
-\vspace{0.3cm}
-Nei Web Services, XML viene utilizzato a più livelli: per i messaggi SOAP che trasportano i dati, per i documenti WSDL che descrivono le interfacce, per i registry UDDI che catalogano i servizi disponibili. Questa uniformità semplifica notevolmente l'implementazione e il debugging dei sistemi integrati.
 \end{frame}
 
+
+\begin{frame}{XML: il fondamento dei Web Services}
+	
+	\vspace{0.3cm}
+	Nei Web Services, XML viene utilizzato a più livelli: per i messaggi \textbf{SOAP} che trasportano i dati, per i documenti \textbf{WSDL} che descrivono le interfacce, per i registry \textbf{UDDI} che catalogano i servizi disponibili. Questa uniformità semplifica notevolmente l'implementazione e il debugging dei sistemi integrati.
+\end{frame}
+
+
+
 \begin{frame}{SOAP: il protocollo universale}
-SOAP (Simple Object Access Protocol) rappresenta il protocollo standard per lo scambio di messaggi tra Web Services. Nonostante il nome, SOAP non è particolarmente semplice, ma offre una struttura robusta e estensibile per la comunicazione distribuita.
+\textbf{SOAP} (Simple Object Access Protocol) rappresenta il protocollo standard per lo scambio di messaggi tra Web Services. Nonostante il nome, SOAP non è particolarmente semplice, ma offre una struttura robusta e estensibile per la comunicazione distribuita.
 
 \vspace{0.3cm}
 Un messaggio SOAP è fondamentalmente un documento XML strutturato in tre parti principali. L'\textit{Envelope} funge da contenitore root, dichiarando che il documento è un messaggio SOAP. L'\textit{Header} opzionale trasporta metadati come informazioni di autenticazione, routing o gestione delle transazioni. Il \textit{Body} contiene il payload effettivo, che può essere una chiamata RPC o un documento strutturato.
@@ -192,29 +198,40 @@ Questo messaggio verrebbe inviato via HTTP POST all'endpoint del servizio, che r
 \end{frame}
 
 \begin{frame}{Document-style vs RPC-style}
-SOAP supporta due stili fondamentali di interazione che riflettono filosofie diverse di comunicazione distribuita. Lo stile RPC (Remote Procedure Call) modella la comunicazione come una chiamata di funzione: invio parametri e ricevo un valore di ritorno. È sincrono per natura e crea un accoppiamento più stretto tra client e server.
+\textbf{SOAP} supporta due stili fondamentali di interazione che riflettono filosofie diverse di comunicazione distribuita. Lo stile\textbf{ RPC (Remote Procedure Call)} modella la comunicazione come una chiamata di funzione: invio parametri e ricevo un valore di ritorno. È \textbf{sincrono} per natura e crea un accoppiamento più stretto tra client e server.
 
 \vspace{0.3cm}
-Lo stile Document, invece, concepisce la comunicazione come uno scambio di documenti XML. Il client invia un documento che descrive un'azione da compiere, e il server può rispondere o meno. Questo approccio è naturalmente più adatto alla comunicazione asincrona e al loose coupling.
+Lo stile \textbf{Document}, invece, concepisce la comunicazione come uno scambio di documenti XML. Il client invia un documento che descrive un'azione da compiere, e il server può rispondere o meno. Questo approccio è naturalmente più adatto alla comunicazione asincrona e al \textbf{loose coupling}.
 
-\vspace{0.3cm}
-Nella pratica, lo stile \textbf{Document/Literal Wrapped} è diventato lo standard de facto. Combina la semplicità concettuale dell'RPC con i vantaggi della validazione XSD del document-style. È questo lo stile che troverete implementato nella maggior parte dei framework moderni come Apache CXF o Spring WS.
+\end{frame}
+
+
+\begin{frame}{Document-style vs RPC-style}
+	
+	\vspace{0.3cm}
+	Nella pratica, lo stile \textbf{Document/Literal Wrapped} è diventato lo standard de facto. Combina la semplicità concettuale dell'RPC con i vantaggi della validazione XSD del document-style. È questo lo stile che si trova implementato nella maggior parte dei framework moderni come Apache CXF o Spring WS.
 \end{frame}
 
 \begin{frame}{Gestione degli errori con SOAP Fault}
-Anche i sistemi meglio progettati incontrano errori, e SOAP fornisce un meccanismo strutturato per comunicarli attraverso l'elemento Fault. Quando un servizio non può completare una richiesta, invece di restituire un normale messaggio di risposta, restituisce un Fault nel body del messaggio SOAP.
+Anche i sistemi meglio progettati incontrano errori, e SOAP fornisce un meccanismo strutturato per comunicarli attraverso l'elemento Fault. Quando un servizio non può completare una richiesta, invece di restituire un normale messaggio di risposta, restituisce un \textbf{Fault} nel body del messaggio SOAP.
 
 \vspace{0.3cm}
 La struttura del Fault è standardizzata e include diversi elementi informativi. Il \textit{faultcode} categorizza l'errore in classi standard come VersionMismatch, MustUnderstand, Client o Server. Il \textit{faultstring} fornisce una descrizione human-readable dell'errore. L'elemento \textit{detail} può contenere informazioni specifiche dell'applicazione sull'errore verificatosi.
 
-\vspace{0.3cm}
-Questa standardizzazione permette ai client di implementare logiche di retry, fallback o compensazione in modo consistente, indipendentemente dal servizio specifico che stanno invocando. È un esempio di come gli standard ben progettati facilitino l'interoperabilità.
 \end{frame}
+
+
+\begin{frame}{Gestione degli errori con SOAP Fault}
+	
+	\vspace{0.3cm}
+	Questa standardizzazione permette ai client di implementare logiche di \textbf{retry, fallback} o compensazione in modo consistente, indipendentemente dal servizio specifico che stanno invocando. È un esempio di come gli standard ben progettati facilitino l'interoperabilità.
+\end{frame}
+
 
 \section{WSDL e Discovery}
 
 \begin{frame}{WSDL: il contratto tra servizi}
-Se SOAP definisce come i messaggi vengono strutturati, WSDL (Web Services Description Language) definisce quali messaggi un servizio può accettare e produrre. È essenzialmente un contratto machine-readable che descrive completamente l'interfaccia di un Web Service.
+Se SOAP definisce come i messaggi vengono strutturati, \textbf{WSDL} (Web Services Description Language) definisce quali messaggi un servizio può accettare e produrre. È essenzialmente un contratto machine-readable che descrive completamente l'interfaccia di un Web Service.
 
 \vspace{0.3cm}
 La bellezza di WSDL sta nella sua struttura a due livelli. La parte astratta descrive cosa il servizio fa: quali operazioni offre, quali messaggi accetta e restituisce, quali tipi di dati utilizza. Questa parte è indipendente da come il servizio è effettivamente implementato o esposto.
@@ -223,39 +240,36 @@ La bellezza di WSDL sta nella sua struttura a due livelli. La parte astratta des
 La parte concreta, invece, specifica i dettagli implementativi: quale protocollo viene usato (tipicamente SOAP su HTTP), quale formato di encoding, e soprattutto dove il servizio è fisicamente disponibile (l'URL dell'endpoint). Questa separazione permette di cambiare l'implementazione senza modificare l'interfaccia logica.
 \end{frame}
 
-\begin{frame}{La struttura di un documento WSDL}
-\begin{center}
-\begin{tikzpicture}[
-  node distance=1.5cm,
-  box/.style={draw,rectangle,minimum width=2.5cm,minimum height=0.8cm,rounded corners,font=\small},
-  abstract/.style={fill=blue!20},
-  concrete/.style={fill=orange!20}
-]
-
-\node[box,abstract] (types) {Types\\(XSD)};
-\node[box,abstract,right=of types] (message) {Message\\(parts)};
-\node[box,abstract,right=of message] (operation) {Operation\\(I/O)};
-\node[box,abstract,right=of operation] (porttype) {PortType\\(Interface)};
-
-\node[box,concrete,below=2cm of porttype] (binding) {Binding\\(Protocol)};
-\node[box,concrete,below=of binding] (port) {Port\\(Endpoint)};
-\node[box,concrete,below=of port] (service) {Service\\(Collection)};
-
-\draw[-{Stealth},thick] (types) -- (message) node[midway,above,font=\tiny] {usa};
-\draw[-{Stealth},thick] (message) -- (operation) node[midway,above,font=\tiny] {compone};
-\draw[-{Stealth},thick] (operation) -- (porttype) node[midway,above,font=\tiny] {raggruppa};
-
-\draw[-{Stealth},thick] (porttype) -- (binding) node[midway,right,font=\tiny] {implementa};
-\draw[-{Stealth},thick] (binding) -- (port) node[midway,right,font=\tiny] {specifica};
-\draw[-{Stealth},thick] (port) -- (service) node[midway,right,font=\tiny] {espone};
-
-\node[left=0.3cm of types,rotate=90,font=\small,blue] {ASTRATTO};
-\node[left=0.3cm of binding,rotate=90,font=\small,orange] {CONCRETO};
-
-\draw[dashed,thick,gray] ($(types.south west)+(-0.5,-0.8)$) -- ($(porttype.south east)+(0.5,-0.8)$);
-\end{tikzpicture}
-\end{center}
-\end{frame}
+%\begin{frame}{La struttura di un documento WSDL}
+%	\begin{center}
+%		\begin{tikzpicture}[
+%			node distance=1.5cm,
+%			box/.style={draw,rectangle,minimum width=2.5cm,minimum height=0.8cm,rounded corners,font=\small},
+%			abstract/.style={fill=blue!20},
+%			concrete/.style={fill=orange!20}
+%			]
+%			\node[box,abstract] (types) {Types\\(XSD)};
+%			\node[box,abstract,right=of types] (message) {Message\\(parts)};
+%			\node[box,abstract,right=of message] (operation) {Operation\\(I/O)};
+%			\node[box,abstract,right=of operation] (porttype) {PortType\\(Interface)};
+%			\node[box,concrete,below=2cm of porttype] (binding) {Binding\\(Protocol)};
+%			\node[box,concrete,below=of binding] (port) {Port\\(Endpoint)};
+%			\node[box,concrete,below=of port] (service) {Service\\(Collection)};
+%			
+%			\draw[-{Stealth},thick] (types) -- (message) node[midway,above,font=\tiny] {usa};
+%			\draw[-{Stealth},thick] (message) -- (operation) node[midway,above,font=\tiny] {compone};
+%			\draw[-{Stealth},thick] (operation) -- (porttype) node[midway,above,font=\tiny] {raggruppa};
+%			\draw[-{Stealth},thick] (porttype) -- (binding) node[midway,right,font=\tiny] {implementa};
+%			\draw[-{Stealth},thick] (binding) -- (port) node[midway,right,font=\tiny] {specifica};
+%			\draw[-{Stealth},thick] (port) -- (service) node[midway,right,font=\tiny] {espone};
+%			
+%			\node[left=0.3cm of types,rotate=90,font=\small,blue] {ASTRATTO};
+%			\node[left=0.3cm of binding,rotate=90,font=\small,orange] {CONCRETO};
+%			
+%			\draw[dashed,thick,gray] ($(types.south west)+(-0.5,-0.8)$) -- ($(porttype.south east)+(0.5,-0.8)$);
+%		\end{tikzpicture}
+%	\end{center}
+%\end{frame}
 
 \begin{frame}{L'utilizzo pratico del WSDL}
 Il vero potere del WSDL emerge quando lo si usa per generare automaticamente il codice client. I moderni framework di Web Services possono leggere un documento WSDL e generare proxy client completamente tipizzati nel linguaggio di programmazione scelto.
@@ -268,17 +282,24 @@ Questo approccio ``contract-first'' porta numerosi vantaggi. Gli errori vengono 
 \end{frame}
 
 \begin{frame}{UDDI: le Pagine Gialle dei servizi}
-Con SOAP che definisce come comunicare e WSDL che descrive cosa comunicare, mancava ancora un pezzo: come scoprire quali servizi esistono. UDDI (Universal Description, Discovery and Integration) fu concepito come un registry distribuito, una sorta di ``Pagine Gialle'' per Web Services.
+Con SOAP che definisce come comunicare e WSDL che descrive cosa comunicare, mancava ancora un pezzo: come scoprire quali servizi esistono. \textbf{UDDI} (Universal Description, Discovery and Integration) fu concepito come un registry distribuito, una sorta di ``Pagine Gialle'' per Web Services.
 
 \vspace{0.3cm}
-L'idea era elegante: le aziende avrebbero pubblicato i loro servizi in registry UDDI pubblici o privati, completi di informazioni di business (White Pages), categorizzazione per industria e geografia (Yellow Pages), e dettagli tecnici come i link ai WSDL (Green Pages). I potenziali consumatori avrebbero potuto cercare servizi per categoria o caratteristica e scoprire dinamicamente i provider.
+L'idea era elegante: le aziende avrebbero pubblicato i loro servizi in registry \textbf{UDDI pubblici o privati}, completi di informazioni di business (White Pages), categorizzazione per industria e geografia (Yellow Pages), e dettagli tecnici come i link ai WSDL (Green Pages). I potenziali consumatori avrebbero potuto cercare servizi per categoria o caratteristica e scoprire dinamicamente i provider.
 
-\vspace{0.3cm}
-Nella pratica, i registry UDDI pubblici hanno avuto vita breve. La complessità del protocollo, i problemi di spam e la mancanza di un modello di business sostenibile hanno portato alla chiusura dei principali registry pubblici entro il 2006. Tuttavia, il concetto vive ancora nei registry privati enterprise e nelle moderne API management platform.
 \end{frame}
 
+
+\begin{frame}{UDDI: le Pagine Gialle dei servizi}
+
+	\vspace{0.3cm}
+	Nella pratica, i registry UDDI pubblici hanno avuto vita breve. La complessità del protocollo, i problemi di spam e la mancanza di un modello di business sostenibile hanno portato alla chiusura dei principali registry pubblici entro il 2006. Tuttavia, il concetto vive ancora nei registry privati enterprise e nelle moderne API management platform.
+\end{frame}
+
+
+
 \begin{frame}{WSIL: un'alternativa pragmatica}
-Di fronte alla complessità e all'insuccesso di UDDI, emerse un'alternativa più semplice chiamata WSIL (Web Services Inspection Language). Invece di un registry centralizzato complesso, WSIL propone un approccio decentralizzato e minimale.
+Di fronte alla complessità e all'insuccesso di UDDI, emerse un'alternativa più semplice chiamata \textbf{WSIL} (Web Services Inspection Language). Invece di un registry centralizzato complesso, WSIL propone un approccio decentralizzato e minimale.
 
 \vspace{0.3cm}
 L'idea è semplicemente quella di avere un file XML standard (tipicamente chiamato \texttt{inspection.wsil}) nella root di un web server. Questo file contiene link ai WSDL dei servizi disponibili su quel server, insieme a metadati basilari. I file WSIL possono anche contenere link ad altri file WSIL, creando una rete di discovery distribuita.
