@@ -51,22 +51,14 @@
 % Slide 2: Monte ore quinquennale vs quadriennale
 \begin{frame}{Monte Ore: Quinquennale vs Quadriennale}
 \begin{block}{Monte ore su 5 anni (tradizionale) 26-27}
-	\begin{itemize}
-		\item 4 anni da 32 ore
-		\item 1 anno da 30 ore
-		\item 33 settimane per anno
-		\item totale ore 5214
-	\end{itemize}
-	
+32x4 + 30x1 h/settimana × 33 settimane × 5 anni = \textbf{5.214 ore}
 \end{block}
-\end{frame}
 
-\begin{frame}{Rimodulazione monte ore su 4 anni}
 \begin{block}{Rimodulazione su 4 anni}
 	\begin{itemize}
-		\item \textbf{5214 ore}
+		\item \textbf{5214 ore} - di cui -
 		\item 36 h/settimana (in media)× 33 settimane × 4 anni = \textbf{4752 ore frontali}
-	   \item 5214-4752 = 462 residue 		 
+	   \item 5214-4752 = 462		 
 	\end{itemize}
 \end{block}
 
@@ -90,7 +82,7 @@
 	\end{itemize}
 \end{frame}
 % Slide 3: Distribuzione delle 528 ore
-\begin{frame}{Distribuzione delle 5214 Ore su 4 Anni}
+\begin{frame}{Distribuzione delle 5181 Ore su 4 Anni}
 \small
 \begin{table}
 \centering
@@ -140,6 +132,18 @@ Corso: \textit{Full Stack Developer} (sede di San Benedetto del Tronto)
 
 \end{frame}
 
+\begin{frame}{L'Offerta Formativa Integrata della Filiera}
+\begin{block}{Prosecuzione universitaria}
+	Lauree triennali e magistrali in:
+	\begin{itemize}
+		\item Informatica
+		\item Ingegneria Informatica / Computer Science
+	\end{itemize}
+	presso \textbf{Università di Camerino} e \textbf{Università Politecnica delle Marche}
+\end{block}
+\end{frame}
+
+
 % Slide 8: Partner della filiera
 \begin{frame}{Partner Strategici della Filiera}
 \small
@@ -149,6 +153,7 @@ Corso: \textit{Full Stack Developer} (sede di San Benedetto del Tronto)
 \begin{itemize}
 \item \textcolor{primaryblue}{ITS Turismo Marche}
 \item Università di Camerino
+\item Università Politecnica Marche
 \item IIS Ulpiani (Service Learning)
 \item CPIA Ascoli Piceno
 \end{itemize}
