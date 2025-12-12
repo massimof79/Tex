@@ -1,0 +1,552 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{geometry}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+
+\geometry{margin=2cm}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{Soluzioni Esercizi sui Mintermini}
+\rhead{A.S. 2024/2025}
+\cfoot{\thepage}
+
+\title{\textbf{Soluzioni Dettagliate\\Esercizi sui Mintermini}}
+\author{Prof. Massimo Fedeli\\IIS Fermi Sacconi Ceci - Ascoli Piceno}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Metodologia di Risoluzione}
+
+Per determinare la funzione logica a partire dalla tabella di verità utilizzando i mintermini, seguire questi passaggi:
+
+\begin{enumerate}
+    \item \textbf{Numerare le righe}: Assegnare a ciascuna riga della tabella un numero decimale (da 0 a $2^n-1$)
+    \item \textbf{Identificare le righe con uscita 1}: Individuare tutte le righe in cui $F = 1$
+    \item \textbf{Scrivere i mintermini}: Per ogni riga identificata, scrivere il prodotto logico di tutte le variabili:
+    \begin{itemize}
+        \item Variabile in forma \textbf{diretta} se il valore è 1
+        \item Variabile in forma \textbf{complementata} ($\overline{}$) se il valore è 0
+    \end{itemize}
+    \item \textbf{Sommare i mintermini}: Scrivere la funzione come OR (somma) dei mintermini
+\end{enumerate}
+
+\vspace{0.5cm}
+
+\section*{Soluzioni degli Esercizi}
+
+\subsection*{Esercizio 1}
+
+\begin{center}
+\begin{tabular}{ccc|c}
+\toprule
+\textbf{Riga} & \textbf{A} & \textbf{B} & \textbf{F} \\
+\midrule
+0 & 0 & 0 & 0 \\
+1 & 0 & 1 & \textcolor{red}{\textbf{1}} \\
+2 & 1 & 0 & \textcolor{red}{\textbf{1}} \\
+3 & 1 & 1 & 0 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Passaggio 1: Identificazione righe con F=1}
+\begin{itemize}
+    \item Riga 1: $A=0, B=1 \Rightarrow F=1$
+    \item Riga 2: $A=1, B=0 \Rightarrow F=1$
+\end{itemize}
+
+\textbf{Passaggio 2: Scrittura dei mintermini}
+\begin{itemize}
+    \item $m_1$: $A=0$ (complementato), $B=1$ (diretto) $\Rightarrow m_1 = \overline{A} \cdot B$
+    \item $m_2$: $A=1$ (diretto), $B=0$ (complementato) $\Rightarrow m_2 = A \cdot \overline{B}$
+\end{itemize}
+
+\textbf{Passaggio 3: Funzione logica}
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=Soluzione]
+$$F(A,B) = \overline{A} \cdot B + A \cdot \overline{B} = \sum(1,2)$$
+\end{tcolorbox}
+
+\textbf{Nota}: Questa è la funzione XOR (OR esclusivo).
+
+\vspace{1cm}
+
+\subsection*{Esercizio 2}
+
+\begin{center}
+\begin{tabular}{ccc|c}
+\toprule
+\textbf{Riga} & \textbf{X} & \textbf{Y} & \textbf{F} \\
+\midrule
+0 & 0 & 0 & \textcolor{red}{\textbf{1}} \\
+1 & 0 & 1 & 0 \\
+2 & 1 & 0 & 0 \\
+3 & 1 & 1 & \textcolor{red}{\textbf{1}} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Passaggio 1: Identificazione righe con F=1}
+\begin{itemize}
+    \item Riga 0: $X=0, Y=0 \Rightarrow F=1$
+    \item Riga 3: $X=1, Y=1 \Rightarrow F=1$
+\end{itemize}
+
+\textbf{Passaggio 2: Scrittura dei mintermini}
+\begin{itemize}
+    \item $m_0$: $X=0$ (complementato), $Y=0$ (complementato) $\Rightarrow m_0 = \overline{X} \cdot \overline{Y}$
+    \item $m_3$: $X=1$ (diretto), $Y=1$ (diretto) $\Rightarrow m_3 = X \cdot Y$
+\end{itemize}
+
+\textbf{Passaggio 3: Funzione logica}
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=Soluzione]
+$$F(X,Y) = \overline{X} \cdot \overline{Y} + X \cdot Y = \sum(0,3)$$
+\end{tcolorbox}
+
+\textbf{Nota}: Questa è la funzione XNOR (equivalenza logica).
+
+\newpage
+
+\subsection*{Esercizio 3}
+
+\begin{center}
+\begin{tabular}{cccc|c}
+\toprule
+\textbf{Riga} & \textbf{A} & \textbf{B} & \textbf{C} & \textbf{F} \\
+\midrule
+0 & 0 & 0 & 0 & \textcolor{red}{\textbf{1}} \\
+1 & 0 & 0 & 1 & 0 \\
+2 & 0 & 1 & 0 & \textcolor{red}{\textbf{1}} \\
+3 & 0 & 1 & 1 & 0 \\
+4 & 1 & 0 & 0 & 0 \\
+5 & 1 & 0 & 1 & \textcolor{red}{\textbf{1}} \\
+6 & 1 & 1 & 0 & \textcolor{red}{\textbf{1}} \\
+7 & 1 & 1 & 1 & 0 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Passaggio 1: Identificazione righe con F=1}
+\begin{itemize}
+    \item Riga 0: $A=0, B=0, C=0$
+    \item Riga 2: $A=0, B=1, C=0$
+    \item Riga 5: $A=1, B=0, C=1$
+    \item Riga 6: $A=1, B=1, C=0$
+\end{itemize}
+
+\textbf{Passaggio 2: Scrittura dei mintermini}
+\begin{itemize}
+    \item $m_0$: $A=0, B=0, C=0 \Rightarrow m_0 = \overline{A} \cdot \overline{B} \cdot \overline{C}$
+    \item $m_2$: $A=0, B=1, C=0 \Rightarrow m_2 = \overline{A} \cdot B \cdot \overline{C}$
+    \item $m_5$: $A=1, B=0, C=1 \Rightarrow m_5 = A \cdot \overline{B} \cdot C$
+    \item $m_6$: $A=1, B=1, C=0 \Rightarrow m_6 = A \cdot B \cdot \overline{C}$
+\end{itemize}
+
+\textbf{Passaggio 3: Funzione logica}
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=Soluzione]
+$$F(A,B,C) = \overline{A} \cdot \overline{B} \cdot \overline{C} + \overline{A} \cdot B \cdot \overline{C} + A \cdot \overline{B} \cdot C + A \cdot B \cdot \overline{C}$$
+$$F(A,B,C) = \sum(0,2,5,6)$$
+\end{tcolorbox}
+
+\textbf{Osservazione}: Si può notare che $C=0$ in tre mintermini su quattro, questo suggerisce una possibile semplificazione.
+
+\vspace{1cm}
+
+\subsection*{Esercizio 4}
+
+\begin{center}
+\begin{tabular}{ccccc|c}
+\toprule
+\textbf{Riga} & \textbf{X} & \textbf{Y} & \textbf{Z} & \textbf{F} \\
+\midrule
+0 & 0 & 0 & 0 & 0 \\
+1 & 0 & 0 & 1 & \textcolor{red}{\textbf{1}} \\
+2 & 0 & 1 & 0 & 0 \\
+3 & 0 & 1 & 1 & \textcolor{red}{\textbf{1}} \\
+4 & 1 & 0 & 0 & \textcolor{red}{\textbf{1}} \\
+5 & 1 & 0 & 1 & 0 \\
+6 & 1 & 1 & 0 & \textcolor{red}{\textbf{1}} \\
+7 & 1 & 1 & 1 & \textcolor{red}{\textbf{1}} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Passaggio 1: Identificazione righe con F=1}
+
+Righe: 1, 3, 4, 6, 7
+
+\textbf{Passaggio 2: Scrittura dei mintermini}
+\begin{itemize}
+    \item $m_1 = \overline{X} \cdot \overline{Y} \cdot Z$
+    \item $m_3 = \overline{X} \cdot Y \cdot Z$
+    \item $m_4 = X \cdot \overline{Y} \cdot \overline{Z}$
+    \item $m_6 = X \cdot Y \cdot \overline{Z}$
+    \item $m_7 = X \cdot Y \cdot Z$
+\end{itemize}
+
+\textbf{Passaggio 3: Funzione logica}
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=Soluzione]
+\begin{align*}
+F(X,Y,Z) = &\overline{X} \cdot \overline{Y} \cdot Z + \overline{X} \cdot Y \cdot Z + X \cdot \overline{Y} \cdot \overline{Z} + \\
+           &X \cdot Y \cdot \overline{Z} + X \cdot Y \cdot Z
+\end{align*}
+$$F(X,Y,Z) = \sum(1,3,4,6,7)$$
+\end{tcolorbox}
+
+\newpage
+
+\subsection*{Esercizio 5}
+
+\begin{center}
+\begin{tabular}{ccccc|c}
+\toprule
+\textbf{Riga} & \textbf{A} & \textbf{B} & \textbf{C} & \textbf{F} \\
+\midrule
+0 & 0 & 0 & 0 & 0 \\
+1 & 0 & 0 & 1 & 0 \\
+2 & 0 & 1 & 0 & \textcolor{red}{\textbf{1}} \\
+3 & 0 & 1 & 1 & \textcolor{red}{\textbf{1}} \\
+4 & 1 & 0 & 0 & \textcolor{red}{\textbf{1}} \\
+5 & 1 & 0 & 1 & 0 \\
+6 & 1 & 1 & 0 & 0 \\
+7 & 1 & 1 & 1 & \textcolor{red}{\textbf{1}} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Passaggio 1: Identificazione righe con F=1}
+
+Righe: 2, 3, 4, 7
+
+\textbf{Passaggio 2: Scrittura dei mintermini}
+\begin{itemize}
+    \item $m_2$: $A=0, B=1, C=0 \Rightarrow \overline{A} \cdot B \cdot \overline{C}$
+    \item $m_3$: $A=0, B=1, C=1 \Rightarrow \overline{A} \cdot B \cdot C$
+    \item $m_4$: $A=1, B=0, C=0 \Rightarrow A \cdot \overline{B} \cdot \overline{C}$
+    \item $m_7$: $A=1, B=1, C=1 \Rightarrow A \cdot B \cdot C$
+\end{itemize}
+
+\textbf{Passaggio 3: Funzione logica}
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=Soluzione]
+$$F(A,B,C) = \overline{A} \cdot B \cdot \overline{C} + \overline{A} \cdot B \cdot C + A \cdot \overline{B} \cdot \overline{C} + A \cdot B \cdot C$$
+$$F(A,B,C) = \sum(2,3,4,7)$$
+\end{tcolorbox}
+
+\textbf{Semplificazione possibile}:
+\begin{itemize}
+    \item $m_2 + m_3 = \overline{A} \cdot B \cdot (\overline{C} + C) = \overline{A} \cdot B$
+    \item Funzione semplificata: $F = \overline{A} \cdot B + A \cdot \overline{B} \cdot \overline{C} + A \cdot B \cdot C$
+\end{itemize}
+
+\vspace{1cm}
+
+\subsection*{Esercizio 6}
+
+\begin{center}
+\begin{tabular}{cccccc|c}
+\toprule
+\textbf{Riga} & \textbf{A} & \textbf{B} & \textbf{C} & \textbf{D} & \textbf{F} \\
+\midrule
+0 & 0 & 0 & 0 & 0 & \textcolor{red}{\textbf{1}} \\
+1 & 0 & 0 & 0 & 1 & 0 \\
+2 & 0 & 0 & 1 & 0 & \textcolor{red}{\textbf{1}} \\
+3 & 0 & 0 & 1 & 1 & 0 \\
+4 & 0 & 1 & 0 & 0 & 0 \\
+5 & 0 & 1 & 0 & 1 & \textcolor{red}{\textbf{1}} \\
+6 & 0 & 1 & 1 & 0 & 0 \\
+7 & 0 & 1 & 1 & 1 & \textcolor{red}{\textbf{1}} \\
+8 & 1 & 0 & 0 & 0 & 0 \\
+9 & 1 & 0 & 0 & 1 & 0 \\
+10 & 1 & 0 & 1 & 0 & \textcolor{red}{\textbf{1}} \\
+11 & 1 & 0 & 1 & 1 & \textcolor{red}{\textbf{1}} \\
+12 & 1 & 1 & 0 & 0 & \textcolor{red}{\textbf{1}} \\
+13 & 1 & 1 & 0 & 1 & 0 \\
+14 & 1 & 1 & 1 & 0 & 0 \\
+15 & 1 & 1 & 1 & 1 & \textcolor{red}{\textbf{1}} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Passaggio 1: Identificazione righe con F=1}
+
+Righe: 0, 2, 5, 7, 10, 11, 12, 15
+
+\textbf{Passaggio 2: Scrittura dei mintermini}
+\begin{itemize}
+    \item $m_0 = \overline{A} \cdot \overline{B} \cdot \overline{C} \cdot \overline{D}$
+    \item $m_2 = \overline{A} \cdot \overline{B} \cdot C \cdot \overline{D}$
+    \item $m_5 = \overline{A} \cdot B \cdot \overline{C} \cdot D$
+    \item $m_7 = \overline{A} \cdot B \cdot C \cdot D$
+    \item $m_{10} = A \cdot \overline{B} \cdot C \cdot \overline{D}$
+    \item $m_{11} = A \cdot \overline{B} \cdot C \cdot D$
+    \item $m_{12} = A \cdot B \cdot \overline{C} \cdot \overline{D}$
+    \item $m_{15} = A \cdot B \cdot C \cdot D$
+\end{itemize}
+
+\textbf{Passaggio 3: Funzione logica}
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=Soluzione]
+\begin{align*}
+F(A,B,C,D) = &\overline{A} \cdot \overline{B} \cdot \overline{C} \cdot \overline{D} + \overline{A} \cdot \overline{B} \cdot C \cdot \overline{D} + \overline{A} \cdot B \cdot \overline{C} \cdot D + \\
+             &\overline{A} \cdot B \cdot C \cdot D + A \cdot \overline{B} \cdot C \cdot \overline{D} + A \cdot \overline{B} \cdot C \cdot D + \\
+             &A \cdot B \cdot \overline{C} \cdot \overline{D} + A \cdot B \cdot C \cdot D
+\end{align*}
+$$F(A,B,C,D) = \sum(0,2,5,7,10,11,12,15)$$
+\end{tcolorbox}
+
+\newpage
+
+\subsection*{Esercizio 7}
+
+\begin{center}
+\begin{tabular}{ccccc|c}
+\toprule
+\textbf{Riga} & \textbf{P} & \textbf{Q} & \textbf{R} & \textbf{F} \\
+\midrule
+0 & 0 & 0 & 0 & \textcolor{red}{\textbf{1}} \\
+1 & 0 & 0 & 1 & \textcolor{red}{\textbf{1}} \\
+2 & 0 & 1 & 0 & 0 \\
+3 & 0 & 1 & 1 & 0 \\
+4 & 1 & 0 & 0 & \textcolor{red}{\textbf{1}} \\
+5 & 1 & 0 & 1 & \textcolor{red}{\textbf{1}} \\
+6 & 1 & 1 & 0 & 0 \\
+7 & 1 & 1 & 1 & \textcolor{red}{\textbf{1}} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Passaggio 1: Identificazione righe con F=1}
+
+Righe: 0, 1, 4, 5, 7
+
+\textbf{Passaggio 2: Scrittura dei mintermini}
+\begin{itemize}
+    \item $m_0 = \overline{P} \cdot \overline{Q} \cdot \overline{R}$
+    \item $m_1 = \overline{P} \cdot \overline{Q} \cdot R$
+    \item $m_4 = P \cdot \overline{Q} \cdot \overline{R}$
+    \item $m_5 = P \cdot \overline{Q} \cdot R$
+    \item $m_7 = P \cdot Q \cdot R$
+\end{itemize}
+
+\textbf{Passaggio 3: Funzione logica}
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=Soluzione]
+\begin{align*}
+F(P,Q,R) = &\overline{P} \cdot \overline{Q} \cdot \overline{R} + \overline{P} \cdot \overline{Q} \cdot R + P \cdot \overline{Q} \cdot \overline{R} + \\
+           &P \cdot \overline{Q} \cdot R + P \cdot Q \cdot R
+\end{align*}
+$$F(P,Q,R) = \sum(0,1,4,5,7)$$
+\end{tcolorbox}
+
+\textbf{Semplificazione possibile}:
+\begin{itemize}
+    \item $m_0 + m_1 = \overline{P} \cdot \overline{Q}$
+    \item $m_4 + m_5 = P \cdot \overline{Q}$
+    \item Funzione semplificata: $F = \overline{Q} + P \cdot Q \cdot R$
+\end{itemize}
+
+\vspace{1cm}
+
+\subsection*{Esercizio 8}
+
+\begin{center}
+\begin{tabular}{ccccc|c}
+\toprule
+\textbf{Riga} & \textbf{A} & \textbf{B} & \textbf{C} & \textbf{F} \\
+\midrule
+0 & 0 & 0 & 0 & 0 \\
+1 & 0 & 0 & 1 & \textcolor{red}{\textbf{1}} \\
+2 & 0 & 1 & 0 & \textcolor{red}{\textbf{1}} \\
+3 & 0 & 1 & 1 & 0 \\
+4 & 1 & 0 & 0 & 0 \\
+5 & 1 & 0 & 1 & 0 \\
+6 & 1 & 1 & 0 & \textcolor{red}{\textbf{1}} \\
+7 & 1 & 1 & 1 & \textcolor{red}{\textbf{1}} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Passaggio 1: Identificazione righe con F=1}
+
+Righe: 1, 2, 6, 7
+
+\textbf{Passaggio 2: Scrittura dei mintermini}
+\begin{itemize}
+    \item $m_1 = \overline{A} \cdot \overline{B} \cdot C$
+    \item $m_2 = \overline{A} \cdot B \cdot \overline{C}$
+    \item $m_6 = A \cdot B \cdot \overline{C}$
+    \item $m_7 = A \cdot B \cdot C$
+\end{itemize}
+
+\textbf{Passaggio 3: Funzione logica}
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=Soluzione]
+$$F(A,B,C) = \overline{A} \cdot \overline{B} \cdot C + \overline{A} \cdot B \cdot \overline{C} + A \cdot B \cdot \overline{C} + A \cdot B \cdot C$$
+$$F(A,B,C) = \sum(1,2,6,7)$$
+\end{tcolorbox}
+
+\textbf{Semplificazione possibile}:
+\begin{itemize}
+    \item $m_6 + m_7 = A \cdot B \cdot (\overline{C} + C) = A \cdot B$
+    \item Funzione semplificata: $F = \overline{A} \cdot \overline{B} \cdot C + \overline{A} \cdot B \cdot \overline{C} + A \cdot B$
+\end{itemize}
+
+\newpage
+
+\subsection*{Esercizio 9}
+
+\begin{center}
+\begin{tabular}{ccccccc|c}
+\toprule
+\textbf{Riga} & \textbf{W} & \textbf{X} & \textbf{Y} & \textbf{Z} & \textbf{F} \\
+\midrule
+0 & 0 & 0 & 0 & 0 & 0 \\
+1 & 0 & 0 & 0 & 1 & \textcolor{red}{\textbf{1}} \\
+2 & 0 & 0 & 1 & 0 & 0 \\
+3 & 0 & 0 & 1 & 1 & \textcolor{red}{\textbf{1}} \\
+4 & 0 & 1 & 0 & 0 & \textcolor{red}{\textbf{1}} \\
+5 & 0 & 1 & 0 & 1 & 0 \\
+6 & 0 & 1 & 1 & 0 & \textcolor{red}{\textbf{1}} \\
+7 & 0 & 1 & 1 & 1 & 0 \\
+8 & 1 & 0 & 0 & 0 & 0 \\
+9 & 1 & 0 & 0 & 1 & 0 \\
+10 & 1 & 0 & 1 & 0 & \textcolor{red}{\textbf{1}} \\
+11 & 1 & 0 & 1 & 1 & \textcolor{red}{\textbf{1}} \\
+12 & 1 & 1 & 0 & 0 & 0 \\
+13 & 1 & 1 & 0 & 1 & \textcolor{red}{\textbf{1}} \\
+14 & 1 & 1 & 1 & 0 & 0 \\
+15 & 1 & 1 & 1 & 1 & 0 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Passaggio 1: Identificazione righe con F=1}
+
+Righe: 1, 3, 4, 6, 10, 11, 13
+
+\textbf{Passaggio 2: Scrittura dei mintermini}
+\begin{itemize}
+    \item $m_1 = \overline{W} \cdot \overline{X} \cdot \overline{Y} \cdot Z$
+    \item $m_3 = \overline{W} \cdot \overline{X} \cdot Y \cdot Z$
+    \item $m_4 = \overline{W} \cdot X \cdot \overline{Y} \cdot \overline{Z}$
+    \item $m_6 = \overline{W} \cdot X \cdot Y \cdot \overline{Z}$
+    \item $m_{10} = W \cdot \overline{X} \cdot Y \cdot \overline{Z}$
+    \item $m_{11} = W \cdot \overline{X} \cdot Y \cdot Z$
+    \item $m_{13} = W \cdot X \cdot \overline{Y} \cdot Z$
+\end{itemize}
+
+\textbf{Passaggio 3: Funzione logica}
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=Soluzione]
+\begin{align*}
+F(W,X,Y,Z) = &\overline{W} \cdot \overline{X} \cdot \overline{Y} \cdot Z + \overline{W} \cdot \overline{X} \cdot Y \cdot Z + \overline{W} \cdot X \cdot \overline{Y} \cdot \overline{Z} + \\
+             &\overline{W} \cdot X \cdot Y \cdot \overline{Z} + W \cdot \overline{X} \cdot Y \cdot \overline{Z} + W \cdot \overline{X} \cdot Y \cdot Z + \\
+             &W \cdot X \cdot \overline{Y} \cdot Z
+\end{align*}
+$$F(W,X,Y,Z) = \sum(1,3,4,6,10,11,13)$$
+\end{tcolorbox}
+
+\vspace{1cm}
+
+\subsection*{Esercizio 10}
+
+\begin{center}
+\begin{tabular}{ccccc|c}
+\toprule
+\textbf{Riga} & \textbf{A} & \textbf{B} & \textbf{C} & \textbf{F} \\
+\midrule
+0 & 0 & 0 & 0 & \textcolor{red}{\textbf{1}} \\
+1 & 0 & 0 & 1 & 0 \\
+2 & 0 & 1 & 0 & 0 \\
+3 & 0 & 1 & 1 & \textcolor{red}{\textbf{1}} \\
+4 & 1 & 0 & 0 & \textcolor{red}{\textbf{1}} \\
+5 & 1 & 0 & 1 & \textcolor{red}{\textbf{1}} \\
+6 & 1 & 1 & 0 & 0 \\
+7 & 1 & 1 & 1 & 0 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Passaggio 1: Identificazione righe con F=1}
+
+Righe: 0, 3, 4, 5
+
+\textbf{Passaggio 2: Scrittura dei mintermini}
+\begin{itemize}
+    \item $m_0 = \overline{A} \cdot \overline{B} \cdot \overline{C}$
+    \item $m_3 = \overline{A} \cdot B \cdot C$
+    \item $m_4 = A \cdot \overline{B} \cdot \overline{C}$
+    \item $m_5 = A \cdot \overline{B} \cdot C$
+\end{itemize}
+
+\textbf{Passaggio 3: Funzione logica}
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=Soluzione]
+$$F(A,B,C) = \overline{A} \cdot \overline{B} \cdot \overline{C} + \overline{A} \cdot B \cdot C + A \cdot \overline{B} \cdot \overline{C} + A \cdot \overline{B} \cdot C$$
+$$F(A,B,C) = \sum(0,3,4,5)$$
+\end{tcolorbox}
+
+\textbf{Semplificazione possibile}:
+\begin{itemize}
+    \item $m_0 + m_4 = \overline{B} \cdot \overline{C}$
+    \item $m_4 + m_5 = A \cdot \overline{B}$
+    \item Funzione semplificata: $F = \overline{B} \cdot \overline{C} + \overline{A} \cdot B \cdot C + A \cdot \overline{B} \cdot C$
+    
+    oppure
+    
+    $F = A \cdot \overline{B} + \overline{A} \cdot \overline{B} \cdot \overline{C} + \overline{A} \cdot B \cdot C$
+\end{itemize}
+
+\newpage
+
+\section*{Riepilogo delle Notazioni}
+
+\subsection*{Forma Estesa}
+La funzione viene scritta esplicitando tutti i prodotti logici:
+$$F = \overline{A} \cdot B + A \cdot \overline{B}$$
+
+\subsection*{Forma Compatta (Notazione Sigma)}
+La funzione viene scritta come somma dei mintermini indicati dai loro indici:
+$$F = \sum(1,2)$$
+
+dove i numeri indicano le righe della tabella di verità con uscita 1.
+
+\subsection*{Conversione Decimale-Binario}
+
+Per determinare quale mintermine corrisponde a un certo indice:
+
+\begin{itemize}
+    \item Convertire l'indice decimale in binario
+    \item Il numero di bit deve essere uguale al numero di variabili
+    \item 0 → variabile complementata
+    \item 1 → variabile diretta
+\end{itemize}
+
+\textbf{Esempio con 3 variabili A, B, C:}
+\begin{itemize}
+    \item $m_5 = ?$
+    \item $5_{10} = 101_2$
+    \item $A=1$ (diretto), $B=0$ (complementato), $C=1$ (diretto)
+    \item $m_5 = A \cdot \overline{B} \cdot C$
+\end{itemize}
+
+\section*{Consigli per la Risoluzione}
+
+\begin{enumerate}
+    \item \textbf{Organizzazione}: Numerare sempre le righe partendo da 0
+    \item \textbf{Evidenziazione}: Evidenziare o marcare le righe con $F=1$
+    \item \textbf{Sistematicità}: Procedere in ordine, senza saltare righe
+    \item \textbf{Verifica}: Controllare che ogni variabile compaia in ogni mintermine
+    \item \textbf{Semplificazione}: Dopo aver scritto la forma SOP, cercare possibili semplificazioni usando:
+    \begin{itemize}
+        \item Teorema del complemento: $X + \overline{X} = 1$
+        \item Fattorizzazione
+        \item Mappe di Karnaugh (argomento successivo)
+    \end{itemize}
+\end{enumerate}
+
+\end{document}

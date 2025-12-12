@@ -1,0 +1,631 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{colortbl}
+
+\geometry{margin=2cm}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{Soluzioni: Tabelle di Verità}
+\fancyhead[R]{IIS Fermi Sacconi Ceci}
+\fancyfoot[C]{\thepage}
+
+\title{\textbf{Soluzioni Complete}\\ \large Esercizi sulle Tabelle di Verità}
+\author{Prof. Massimo Fedeli}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Esercizio 1}
+\subsection*{Funzione}
+\[ F(A, B) = A \cdot B + \overline{A} \]
+
+\subsection*{Procedimento}
+La funzione è composta da due termini in OR:
+\begin{itemize}
+    \item $A \cdot B$ (prodotto logico di A e B)
+    \item $\overline{A}$ (negazione di A)
+\end{itemize}
+
+La funzione è vera quando almeno uno dei due termini è vero.
+
+\subsection*{Tabella di Verità Completa}
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+\rowcolor{lightgray}
+\textbf{A} & \textbf{B} & $A \cdot B$ & $\overline{A}$ & \textbf{F(A,B)} \\
+\hline
+0 & 0 & 0 & 1 & \textbf{1} \\
+\hline
+0 & 1 & 0 & 1 & \textbf{1} \\
+\hline
+1 & 0 & 0 & 0 & \textbf{0} \\
+\hline
+1 & 1 & 1 & 0 & \textbf{1} \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection*{Analisi del Risultato}
+La funzione è falsa solo quando $A=1$ e $B=0$. In tutti gli altri casi è vera.
+
+\vspace{1cm}
+
+\section*{Esercizio 2}
+\subsection*{Funzione}
+\[ F(A, B) = \overline{A \cdot B} \]
+
+\subsection*{Procedimento}
+Questa è la funzione \textbf{NAND} (NOT-AND):
+\begin{enumerate}
+    \item Si calcola prima il prodotto $A \cdot B$
+    \item Poi si nega il risultato
+\end{enumerate}
+
+\subsection*{Tabella di Verità Completa}
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+\rowcolor{lightgray}
+\textbf{A} & \textbf{B} & $A \cdot B$ & \textbf{F(A,B)} \\
+\hline
+0 & 0 & 0 & \textbf{1} \\
+\hline
+0 & 1 & 0 & \textbf{1} \\
+\hline
+1 & 0 & 0 & \textbf{1} \\
+\hline
+1 & 1 & 1 & \textbf{0} \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection*{Analisi del Risultato}
+La funzione NAND è vera quando almeno uno dei due input è falso. È l'opposto della funzione AND.
+
+\newpage
+
+\section*{Esercizio 3}
+\subsection*{Funzione}
+\[ F(A, B, C) = A \cdot B + B \cdot C \]
+
+\subsection*{Procedimento}
+La funzione è composta da due prodotti in OR:
+\begin{itemize}
+    \item $A \cdot B$ (AND tra A e B)
+    \item $B \cdot C$ (AND tra B e C)
+\end{itemize}
+
+Si nota che la variabile B è presente in entrambi i termini.
+
+\subsection*{Tabella di Verità Completa}
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+\rowcolor{lightgray}
+\textbf{A} & \textbf{B} & \textbf{C} & $A \cdot B$ & $B \cdot C$ & \textbf{F(A,B,C)} \\
+\hline
+0 & 0 & 0 & 0 & 0 & \textbf{0} \\
+\hline
+0 & 0 & 1 & 0 & 0 & \textbf{0} \\
+\hline
+0 & 1 & 0 & 0 & 0 & \textbf{0} \\
+\hline
+0 & 1 & 1 & 0 & 1 & \textbf{1} \\
+\hline
+1 & 0 & 0 & 0 & 0 & \textbf{0} \\
+\hline
+1 & 0 & 1 & 0 & 0 & \textbf{0} \\
+\hline
+1 & 1 & 0 & 1 & 0 & \textbf{1} \\
+\hline
+1 & 1 & 1 & 1 & 1 & \textbf{1} \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection*{Analisi del Risultato}
+La funzione è vera in 3 casi su 8:
+\begin{itemize}
+    \item Quando $B=1$ e $C=1$ (indipendentemente da A)
+    \item Quando $A=1$, $B=1$ e $C=0$
+    \item Quando tutti sono a 1
+\end{itemize}
+
+Si può semplificare come: $F = B \cdot (A + C)$
+
+\vspace{1cm}
+
+\section*{Esercizio 4}
+\subsection*{Funzione}
+\[ F(A, B, C) = A \cdot (\overline{B} + C) \]
+
+\subsection*{Procedimento}
+La funzione richiede:
+\begin{enumerate}
+    \item Calcolare $\overline{B}$ (negazione di B)
+    \item Calcolare $\overline{B} + C$ (OR tra $\overline{B}$ e C)
+    \item Moltiplicare il risultato per A
+\end{enumerate}
+
+La funzione è vera solo quando A è vero E almeno una tra $\overline{B}$ o C è vera.
+
+\subsection*{Tabella di Verità Completa}
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+\rowcolor{lightgray}
+\textbf{A} & \textbf{B} & \textbf{C} & $\overline{B}$ & $\overline{B} + C$ & \textbf{F(A,B,C)} \\
+\hline
+0 & 0 & 0 & 1 & 1 & \textbf{0} \\
+\hline
+0 & 0 & 1 & 1 & 1 & \textbf{0} \\
+\hline
+0 & 1 & 0 & 0 & 0 & \textbf{0} \\
+\hline
+0 & 1 & 1 & 0 & 1 & \textbf{0} \\
+\hline
+1 & 0 & 0 & 1 & 1 & \textbf{1} \\
+\hline
+1 & 0 & 1 & 1 & 1 & \textbf{1} \\
+\hline
+1 & 1 & 0 & 0 & 0 & \textbf{0} \\
+\hline
+1 & 1 & 1 & 0 & 1 & \textbf{1} \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection*{Analisi del Risultato}
+La funzione è vera solo quando $A=1$ E ($B=0$ OPPURE $C=1$). Applicando De Morgan: $F = A \cdot \overline{B \cdot \overline{C}}$
+
+\newpage
+
+\section*{Esercizio 5}
+\subsection*{Funzione}
+\[ F(A, B, C) = \overline{A + B} \cdot C \]
+
+\subsection*{Procedimento}
+\textbf{Attenzione}: La negazione si applica all'intero termine $(A + B)$:
+\begin{enumerate}
+    \item Calcolare $A + B$ (OR tra A e B)
+    \item Negare il risultato: $\overline{A + B}$
+    \item Moltiplicare per C
+\end{enumerate}
+
+Per la legge di De Morgan: $\overline{A + B} = \overline{A} \cdot \overline{B}$
+
+\subsection*{Tabella di Verità Completa}
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+\rowcolor{lightgray}
+\textbf{A} & \textbf{B} & \textbf{C} & $A + B$ & $\overline{A + B}$ & \textbf{F(A,B,C)} \\
+\hline
+0 & 0 & 0 & 0 & 1 & \textbf{0} \\
+\hline
+0 & 0 & 1 & 0 & 1 & \textbf{1} \\
+\hline
+0 & 1 & 0 & 1 & 0 & \textbf{0} \\
+\hline
+0 & 1 & 1 & 1 & 0 & \textbf{0} \\
+\hline
+1 & 0 & 0 & 1 & 0 & \textbf{0} \\
+\hline
+1 & 0 & 1 & 1 & 0 & \textbf{0} \\
+\hline
+1 & 1 & 0 & 1 & 0 & \textbf{0} \\
+\hline
+1 & 1 & 1 & 1 & 0 & \textbf{0} \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection*{Analisi del Risultato}
+La funzione è vera in un solo caso: quando $A=0$, $B=0$ e $C=1$.
+
+Forma equivalente: $F = \overline{A} \cdot \overline{B} \cdot C$
+
+\vspace{1cm}
+
+\section*{Esercizio 6}
+\subsection*{Funzione}
+\[ F(A, B, C) = A \cdot \overline{B} \cdot C + \overline{A} \cdot B \cdot \overline{C} \]
+
+\subsection*{Procedimento}
+Questa è una funzione in \textbf{forma canonica SOP} (Sum of Products):
+\begin{itemize}
+    \item Primo termine: $A \cdot \overline{B} \cdot C$ (vero quando $A=1$, $B=0$, $C=1$)
+    \item Secondo termine: $\overline{A} \cdot B \cdot \overline{C}$ (vero quando $A=0$, $B=1$, $C=0$)
+\end{itemize}
+
+La funzione è vera quando almeno uno dei due termini è vero.
+
+\subsection*{Tabella di Verità Completa}
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+\rowcolor{lightgray}
+\textbf{A} & \textbf{B} & \textbf{C} & $A \cdot \overline{B} \cdot C$ & $\overline{A} \cdot B \cdot \overline{C}$ & \textbf{F(A,B,C)} \\
+\hline
+0 & 0 & 0 & 0 & 0 & \textbf{0} \\
+\hline
+0 & 0 & 1 & 0 & 0 & \textbf{0} \\
+\hline
+0 & 1 & 0 & 0 & 1 & \textbf{1} \\
+\hline
+0 & 1 & 1 & 0 & 0 & \textbf{0} \\
+\hline
+1 & 0 & 0 & 0 & 0 & \textbf{0} \\
+\hline
+1 & 0 & 1 & 1 & 0 & \textbf{1} \\
+\hline
+1 & 1 & 0 & 0 & 0 & \textbf{0} \\
+\hline
+1 & 1 & 1 & 0 & 0 & \textbf{0} \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection*{Analisi del Risultato}
+La funzione è vera in esattamente 2 casi su 8:
+\begin{itemize}
+    \item Riga 3: $(0,1,0)$ - mintermino $\overline{A} \cdot B \cdot \overline{C}$
+    \item Riga 6: $(1,0,1)$ - mintermino $A \cdot \overline{B} \cdot C$
+\end{itemize}
+
+Notazione decimale: $F = \sum m(2,5)$
+
+\newpage
+
+\section*{Esercizio 7}
+\subsection*{Funzione}
+\[ F(A, B, C, D) = A \cdot B + C \cdot D \]
+
+\subsection*{Procedimento}
+Con 4 variabili abbiamo 16 combinazioni possibili ($2^4=16$).
+
+La funzione è vera quando:
+\begin{itemize}
+    \item $A \cdot B = 1$ (A e B entrambi a 1), oppure
+    \item $C \cdot D = 1$ (C e D entrambi a 1), oppure
+    \item Entrambe le condizioni
+\end{itemize}
+
+\subsection*{Tabella di Verità Completa}
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+\rowcolor{lightgray}
+\textbf{A} & \textbf{B} & \textbf{C} & \textbf{D} & $A \cdot B$ & $C \cdot D$ & \textbf{F(A,B,C,D)} \\
+\hline
+0 & 0 & 0 & 0 & 0 & 0 & \textbf{0} \\
+\hline
+0 & 0 & 0 & 1 & 0 & 0 & \textbf{0} \\
+\hline
+0 & 0 & 1 & 0 & 0 & 0 & \textbf{0} \\
+\hline
+0 & 0 & 1 & 1 & 0 & 1 & \textbf{1} \\
+\hline
+0 & 1 & 0 & 0 & 0 & 0 & \textbf{0} \\
+\hline
+0 & 1 & 0 & 1 & 0 & 0 & \textbf{0} \\
+\hline
+0 & 1 & 1 & 0 & 0 & 0 & \textbf{0} \\
+\hline
+0 & 1 & 1 & 1 & 0 & 1 & \textbf{1} \\
+\hline
+1 & 0 & 0 & 0 & 0 & 0 & \textbf{0} \\
+\hline
+1 & 0 & 0 & 1 & 0 & 0 & \textbf{0} \\
+\hline
+1 & 0 & 1 & 0 & 0 & 0 & \textbf{0} \\
+\hline
+1 & 0 & 1 & 1 & 0 & 1 & \textbf{1} \\
+\hline
+1 & 1 & 0 & 0 & 1 & 0 & \textbf{1} \\
+\hline
+1 & 1 & 0 & 1 & 1 & 0 & \textbf{1} \\
+\hline
+1 & 1 & 1 & 0 & 1 & 0 & \textbf{1} \\
+\hline
+1 & 1 & 1 & 1 & 1 & 1 & \textbf{1} \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection*{Analisi del Risultato}
+La funzione è vera in 7 casi su 16:
+\begin{itemize}
+    \item Righe 4, 8, 12: $C=1$ e $D=1$ (ma $A \cdot B = 0$)
+    \item Righe 13, 14, 15: $A=1$ e $B=1$ (con qualsiasi valore di C e D)
+    \item Riga 16: Tutti a 1
+\end{itemize}
+
+\newpage
+
+\section*{Esercizio 8}
+\subsection*{Funzione}
+\[ F(A, B, C, D) = \overline{A \cdot B} \cdot (C + D) \]
+
+\subsection*{Procedimento}
+Questa funzione combina NAND e OR:
+\begin{enumerate}
+    \item Calcolare $A \cdot B$ (AND)
+    \item Negare: $\overline{A \cdot B}$ (NAND)
+    \item Calcolare $C + D$ (OR)
+    \item Moltiplicare i due risultati (AND finale)
+\end{enumerate}
+
+\subsection*{Tabella di Verità Completa}
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+\rowcolor{lightgray}
+\textbf{A} & \textbf{B} & \textbf{C} & \textbf{D} & $\overline{A \cdot B}$ & $C + D$ & \textbf{F(A,B,C,D)} \\
+\hline
+0 & 0 & 0 & 0 & 1 & 0 & \textbf{0} \\
+\hline
+0 & 0 & 0 & 1 & 1 & 1 & \textbf{1} \\
+\hline
+0 & 0 & 1 & 0 & 1 & 1 & \textbf{1} \\
+\hline
+0 & 0 & 1 & 1 & 1 & 1 & \textbf{1} \\
+\hline
+0 & 1 & 0 & 0 & 1 & 0 & \textbf{0} \\
+\hline
+0 & 1 & 0 & 1 & 1 & 1 & \textbf{1} \\
+\hline
+0 & 1 & 1 & 0 & 1 & 1 & \textbf{1} \\
+\hline
+0 & 1 & 1 & 1 & 1 & 1 & \textbf{1} \\
+\hline
+1 & 0 & 0 & 0 & 1 & 0 & \textbf{0} \\
+\hline
+1 & 0 & 0 & 1 & 1 & 1 & \textbf{1} \\
+\hline
+1 & 0 & 1 & 0 & 1 & 1 & \textbf{1} \\
+\hline
+1 & 0 & 1 & 1 & 1 & 1 & \textbf{1} \\
+\hline
+1 & 1 & 0 & 0 & 0 & 0 & \textbf{0} \\
+\hline
+1 & 1 & 0 & 1 & 0 & 1 & \textbf{0} \\
+\hline
+1 & 1 & 1 & 0 & 0 & 1 & \textbf{0} \\
+\hline
+1 & 1 & 1 & 1 & 0 & 1 & \textbf{0} \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection*{Analisi del Risultato}
+La funzione è vera in 9 casi su 16. È vera quando:
+\begin{itemize}
+    \item $\overline{A \cdot B} = 1$ (almeno uno tra A o B è 0) \textbf{E}
+    \item $C + D = 1$ (almeno uno tra C o D è 1)
+\end{itemize}
+
+È falsa quando: $A=1$ E $B=1$ (indipendentemente da C e D), oppure quando $C=0$ E $D=0$ (indipendentemente da A e B).
+
+\newpage
+
+\section*{Esercizio 9}
+\subsection*{Funzione}
+\[ F(A, B, C) = A \oplus B \oplus C \]
+
+\subsection*{Procedimento}
+Lo XOR (OR esclusivo) è definito come:
+\[ X \oplus Y = X \cdot \overline{Y} + \overline{X} \cdot Y \]
+
+Per lo XOR a cascata:
+\begin{enumerate}
+    \item Prima si calcola $A \oplus B$
+    \item Poi si calcola $(A \oplus B) \oplus C$
+\end{enumerate}
+
+\textbf{Proprietà importante}: Lo XOR multiplo è vero quando c'è un numero \textbf{dispari} di 1 negli input.
+
+\subsection*{Tabella di Verità Completa}
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+\rowcolor{lightgray}
+\textbf{A} & \textbf{B} & \textbf{C} & $A \oplus B$ & \textbf{F(A,B,C)} & \textbf{N° di 1} \\
+\hline
+0 & 0 & 0 & 0 & \textbf{0} & 0 (pari) \\
+\hline
+0 & 0 & 1 & 0 & \textbf{1} & 1 (dispari) \\
+\hline
+0 & 1 & 0 & 1 & \textbf{1} & 1 (dispari) \\
+\hline
+0 & 1 & 1 & 1 & \textbf{0} & 2 (pari) \\
+\hline
+1 & 0 & 0 & 1 & \textbf{1} & 1 (dispari) \\
+\hline
+1 & 0 & 1 & 1 & \textbf{0} & 2 (pari) \\
+\hline
+1 & 1 & 0 & 0 & \textbf{0} & 2 (pari) \\
+\hline
+1 & 1 & 1 & 0 & \textbf{1} & 3 (dispari) \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection*{Analisi del Risultato}
+Come previsto, la funzione è vera esattamente quando c'è un numero dispari di 1:
+\begin{itemize}
+    \item 1 uno: righe 2, 3, 5 $\rightarrow$ F = 1
+    \item 3 uni: riga 8 $\rightarrow$ F = 1
+    \item 0 o 2 uni: righe 1, 4, 6, 7 $\rightarrow$ F = 0
+\end{itemize}
+
+\textbf{Applicazione}: Questa funzione è usata nei circuiti di controllo di parità.
+
+\newpage
+
+\section*{Esercizio 10}
+\subsection*{Funzione}
+\[ F(A, B, C, D) = (A + B) \cdot (\overline{C} + D) \cdot (\overline{A} + C) \]
+
+\subsection*{Procedimento}
+Questa è una funzione in \textbf{forma POS} (Product of Sums):
+\begin{enumerate}
+    \item Calcolare ogni clausola separatamente:
+    \begin{itemize}
+        \item $(A + B)$ - vero quando almeno uno tra A o B è vero
+        \item $(\overline{C} + D)$ - vero quando C è falso o D è vero
+        \item $(\overline{A} + C)$ - vero quando A è falso o C è vero
+    \end{itemize}
+    \item Moltiplicare (AND) tutti i risultati
+    \item La funzione è vera solo quando tutte e tre le clausole sono vere
+\end{enumerate}
+
+\subsection*{Tabella di Verità Completa}
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|c|}
+\hline
+\rowcolor{lightgray}
+\textbf{A} & \textbf{B} & \textbf{C} & \textbf{D} & $A+B$ & $\overline{C}+D$ & $\overline{A}+C$ & \textbf{F} \\
+\hline
+0 & 0 & 0 & 0 & 0 & 1 & 1 & \textbf{0} \\
+\hline
+0 & 0 & 0 & 1 & 0 & 1 & 1 & \textbf{0} \\
+\hline
+0 & 0 & 1 & 0 & 0 & 0 & 1 & \textbf{0} \\
+\hline
+0 & 0 & 1 & 1 & 0 & 1 & 1 & \textbf{0} \\
+\hline
+0 & 1 & 0 & 0 & 1 & 1 & 1 & \textbf{1} \\
+\hline
+0 & 1 & 0 & 1 & 1 & 1 & 1 & \textbf{1} \\
+\hline
+0 & 1 & 1 & 0 & 1 & 0 & 1 & \textbf{0} \\
+\hline
+0 & 1 & 1 & 1 & 1 & 1 & 1 & \textbf{1} \\
+\hline
+1 & 0 & 0 & 0 & 1 & 1 & 0 & \textbf{0} \\
+\hline
+1 & 0 & 0 & 1 & 1 & 1 & 0 & \textbf{0} \\
+\hline
+1 & 0 & 1 & 0 & 1 & 0 & 1 & \textbf{0} \\
+\hline
+1 & 0 & 1 & 1 & 1 & 1 & 1 & \textbf{1} \\
+\hline
+1 & 1 & 0 & 0 & 1 & 1 & 0 & \textbf{0} \\
+\hline
+1 & 1 & 0 & 1 & 1 & 1 & 0 & \textbf{0} \\
+\hline
+1 & 1 & 1 & 0 & 1 & 0 & 1 & \textbf{0} \\
+\hline
+1 & 1 & 1 & 1 & 1 & 1 & 1 & \textbf{1} \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection*{Analisi del Risultato}
+La funzione è vera in 5 casi su 16 (righe 5, 6, 8, 12, 16).
+
+Osservazioni:
+\begin{itemize}
+    \item Quando $A=0$ e $B=0$: $(A+B)=0$ quindi F è sempre falso
+    \item Quando $A=1$ e $C=0$: $(\overline{A}+C)=0$ quindi F è sempre falso
+    \item La funzione richiede che tutte le clausole siano contemporaneamente vere
+\end{itemize}
+
+In forma SOP (mintermini): $F = \sum m(4,5,7,11,15)$
+
+\newpage
+
+\section*{Riepilogo e Note Conclusive}
+
+\subsection*{Distribuzione dei Risultati}
+
+\begin{center}
+\begin{tabular}{|l|c|c|}
+\hline
+\rowcolor{lightgray}
+\textbf{Esercizio} & \textbf{Casi Veri} & \textbf{Casi Totali} \\
+\hline
+Esercizio 1 & 3 & 4 \\
+\hline
+Esercizio 2 (NAND) & 3 & 4 \\
+\hline
+Esercizio 3 & 3 & 8 \\
+\hline
+Esercizio 4 & 3 & 8 \\
+\hline
+Esercizio 5 & 1 & 8 \\
+\hline
+Esercizio 6 & 2 & 8 \\
+\hline
+Esercizio 7 & 7 & 16 \\
+\hline
+Esercizio 8 & 9 & 16 \\
+\hline
+Esercizio 9 (XOR) & 4 & 8 \\
+\hline
+Esercizio 10 (POS) & 5 & 16 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection*{Concetti Chiave Applicati}
+
+\subsubsection*{1. Precedenza degli Operatori}
+\begin{itemize}
+    \item NOT (negazione) - massima precedenza
+    \item AND (prodotto logico) - precedenza intermedia
+    \item OR (somma logica) - minima precedenza
+    \item Le parentesi modificano l'ordine di valutazione
+\end{itemize}
+
+\subsubsection*{2. Leggi di De Morgan}
+\begin{itemize}
+    \item $\overline{A \cdot B} = \overline{A} + \overline{B}$
+    \item $\overline{A + B} = \overline{A} \cdot \overline{B}$
+\end{itemize}
+
+\subsubsection*{3. Forme Canoniche}
+\begin{itemize}
+    \item \textbf{SOP (Sum of Products)}: Somma di prodotti (es. Esercizio 6)
+    \item \textbf{POS (Product of Sums)}: Prodotto di somme (es. Esercizio 10)
+\end{itemize}
+
+\subsubsection*{4. Funzioni Speciali}
+\begin{itemize}
+    \item \textbf{NAND}: $\overline{A \cdot B}$ - universale (può generare tutte le altre)
+    \item \textbf{XOR}: $A \oplus B$ - vero per numero dispari di 1
+    \item \textbf{NOR}: $\overline{A + B}$ - universale
+\end{itemize}
+
+\subsection*{Metodo di Verifica}
+Per verificare i propri risultati:
+\begin{enumerate}
+    \item Controllare il numero di righe: deve essere $2^n$ dove n è il numero di variabili
+    \item Verificare che tutte le combinazioni siano presenti (ordine binario)
+    \item Ricontrollare le righe dove la funzione è vera
+    \item Controllare casi limite (tutti 0, tutti 1)
+\end{enumerate}
+
+\subsection*{Esercizi di Approfondimento}
+Dopo aver compreso questi esercizi, si suggerisce di:
+\begin{enumerate}
+    \item Semplificare le funzioni usando le mappe di Karnaugh
+    \item Convertire tra forme SOP e POS
+    \item Disegnare i circuiti logici corrispondenti
+    \item Implementare le funzioni usando solo porte NAND o solo NOR
+\end{enumerate}
+
+\end{document}

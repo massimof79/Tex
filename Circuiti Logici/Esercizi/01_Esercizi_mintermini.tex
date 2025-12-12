@@ -1,0 +1,476 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{geometry}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+
+\geometry{margin=2cm}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{Esercizi sui Mintermini}
+\rhead{A.S. 2024/2025}
+\cfoot{\thepage}
+
+\title{\textbf{Esercizi: Determinazione della Funzione Logica\\dai Mintermini}}
+\author{Prof. Massimo Fedeli\\IIS Fermi Sacconi Ceci - Ascoli Piceno}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Richiami Teorici}
+
+Una funzione logica può essere rappresentata in \textbf{forma canonica SOP} (Sum of Products) mediante i \textbf{mintermini}.
+
+Un \textbf{mintermine} è un prodotto logico (AND) di tutte le variabili della funzione, ciascuna in forma vera o complementata, che rende la funzione uguale a 1.
+
+\textbf{Notazione}:
+\begin{itemize}
+    \item $m_i$ indica il mintermine corrispondente alla riga $i$ della tabella di verità
+    \item La funzione $F$ si esprime come: $F = \sum m_i$ dove $i$ sono le righe con uscita = 1
+\end{itemize}
+
+\textbf{Procedimento}:
+\begin{enumerate}
+    \item Identificare nella tabella di verità tutte le righe in cui l'uscita $F = 1$
+    \item Per ogni riga identificata, scrivere il mintermine corrispondente
+    \item Esprimere la funzione come OR (somma) dei mintermini individuati
+\end{enumerate}
+
+\vspace{0.5cm}
+
+\section*{Esercizi}
+
+\subsection*{Esercizio 1}
+Data la seguente tabella di verità con due variabili $A$ e $B$:
+
+\begin{center}
+\begin{tabular}{cc|c}
+\toprule
+\textbf{A} & \textbf{B} & \textbf{F} \\
+\midrule
+0 & 0 & 0 \\
+0 & 1 & 1 \\
+1 & 0 & 1 \\
+1 & 1 & 0 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Richiesto:}
+\begin{itemize}[label=$\circ$]
+    \item Individuare i mintermini
+    \item Scrivere la funzione logica $F(A,B)$ in forma SOP
+\end{itemize}
+
+\vspace{1.5cm}
+
+\subsection*{Esercizio 2}
+Data la seguente tabella di verità con due variabili $X$ e $Y$:
+
+\begin{center}
+\begin{tabular}{cc|c}
+\toprule
+\textbf{X} & \textbf{Y} & \textbf{F} \\
+\midrule
+0 & 0 & 1 \\
+0 & 1 & 0 \\
+1 & 0 & 0 \\
+1 & 1 & 1 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Richiesto:}
+\begin{itemize}[label=$\circ$]
+    \item Individuare i mintermini
+    \item Scrivere la funzione logica $F(X,Y)$ in forma SOP
+\end{itemize}
+
+\vspace{1.5cm}
+
+\subsection*{Esercizio 3}
+Data la seguente tabella di verità con tre variabili $A$, $B$ e $C$:
+
+\begin{center}
+\begin{tabular}{ccc|c}
+\toprule
+\textbf{A} & \textbf{B} & \textbf{C} & \textbf{F} \\
+\midrule
+0 & 0 & 0 & 1 \\
+0 & 0 & 1 & 0 \\
+0 & 1 & 0 & 1 \\
+0 & 1 & 1 & 0 \\
+1 & 0 & 0 & 0 \\
+1 & 0 & 1 & 1 \\
+1 & 1 & 0 & 1 \\
+1 & 1 & 1 & 0 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Richiesto:}
+\begin{itemize}[label=$\circ$]
+    \item Individuare i mintermini
+    \item Scrivere la funzione logica $F(A,B,C)$ in forma SOP
+\end{itemize}
+
+\newpage
+
+\subsection*{Esercizio 4}
+Data la seguente tabella di verità con tre variabili $X$, $Y$ e $Z$:
+
+\begin{center}
+\begin{tabular}{ccc|c}
+\toprule
+\textbf{X} & \textbf{Y} & \textbf{Z} & \textbf{F} \\
+\midrule
+0 & 0 & 0 & 0 \\
+0 & 0 & 1 & 1 \\
+0 & 1 & 0 & 0 \\
+0 & 1 & 1 & 1 \\
+1 & 0 & 0 & 1 \\
+1 & 0 & 1 & 0 \\
+1 & 1 & 0 & 1 \\
+1 & 1 & 1 & 1 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Richiesto:}
+\begin{itemize}[label=$\circ$]
+    \item Individuare i mintermini
+    \item Scrivere la funzione logica $F(X,Y,Z)$ in forma SOP
+\end{itemize}
+
+\vspace{1.5cm}
+
+\subsection*{Esercizio 5}
+Data la seguente tabella di verità con tre variabili $A$, $B$ e $C$:
+
+\begin{center}
+\begin{tabular}{ccc|c}
+\toprule
+\textbf{A} & \textbf{B} & \textbf{C} & \textbf{F} \\
+\midrule
+0 & 0 & 0 & 0 \\
+0 & 0 & 1 & 0 \\
+0 & 1 & 0 & 1 \\
+0 & 1 & 1 & 1 \\
+1 & 0 & 0 & 1 \\
+1 & 0 & 1 & 0 \\
+1 & 1 & 0 & 0 \\
+1 & 1 & 1 & 1 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Richiesto:}
+\begin{itemize}[label=$\circ$]
+    \item Individuare i mintermini
+    \item Scrivere la funzione logica $F(A,B,C)$ in forma SOP
+\end{itemize}
+
+\vspace{1.5cm}
+
+\subsection*{Esercizio 6}
+Data la seguente tabella di verità con quattro variabili $A$, $B$, $C$ e $D$:
+
+\begin{center}
+\begin{tabular}{cccc|c}
+\toprule
+\textbf{A} & \textbf{B} & \textbf{C} & \textbf{D} & \textbf{F} \\
+\midrule
+0 & 0 & 0 & 0 & 1 \\
+0 & 0 & 0 & 1 & 0 \\
+0 & 0 & 1 & 0 & 1 \\
+0 & 0 & 1 & 1 & 0 \\
+0 & 1 & 0 & 0 & 0 \\
+0 & 1 & 0 & 1 & 1 \\
+0 & 1 & 1 & 0 & 0 \\
+0 & 1 & 1 & 1 & 1 \\
+1 & 0 & 0 & 0 & 0 \\
+1 & 0 & 0 & 1 & 0 \\
+1 & 0 & 1 & 0 & 1 \\
+1 & 0 & 1 & 1 & 1 \\
+1 & 1 & 0 & 0 & 1 \\
+1 & 1 & 0 & 1 & 0 \\
+1 & 1 & 1 & 0 & 0 \\
+1 & 1 & 1 & 1 & 1 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Richiesto:}
+\begin{itemize}[label=$\circ$]
+    \item Individuare i mintermini
+    \item Scrivere la funzione logica $F(A,B,C,D)$ in forma SOP
+\end{itemize}
+
+\newpage
+
+\subsection*{Esercizio 7}
+Data la seguente tabella di verità con tre variabili $P$, $Q$ e $R$:
+
+\begin{center}
+\begin{tabular}{ccc|c}
+\toprule
+\textbf{P} & \textbf{Q} & \textbf{R} & \textbf{F} \\
+\midrule
+0 & 0 & 0 & 1 \\
+0 & 0 & 1 & 1 \\
+0 & 1 & 0 & 0 \\
+0 & 1 & 1 & 0 \\
+1 & 0 & 0 & 1 \\
+1 & 0 & 1 & 1 \\
+1 & 1 & 0 & 0 \\
+1 & 1 & 1 & 1 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Richiesto:}
+\begin{itemize}[label=$\circ$]
+    \item Individuare i mintermini
+    \item Scrivere la funzione logica $F(P,Q,R)$ in forma SOP
+\end{itemize}
+
+\vspace{1.5cm}
+
+\subsection*{Esercizio 8}
+Data la seguente tabella di verità con tre variabili $A$, $B$ e $C$:
+
+\begin{center}
+\begin{tabular}{ccc|c}
+\toprule
+\textbf{A} & \textbf{B} & \textbf{C} & \textbf{F} \\
+\midrule
+0 & 0 & 0 & 0 \\
+0 & 0 & 1 & 1 \\
+0 & 1 & 0 & 1 \\
+0 & 1 & 1 & 0 \\
+1 & 0 & 0 & 0 \\
+1 & 0 & 1 & 0 \\
+1 & 1 & 0 & 1 \\
+1 & 1 & 1 & 1 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Richiesto:}
+\begin{itemize}[label=$\circ$]
+    \item Individuare i mintermini
+    \item Scrivere la funzione logica $F(A,B,C)$ in forma SOP
+\end{itemize}
+
+\vspace{1.5cm}
+
+\subsection*{Esercizio 9}
+Data la seguente tabella di verità con quattro variabili $W$, $X$, $Y$ e $Z$:
+
+\begin{center}
+\begin{tabular}{cccc|c}
+\toprule
+\textbf{W} & \textbf{X} & \textbf{Y} & \textbf{Z} & \textbf{F} \\
+\midrule
+0 & 0 & 0 & 0 & 0 \\
+0 & 0 & 0 & 1 & 1 \\
+0 & 0 & 1 & 0 & 0 \\
+0 & 0 & 1 & 1 & 1 \\
+0 & 1 & 0 & 0 & 1 \\
+0 & 1 & 0 & 1 & 0 \\
+0 & 1 & 1 & 0 & 1 \\
+0 & 1 & 1 & 1 & 0 \\
+1 & 0 & 0 & 0 & 0 \\
+1 & 0 & 0 & 1 & 0 \\
+1 & 0 & 1 & 0 & 1 \\
+1 & 0 & 1 & 1 & 1 \\
+1 & 1 & 0 & 0 & 0 \\
+1 & 1 & 0 & 1 & 1 \\
+1 & 1 & 1 & 0 & 0 \\
+1 & 1 & 1 & 1 & 0 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Richiesto:}
+\begin{itemize}[label=$\circ$]
+    \item Individuare i mintermini
+    \item Scrivere la funzione logica $F(W,X,Y,Z)$ in forma SOP
+\end{itemize}
+
+\newpage
+
+\subsection*{Esercizio 10}
+Data la seguente tabella di verità con tre variabili $A$, $B$ e $C$:
+
+\begin{center}
+\begin{tabular}{ccc|c}
+\toprule
+\textbf{A} & \textbf{B} & \textbf{C} & \textbf{F} \\
+\midrule
+0 & 0 & 0 & 1 \\
+0 & 0 & 1 & 0 \\
+0 & 1 & 0 & 0 \\
+0 & 1 & 1 & 1 \\
+1 & 0 & 0 & 1 \\
+1 & 0 & 1 & 1 \\
+1 & 1 & 0 & 0 \\
+1 & 1 & 1 & 0 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Richiesto:}
+\begin{itemize}[label=$\circ$]
+    \item Individuare i mintermini
+    \item Scrivere la funzione logica $F(A,B,C)$ in forma SOP
+\end{itemize}
+
+\vspace{2cm}
+
+\newpage
+
+\section*{Soluzioni}
+
+\subsection*{Soluzione Esercizio 1}
+Righe con $F=1$: riga 1 (01) e riga 2 (10)
+
+\textbf{Mintermini:}
+\begin{itemize}
+    \item $m_1 = \overline{A} \cdot B$
+    \item $m_2 = A \cdot \overline{B}$
+\end{itemize}
+
+\textbf{Funzione:} $F(A,B) = \overline{A} \cdot B + A \cdot \overline{B} = \sum(1,2)$
+
+\subsection*{Soluzione Esercizio 2}
+Righe con $F=1$: riga 0 (00) e riga 3 (11)
+
+\textbf{Mintermini:}
+\begin{itemize}
+    \item $m_0 = \overline{X} \cdot \overline{Y}$
+    \item $m_3 = X \cdot Y$
+\end{itemize}
+
+\textbf{Funzione:} $F(X,Y) = \overline{X} \cdot \overline{Y} + X \cdot Y = \sum(0,3)$
+
+\subsection*{Soluzione Esercizio 3}
+Righe con $F=1$: riga 0 (000), riga 2 (010), riga 5 (101), riga 6 (110)
+
+\textbf{Mintermini:}
+\begin{itemize}
+    \item $m_0 = \overline{A} \cdot \overline{B} \cdot \overline{C}$
+    \item $m_2 = \overline{A} \cdot B \cdot \overline{C}$
+    \item $m_5 = A \cdot \overline{B} \cdot C$
+    \item $m_6 = A \cdot B \cdot \overline{C}$
+\end{itemize}
+
+\textbf{Funzione:} $F(A,B,C) = \overline{A} \cdot \overline{B} \cdot \overline{C} + \overline{A} \cdot B \cdot \overline{C} + A \cdot \overline{B} \cdot C + A \cdot B \cdot \overline{C} = \sum(0,2,5,6)$
+
+\subsection*{Soluzione Esercizio 4}
+Righe con $F=1$: riga 1 (001), riga 3 (011), riga 4 (100), riga 6 (110), riga 7 (111)
+
+\textbf{Mintermini:}
+\begin{itemize}
+    \item $m_1 = \overline{X} \cdot \overline{Y} \cdot Z$
+    \item $m_3 = \overline{X} \cdot Y \cdot Z$
+    \item $m_4 = X \cdot \overline{Y} \cdot \overline{Z}$
+    \item $m_6 = X \cdot Y \cdot \overline{Z}$
+    \item $m_7 = X \cdot Y \cdot Z$
+\end{itemize}
+
+\textbf{Funzione:} $F(X,Y,Z) = \overline{X} \cdot \overline{Y} \cdot Z + \overline{X} \cdot Y \cdot Z + X \cdot \overline{Y} \cdot \overline{Z} + X \cdot Y \cdot \overline{Z} + X \cdot Y \cdot Z = \sum(1,3,4,6,7)$
+
+\subsection*{Soluzione Esercizio 5}
+Righe con $F=1$: riga 2 (010), riga 3 (011), riga 4 (100), riga 7 (111)
+
+\textbf{Mintermini:}
+\begin{itemize}
+    \item $m_2 = \overline{A} \cdot B \cdot \overline{C}$
+    \item $m_3 = \overline{A} \cdot B \cdot C$
+    \item $m_4 = A \cdot \overline{B} \cdot \overline{C}$
+    \item $m_7 = A \cdot B \cdot C$
+\end{itemize}
+
+\textbf{Funzione:} $F(A,B,C) = \overline{A} \cdot B \cdot \overline{C} + \overline{A} \cdot B \cdot C + A \cdot \overline{B} \cdot \overline{C} + A \cdot B \cdot C = \sum(2,3,4,7)$
+
+\subsection*{Soluzione Esercizio 6}
+Righe con $F=1$: riga 0 (0000), riga 2 (0010), riga 5 (0101), riga 7 (0111), riga 10 (1010), riga 11 (1011), riga 12 (1100), riga 15 (1111)
+
+\textbf{Mintermini:}
+\begin{itemize}
+    \item $m_0 = \overline{A} \cdot \overline{B} \cdot \overline{C} \cdot \overline{D}$
+    \item $m_2 = \overline{A} \cdot \overline{B} \cdot C \cdot \overline{D}$
+    \item $m_5 = \overline{A} \cdot B \cdot \overline{C} \cdot D$
+    \item $m_7 = \overline{A} \cdot B \cdot C \cdot D$
+    \item $m_{10} = A \cdot \overline{B} \cdot C \cdot \overline{D}$
+    \item $m_{11} = A \cdot \overline{B} \cdot C \cdot D$
+    \item $m_{12} = A \cdot B \cdot \overline{C} \cdot \overline{D}$
+    \item $m_{15} = A \cdot B \cdot C \cdot D$
+\end{itemize}
+
+\textbf{Funzione:} $F(A,B,C,D) = \sum(0,2,5,7,10,11,12,15)$
+
+\subsection*{Soluzione Esercizio 7}
+Righe con $F=1$: riga 0 (000), riga 1 (001), riga 4 (100), riga 5 (101), riga 7 (111)
+
+\textbf{Mintermini:}
+\begin{itemize}
+    \item $m_0 = \overline{P} \cdot \overline{Q} \cdot \overline{R}$
+    \item $m_1 = \overline{P} \cdot \overline{Q} \cdot R$
+    \item $m_4 = P \cdot \overline{Q} \cdot \overline{R}$
+    \item $m_5 = P \cdot \overline{Q} \cdot R$
+    \item $m_7 = P \cdot Q \cdot R$
+\end{itemize}
+
+\textbf{Funzione:} $F(P,Q,R) = \overline{P} \cdot \overline{Q} \cdot \overline{R} + \overline{P} \cdot \overline{Q} \cdot R + P \cdot \overline{Q} \cdot \overline{R} + P \cdot \overline{Q} \cdot R + P \cdot Q \cdot R = \sum(0,1,4,5,7)$
+
+\subsection*{Soluzione Esercizio 8}
+Righe con $F=1$: riga 1 (001), riga 2 (010), riga 6 (110), riga 7 (111)
+
+\textbf{Mintermini:}
+\begin{itemize}
+    \item $m_1 = \overline{A} \cdot \overline{B} \cdot C$
+    \item $m_2 = \overline{A} \cdot B \cdot \overline{C}$
+    \item $m_6 = A \cdot B \cdot \overline{C}$
+    \item $m_7 = A \cdot B \cdot C$
+\end{itemize}
+
+\textbf{Funzione:} $F(A,B,C) = \overline{A} \cdot \overline{B} \cdot C + \overline{A} \cdot B \cdot \overline{C} + A \cdot B \cdot \overline{C} + A \cdot B \cdot C = \sum(1,2,6,7)$
+
+\subsection*{Soluzione Esercizio 9}
+Righe con $F=1$: riga 1 (0001), riga 3 (0011), riga 4 (0100), riga 6 (0110), riga 10 (1010), riga 11 (1011), riga 13 (1101)
+
+\textbf{Mintermini:}
+\begin{itemize}
+    \item $m_1 = \overline{W} \cdot \overline{X} \cdot \overline{Y} \cdot Z$
+    \item $m_3 = \overline{W} \cdot \overline{X} \cdot Y \cdot Z$
+    \item $m_4 = \overline{W} \cdot X \cdot \overline{Y} \cdot \overline{Z}$
+    \item $m_6 = \overline{W} \cdot X \cdot Y \cdot \overline{Z}$
+    \item $m_{10} = W \cdot \overline{X} \cdot Y \cdot \overline{Z}$
+    \item $m_{11} = W \cdot \overline{X} \cdot Y \cdot Z$
+    \item $m_{13} = W \cdot X \cdot \overline{Y} \cdot Z$
+\end{itemize}
+
+\textbf{Funzione:} $F(W,X,Y,Z) = \sum(1,3,4,6,10,11,13)$
+
+\subsection*{Soluzione Esercizio 10}
+Righe con $F=1$: riga 0 (000), riga 3 (011), riga 4 (100), riga 5 (101)
+
+\textbf{Mintermini:}
+\begin{itemize}
+    \item $m_0 = \overline{A} \cdot \overline{B} \cdot \overline{C}$
+    \item $m_3 = \overline{A} \cdot B \cdot C$
+    \item $m_4 = A \cdot \overline{B} \cdot \overline{C}$
+    \item $m_5 = A \cdot \overline{B} \cdot C$
+\end{itemize}
+
+\textbf{Funzione:} $F(A,B,C) = \overline{A} \cdot \overline{B} \cdot \overline{C} + \overline{A} \cdot B \cdot C + A \cdot \overline{B} \cdot \overline{C} + A \cdot \overline{B} \cdot C = \sum(0,3,4,5)$
+
+\end{document}

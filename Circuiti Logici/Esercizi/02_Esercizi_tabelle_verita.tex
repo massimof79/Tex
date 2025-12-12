@@ -1,0 +1,549 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{array}
+\usepackage{booktabs}
+
+\geometry{margin=2.5cm}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{Esercizi: Tabelle di Verità}
+\fancyhead[R]{IIS Fermi Sacconi Ceci}
+\fancyfoot[C]{\thepage}
+
+\title{\textbf{Esercizi sulle Tabelle di Verità}\\ \large Dall'Espressione Booleana alla Tabella di Verità}
+\author{Prof. Massimo Fedeli}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Istruzioni}
+Per ogni funzione booleana fornita:
+\begin{enumerate}
+    \item Identifica le variabili di input
+    \item Costruisci la tabella di verità completa
+    \item Calcola il valore della funzione per ogni combinazione di input
+\end{enumerate}
+
+\vspace{0.5cm}
+
+\section*{Esercizi}
+
+\subsection*{Esercizio 1 - Livello Base (2 variabili)}
+Costruire la tabella di verità per la seguente funzione:
+\[ F(A, B) = A \cdot B + \overline{A} \]
+
+\vspace{0.3cm}
+\noindent\textit{Suggerimento: La funzione ha 2 variabili, quindi la tabella avrà $2^2 = 4$ righe.}
+
+\vspace{1cm}
+
+\subsection*{Esercizio 2 - Livello Base (2 variabili)}
+Costruire la tabella di verità per la seguente funzione:
+\[ F(A, B) = \overline{A \cdot B} \]
+
+\vspace{0.3cm}
+\noindent\textit{Nota: Questa è la funzione NAND.}
+
+\vspace{1cm}
+
+\subsection*{Esercizio 3 - Livello Intermedio (3 variabili)}
+Costruire la tabella di verità per la seguente funzione:
+\[ F(A, B, C) = A \cdot B + B \cdot C \]
+
+\vspace{0.3cm}
+\noindent\textit{Suggerimento: Con 3 variabili avrai $2^3 = 8$ righe.}
+
+\vspace{1cm}
+
+\subsection*{Esercizio 4 - Livello Intermedio (3 variabili)}
+Costruire la tabella di verità per la seguente funzione:
+\[ F(A, B, C) = A \cdot (\overline{B} + C) \]
+
+\vspace{0.3cm}
+\noindent\textit{Suggerimento: Ricorda le precedenze: NOT $>$ AND $>$ OR.}
+
+\vspace{1cm}
+
+\subsection*{Esercizio 5 - Livello Intermedio (3 variabili)}
+Costruire la tabella di verità per la seguente funzione:
+\[ F(A, B, C) = \overline{A + B} \cdot C \]
+
+\vspace{0.3cm}
+\noindent\textit{Nota: Il NOT si applica a tutta l'espressione $(A + B)$.}
+
+\newpage
+
+\subsection*{Esercizio 6 - Livello Avanzato (3 variabili)}
+Costruire la tabella di verità per la seguente funzione:
+\[ F(A, B, C) = A \cdot \overline{B} \cdot C + \overline{A} \cdot B \cdot \overline{C} \]
+
+\vspace{0.3cm}
+\noindent\textit{Suggerimento: Questa funzione è vera solo per combinazioni specifiche.}
+
+\vspace{1cm}
+
+\subsection*{Esercizio 7 - Livello Avanzato (4 variabili)}
+Costruire la tabella di verità per la seguente funzione:
+\[ F(A, B, C, D) = A \cdot B + C \cdot D \]
+
+\vspace{0.3cm}
+\noindent\textit{Attenzione: Con 4 variabili la tabella avrà $2^4 = 16$ righe!}
+
+\vspace{1cm}
+
+\subsection*{Esercizio 8 - Livello Avanzato (4 variabili)}
+Costruire la tabella di verità per la seguente funzione:
+\[ F(A, B, C, D) = \overline{A \cdot B} \cdot (C + D) \]
+
+\vspace{0.3cm}
+\noindent\textit{Suggerimento: Prima calcola $\overline{A \cdot B}$, poi moltiplica per $(C + D)$.}
+
+\vspace{1cm}
+
+\subsection*{Esercizio 9 - Livello Esperto (3 variabili - XOR)}
+Costruire la tabella di verità per la seguente funzione:
+\[ F(A, B, C) = A \oplus B \oplus C \]
+
+\vspace{0.3cm}
+\noindent\textit{Nota: Il simbolo $\oplus$ rappresenta lo XOR (OR esclusivo). \\
+Ricorda: $A \oplus B = A \cdot \overline{B} + \overline{A} \cdot B$}
+
+\vspace{1cm}
+
+\subsection*{Esercizio 10 - Livello Esperto (4 variabili)}
+Costruire la tabella di verità per la seguente funzione:
+\[ F(A, B, C, D) = (A + B) \cdot (\overline{C} + D) \cdot (\overline{A} + C) \]
+
+\vspace{0.3cm}
+\noindent\textit{Suggerimento: Questa è una forma POS (Product of Sums). Calcola prima ogni termine tra parentesi.}
+
+\newpage
+
+\section*{Template per le Tabelle di Verità}
+
+\subsection*{Template per 2 variabili}
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{A} & \textbf{B} & \textbf{F(A,B)} \\
+\hline
+0 & 0 & \\
+\hline
+0 & 1 & \\
+\hline
+1 & 0 & \\
+\hline
+1 & 1 & \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection*{Template per 3 variabili}
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+\textbf{A} & \textbf{B} & \textbf{C} & \textbf{F(A,B,C)} \\
+\hline
+0 & 0 & 0 & \\
+\hline
+0 & 0 & 1 & \\
+\hline
+0 & 1 & 0 & \\
+\hline
+0 & 1 & 1 & \\
+\hline
+1 & 0 & 0 & \\
+\hline
+1 & 0 & 1 & \\
+\hline
+1 & 1 & 0 & \\
+\hline
+1 & 1 & 1 & \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection*{Template per 4 variabili}
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+\textbf{A} & \textbf{B} & \textbf{C} & \textbf{D} & \textbf{F(A,B,C,D)} \\
+\hline
+0 & 0 & 0 & 0 & \\
+\hline
+0 & 0 & 0 & 1 & \\
+\hline
+0 & 0 & 1 & 0 & \\
+\hline
+0 & 0 & 1 & 1 & \\
+\hline
+0 & 1 & 0 & 0 & \\
+\hline
+0 & 1 & 0 & 1 & \\
+\hline
+0 & 1 & 1 & 0 & \\
+\hline
+0 & 1 & 1 & 1 & \\
+\hline
+1 & 0 & 0 & 0 & \\
+\hline
+1 & 0 & 0 & 1 & \\
+\hline
+1 & 0 & 1 & 0 & \\
+\hline
+1 & 0 & 1 & 1 & \\
+\hline
+1 & 1 & 0 & 0 & \\
+\hline
+1 & 1 & 0 & 1 & \\
+\hline
+1 & 1 & 1 & 0 & \\
+\hline
+1 & 1 & 1 & 1 & \\
+\hline
+\end{tabular}
+\end{center}
+
+\newpage
+
+\section*{Soluzioni}
+
+\subsection*{Soluzione Esercizio 1}
+$F(A, B) = A \cdot B + \overline{A}$
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+\textbf{A} & \textbf{B} & $A \cdot B$ & $\overline{A}$ & \textbf{F} \\
+\hline
+0 & 0 & 0 & 1 & 1 \\
+\hline
+0 & 1 & 0 & 1 & 1 \\
+\hline
+1 & 0 & 0 & 0 & 0 \\
+\hline
+1 & 1 & 1 & 0 & 1 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection*{Soluzione Esercizio 2}
+$F(A, B) = \overline{A \cdot B}$ (NAND)
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+\textbf{A} & \textbf{B} & $A \cdot B$ & \textbf{F} \\
+\hline
+0 & 0 & 0 & 1 \\
+\hline
+0 & 1 & 0 & 1 \\
+\hline
+1 & 0 & 0 & 1 \\
+\hline
+1 & 1 & 1 & 0 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection*{Soluzione Esercizio 3}
+$F(A, B, C) = A \cdot B + B \cdot C$
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+\textbf{A} & \textbf{B} & \textbf{C} & $A \cdot B$ & $B \cdot C$ & \textbf{F} \\
+\hline
+0 & 0 & 0 & 0 & 0 & 0 \\
+\hline
+0 & 0 & 1 & 0 & 0 & 0 \\
+\hline
+0 & 1 & 0 & 0 & 0 & 0 \\
+\hline
+0 & 1 & 1 & 0 & 1 & 1 \\
+\hline
+1 & 0 & 0 & 0 & 0 & 0 \\
+\hline
+1 & 0 & 1 & 0 & 0 & 0 \\
+\hline
+1 & 1 & 0 & 1 & 0 & 1 \\
+\hline
+1 & 1 & 1 & 1 & 1 & 1 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection*{Soluzione Esercizio 4}
+$F(A, B, C) = A \cdot (\overline{B} + C)$
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+\textbf{A} & \textbf{B} & \textbf{C} & $\overline{B}$ & $\overline{B} + C$ & \textbf{F} \\
+\hline
+0 & 0 & 0 & 1 & 1 & 0 \\
+\hline
+0 & 0 & 1 & 1 & 1 & 0 \\
+\hline
+0 & 1 & 0 & 0 & 0 & 0 \\
+\hline
+0 & 1 & 1 & 0 & 1 & 0 \\
+\hline
+1 & 0 & 0 & 1 & 1 & 1 \\
+\hline
+1 & 0 & 1 & 1 & 1 & 1 \\
+\hline
+1 & 1 & 0 & 0 & 0 & 0 \\
+\hline
+1 & 1 & 1 & 0 & 1 & 1 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection*{Soluzione Esercizio 5}
+$F(A, B, C) = \overline{A + B} \cdot C$
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+\textbf{A} & \textbf{B} & \textbf{C} & $A + B$ & $\overline{A + B}$ & \textbf{F} \\
+\hline
+0 & 0 & 0 & 0 & 1 & 0 \\
+\hline
+0 & 0 & 1 & 0 & 1 & 1 \\
+\hline
+0 & 1 & 0 & 1 & 0 & 0 \\
+\hline
+0 & 1 & 1 & 1 & 0 & 0 \\
+\hline
+1 & 0 & 0 & 1 & 0 & 0 \\
+\hline
+1 & 0 & 1 & 1 & 0 & 0 \\
+\hline
+1 & 1 & 0 & 1 & 0 & 0 \\
+\hline
+1 & 1 & 1 & 1 & 0 & 0 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection*{Soluzione Esercizio 6}
+$F(A, B, C) = A \cdot \overline{B} \cdot C + \overline{A} \cdot B \cdot \overline{C}$
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+\textbf{A} & \textbf{B} & \textbf{C} & $A \cdot \overline{B} \cdot C$ & $\overline{A} \cdot B \cdot \overline{C}$ & \textbf{F} \\
+\hline
+0 & 0 & 0 & 0 & 0 & 0 \\
+\hline
+0 & 0 & 1 & 0 & 0 & 0 \\
+\hline
+0 & 1 & 0 & 0 & 1 & 1 \\
+\hline
+0 & 1 & 1 & 0 & 0 & 0 \\
+\hline
+1 & 0 & 0 & 0 & 0 & 0 \\
+\hline
+1 & 0 & 1 & 1 & 0 & 1 \\
+\hline
+1 & 1 & 0 & 0 & 0 & 0 \\
+\hline
+1 & 1 & 1 & 0 & 0 & 0 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection*{Soluzione Esercizio 7}
+$F(A, B, C, D) = A \cdot B + C \cdot D$
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+\textbf{A} & \textbf{B} & \textbf{C} & \textbf{D} & $A \cdot B$ & $C \cdot D$ & \textbf{F} \\
+\hline
+0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+\hline
+0 & 0 & 0 & 1 & 0 & 0 & 0 \\
+\hline
+0 & 0 & 1 & 0 & 0 & 0 & 0 \\
+\hline
+0 & 0 & 1 & 1 & 0 & 1 & 1 \\
+\hline
+0 & 1 & 0 & 0 & 0 & 0 & 0 \\
+\hline
+0 & 1 & 0 & 1 & 0 & 0 & 0 \\
+\hline
+0 & 1 & 1 & 0 & 0 & 0 & 0 \\
+\hline
+0 & 1 & 1 & 1 & 0 & 1 & 1 \\
+\hline
+1 & 0 & 0 & 0 & 0 & 0 & 0 \\
+\hline
+1 & 0 & 0 & 1 & 0 & 0 & 0 \\
+\hline
+1 & 0 & 1 & 0 & 0 & 0 & 0 \\
+\hline
+1 & 0 & 1 & 1 & 0 & 1 & 1 \\
+\hline
+1 & 1 & 0 & 0 & 1 & 0 & 1 \\
+\hline
+1 & 1 & 0 & 1 & 1 & 0 & 1 \\
+\hline
+1 & 1 & 1 & 0 & 1 & 0 & 1 \\
+\hline
+1 & 1 & 1 & 1 & 1 & 1 & 1 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection*{Soluzione Esercizio 8}
+$F(A, B, C, D) = \overline{A \cdot B} \cdot (C + D)$
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+\textbf{A} & \textbf{B} & \textbf{C} & \textbf{D} & $\overline{A \cdot B}$ & $C + D$ & \textbf{F} \\
+\hline
+0 & 0 & 0 & 0 & 1 & 0 & 0 \\
+\hline
+0 & 0 & 0 & 1 & 1 & 1 & 1 \\
+\hline
+0 & 0 & 1 & 0 & 1 & 1 & 1 \\
+\hline
+0 & 0 & 1 & 1 & 1 & 1 & 1 \\
+\hline
+0 & 1 & 0 & 0 & 1 & 0 & 0 \\
+\hline
+0 & 1 & 0 & 1 & 1 & 1 & 1 \\
+\hline
+0 & 1 & 1 & 0 & 1 & 1 & 1 \\
+\hline
+0 & 1 & 1 & 1 & 1 & 1 & 1 \\
+\hline
+1 & 0 & 0 & 0 & 1 & 0 & 0 \\
+\hline
+1 & 0 & 0 & 1 & 1 & 1 & 1 \\
+\hline
+1 & 0 & 1 & 0 & 1 & 1 & 1 \\
+\hline
+1 & 0 & 1 & 1 & 1 & 1 & 1 \\
+\hline
+1 & 1 & 0 & 0 & 0 & 0 & 0 \\
+\hline
+1 & 1 & 0 & 1 & 0 & 1 & 0 \\
+\hline
+1 & 1 & 1 & 0 & 0 & 1 & 0 \\
+\hline
+1 & 1 & 1 & 1 & 0 & 1 & 0 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection*{Soluzione Esercizio 9}
+$F(A, B, C) = A \oplus B \oplus C$
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+\textbf{A} & \textbf{B} & \textbf{C} & $A \oplus B$ & \textbf{F} \\
+\hline
+0 & 0 & 0 & 0 & 0 \\
+\hline
+0 & 0 & 1 & 0 & 1 \\
+\hline
+0 & 1 & 0 & 1 & 1 \\
+\hline
+0 & 1 & 1 & 1 & 0 \\
+\hline
+1 & 0 & 0 & 1 & 1 \\
+\hline
+1 & 0 & 1 & 1 & 0 \\
+\hline
+1 & 1 & 0 & 0 & 0 \\
+\hline
+1 & 1 & 1 & 0 & 1 \\
+\hline
+\end{tabular}
+\end{center}
+
+\noindent\textit{Nota: Lo XOR a cascata è vero quando c'è un numero dispari di 1 negli input.}
+
+\subsection*{Soluzione Esercizio 10}
+$F(A, B, C, D) = (A + B) \cdot (\overline{C} + D) \cdot (\overline{A} + C)$
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|c|}
+\hline
+\textbf{A} & \textbf{B} & \textbf{C} & \textbf{D} & $A+B$ & $\overline{C}+D$ & $\overline{A}+C$ & \textbf{F} \\
+\hline
+0 & 0 & 0 & 0 & 0 & 1 & 1 & 0 \\
+\hline
+0 & 0 & 0 & 1 & 0 & 1 & 1 & 0 \\
+\hline
+0 & 0 & 1 & 0 & 0 & 0 & 1 & 0 \\
+\hline
+0 & 0 & 1 & 1 & 0 & 1 & 1 & 0 \\
+\hline
+0 & 1 & 0 & 0 & 1 & 1 & 1 & 1 \\
+\hline
+0 & 1 & 0 & 1 & 1 & 1 & 1 & 1 \\
+\hline
+0 & 1 & 1 & 0 & 1 & 0 & 1 & 0 \\
+\hline
+0 & 1 & 1 & 1 & 1 & 1 & 1 & 1 \\
+\hline
+1 & 0 & 0 & 0 & 1 & 1 & 0 & 0 \\
+\hline
+1 & 0 & 0 & 1 & 1 & 1 & 0 & 0 \\
+\hline
+1 & 0 & 1 & 0 & 1 & 0 & 1 & 0 \\
+\hline
+1 & 0 & 1 & 1 & 1 & 1 & 1 & 1 \\
+\hline
+1 & 1 & 0 & 0 & 1 & 1 & 0 & 0 \\
+\hline
+1 & 1 & 0 & 1 & 1 & 1 & 0 & 0 \\
+\hline
+1 & 1 & 1 & 0 & 1 & 0 & 1 & 0 \\
+\hline
+1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 \\
+\hline
+\end{tabular}
+\end{center}
+
+\section*{Note Didattiche}
+
+\subsection*{Metodologia Suggerita}
+\begin{enumerate}
+    \item Iniziare con le funzioni a 2 variabili per familiarizzare con il procedimento
+    \item Procedere gradualmente verso funzioni più complesse
+    \item Incoraggiare gli studenti a verificare i propri risultati
+    \item Utilizzare colonne intermedie per calcolare i termini parziali
+\end{enumerate}
+
+\subsection*{Errori Comuni da Evitare}
+\begin{itemize}
+    \item Non rispettare le precedenze degli operatori
+    \item Dimenticare righe nella tabella
+    \item Confondere AND con OR
+    \item Non considerare correttamente la negazione
+\end{itemize}
+
+\subsection*{Estensioni Possibili}
+\begin{itemize}
+    \item Dalla tabella di verità all'espressione booleana (percorso inverso)
+    \item Semplificazione delle funzioni usando le mappe di Karnaugh
+    \item Implementazione circuitale delle funzioni
+    \item Analisi della complessità (numero di porte logiche)
+\end{itemize}
+
+\end{document}
