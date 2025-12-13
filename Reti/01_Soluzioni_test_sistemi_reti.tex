@@ -1,0 +1,224 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{multicol}
+\usepackage{array}
+
+\geometry{a4paper, margin=2cm}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{Soluzioni Test Fondamenti di Reti - IIS Fermi Sacconi Ceci}
+\fancyhead[R]{A.S. 2025/26}
+\fancyfoot[C]{\thepage}
+
+\title{\textbf{Soluzioni Test a Risposta Multipla\\Fondamenti di Reti}}
+\author{Prof. Fedeli Massimo - IIS Fermi Sacconi Ceci}
+\date{A.S. 2025/26}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+
+\vspace{1cm}
+
+\section*{Risposte Corrette}
+
+\subsection*{Sezione 1: Reti di Calcolatori e Concetti Generali}
+
+\begin{enumerate}
+    \item \textbf{c)} Sistemi interconnessi che comunicano tramite canali di trasmissione
+    \item \textbf{d)} Condivisione di risorse, affidabilità e scalabilità
+    \item \textbf{b)} Un'area urbana o metropolitana (10-100 km)
+    \item \textbf{a)} Ogni nodo è collegato a un nodo centrale (hub o switch)
+    \item \textbf{c)} Se il cavo principale si guasta, tutta la rete smette di funzionare
+    \item \textbf{c)} Ogni nodo è collegato a esattamente due nodi adiacenti formando un circuito chiuso
+    \item \textbf{c)} La capacità di trasmissione dati, misurata in bit/secondo
+    \item \textbf{d)} Replica il segnale ricevuto su tutte le porte (broadcasting)
+    \item \textbf{c)} Switch
+    \item \textbf{b)} Il ritardo temporale nella trasmissione dei dati
+\end{enumerate}
+
+\subsection*{Sezione 2: Internet e Architetture di Rete}
+
+\begin{enumerate}
+    \setcounter{enumi}{10}
+    \item \textbf{d)} Interconnettere reti eterogenee usando protocolli standard
+    \item \textbf{a)} Le dorsali ad alta velocità che interconnettono le reti principali
+    \item \textbf{c)} Il percorso viene stabilito prima della trasmissione e rimane dedicato
+    \item \textbf{c)} Maggiore efficienza nell'uso delle risorse di rete
+    \item \textbf{d)} Indirizzi IP sorgente e destinazione, TTL, checksum, ecc.
+    \item \textbf{b)} Evitare che i pacchetti circolino indefinitamente nella rete
+    \item \textbf{c)} Il passaggio di un pacchetto attraverso un router
+    \item \textbf{c)} Consulta la tabella di routing e lo inoltra verso la destinazione
+    \item \textbf{a)} Interconnettere reti con protocolli diversi (livello applicativo)
+    \item \textbf{b)} Il protocollo cerca di consegnare i pacchetti ma non garantisce successo
+\end{enumerate}
+
+\subsection*{Sezione 3: Architetture a Livelli e Protocolli}
+
+\begin{enumerate}
+    \setcounter{enumi}{20}
+    \item \textbf{d)} Modularità e indipendenza tra i livelli
+    \item \textbf{b)} Formattazione, codifica e crittografia dei dati
+    \item \textbf{b)} L'apertura, gestione e chiusura delle connessioni tra applicazioni
+    \item \textbf{c)} 4 livelli principali (applicazione, trasporto, rete, collegamento)
+    \item \textbf{c)} Livello di trasporto
+    \item \textbf{b)} TCP è orientato alla connessione e affidabile, UDP no
+    \item \textbf{c)} È più leggero e veloce ma non garantisce affidabilità
+    \item \textbf{c)} Stabilire una connessione affidabile tra client e server
+    \item \textbf{a)} Ogni livello aggiunge il proprio header ai dati del livello superiore
+    \item \textbf{c)} L'applicazione o servizio specifico sull'host
+\end{enumerate}
+
+\subsection*{Sezione 4: Indirizzi IP}
+
+\begin{enumerate}
+    \setcounter{enumi}{30}
+    \item \textbf{c)} 128 bit
+    \item \textbf{d)} Classe C (primo otteto 192-223)
+    \item \textbf{c)} Un indirizzo privato di classe A (non instradabile)
+    \item \textbf{a)} Riservati per usi sperimentali e futuri
+    \item \textbf{c)} Loopback o localhost (interfaccia virtuale locale)
+    \item \textbf{c)} 172.16.0.0 - 172.31.255.255
+    \item \textbf{b)} Converte indirizzi privati in pubblici e viceversa
+    \item \textbf{b)} Circa 4 miliardi (2$^{32}$)
+    \item \textbf{c)} L'indirizzo fisico univoco della scheda di rete (48 bit)
+    \item \textbf{a)} L'IP è logico e modificabile, il MAC è fisico e permanente
+\end{enumerate}
+
+\subsection*{Sezione 5: Subnetting e Notazioni}
+
+\begin{enumerate}
+    \setcounter{enumi}{40}
+    \item \textbf{b)} /25 (un bit di subnet)
+    \item \textbf{b)} 14 (escludendo rete e broadcast)
+    \item \textbf{d)} 192.168.1.255 (tutti i bit host a 1)
+    \item \textbf{b)} 172.16.50.96 (100 AND 240 = 96)
+    \item \textbf{c)} 62 host (2$^6$ - 2)
+    \item \textbf{b)} 255.255.255.192 (/26, crea 4 subnet)
+    \item \textbf{d)} 10.20.30.50 (nella subnet 10.20.30.64/27)
+    \item \textbf{b)} Allocare indirizzi in modo flessibile senza vincoli di classe
+    \item \textbf{a)} 8 indirizzi totali, 6 host utilizzabili (2$^3$ - 2)
+    \item \textbf{c)} 2$^{(32-n)}$ - 2 (bit host = 32 - n)
+    \item \textbf{a)} Il server DHCP non è disponibile o non risponde
+    \item \textbf{c)} /21 (248 = 11111000, quindi 8+8+5 = 21 bit a 1)
+    \item \textbf{c)} 4 bit (creano 16 subnet, sufficienti)
+    \item \textbf{b)} Sono in subnet diverse (50 in .0-.63, 100 in .64-.127)
+    \item \textbf{b)} 10.0.0.1 (primo host valido)
+\end{enumerate}
+
+\subsection*{Sezione 6: Protocolli Applicativi e Servizi}
+
+\begin{enumerate}
+    \setcounter{enumi}{55}
+    \item \textbf{c)} 80 (HTTP standard)
+    \item \textbf{d)} 443 (HTTPS standard)
+    \item \textbf{a)} 20 (dati) e 21 (controllo)
+    \item \textbf{c)} Inviare email dal client al server o tra server
+    \item \textbf{b)} Ricevere e gestire email dal server
+    \item \textbf{d)} SSH (Secure Shell, accesso remoto sicuro)
+    \item \textbf{c)} Assegnare automaticamente configurazioni di rete (IP, gateway, DNS, ecc.)
+    \item \textbf{c)} Nomi di dominio in indirizzi IP (e viceversa)
+    \item \textbf{d)} A record (address, IPv4)
+    \item \textbf{b)} Comandi diagnostici come ping e traceroute
+    \item \textbf{c)} Intermediario tra client e server, con possibilità di caching
+    \item \textbf{d)} Permette accesso remoto ma trasmette in chiaro (non sicuro)
+    \item \textbf{c)} Creare tunnel sicuri e crittografati attraverso reti pubbliche
+    \item \textbf{c)} Filtrare il traffico di rete secondo regole di sicurezza
+    \item \textbf{c)} Convertire indirizzi IP in indirizzi MAC (livello 2)
+\end{enumerate}
+
+\newpage
+
+\section*{Griglia Correzione Rapida}
+
+\begin{center}
+\begin{tabular}{|c|c||c|c||c|c||c|c|}
+\hline
+\textbf{N.} & \textbf{Risp.} & \textbf{N.} & \textbf{Risp.} & \textbf{N.} & \textbf{Risp.} & \textbf{N.} & \textbf{Risp.} \\
+\hline
+1 & c & 19 & a & 37 & b & 55 & b \\
+\hline
+2 & d & 20 & b & 38 & b & 56 & c \\
+\hline
+3 & b & 21 & d & 39 & c & 57 & d \\
+\hline
+4 & a & 22 & b & 40 & a & 58 & a \\
+\hline
+5 & c & 23 & b & 41 & b & 59 & c \\
+\hline
+6 & c & 24 & c & 42 & b & 60 & b \\
+\hline
+7 & c & 25 & c & 43 & d & 61 & d \\
+\hline
+8 & d & 26 & b & 44 & b & 62 & c \\
+\hline
+9 & c & 27 & c & 45 & c & 63 & c \\
+\hline
+10 & b & 28 & c & 46 & b & 64 & d \\
+\hline
+11 & d & 29 & a & 47 & d & 65 & b \\
+\hline
+12 & a & 30 & c & 48 & b & 66 & c \\
+\hline
+13 & c & 31 & c & 49 & a & 67 & d \\
+\hline
+14 & c & 32 & d & 50 & c & 68 & c \\
+\hline
+15 & d & 33 & c & 51 & a & 69 & c \\
+\hline
+16 & b & 34 & a & 52 & c & 70 & c \\
+\hline
+17 & c & 35 & c & 53 & c & & \\
+\hline
+18 & c & 36 & c & 54 & b & & \\
+\hline
+\end{tabular}
+\end{center}
+
+\vspace{1cm}
+
+\section*{Baremo di Valutazione Suggerito}
+
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+\textbf{Risposte Corrette} & \textbf{Voto} \\
+\hline
+63-70 & 10 \\
+\hline
+56-62 & 9 \\
+\hline
+49-55 & 8 \\
+\hline
+42-48 & 7 \\
+\hline
+35-41 & 6 \\
+\hline
+28-34 & 5 \\
+\hline
+21-27 & 4 \\
+\hline
+14-20 & 3 \\
+\hline
+0-13 & 2 \\
+\hline
+\end{tabular}
+\end{center}
+
+\vspace{0.5cm}
+
+\noindent\textbf{Note:}
+\begin{itemize}
+    \item Sufficienza: minimo 35 risposte corrette (50\%)
+    \item Ogni risposta corretta vale 1 punto
+    \item Non sono previste penalità per risposte errate
+\end{itemize}
+
+\end{document}

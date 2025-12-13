@@ -1,0 +1,187 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usetikzlibrary{shapes,arrows,positioning,shadows}
+
+% Definizione colori
+\definecolor{entitycolor}{RGB}{230,230,250}
+\definecolor{relationcolor}{RGB}{255,250,205}
+\definecolor{highlightcolor}{RGB}{255,255,153}
+\definecolor{bluetext}{RGB}{0,102,204}
+
+% Stile per entità
+\tikzstyle{entity} = [rectangle, draw, fill=entitycolor, text width=3.5cm, 
+                      text centered, minimum height=1.2cm, drop shadow]
+% Stile per relazioni
+\tikzstyle{relation} = [diamond, draw, fill=relationcolor, text width=2.5cm, 
+                        text centered, minimum height=1cm, aspect=2, drop shadow]
+
+\title{\textbf{\LARGE Cardinalità delle relazioni}}
+\author{Prof. Fedeli Massimo - ITS 4.0}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{Uno-a-uno (1, 1)}
+
+\colorbox{highlightcolor}{\parbox{\dimexpr\textwidth-2\fboxsep}{%
+La relazione è \textbf{uno-a-uno} se la cardinalità massima di entrambe le entità è 1.
+}}
+
+\vspace{1cm}
+
+\begin{center}
+\begin{tikzpicture}[node distance=4cm]
+    % Primo schema con cardinalità
+    \node[entity] (persona1) {persona};
+    \node[relation, right of=persona1] (possiede1) {possiede};
+    \node[entity, right of=possiede1] (codice1) {codice\_fiscale};
+    
+    \draw (persona1) -- node[above] {(1, 1)} (possiede1);
+    \draw (possiede1) -- node[above] {(1, 1)} (codice1);
+    
+    % Freccia rossa
+    \node[below of=possiede1, node distance=1.5cm] (arrow) {};
+    \draw[->, line width=3pt, red] (possiede1) -- (arrow);
+    
+    % Secondo schema semplificato
+    \node[entity, below of=persona1, node distance=3.5cm] (persona2) {persona};
+    \node[relation, right of=persona2] (possiede2) {possiede};
+    \node[entity, right of=possiede2] (codice2) {codice\_fiscale};
+    
+    \draw (persona2) -- (possiede2);
+    \draw (possiede2) -- (codice2);
+\end{tikzpicture}
+\end{center}
+
+\vspace{0.5cm}
+
+Viene indicata come (1, 1) e, generalmente, come prima anticipato, è sottointesa e, quindi, omessa.
+
+\newpage
+
+\section{Uno-a-molti (1, n)}
+
+\colorbox{highlightcolor}{\parbox{\dimexpr\textwidth-2\fboxsep}{%
+La relazione è \textbf{uno-a-molti} se la massima cardinalità verso una entità è 1 e la massima cardinalità verso l'altra entità è n.
+}}
+
+\vspace{1cm}
+
+\begin{center}
+\begin{tikzpicture}[node distance=4.5cm]
+    \node[entity] (persona) {persona};
+    \node[relation, right of=persona] (risiede) {risiede};
+    \node[entity, right of=risiede] (citta) {città};
+    
+    \draw (persona) -- node[above] {(1, 1)} (risiede);
+    \draw (risiede) -- node[above] {(1, n)} (citta);
+\end{tikzpicture}
+\end{center}
+
+\vspace{1.5cm}
+
+\section{Molti-a-molti (n, n)}
+
+\colorbox{highlightcolor}{\parbox{\dimexpr\textwidth-2\fboxsep}{%
+La relazione è \textbf{molti-a-molti} se la massima cardinalità verso entrambe le entità è n.
+}}
+
+\vspace{1cm}
+
+\begin{center}
+\begin{tikzpicture}[node distance=4.5cm]
+    \node[entity] (prodotto) {prodotto};
+    \node[relation, right of=prodotto] (venduto) {è venduto con};
+    \node[entity, right of=venduto] (fattura) {fattura};
+    
+    \draw (prodotto) -- node[above] {(1, n)} (venduto);
+    \draw (venduto) -- node[above] {(1, n)} (fattura);
+\end{tikzpicture}
+\end{center}
+
+\newpage
+
+\section{Esempi pratici}
+
+\subsection{Persona-Automobile}
+
+\begin{itemize}[leftmargin=*]
+    \item \textcolor{bluetext}{minima cardinalità} \textbf{(persona, proprietario)} = 0: esistono persone che non posseggono alcuna automobile;
+    \item \textcolor{bluetext}{massima cardinalità} \textbf{(persona, proprietario)} = n: ogni persona può essere proprietaria di un numero arbitrario di automobili;
+    \item \textcolor{bluetext}{minima cardinalità} \textbf{(automobile, proprietario)} = 0: esistono automobili non possedute da alcuna persona;
+    \item \textcolor{bluetext}{massima cardinalità} \textbf{(automobile, proprietario)} = 1: ogni automobile può avere al più un proprietario.
+\end{itemize}
+
+\vspace{0.5cm}
+
+Quindi lo schema completo di vincoli è il seguente:
+
+\vspace{0.5cm}
+
+\begin{center}
+\begin{tikzpicture}[node distance=4.5cm]
+    \node[entity] (persona) {persona};
+    \node[relation, right of=persona] (proprietario) {proprietario};
+    \node[entity, right of=proprietario] (automobile) {automobile};
+    
+    \draw (persona) -- node[above] {\textcolor{red}{(0, n)}} (proprietario);
+    \draw (proprietario) -- node[above] {\textcolor{red}{(0, 1)}} (automobile);
+\end{tikzpicture}
+\end{center}
+
+\vspace{1cm}
+
+\subsection{Persona-Comune}
+
+\begin{itemize}[leftmargin=*]
+    \item a ogni \textcolor{bluetext}{\textbf{persona}} viene associato \textcolor{red}{(1)} un solo \textcolor{red}{(1)} \textcolor{bluetext}{\textbf{comune}} di nascita;
+    \item a ogni \textcolor{bluetext}{\textbf{comune}} possono essere associate da \textcolor{red}{0} a \textcolor{red}{n} nascite di \textcolor{bluetext}{\textbf{persone}}.
+\end{itemize}
+
+\vspace{0.5cm}
+
+\begin{center}
+\begin{tikzpicture}[node distance=4.5cm]
+    \node[entity] (persona) {persona};
+    \node[relation, right of=persona] (nascita) {nascita};
+    \node[entity, right of=nascita] (comune) {comune};
+    
+    \draw (persona) -- node[above] {(1, 1)} (nascita);
+    \draw (nascita) -- node[above] {\textcolor{red}{(0, n)}} (comune);
+\end{tikzpicture}
+\end{center}
+
+\newpage
+
+\subsection{Turista-Vacanza}
+
+\begin{itemize}[leftmargin=*]
+    \item ogni \textcolor{bluetext}{\textbf{turista}} può effettuare \textcolor{red}{nessuna (0)} oppure \textcolor{red}{alcune (n)} prenotazioni di una \textcolor{bluetext}{\textbf{vacanza}}.
+    \item a ogni \textcolor{bluetext}{\textbf{vacanza}} possono essere associate \textcolor{red}{nessuna (0)} a \textcolor{red}{tante (n)} prenotazioni di \textcolor{bluetext}{\textbf{turisti}}.
+\end{itemize}
+
+\vspace{0.5cm}
+
+\begin{center}
+\begin{tikzpicture}[node distance=4.5cm]
+    \node[entity] (turista) {turista};
+    \node[relation, right of=turista] (prenota) {prenota};
+    \node[entity, right of=prenota] (vacanza) {vacanza};
+    
+    \draw (turista) -- node[above] {\textcolor{red}{(0, n)}} (prenota);
+    \draw (prenota) -- node[above] {\textcolor{red}{(0, n)}} (vacanza);
+\end{tikzpicture}
+\end{center}
+
+\vspace{1cm}
+
+\end{document}

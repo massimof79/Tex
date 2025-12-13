@@ -1,0 +1,700 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage{array}
+\usepackage{multicol}
+
+\geometry{a4paper, margin=2cm}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{Test Fondamenti di Reti - IIS Fermi Sacconi Ceci}
+\fancyhead[R]{A.S. 2025/26}
+\fancyfoot[C]{\thepage\ di \pageref{LastPage}}
+
+\title{\textbf{Test a Risposta Multipla\\Fondamenti di Reti}}
+\author{Prof. Fedeli Massimo - IIS Fermi Sacconi Ceci}
+\date{A.S. 2025/26}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+
+\vspace{1cm}
+
+\noindent\textbf{Nome e Cognome:} \underline{\hspace{8cm}}\\[0.5cm]
+\noindent\textbf{Classe:} \underline{\hspace{3cm}} \textbf{Data:} \underline{\hspace{3cm}}
+
+\vspace{1cm}
+
+\noindent\textbf{Istruzioni:}
+\begin{itemize}
+    \item Il test contiene 70 domande a risposta multipla
+    \item Per ogni domanda, segnare una sola risposta
+    \item Utilizzare il riquadro in fondo per riportare le risposte
+    \item Tempo a disposizione: 90 minuti
+\end{itemize}
+
+\newpage
+
+\section{Reti di Calcolatori e Concetti Generali}
+
+\begin{enumerate}
+
+\item Quale delle seguenti affermazioni descrive meglio una rete di calcolatori?
+\begin{enumerate}[label=\alph*)]
+    \item Un insieme di computer che condividono lo stesso sistema operativo
+    \item Un software distribuito per la gestione di database
+    \item Sistemi interconnessi che comunicano tramite canali di trasmissione
+    \item Dispositivi che utilizzano esclusivamente il protocollo TCP/IP
+\end{enumerate}
+
+\item I principali vantaggi delle reti di calcolatori includono:
+\begin{enumerate}[label=\alph*)]
+    \item Maggiore consumo energetico e necessità di personale specializzato
+    \item Solo la possibilità di navigare su Internet
+    \item Eliminazione completa dei rischi di sicurezza
+    \item Condivisione di risorse, affidabilità e scalabilità
+\end{enumerate}
+
+\item Una rete MAN (Metropolitan Area Network) copre tipicamente:
+\begin{enumerate}[label=\alph*)]
+    \item Un'area geografica di circa 10 metri (una stanza)
+    \item Un'area urbana o metropolitana (10-100 km)
+    \item Un singolo edificio o campus (fino a 1 km)
+    \item Continenti diversi (oltre 1000 km)
+\end{enumerate}
+
+\item In una topologia a stella:
+\begin{enumerate}[label=\alph*)]
+    \item Ogni nodo è collegato a un nodo centrale (hub o switch)
+    \item Tutti i nodi condividono un unico cavo bus
+    \item I nodi sono collegati in cerchio senza gerarchia
+    \item Ogni nodo ha connessione diretta con tutti gli altri nodi
+\end{enumerate}
+
+\item Qual è lo svantaggio principale della topologia a bus?
+\begin{enumerate}[label=\alph*)]
+    \item Richiede troppi cavi rispetto alle altre topologie
+    \item Il costo degli switch centrali è proibitivo
+    \item Se il cavo principale si guasta, tutta la rete smette di funzionare
+    \item La velocità di trasmissione è troppo bassa
+\end{enumerate}
+
+\item In una topologia ad anello (ring):
+\begin{enumerate}[label=\alph*)]
+    \item Esiste sempre un nodo centrale che coordina il traffico
+    \item I dati viaggiano in entrambe le direzioni simultaneamente
+    \item Ogni nodo è collegato a esattamente due nodi adiacenti formando un circuito chiuso
+    \item Tutti i nodi trasmettono contemporaneamente senza collisioni
+\end{enumerate}
+
+\item Cosa si intende per "larghezza di banda" (bandwidth) in una rete?
+\begin{enumerate}[label=\alph*)]
+    \item Il numero massimo di utenti che possono connettersi
+    \item La distanza fisica massima coperta dalla rete
+    \item La capacità di trasmissione dati, misurata in bit/secondo
+    \item La lunghezza totale dei cavi utilizzati
+\end{enumerate}
+
+\item Un hub in una rete locale:
+\begin{enumerate}[label=\alph*)]
+    \item Filtra i pacchetti basandosi sulla tabella di routing
+    \item Memorizza gli indirizzi MAC e commuta i frame intelligentemente
+    \item Cripta automaticamente tutto il traffico di rete
+    \item Replica il segnale ricevuto su tutte le porte (broadcasting)
+\end{enumerate}
+
+\item Quale dispositivo opera a livello 2 (Data Link) del modello OSI?
+\begin{enumerate}[label=\alph*)]
+    \item Router
+    \item Gateway applicativo
+    \item Switch
+    \item Repeater
+\end{enumerate}
+
+\item La latenza in una rete indica:
+\begin{enumerate}[label=\alph*)]
+    \item La quantità di dati trasmessi al secondo
+    \item Il ritardo temporale nella trasmissione dei dati
+    \item Il rapporto tra pacchetti persi e pacchetti inviati
+    \item La capacità massima del canale di comunicazione
+\end{enumerate}
+
+\end{enumerate}
+
+\section{Internet e Architetture di Rete}
+
+\begin{enumerate}[resume]
+
+\item La principale caratteristica di Internet è:
+\begin{enumerate}[label=\alph*)]
+    \item Utilizzare esclusivamente connessioni in fibra ottica
+    \item Essere gestita da un'unica organizzazione mondiale
+    \item Garantire sempre la massima velocità di trasmissione
+    \item Interconnettere reti eterogenee usando protocolli standard
+\end{enumerate}
+
+\item Il termine "backbone" in Internet si riferisce a:
+\begin{enumerate}[label=\alph*)]
+    \item Le dorsali ad alta velocità che interconnettono le reti principali
+    \item I server DNS radice distribuiti nel mondo
+    \item I computer client degli utenti finali
+    \item I firewall di protezione delle reti aziendali
+\end{enumerate}
+
+\item Nella commutazione di circuito:
+\begin{enumerate}[label=\alph*)]
+    \item Ogni pacchetto può seguire un percorso diverso
+    \item I dati sono divisi in pacchetti con header indipendenti
+    \item Il percorso viene stabilito prima della trasmissione e rimane dedicato
+    \item Non è necessario prenotare risorse di rete
+\end{enumerate}
+
+\item Un vantaggio della commutazione di pacchetto rispetto a quella di circuito è:
+\begin{enumerate}[label=\alph*)]
+    \item Garanzia assoluta della banda per ogni comunicazione
+    \item Latenza sempre costante e prevedibile
+    \item Maggiore efficienza nell'uso delle risorse di rete
+    \item Impossibilità di congestione nei router
+\end{enumerate}
+
+\item Cosa contiene l'intestazione (header) di un pacchetto IP?
+\begin{enumerate}[label=\alph*)]
+    \item Solo i dati utili da trasmettere
+    \item Esclusivamente l'indirizzo del destinatario
+    \item La password di autenticazione dell'utente
+    \item Indirizzi IP sorgente e destinazione, TTL, checksum, ecc.
+\end{enumerate}
+
+\item Il campo TTL (Time To Live) in un pacchetto IP serve a:
+\begin{enumerate}[label=\alph*)]
+    \item Indicare la velocità di trasmissione richiesta
+    \item Evitare che i pacchetti circolino indefinitamente nella rete
+    \item Stabilire la priorità del pacchetto rispetto ad altri
+    \item Memorizzare il tempo di creazione del pacchetto
+\end{enumerate}
+
+\item In Internet, il termine "hop" indica:
+\begin{enumerate}[label=\alph*)]
+    \item Il numero di byte trasmessi in un secondo
+    \item Un errore di trasmissione che richiede ritrasmissione
+    \item Il passaggio di un pacchetto attraverso un router
+    \item La distanza fisica tra due dispositivi
+\end{enumerate}
+
+\item Quando un router riceve un pacchetto:
+\begin{enumerate}[label=\alph*)]
+    \item Lo memorizza permanentemente nel disco
+    \item Lo cripta per sicurezza prima di inoltrarlo
+    \item Consulta la tabella di routing e lo inoltra verso la destinazione
+    \item Lo replica su tutte le interfacce di uscita
+\end{enumerate}
+
+\item La funzione principale di un gateway è:
+\begin{enumerate}[label=\alph*)]
+    \item Interconnettere reti con protocolli diversi (livello applicativo)
+    \item Amplificare il segnale elettrico su lunghe distanze
+    \item Filtrare automaticamente lo spam e i virus
+    \item Assegnare indirizzi IP dinamici ai client
+\end{enumerate}
+
+\item Cosa si intende per "best effort" nel servizio offerto da IP?
+\begin{enumerate}[label=\alph*)]
+    \item Garanzia assoluta di consegna entro un tempo massimo
+    \item Il protocollo cerca di consegnare i pacchetti ma non garantisce successo
+    \item Priorità massima assegnata a tutti i pacchetti di rete
+    \item Cifratura obbligatoria di tutti i dati trasmessi
+\end{enumerate}
+
+\end{enumerate}
+
+\section{Architetture a Livelli e Protocolli}
+
+\begin{enumerate}[resume]
+
+\item Il vantaggio principale dell'architettura a livelli è:
+\begin{enumerate}[label=\alph*)]
+    \item Maggiore velocità di trasmissione dei dati
+    \item Riduzione dei costi hardware necessari
+    \item Eliminazione completa degli errori di rete
+    \item Modularità e indipendenza tra i livelli
+\end{enumerate}
+
+\item Nel modello OSI, il livello di presentazione si occupa di:
+\begin{enumerate}[label=\alph*)]
+    \item Instradamento dei pacchetti tra sottoreti
+    \item Formattazione, codifica e crittografia dei dati
+    \item Gestione fisica del mezzo trasmissivo
+    \item Controllo del flusso tra applicazioni
+\end{enumerate}
+
+\item Il livello di sessione nel modello OSI gestisce:
+\begin{enumerate}[label=\alph*)]
+    \item La conversione dei bit in segnali elettrici
+    \item L'apertura, gestione e chiusura delle connessioni tra applicazioni
+    \item L'assegnazione degli indirizzi IP agli host
+    \item L'instradamento dei pacchetti tra reti diverse
+\end{enumerate}
+
+\item Quanti livelli dell'OSI sono presenti nell'architettura TCP/IP?
+\begin{enumerate}[label=\alph*)]
+    \item Tutti e 7 i livelli dell'OSI
+    \item 3 livelli (applicazione, rete, fisico)
+    \item 4 livelli principali (applicazione, trasporto, rete, collegamento)
+    \item 5 livelli (include anche presentazione e sessione)
+\end{enumerate}
+
+\item Il protocollo TCP opera a quale livello?
+\begin{enumerate}[label=\alph*)]
+    \item Livello applicativo (insieme a HTTP e FTP)
+    \item Livello di rete (insieme a IP e ICMP)
+    \item Livello di trasporto
+    \item Livello fisico e data link
+\end{enumerate}
+
+\item La principale differenza tra TCP e UDP è:
+\begin{enumerate}[label=\alph*)]
+    \item UDP è più lento ma più affidabile di TCP
+    \item TCP è orientato alla connessione e affidabile, UDP no
+    \item TCP non garantisce l'ordine dei pacchetti, UDP sì
+    \item Non esiste differenza sostanziale, sono intercambiabili
+\end{enumerate}
+
+\item Il protocollo UDP:
+\begin{enumerate}[label=\alph*)]
+    \item Garantisce sempre la consegna ordinata dei dati
+    \item Richiede una fase di handshake a tre vie
+    \item È più leggero e veloce ma non garantisce affidabilità
+    \item Cripta automaticamente tutti i dati trasmessi
+\end{enumerate}
+
+\item Il three-way handshake in TCP serve per:
+\begin{enumerate}[label=\alph*)]
+    \item Chiudere correttamente una connessione esistente
+    \item Crittografare la comunicazione end-to-end
+    \item Stabilire una connessione affidabile tra client e server
+    \item Frammentare i dati in pacchetti di dimensione fissa
+\end{enumerate}
+
+\item L'incapsulamento dei dati nel modello a livelli significa:
+\begin{enumerate}[label=\alph*)]
+    \item Ogni livello aggiunge il proprio header ai dati del livello superiore
+    \item I dati vengono compressi per ridurne la dimensione
+    \item I dati vengono eliminati se contengono errori
+    \item I dati vengono divisi in parti uguali
+\end{enumerate}
+
+\item Il numero di porta in TCP/UDP identifica:
+\begin{enumerate}[label=\alph*)]
+    \item L'indirizzo fisico della scheda di rete
+    \item Il router da utilizzare per l'instradamento
+    \item L'applicazione o servizio specifico sull'host
+    \item Il tipo di cavo utilizzato per la connessione
+\end{enumerate}
+
+\end{enumerate}
+
+\section{Indirizzi IP}
+
+\begin{enumerate}[resume]
+
+\item Qual è la dimensione di un indirizzo IPv6?
+\begin{enumerate}[label=\alph*)]
+    \item 32 bit (come IPv4)
+    \item 64 bit (doppio di IPv4)
+    \item 128 bit
+    \item 256 bit
+\end{enumerate}
+
+\item Un indirizzo IPv4 192.168.1.1 appartiene alla classe:
+\begin{enumerate}[label=\alph*)]
+    \item Classe A (primo otteto 0-127)
+    \item Classe B (primo otteto 128-191)
+    \item Classe D (multicast)
+    \item Classe C (primo otteto 192-223)
+\end{enumerate}
+
+\item L'indirizzo 10.0.0.1 è:
+\begin{enumerate}[label=\alph*)]
+    \item Un indirizzo pubblico instradabile su Internet
+    \item Un indirizzo multicast per gruppi
+    \item Un indirizzo privato di classe A (non instradabile)
+    \item Un indirizzo di loopback riservato
+\end{enumerate}
+
+\item Gli indirizzi della classe E (240-255.X.X.X) sono:
+\begin{enumerate}[label=\alph*)]
+    \item Riservati per usi sperimentali e futuri
+    \item Utilizzati per reti aziendali di grandi dimensioni
+    \item Dedicati al broadcasting globale
+    \item Assegnati alle reti domestiche
+\end{enumerate}
+
+\item L'indirizzo 127.0.0.1 è noto come:
+\begin{enumerate}[label=\alph*)]
+    \item Gateway predefinito della rete locale
+    \item Indirizzo di broadcast per la subnet
+    \item Loopback o localhost (interfaccia virtuale locale)
+    \item Server DNS primario del sistema
+\end{enumerate}
+
+\item Qual è il range di indirizzi privati di classe B?
+\begin{enumerate}[label=\alph*)]
+    \item 10.0.0.0 - 10.255.255.255
+    \item 192.168.0.0 - 192.168.255.255
+    \item 172.16.0.0 - 172.31.255.255
+    \item 169.254.0.0 - 169.254.255.255
+\end{enumerate}
+
+\item Il NAT (Network Address Translation):
+\begin{enumerate}[label=\alph*)]
+    \item Cripta i dati per sicurezza nella trasmissione
+    \item Converte indirizzi privati in pubblici e viceversa
+    \item Assegna automaticamente nomi di dominio agli host
+    \item Instrada i pacchetti tra diverse sottoreti
+\end{enumerate}
+
+\item Quanti indirizzi può teoricamente indirizzare IPv4?
+\begin{enumerate}[label=\alph*)]
+    \item Circa 16 milioni (2$^{24}$)
+    \item Circa 4 miliardi (2$^{32}$)
+    \item Circa 65.000 (2$^{16}$)
+    \item Infiniti con il CIDR
+\end{enumerate}
+
+\item L'indirizzo MAC (Media Access Control) è:
+\begin{enumerate}[label=\alph*)]
+    \item Un indirizzo IP di classe speciale
+    \item Un protocollo di rete di livello 3
+    \item L'indirizzo fisico univoco della scheda di rete (48 bit)
+    \item Un sistema operativo per Apple
+\end{enumerate}
+
+\item La differenza principale tra indirizzo IP e MAC è:
+\begin{enumerate}[label=\alph*)]
+    \item L'IP è logico e modificabile, il MAC è fisico e permanente
+    \item Il MAC è più lungo dell'IP in termini di bit
+    \item Non esiste differenza, sono sinonimi
+    \item L'IP è permanente, il MAC cambia dinamicamente
+\end{enumerate}
+
+\end{enumerate}
+
+\section{Subnetting e Notazioni}
+
+\begin{enumerate}[resume]
+
+\item Una netmask 255.255.255.128 corrisponde a:
+\begin{enumerate}[label=\alph*)]
+    \item /24 (classe C standard)
+    \item /25 (un bit di subnet)
+    \item /26 (due bit di subnet)
+    \item /23 (supernetting)
+\end{enumerate}
+
+\item Con una netmask /28, quanti host utilizzabili possiamo avere?
+\begin{enumerate}[label=\alph*)]
+    \item 16 (tutti gli indirizzi)
+    \item 14 (escludendo rete e broadcast)
+    \item 30 (come una /27)
+    \item 32 (confondendo con /27)
+\end{enumerate}
+
+\item L'indirizzo di broadcast di una rete 192.168.1.0/24 è:
+\begin{enumerate}[label=\alph*)]
+    \item 192.168.1.0 (indirizzo di rete)
+    \item 192.168.1.1 (primo host)
+    \item 192.168.1.254 (ultimo host utilizzabile)
+    \item 192.168.1.255 (tutti i bit host a 1)
+\end{enumerate}
+
+\item Dato l'indirizzo 172.16.50.100 con netmask 255.255.255.240 (/28), l'indirizzo di rete è:
+\begin{enumerate}[label=\alph*)]
+    \item 172.16.50.0 (ignorando la netmask)
+    \item 172.16.50.96 (100 AND 240 = 96)
+    \item 172.16.50.64 (subnet precedente)
+    \item 172.16.50.112 (subnet successiva)
+\end{enumerate}
+
+\item Una rete /26 può ospitare al massimo:
+\begin{enumerate}[label=\alph*)]
+    \item 64 host (tutti gli indirizzi)
+    \item 126 host (come una /25)
+    \item 62 host (2$^6$ - 2)
+    \item 32 host (metà di 64)
+\end{enumerate}
+
+\item Per dividere una rete di classe C in 4 sottoreti uguali, quale netmask si usa?
+\begin{enumerate}[label=\alph*)]
+    \item 255.255.255.128 (/25, crea 2 subnet)
+    \item 255.255.255.192 (/26, crea 4 subnet)
+    \item 255.255.255.224 (/27, crea 8 subnet)
+    \item 255.255.255.240 (/28, crea 16 subnet)
+\end{enumerate}
+
+\item Dato l'IP 10.20.30.45/27, quale NON è un indirizzo valido nella stessa subnet?
+\begin{enumerate}[label=\alph*)]
+    \item 10.20.30.33 (nella subnet 10.20.30.32/27)
+    \item 10.20.30.40 (nella subnet 10.20.30.32/27)
+    \item 10.20.30.62 (nella subnet 10.20.30.32/27)
+    \item 10.20.30.50 (nella subnet 10.20.30.64/27)
+\end{enumerate}
+
+\item Il CIDR (Classless Inter-Domain Routing) permette di:
+\begin{enumerate}[label=\alph*)]
+    \item Usare esclusivamente le classi A, B, C tradizionali
+    \item Allocare indirizzi in modo flessibile senza vincoli di classe
+    \item Eliminare completamente il routing su Internet
+    \item Convertire automaticamente IPv4 in IPv6
+\end{enumerate}
+
+\item Una rete 192.168.10.0/29 ha:
+\begin{enumerate}[label=\alph*)]
+    \item 8 indirizzi totali, 6 host utilizzabili (2$^3$ - 2)
+    \item 16 indirizzi totali, 14 host utilizzabili
+    \item 32 indirizzi totali, 30 host utilizzabili
+    \item 4 indirizzi totali, 2 host utilizzabili
+\end{enumerate}
+
+\item Per calcolare il numero di host utilizzabili data una netmask /n, si usa la formula:
+\begin{enumerate}[label=\alph*)]
+    \item 2$^n$ - 2 (confondendo n con i bit host)
+    \item 2$^{32}$ - n - 2
+    \item 2$^{(32-n)}$ - 2 (bit host = 32 - n)
+    \item n$^2$ - 2
+\end{enumerate}
+
+\item Gli indirizzi APIPA (169.254.x.x) vengono assegnati automaticamente quando:
+\begin{enumerate}[label=\alph*)]
+    \item Il server DHCP non è disponibile o non risponde
+    \item La velocità della rete supera 1 Gbps
+    \item Si utilizza esclusivamente IPv6
+    \item Il router principale è configurato correttamente
+\end{enumerate}
+
+\item Una subnet mask 255.255.248.0 corrisponde a:
+\begin{enumerate}[label=\alph*)]
+    \item /19 (240 = 11110000 in binario, errore comune)
+    \item /20 (248 = 11111000, quindi 8+8+5 = 21, errore)
+    \item /21 (248 = 11111000, quindi 8+8+5 = 21 bit a 1)
+    \item /22 (252 = 11111100, non 248)
+\end{enumerate}
+
+\item Se vogliamo creare almeno 10 sottoreti da una rete di classe C, quanti bit dobbiamo "prendere in prestito" dalla parte host?
+\begin{enumerate}[label=\alph*)]
+    \item 2 bit (creano solo 4 subnet, insufficiente)
+    \item 3 bit (creano solo 8 subnet, insufficiente)
+    \item 4 bit (creano 16 subnet, sufficienti)
+    \item 5 bit (creano 32 subnet, eccessive ma valide)
+\end{enumerate}
+
+\item Due host con IP 192.168.5.50/26 e 192.168.5.100/26:
+\begin{enumerate}[label=\alph*)]
+    \item Sono nella stessa subnet (50 e 100 in 192.168.5.0-63)
+    \item Sono in subnet diverse (50 in .0-.63, 100 in .64-.127)
+    \item Non possono mai comunicare tra loro
+    \item Hanno entrambi indirizzi di rete invalidi
+\end{enumerate}
+
+\item Il primo indirizzo utilizzabile in una rete 10.0.0.0/8 è:
+\begin{enumerate}[label=\alph*)]
+    \item 10.0.0.0 (indirizzo di rete, non utilizzabile)
+    \item 10.0.0.1 (primo host valido)
+    \item 10.0.0.2 (secondo host)
+    \item 10.1.0.0 (confondendo con ottetti)
+\end{enumerate}
+
+\end{enumerate}
+
+\section{Protocolli Applicativi e Servizi}
+
+\begin{enumerate}[resume]
+
+\item Il protocollo HTTP (HyperText Transfer Protocol) opera sulla porta TCP:
+\begin{enumerate}[label=\alph*)]
+    \item 21 (FTP)
+    \item 25 (SMTP)
+    \item 80 (HTTP standard)
+    \item 443 (HTTPS)
+\end{enumerate}
+
+\item HTTPS (HTTP Secure) utilizza la porta TCP:
+\begin{enumerate}[label=\alph*)]
+    \item 80 (HTTP non sicuro)
+    \item 8080 (HTTP alternativo)
+    \item 22 (SSH)
+    \item 443 (HTTPS standard)
+\end{enumerate}
+
+\item Il protocollo FTP (File Transfer Protocol) utilizza due porte TCP:
+\begin{enumerate}[label=\alph*)]
+    \item 20 (dati) e 21 (controllo)
+    \item 80 (HTTP) e 443 (HTTPS)
+    \item 25 (SMTP) e 110 (POP3)
+    \item 53 (DNS) e 67 (DHCP)
+\end{enumerate}
+
+\item SMTP (Simple Mail Transfer Protocol) è utilizzato per:
+\begin{enumerate}[label=\alph*)]
+    \item Ricevere e scaricare email dal server
+    \item Trasferire file tra client e server
+    \item Inviare email dal client al server o tra server
+    \item Navigare su pagine web
+\end{enumerate}
+
+\item POP3 e IMAP sono protocolli utilizzati per:
+\begin{enumerate}[label=\alph*)]
+    \item Inviare email ai destinatari
+    \item Ricevere e gestire email dal server
+    \item Trasferire file di grandi dimensioni
+    \item Configurare automaticamente la rete
+\end{enumerate}
+
+\item La porta TCP 22 è utilizzata dal protocollo:
+\begin{enumerate}[label=\alph*)]
+    \item HTTP (navigazione web)
+    \item FTP (trasferimento file)
+    \item SMTP (invio email)
+    \item SSH (Secure Shell, accesso remoto sicuro)
+\end{enumerate}
+
+\item Il DHCP (Dynamic Host Configuration Protocol) serve principalmente a:
+\begin{enumerate}[label=\alph*)]
+    \item Tradurre nomi di dominio in indirizzi IP
+    \item Instradare i pacchetti tra reti diverse
+    \item Assegnare automaticamente configurazioni di rete (IP, gateway, DNS, ecc.)
+    \item Crittografare il traffico di rete
+\end{enumerate}
+
+\item Un server DNS (Domain Name System) traduce:
+\begin{enumerate}[label=\alph*)]
+    \item Indirizzi IP in indirizzi MAC fisici
+    \item Numeri di porta in nomi di servizio
+    \item Nomi di dominio in indirizzi IP (e viceversa)
+    \item Protocolli in applicazioni specifiche
+\end{enumerate}
+
+\item Quale tipo di record DNS associa un nome di dominio a un indirizzo IPv4?
+\begin{enumerate}[label=\alph*)]
+    \item MX record (mail exchanger)
+    \item CNAME record (canonical name, alias)
+    \item NS record (name server)
+    \item A record (address, IPv4)
+\end{enumerate}
+
+\item Il protocollo ICMP (Internet Control Message Protocol) è utilizzato principalmente da:
+\begin{enumerate}[label=\alph*)]
+    \item Browser web per caricare pagine HTML
+    \item Comandi diagnostici come ping e traceroute
+    \item Client email per inviare messaggi
+    \item Server FTP per trasferire file
+\end{enumerate}
+
+\item Un proxy server svolge la funzione di:
+\begin{enumerate}[label=\alph*)]
+    \item Router di livello 3 per instradamento
+    \item Assegnare dinamicamente indirizzi IP
+    \item Intermediario tra client e server, con possibilità di caching
+    \item Crittografare obbligatoriamente tutto il traffico
+\end{enumerate}
+
+\item Il protocollo Telnet:
+\begin{enumerate}[label=\alph*)]
+    \item È sicuro perché cripta tutto il traffico
+    \item Trasferisce file in modo affidabile
+    \item Gestisce la posta elettronica in uscita
+    \item Permette accesso remoto ma trasmette in chiaro (non sicuro)
+\end{enumerate}
+
+\item Una VPN (Virtual Private Network) serve principalmente a:
+\begin{enumerate}[label=\alph*)]
+    \item Aumentare la velocità di connessione a Internet
+    \item Assegnare automaticamente indirizzi IP privati
+    \item Creare tunnel sicuri e crittografati attraverso reti pubbliche
+    \item Bloccare automaticamente virus e malware
+\end{enumerate}
+
+\item Un firewall svolge principalmente la funzione di:
+\begin{enumerate}[label=\alph*)]
+    \item Aumentare la banda disponibile sulla rete
+    \item Assegnare indirizzi IP agli host della rete
+    \item Filtrare il traffico di rete secondo regole di sicurezza
+    \item Convertire protocolli incompatibili
+\end{enumerate}
+
+\item ARP (Address Resolution Protocol) serve a:
+\begin{enumerate}[label=\alph*)]
+    \item Convertire indirizzi IP in nomi di dominio leggibili
+    \item Instradare pacchetti tra sottoreti diverse
+    \item Convertire indirizzi IP in indirizzi MAC (livello 2)
+    \item Assegnare indirizzi IP in modo dinamico
+\end{enumerate}
+
+\end{enumerate}
+
+\newpage
+
+\section*{Riquadro Risposte}
+
+\noindent Riportare le risposte segnando la lettera corrispondente alla risposta scelta:
+
+\vspace{0.5cm}
+
+\begin{center}
+\begin{tabular}{|c|c||c|c||c|c||c|c|}
+\hline
+\textbf{N.} & \textbf{Risp.} & \textbf{N.} & \textbf{Risp.} & \textbf{N.} & \textbf{Risp.} & \textbf{N.} & \textbf{Risp.} \\
+\hline
+1 & & 19 & & 37 & & 55 & \\
+\hline
+2 & & 20 & & 38 & & 56 & \\
+\hline
+3 & & 21 & & 39 & & 57 & \\
+\hline
+4 & & 22 & & 40 & & 58 & \\
+\hline
+5 & & 23 & & 41 & & 59 & \\
+\hline
+6 & & 24 & & 42 & & 60 & \\
+\hline
+7 & & 25 & & 43 & & 61 & \\
+\hline
+8 & & 26 & & 44 & & 62 & \\
+\hline
+9 & & 27 & & 45 & & 63 & \\
+\hline
+10 & & 28 & & 46 & & 64 & \\
+\hline
+11 & & 29 & & 47 & & 65 & \\
+\hline
+12 & & 30 & & 48 & & 66 & \\
+\hline
+13 & & 31 & & 49 & & 67 & \\
+\hline
+14 & & 32 & & 50 & & 68 & \\
+\hline
+15 & & 33 & & 51 & & 69 & \\
+\hline
+16 & & 34 & & 52 & & 70 & \\
+\hline
+17 & & 35 & & 53 & & \\
+\hline
+18 & & 36 & & 54 & & \\
+\hline
+\end{tabular}
+\end{center}
+
+\vspace{1cm}
+
+\noindent\textbf{Punteggio:} \underline{\hspace{3cm}} / 70
+
+\label{LastPage}
+
+\end{document}
