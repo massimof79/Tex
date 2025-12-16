@@ -1,0 +1,630 @@
+\documentclass[aspectratio=169]{beamer}
+
+% Pacchetti per la lingua e la codifica
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[italian]{babel}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{listings}
+
+% Tema della presentazione
+\usetheme{Madrid}
+\usecolortheme{beaver}
+
+% Informazioni sul documento
+\title[Progettazione Concettuale]{Progettazione Concettuale di Basi di Dati}
+\subtitle{Strategie, Pattern e Metodologie}
+\author{Prof. Fedeli Massimo - Tutti i diritti riservati}
+\institute[ITS 4.0]{Fabbrica Digitale}
+\date{\today}
+
+\begin{document}
+	
+	% --- SLIDE 1: Titolo ---
+	\begin{frame}
+		\titlepage
+	\end{frame}
+	
+	% --- SLIDE 2: Indice ---
+	\begin{frame}{Indice}
+		\tableofcontents
+	\end{frame}
+	
+	% ==========================================
+	% SEZIONE 1: INTRODUZIONE E REQUISITI
+	% ==========================================
+	\section{Analisi dei Requisiti}
+	
+	\begin{frame}{Il Ciclo di Vita della Progettazione}
+		La progettazione di un database si articola in fasi distinte:
+		\begin{itemize}
+			\item \textbf{Analisi dei Requisiti} ("COSA"): Raccogliere e analizzare le necessità.
+			\item \textbf{Progettazione Concettuale} ("COSA"): Schema Concettuale (indipendente dal DBMS).
+			\item \textbf{Progettazione Logica} ("COME"): Schema Logico (es. Relazionale).
+			\item \textbf{Progettazione Fisica} ("COME"): Schema Fisico (file, indici).
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}{Acquisizione dei Requisiti}
+		Copre compiti interconnessi:
+		\begin{enumerate}
+			\item Raccolta dei requisiti (elicitation).
+			\item Analisi dei requisiti.
+			\item Costruzione del glossario.
+			\item Costruzione dello schema concettuale.
+		\end{enumerate}
+	\end{frame}
+	
+	\begin{frame}{Fonti dei Requisiti}
+		Da dove provengono le informazioni?
+		\begin{itemize}
+			\item \textbf{Utenti e clienti:} tramite interviste.
+			\item \textbf{Documentazione specifica:} documenti ad hoc.
+			\item \textbf{Documentazione esistente:} normative, leggi, regolamenti interni, processi aziendali.
+			\item \textbf{Soluzioni preesistenti:} software legacy.
+			\item \textbf{Modulistica:} form cartacei o digitali in uso.
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}{Acquisizione tramite Interviste}
+		\begin{alertblock}{Attenzione}
+			L'acquisizione è un'attività difficile e non standardizzata. I requisiti iniziali spesso necessitano di raffinamenti successivi.
+		\end{alertblock}
+		\begin{itemize}
+			\item Utenti diversi forniscono informazioni diverse.
+			\item Livello manageriale: visione ampia ma poco dettagliata.
+			\item Livello operativo: visione dettagliata ma limitata.
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}{Consigli per le Interviste}
+		\begin{itemize}
+			\item Effettuare frequenti controlli di comprensione e coerenza.
+			\item Utilizzare esempi di \textit{Use Case} (casi generici e casi limite).
+			\item Chiedere definizioni esplicite e classificazioni.
+			\item Chiedere di distinguere tra aspetti essenziali e periferici.
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}{Analisi della Documentazione Descrittiva}
+		Regole empiriche per trattare i testi dei requisiti:
+		\begin{itemize}
+			\item Scegliere il giusto livello di astrazione.
+			\item Mantenere la struttura delle frasi il più standard possibile.
+			\item Spezzare le frasi troppo lunghe o complesse.
+			\item Distinguere le frasi che descrivono **dati** da quelle che descrivono **funzioni**.
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}{Costruzione del Glossario}
+		Il glossario è fondamentale per uniformare il linguaggio.
+		\begin{itemize}
+			\item Costruire un glossario per i termini chiave.
+			\item Unificare omonimi e sinonimi sotto un unico termine.
+			\item Chiarire esplicitamente le relazioni tra i termini.
+			\item Ordinare le frasi per concetto.
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}{Esempio di Glossario}
+		\begin{table}
+			\centering
+			\begin{tabular}{l p{4cm} l l}
+				\toprule
+				\textbf{Termine} & \textbf{Descrizione} & \textbf{Sinonimo} & \textbf{Relato a} \\
+				\midrule
+				Partecipante & Chi prende parte ai corsi & Studente & Corso, Società \\
+				Docente & Il titolare del corso & Insegnante & Corso \\
+				Corso & Corso interno, può avere edizioni & Workshop & Docente \\
+				Società & Luogo di lavoro attuale o passato & Luogo & Partecipante \\
+				\bottomrule
+			\end{tabular}
+		\end{table}
+	\end{frame}
+	
+	\begin{frame}{Strutturazione dei Requisiti}
+		Organizzare i requisiti in gruppi omogenei di frasi facilita la progettazione.
+		\begin{itemize}
+			\item Frasi generali (visione d'insieme).
+			\item Frasi relative ai Partecipanti.
+			\item Frasi relative ai Corsi.
+			\item Frasi relative ai Docenti.
+		\end{itemize}
+		\textit{[Immagine suggerita: Diagramma a blocchi che mostra il raggruppamento delle frasi per argomento]}
+	\end{frame}
+	
+	\begin{frame}{Dai Requisiti allo Schema Concettuale}
+		Come mappare i termini nei costruttori ER?
+		\begin{itemize}
+			\item \textbf{Entità:} se il termine ha proprietà rilevanti e descrive oggetti autonomi.
+			\item \textbf{Attributo:} se è un termine semplice senza ulteriori specifiche.
+			\item \textbf{Relazione (Associazione):} quando un termine collega altri termini.
+			\item \textbf{Generalizzazione:} quando un termine è un caso più generale di un altro.
+		\end{itemize}
+	\end{frame}
+	
+	% ==========================================
+	% SEZIONE 2: DESIGN PATTERNS
+	% ==========================================
+	\section{Design Patterns ER}
+	
+	\begin{frame}{Design Patterns}
+		\begin{itemize}
+			\item Sono "best practices" comuni nella progettazione software per problemi ricorrenti.
+			\item Gli ingegneri del software li usano quotidianamente.
+			\item Esistono pattern specifici per la modellazione ER (Entity-Relationship).
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}{Pattern: Reificazione di Attributi}
+		Quando un attributo nasconde concetti complessi, deve diventare un'Entità.
+		\vspace{0.5cm}
+		
+		\textbf{Esempio:} "Azienda" come semplice stringa vs "Azienda" come entità relazionata.
+		
+		\begin{center}
+			\fbox{\begin{minipage}{0.8\textwidth}
+					\centering
+							\end{minipage}}
+		\end{center}
+		L'azienda è un concetto diverso dall'impiegato (es. quando le aziende sono coinvolte in altre relazioni).
+	\end{frame}
+	
+	\begin{frame}{Pattern: Part-of (Composizione/Aggregazione)}
+		Le relazioni (1,N) possono rappresentare concetti di "parte di".
+		\begin{itemize}
+			\item \textbf{Composizione:} Un cinema è fatto di sale (senza cinema, la sala non ha senso).
+			\item \textbf{Aggregazione:} Un team è composto da esperti (l'esperto esiste anche senza il team).
+		\end{itemize}
+		
+		\begin{center}
+			\fbox{\begin{minipage}{0.8\textwidth}
+					\centering
+				
+			\end{minipage}}
+		\end{center}
+	\end{frame}
+	
+	\begin{frame}{Pattern: Instance-of}
+		A volte servono due entità distinte: una per la rappresentazione astratta e una per l'istanza concreta.
+		
+		\textbf{Esempio:}
+		\begin{itemize}
+			\item \textbf{Volo (Flight):} Il concetto astratto (es. Volo AZ123 Roma-Milano delle 8:00).
+			\item \textbf{Schedulazione (Scheduled):} L'evento specifico in una data precisa.
+		\end{itemize}
+		
+		\begin{center}
+			\fbox{\begin{minipage}{0.6\textwidth}
+					\centering
+
+			\end{minipage}}
+		\end{center}
+	\end{frame}
+	
+	\begin{frame}{Pattern: Reificazione di Relazioni Binarie (1)}
+		Quando una relazione ha attributi complessi o deve essere collegata ad altre entità, può essere trasformata (reificata) in un'entità.
+		
+		\textbf{Esempio Studente-Esame-Lezione:}
+		Un esame collega uno studente e una lezione e ha un voto.
+		\begin{center}
+			\fbox{\begin{minipage}{0.7\textwidth}
+					\centering
+							\end{minipage}}
+		\end{center}
+	\end{frame}
+	
+	\begin{frame}{Pattern: Reificazione di Relazioni Ricorsive}
+		\textbf{Esempio Partita (Match):}
+		Una partita potrebbe essere una relazione binaria tra due squadre (Team).
+		Tuttavia, poiché due squadre possono giocare contro più volte, è meglio reificare il concetto di "Match".
+		
+		\begin{center}
+			\fbox{\begin{minipage}{0.7\textwidth}
+					\centering
+					\textit{[Inserire qui diagramma ER slide 30: Team - Home/Visiting - Match]}
+			\end{minipage}}
+		\end{center}
+	\end{frame}
+	
+	\begin{frame}{Pattern: Reificazione di Relazioni (Strumenti Musicali)}
+		Un musicista suona uno strumento in un'orchestra.
+		\begin{itemize}
+			\item Un musicista suona uno strumento.
+			\item Lo stesso strumento (fisico o tipologia) può essere suonato molte volte.
+		\end{itemize}
+		
+		\begin{center}
+			\fbox{\begin{minipage}{0.7\textwidth}
+					\centering
+
+			\end{minipage}}
+		\end{center}
+	\end{frame}
+	
+	\begin{frame}{Pattern: Caso Specifico (Sottoinsiemi)}
+		Le generalizzazioni sono usate per definire casi specifici di un'entità.
+		
+		\textbf{Esempio:}
+		Non tutti gli impiegati gestiscono progetti. Solo i "Manager" lo fanno.
+		
+		\begin{center}
+			\fbox{\begin{minipage}{0.6\textwidth}
+					\centering
+
+			\end{minipage}}
+		\end{center}
+	\end{frame}
+	
+	\begin{frame}{Pattern: Storicizzazione (History)}
+		Come mantenere traccia dei cambiamenti nel tempo?
+		\begin{itemize}
+			\item \textbf{Dati anagrafici:} Indirizzo corrente vs indirizzi passati.
+			\item \textbf{Stato software:} Versione corrente vs versioni legacy.
+		\end{itemize}
+		Si usano generalizzazioni per separare lo stato "Corrente" dallo stato "Storico".
+		
+		\begin{center}
+			\fbox{\begin{minipage}{0.6\textwidth}
+					\centering
+
+			\end{minipage}}
+		\end{center}
+	\end{frame}
+	
+	\begin{frame}{Pattern: Storicizzazione (Employment)}
+		Esempio complesso: Storia lavorativa di un impiegato.
+		\begin{itemize}
+			\item Un impiegato può avere un impiego corrente e molti passati.
+			\item Si può modellare con due relazioni distinte o reificando l'impiego (Employment).
+		\end{itemize}
+		
+		\begin{center}
+			\fbox{\begin{minipage}{0.8\textwidth}
+					\centering
+				\end{minipage}}
+		\end{center}
+	\end{frame}
+	
+	\begin{frame}{Pattern: Estensione di un Concetto}
+		Le generalizzazioni possono essere usate per estendere implementazioni correnti.
+		
+		\textbf{Esempio:}
+		Un progetto "Accettato" richiede informazioni aggiuntive (data inizio, fondi) rispetto a un progetto generico in fase di proposta.
+		
+		\begin{center}
+			\fbox{\begin{minipage}{0.7\textwidth}
+					\centering
+
+			\end{minipage}}
+		\end{center}
+	\end{frame}
+	
+	\begin{frame}{Pattern: Relazioni Ternarie}
+		Quando tre entità sono coinvolte simultaneamente.
+		
+		\textbf{Esempio:} Un impiegato lavora su un task in un ufficio specifico.
+		\begin{itemize}
+			\item Gli impiegati lavorano su vari task in diversi uffici.
+			\item Gli uffici ospitano diversi impiegati su vari task.
+		\end{itemize}
+		
+		\begin{center}
+			\fbox{\begin{minipage}{0.6\textwidth}
+					\centering
+
+			\end{minipage}}
+		\end{center}
+	\end{frame}
+	
+	\begin{frame}{Reificazione Relazione Ternaria (1)}
+		Spesso le ternarie vengono reificate per maggiore chiarezza o per aggiungere vincoli.
+		
+		Ogni "Lavoro" (Work) è definito da un Impiegato che lavora in un dato Ufficio per un dato Task.
+		
+		\begin{center}
+			\fbox{\begin{minipage}{0.7\textwidth}
+					\centering
+
+			\end{minipage}}
+		\end{center}
+	\end{frame}
+	
+	\begin{frame}{Reificazione Relazione Ternaria (2)}
+		Se un task può essere svolto da un solo operatore e solo in un ufficio, la reificazione può essere semplificata in una catena di relazioni binarie.
+		
+		\begin{center}
+			\fbox{\begin{minipage}{0.8\textwidth}
+					\centering
+
+			\end{minipage}}
+		\end{center}
+	\end{frame}
+	
+	% ==========================================
+	% SEZIONE 3: STRATEGIE DI PROGETTAZIONE
+	% ==========================================
+	\section{Strategie di Progettazione}
+	
+	\begin{frame}{Strategie di Mapping}
+		Come trasformare i requisiti in uno schema ER? Esistono tre strategie principali:
+		\begin{enumerate}
+			\item \textbf{Top-down}
+			\item \textbf{Bottom-up}
+			\item \textbf{Inside-out}
+		\end{enumerate}
+	\end{frame}
+	
+	\begin{frame}{Strategia Top-down}
+		Si parte da concetti astratti e macroscopici per scendere nel dettaglio.
+		\begin{itemize}
+			\item Schema Draft $\rightarrow$ Schema Intermedio $\rightarrow$ Schema Finale.
+			\item Si parte con poche entità molto generiche.
+		\end{itemize}
+		\begin{center}
+			\fbox{\begin{minipage}{0.5\textwidth}
+					\centering
+
+			\end{minipage}}
+		\end{center}
+	\end{frame}
+	
+	\begin{frame}{Esempio Top-down (Raffinamento)}
+		\begin{enumerate}
+			\item Concetto iniziale: \textbf{Exam}.
+			\item Raffinamento: Trasformazione in relazione tra \textbf{Student} e \textbf{Lecture}.
+		\end{enumerate}
+		\begin{center}
+			\fbox{\begin{minipage}{0.6\textwidth}
+					\centering
+
+			\end{minipage}}
+		\end{center}
+	\end{frame}
+	
+	\begin{frame}{Esempio Top-down (Attributi e Generalizzazione)}
+		\begin{enumerate}
+			\item Concetto: \textbf{Employee}.
+			\item Aggiunta dettagli: Attributi (Surname, Age, Wage).
+			\item Oppure specializzazione: \textbf{People} diventa generalizzazione di \textbf{Man} e \textbf{Woman}.
+		\end{enumerate}
+	\end{frame}
+	
+	\begin{frame}{Strategia Bottom-up}
+		Si parte dai dettagli (attributi, specifiche) per aggregarli in concetti più ampi.
+		\begin{itemize}
+			\item Requisiti elementari $\rightarrow$ Schemi parziali $\rightarrow$ Integrazione.
+		\end{itemize}
+		\begin{center}
+			\fbox{\begin{minipage}{0.5\textwidth}
+					\centering
+
+			\end{minipage}}
+		\end{center}
+	\end{frame}
+	
+	\begin{frame}{Esempio Bottom-up}
+		\begin{enumerate}
+			\item Requisiti su un impiegato $\rightarrow$ Creazione Entità \textbf{Employee}.
+			\item Requisiti su esami $\rightarrow$ Creazione relazione \textbf{Student-Exam-Lecture}.
+			\item Unione di attributi o entità separate in gerarchie (Man/Woman $\rightarrow$ People).
+		\end{enumerate}
+	\end{frame}
+	
+	\begin{frame}{Strategia Inside-out}
+		È una variante del bottom-up. Si parte dai concetti più importanti ("nucleus") e ci si espande "a macchia d'olio" seguendo le relazioni.
+		\begin{enumerate}
+			\item Identificazione Entità principale (es. \textbf{Employee}).
+			\item Aggiunta attributi (Code, Surname).
+			\item Scoperta relazioni: appartiene a \textbf{Dept}, è supervisionato da...
+			\item Espansione: Dept ha un nome, Employee lavora a un \textbf{Project}, ecc.
+		\end{enumerate}
+	\end{frame}
+	
+	\begin{frame}{Esempio Inside-out (Espansione)}
+		Si naviga attraverso le associazioni:
+		\begin{itemize}
+			\item Employee $\leftrightarrow$ Dept (Belonging)
+			\item Employee $\leftrightarrow$ Project (Enrollment)
+			\item Dept $\leftrightarrow$ Office (MadeOf)
+		\end{itemize}
+		\begin{center}
+			\fbox{\begin{minipage}{0.6\textwidth}
+					\centering
+
+			\end{minipage}}
+		\end{center}
+	\end{frame}
+	
+	\begin{frame}{La Strategia "Mista" (Best Practice)}
+		Nella pratica si usa uno stile misto:
+		\begin{enumerate}
+			\item \textbf{Sketch iniziale:} Creare uno schema di massima con le entità più rilevanti (Top-down/Inside-out).
+			\item \textbf{Decomposizione:} Dividere i requisiti in sottogruppi.
+			\item \textbf{Raffinamento:} Espandere i dettagli (Bottom-up), integrare le parti.
+		\end{enumerate}
+	\end{frame}
+	
+	% ==========================================
+	% SEZIONE 4: METODOLOGIA E QUALITÀ
+	% ==========================================
+	\section{Metodologia e Qualità}
+	
+	\begin{frame}{Metodologia Best Practice}
+		\begin{enumerate}
+			\item \textbf{Analisi dei Requisiti:} Glossario, pulizia ambiguità, raggruppamento frasi.
+			\item \textbf{Caso Base (Sketch):} Schema bozza con concetti principali.
+			\item \textbf{Decomposizione:} Partizionamento dei requisiti per aree di interesse.
+			\item \textbf{Iterazione (per ogni area):}
+			\begin{itemize}
+				\item Raffinare i concetti base usando i requisiti.
+				\item Aggiungere concetti mancanti.
+			\end{itemize}
+			\item \textbf{Integrazione:} Unire i sotto-schemi.
+			\item \textbf{Analisi di Qualità:} Verifica finale.
+		\end{enumerate}
+	\end{frame}
+	
+	\begin{frame}{Misure di Qualità dello Schema ER}
+		Uno schema è buono se soddisfa:
+		\begin{itemize}
+			\item \textbf{Correttezza (Correctness):} Uso corretto dei costrutti sintattici e semantici.
+			\item \textbf{Completezza (Completeness):} Tutti i requisiti sono rappresentati.
+			\item \textbf{Chiarezza (Clarity):} Lo schema è leggibile e comprensibile.
+			\item \textbf{Minimalità (Minimality):} Evitare ridondanze inutili.
+		\end{itemize}
+	\end{frame}
+	
+	% ==========================================
+	% SEZIONE 5: CASO DI STUDIO
+	% ==========================================
+	\section{Caso di Studio: Training Company}
+	
+	\begin{frame}{Caso di Studio: Training Company}
+		Applichiamo la metodologia a un caso reale.
+		
+		\textbf{Obiettivo:} Un database per una società di formazione.
+		\begin{itemize}
+			\item Gestione corsi, lezioni e insegnanti.
+			\item ~5000 studenti, ~200 corsi, ~300 insegnanti.
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}{Step 1: Sketch Iniziale}
+		Partiamo dalle entità più rilevanti citate esplicitamente o implicitamente.
+		\begin{itemize}
+			\item Lecture (Lezione/Corso)
+			\item Participant (Studente)
+			\item Lecturer (Docente)
+		\end{itemize}
+		Relazioni base: "Presence" (Partecipazione) e "Teaching" (Insegnamento).
+		
+		\begin{center}
+			\fbox{\begin{minipage}{0.5\textwidth}
+					\centering
+					\textit{[Inserire schema slide 66: Participant - Lecture - Lecturer]}
+			\end{minipage}}
+		\end{center}
+	\end{frame}
+	
+	\begin{frame}{Step 2: Raffinamento Partecipanti (1)}
+		\textbf{Requisiti:} Dati anagrafici (ID, Tax code, name, age...), datore di lavoro, corsi passati e correnti con voto.
+		
+		Analisi:
+		\begin{itemize}
+			\item Distinguere corsi attuali e passati (Storicizzazione).
+			\item Attributi complessi.
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}{Step 2: Raffinamento Partecipanti (2)}
+		\textbf{Specifiche:}
+		\begin{itemize}
+			\item Se studente è \textit{freelance}: area di interesse, titolo onorifico.
+			\item Se studente è \textit{dipendente}: livello, posizione, struttura aziendale.
+		\end{itemize}
+		
+		$\rightarrow$ Suggerisce una \textbf{Generalizzazione} (Employee vs Freelance).
+	\end{frame}
+	
+	\begin{frame}{Step 2: Raffinamento Partecipanti (3) - Employer}
+		\textbf{Requisiti:} Memorizzare datori di lavoro attuali e passati (Nome, indirizzo, telefono).
+		
+		$\rightarrow$ L'azienda (Employer) diventa un'Entità a sé stante.
+		$\rightarrow$ Relazione storicizzata con il Partecipante (CurrentEmpl vs PastEmpl).
+		
+		\begin{center}
+			\fbox{\begin{minipage}{0.6\textwidth}
+					\centering
+
+			\end{minipage}}
+		\end{center}
+	\end{frame}
+	
+	\begin{frame}{Step 3: Raffinamento Corsi}
+		\textbf{Requisiti:}
+		\begin{itemize}
+			\item Corsi hanno codice, titolo.
+			\item Diverse \textbf{edizioni} (data inizio/fine, numero partecipanti).
+			\item Ogni edizione ha lezioni in giorni/stanze specifici.
+		\end{itemize}
+		
+		\textbf{Modellazione:}
+		Lecture (generico) $\rightarrow$ Edition (specifico nel tempo) $\rightarrow$ Lesson (singola lezione giornaliera). Usiamo pattern Part-of o entità deboli.
+		
+		\begin{center}
+			\fbox{\begin{minipage}{0.6\textwidth}
+					\centering
+
+			\end{minipage}}
+		\end{center}
+	\end{frame}
+	
+	\begin{frame}{Step 4: Raffinamento Docenti}
+		\textbf{Requisiti:}
+		\begin{itemize}
+			\item Dati anagrafici.
+			\item Corsi che possono insegnare (skill) vs corsi che hanno insegnato (storia).
+			\item Possono essere dipendenti interni o contractor esterni.
+		\end{itemize}
+		
+		\textbf{Modellazione:}
+		Generalizzazione (Independent vs House Employee). Relazioni multiple con i corsi.
+		
+		\begin{center}
+			\fbox{\begin{minipage}{0.6\textwidth}
+					\centering
+
+			\end{minipage}}
+		\end{center}
+	\end{frame}
+	
+	\begin{frame}{Step 5: Integrazione (Schema Intermedio)}
+		Colleghiamo i pezzi.
+		\begin{itemize}
+			\item Participant si lega a Edition (CurrentPresence) e a Lecture/Edition passate (PastPresence).
+			\item Lecturer si lega a Edition (Current teaching) e Lecture (History/Ability).
+		\end{itemize}
+		
+		\begin{center}
+			\fbox{\begin{minipage}{0.7\textwidth}
+					\centering
+
+			\end{minipage}}
+		\end{center}
+	\end{frame}
+	
+	\begin{frame}{Schema Concettuale Finale}
+		Il risultato finale unisce:
+		\begin{itemize}
+			\item Gerarchia dei Partecipanti (Employee/Freelance).
+			\item Relazione con Employer.
+			\item Struttura del Corso (Lecture-Edition-Lesson).
+			\item Gerarchia Docenti.
+			\item Relazioni di frequenza e insegnamento.
+		\end{itemize}
+		
+		\begin{center}
+			\fbox{\begin{minipage}{0.9\textwidth}
+					\centering
+
+			\end{minipage}}
+		\end{center}
+	\end{frame}
+	
+	\begin{frame}{Conclusioni}
+		\begin{itemize}
+			\item La progettazione concettuale è un processo iterativo.
+			\item L'uso di pattern semplifica problemi complessi (es. storicizzazione).
+			\item Una metodologia mista (Sketch + Raffinamento) è la più efficace.
+			\item La qualità si misura in completezza, correttezza e minimalità.
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}
+		\centering
+		\Huge \textbf{Grazie per l'attenzione}
+	\end{frame}
+	
+\end{document}

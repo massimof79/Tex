@@ -1,0 +1,544 @@
+\documentclass[aspectratio=169]{beamer}
+
+% Pacchetti per lingua, codifica e grafica
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[italian]{babel}
+\usepackage{booktabs} % Per tabelle più belle
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{shapes, arrows, positioning, trees}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+% Tema Beamer
+\usetheme{Madrid}
+\usecolortheme{dolphin}
+\setbeamertemplate{navigation symbols}{}
+
+% Metadati
+\title{Modelli di Database e Progettazione Logica}
+\subtitle{Dal modello concettuale al modello relazionale}
+\author{Prof. Fedeli Massimo - Tutti i diritti riservati}
+\institute{ITS 4.0 - Fabbrica digitale}
+
+\begin{document}
+	
+	% --- SLIDE 1: Titolo ---
+	\begin{frame}
+		\titlepage
+	\end{frame}
+	
+	% --- SLIDE 2: Indice ---
+	\begin{frame}{Indice}
+		\tableofcontents
+	\end{frame}
+	
+	% ==============================================================================
+	\section{Introduzione ai Modelli Logici}
+	% ==============================================================================
+	
+	\begin{frame}{Progettazione Logica}
+		\begin{block}{Definizione}
+			Una volta approntato il modello concettuale (E-R), si procede alla definizione del \textbf{modello logico}. Esso consiste in uno schema realizzato in funzione delle caratteristiche del DBMS che si intende utilizzare.
+		\end{block}
+		\vspace{0.5cm}
+		\begin{itemize}
+			\item È più vicino alla rappresentazione informatica dei dati.
+			\item Si ottiene traducendo lo schema concettuale tramite regole definite.
+			\item Deve essere indipendente dalle strutture fisiche.
+			\item Deve essere utilizzabile dai programmi applicativi.
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}{Evoluzione dei modelli logici}
+		Nel tempo si sono succeduti diversi tipi di modelli:
+		\begin{itemize}
+			\item \textbf{Gerarchico} (anni '60): rappresentabile tramite albero.
+			\item \textbf{Reticolare} (anni '60): rappresentabile tramite grafo.
+			\item \textbf{Relazionale} (anni '70): il più diffuso, basato su tabelle.
+			\item \textbf{A oggetti} (anni '80): estensione del paradigma Object-Oriented.
+			\item \textbf{XML} (anni '90): per l'esportazione e scambio dati.
+		\end{itemize}
+	\end{frame}
+	
+	% --- Modello Gerarchico ---
+	\begin{frame}{Modello Gerarchico}
+		\begin{itemize}
+			\item Primo modello ad affermarsi sul mercato.
+			\item Dati organizzati in strutture ad \textbf{albero}.
+			\item Esiste una \textbf{radice} (record principale) da cui partono sottoalberi.
+			\item Relazioni di tipo \textbf{Padre-Figlio} (1:N).
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}{Struttura del Modello Gerarchico}
+		\begin{columns}
+			\column{0.5\textwidth}
+			\textbf{Caratteristiche:}
+			\begin{itemize}
+				\item Ogni nodo ha un solo genitore (tranne la radice).
+				\item Un genitore può avere più figli.
+				\item Accesso ai dati sequenziale partendo dalla radice.
+			\end{itemize}
+			\column{0.5\textwidth}
+			\centering
+			% Esempio visuale semplice con tikz
+			\begin{tikzpicture}[level distance=1cm, sibling distance=2cm, nodes={rectangle, draw, align=center}]
+				\node {Azienda}
+				child { node {Dip. A}
+					child { node {Imp. 1}}
+					child { node {Imp. 2}}
+				}
+				child { node {Dip. B}
+					child { node {Imp. 3}}
+				};
+			\end{tikzpicture}
+		\end{columns}
+	\end{frame}
+	
+	\begin{frame}{Vantaggi e Svantaggi del Modello Gerarchico}
+		\textbf{Vantaggi:}
+		\begin{itemize}
+			\item Velocità nelle query con percorsi prevedibili.
+			\item Integrità dei dati (relazioni fisse).
+		\end{itemize}
+		\vspace{0.5cm}
+		\textbf{Svantaggi:}
+		\begin{itemize}
+			\item Rigidità: difficile modificare la struttura.
+			\item Ridondanza: dati replicati se presenti in più rami.
+			\item Accesso limitato: impossibile collegare nodi di rami diversi direttamente.
+		\end{itemize}
+	\end{frame}
+	
+	% --- Modello Reticolare ---
+	\begin{frame}{Modello Reticolare}
+		\begin{itemize}
+			\item Basato su strutture a \textbf{grafo}.
+			\item Estensione del modello gerarchico: non esiste una radice unica.
+			\item Ogni nodo può essere punto di partenza.
+			\item Implementa relazioni \textbf{N:N} (molti a molti).
+			\item Utilizza puntatori fisici per connettere i record.
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}{Esempio Reticolare}
+		\textit{Scenario: Docenti e Classi}
+		\begin{itemize}
+			\item Un docente insegna in più classi.
+			\item Una classe ha più docenti.
+			\item Struttura complessa di puntatori intrecciati.
+		\end{itemize}
+		\vspace{0.5cm}
+		\textbf{Svantaggi principali:}
+		\begin{itemize}
+			\item Spreco di spazio per i puntatori.
+			\item Rigidità nelle modifiche.
+			\item Complessità se i dati non sono direttamente connessi.
+		\end{itemize}
+	\end{frame}
+	
+	% --- Modello Relazionale Intro ---
+	\begin{frame}{Modello Relazionale}
+		\begin{block}{Origine}
+			Definito da \textbf{Edgar F. Codd} nel 1970.
+		\end{block}
+		\begin{itemize}
+			\item Obiettivo: indipendenza dei dati e non duplicazione.
+			\item Basato sul concetto matematico di \textbf{relazione tra insiemi}.
+			\item Struttura fondamentale: la \textbf{Tabella} (Relazione).
+			\item Esempi software: MySQL, Oracle, SQL Server, Access.
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}{Indipendenza nel Modello Relazionale}
+		Il modello garantisce:
+		\begin{enumerate}
+			\item \textbf{Indipendenza fisica:} modifiche all'hardware o alle strutture di accesso non impattano i programmi.
+			\item \textbf{Indipendenza logica:} modifiche allo schema logico (es. nuove tabelle) non devono bloccare le applicazioni esistenti.
+		\end{enumerate}
+	\end{frame}
+	
+	% --- Altri Modelli (Cenni) ---
+	\begin{frame}{Altri Modelli: A Oggetti e XML}
+		\textbf{Modello a Oggetti (OODBMS):}
+		\begin{itemize}
+			\item Estende il paradigma Object-Oriented ai DB.
+			\item Gestisce dati complessi (multimedia, CAD).
+			\item Memorizza dati e metodi (comportamenti).
+		\end{itemize}
+		\vspace{0.3cm}
+		\textbf{Modello XML:}
+		\begin{itemize}
+			\item Non è un vero modello di DB, ma un formato di scambio.
+			\item Metalinguaggio gerarchico basato su tag.
+			\item Compatibilità universale (file di testo).
+		\end{itemize}
+	\end{frame}
+	
+	% ==============================================================================
+	\section{Il Modello Relazionale: Concetti Fondamentali}
+	% ==============================================================================
+	
+	\begin{frame}{Concetti Matematici: Prodotto Cartesiano}
+		Dati due insiemi $A_1$ e $A_2$:
+		\begin{block}{Prodotto Cartesiano $A_1 \times A_2$}
+			È l'insieme di tutte le coppie ordinate $(x, y)$ dove $x \in A_1$ e $y \in A_2$.
+		\end{block}
+		\textbf{Esempio:}
+		\begin{itemize}
+			\item $A_1 = \{4, 9, 16\}$
+			\item $A_2 = \{2, 3\}$
+			\item $A_1 \times A_2 = \{(4,2), (4,3), (9,2), (9,3), (16,2), (16,3)\}$
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}{Concetto di Relazione Matematica}
+		\begin{block}{Relazione}
+			Una relazione matematica è un \textbf{sottoinsieme} del prodotto cartesiano che soddisfa una determinata proprietà.
+		\end{block}
+		\textbf{Esempio Relazione Q ("è quadrato di"):}
+		\begin{itemize}
+			\item Considerando l'esempio precedente.
+			\item $Q = \{(4,2), (9,3)\}$
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}{Dalla Matematica alle Tabelle}
+		\begin{columns}
+			\column{0.5\textwidth}
+			\textbf{Insiemi} $\rightarrow$ \textbf{Domini} \\
+			\textbf{Prodotto Cartesiano} $\rightarrow$ Combinazioni possibili \\
+			\textbf{Relazione Significativa} $\rightarrow$ \textbf{Tabella} Dati
+			\column{0.5\textwidth}
+			\begin{table}
+				\centering
+				\begin{tabular}{|c|c|}
+					\hline
+					\textbf{A1} & \textbf{A2} \\
+					\hline
+					4 & 2 \\
+					9 & 3 \\
+					\hline
+				\end{tabular}
+				\caption{Tabella "QuadratoDi"}
+			\end{table}
+		\end{columns}
+	\end{frame}
+	
+	\begin{frame}{Esempio: Automobili}
+		\textbf{Domini:}
+		\begin{itemize}
+			\item Modello = \{Panda, C3, C4\}
+			\item Costruttore = \{Fiat, Citroen\}
+		\end{itemize}
+		\vspace{0.3cm}
+		La relazione \textbf{ProdottoDa} (sottoinsieme significativo) sarà:
+		\begin{table}
+			\small
+			\begin{tabular}{ll}
+				\toprule
+				\textbf{Modello} & \textbf{Costruttore} \\
+				\midrule
+				Panda & Fiat \\
+				C3 & Citroen \\
+				C4 & Citroen \\
+				\bottomrule
+			\end{tabular}
+		\end{table}
+	\end{frame}
+	
+	\begin{frame}{Terminologia Relazionale}
+		\begin{itemize}
+			\item \textbf{Grado:} Numero di colonne (attributi) della relazione.
+			\item \textbf{Attributo:} Nome identificativo di una colonna.
+			\item \textbf{Dominio:} Insieme dei valori assumibili da un attributo.
+			\item \textbf{Cardinalità:} Numero di righe (tuple o n-uple) della tabella.
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}{La Relazione come Tabella}
+		\begin{itemize}
+			\item Ogni riga è una \textbf{tupla} (o record).
+			\item Ogni colonna è un \textbf{attributo} (o campo).
+			\item I valori in una colonna sono omogenei (stesso dominio).
+			\item L'ordine delle righe e delle colonne è irrilevante.
+		\end{itemize}
+		\begin{block}{Chiave Primaria (PK)}
+			Un attributo (o insieme minimo di attributi) che identifica \textbf{univocamente} ogni riga della tabella.
+		\end{block}
+	\end{frame}
+	
+	\begin{frame}{Notazione dello Schema}
+		Lo schema di una tabella si rappresenta indicando il nome della relazione seguito dai nomi degli attributi tra parentesi. Le chiavi sono sottolineate.
+		\vspace{0.5cm}
+		\begin{center}
+			\Large \textbf{Automobili}(\underline{Modello}, Costruttore, Segmento, Porte, Posti)
+		\end{center}
+	\end{frame}
+	
+	\begin{frame}{Database Vendite Prodotti (Esempio)}
+		Consideriamo tre tabelle:
+		\begin{enumerate}
+			\item \textbf{Reparti} (\underline{CodReparto}, NomeReparto)
+			\item \textbf{Prodotti} (\underline{CodProdotto}, Descrizione, Prezzo, \textit{CodReparto})
+			\item \textbf{Vendite} (\underline{Numero}, Data, Quantità, \textit{CodProdotto})
+		\end{enumerate}
+		\vspace{0.3cm}
+		Le relazioni tra tabelle sono gestite tramite i valori dei dati, non puntatori fisici.
+	\end{frame}
+	
+	\begin{frame}{Chiavi Esterne (Foreign Keys)}
+		\begin{block}{Definizione}
+			Una \textbf{Chiave Esterna (FK)} è un attributo (o insieme di attributi) che fa riferimento alla Chiave Primaria di un'altra tabella.
+		\end{block}
+		\textbf{Esempio:}
+		\begin{itemize}
+			\item \textit{CodReparto} in Prodotti è FK verso Reparti.
+			\item \textit{CodProdotto} in Vendite è FK verso Prodotti.
+		\end{itemize}
+		Serve a garantire l'integrità referenziale.
+	\end{frame}
+	
+	\begin{frame}{Requisiti fondamentali di una tabella}
+		\begin{enumerate}
+			\item Tutte le righe hanno lo stesso numero di colonne.
+			\item Gli attributi sono \textbf{atomici} (elementari, non scomponibili).
+			\item I valori di una colonna sono omogenei.
+			\item Ogni riga è diversa dalle altre (univocità garantita dalla PK).
+			\item Ordine delle righe non significativo.
+		\end{enumerate}
+	\end{frame}
+	
+	% ==============================================================================
+	\section{Derivazione dello Schema Logico dal Modello E-R}
+	% ==============================================================================
+	
+	\begin{frame}{Regole di Derivazione}
+		Il passaggio dal diagramma E-R alle tabelle segue regole precise:
+		\begin{enumerate}
+			\item Ogni \textbf{Entità} diventa una \textbf{Relazione} (Tabella).
+			\item Ogni \textbf{Attributo} dell'entità diventa colonna della tabella.
+			\item L'\textbf{Identificatore} diventa \textbf{Chiave Primaria}.
+		\end{enumerate}
+	\end{frame}
+	
+	\begin{frame}{Associazione 1:1}
+		\textbf{Caso Standard:}
+		L'associazione 1:1 diventa spesso un'unica relazione che unisce gli attributi di entrambe le entità.
+		\vspace{0.5cm}
+		
+		\textit{Esempio: Cittadino - CodiceSSN}
+		\begin{itemize}
+			\item \textbf{Anagrafe}(\underline{CodiceFiscale}, Cognome, Nome, ..., CodiceSanitario, Regione)
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}{Associazione 1:1 con Partecipazione Facoltativa}
+		Se la partecipazione è facoltativa (molti valori nulli possibili), conviene mantenere \textbf{due tabelle separate}.
+		\vspace{0.3cm}
+		
+		\textit{Esempio: Dipendente (1) --- (1) AutoAziendale (0,1)}
+		\begin{itemize}
+			\item Si aggiunge la chiave primaria dell'entità "forte" come chiave esterna nell'entità "debole".
+			\item \textbf{Dipendenti}(\underline{Matricola}, Cognome, ...)
+			\item \textbf{AutoAziendali}(\underline{Targa}, Modello, \textit{Matricola})
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}{Associazione 1:N (Uno a Molti)}
+		\begin{block}{Regola Fondamentale}
+			Si aggiunge agli attributi dell'entità che sta dal lato "Molti" (N) l'identificatore univoco dell'entità che sta dal lato "Uno" (1). Questo diventa \textbf{Chiave Esterna}.
+		\end{block}
+	\end{frame}
+	
+	\begin{frame}{Esempio 1:N}
+		\textit{Contratto (1) --- (N) Dipendente}
+		\vspace{0.5cm}
+		\begin{itemize}
+			\item \textbf{Contratti}(\underline{Codice}, Descrizione, StipendioBase)
+			\item \textbf{Dipendenti}(\underline{Matricola}, Cognome, Nome, \textit{CodiceContratto})
+		\end{itemize}
+		\vspace{0.3cm}
+		\small{Gli eventuali attributi dell'associazione vanno nella tabella "a molti".}
+	\end{frame}
+	
+	\begin{frame}{Associazione N:N (Molti a Molti)}
+		\begin{block}{Regola}
+			L'associazione N:N diventa una \textbf{nuova relazione} (tabella aggiuntiva).
+		\end{block}
+		La nuova tabella contiene:
+		\begin{itemize}
+			\item Le chiavi primarie delle due entità originali (che insieme formano la chiave primaria composta o sono chiavi esterne).
+			\item Gli eventuali attributi dell'associazione.
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}{Esempio N:N}
+		\textit{Docente (N) --- Insegnare --- (N) Classe}
+		\vspace{0.3cm}
+		Si ottengono tre tabelle:
+		\begin{enumerate}
+			\item \textbf{Docenti}(\underline{CodDocente}, Cognome, Nome)
+			\item \textbf{Classi}(\underline{SiglaClasse}, Aula)
+			\item \textbf{Insegnare}(\underline{\textit{CodDocente}}, \underline{\textit{SiglaClasse}}, Materia, Ore)
+		\end{enumerate}
+	\end{frame}
+	
+	\begin{frame}{Chiave Primaria nella tabella di associazione N:N}
+		Attenzione alla definizione della chiave primaria della nuova tabella.
+		\begin{itemize}
+			\item Spesso è la combinazione delle due chiavi esterne.
+			\item A volte serve aggiungere un attributo temporale (es. Data) se l'associazione può ripetersi nel tempo.
+		\end{itemize}
+		\textit{Esempio: Studente - Valutazione - Materia}
+		\\ Chiave: (\underline{Matricola, CodMateria, Data})
+	\end{frame}
+	
+	\begin{frame}{Associazioni Ricorsive}
+		Un'entità è associata a se stessa.
+		\vspace{0.3cm}
+		\textit{Esempio: Dipendente che supervisiona altri Dipendenti (1:N)}
+		\begin{itemize}
+			\item Nella tabella \textbf{Dipendenti} si aggiunge un campo \textit{Supervisore} che è FK verso la \underline{Matricola} della stessa tabella.
+			\item \textbf{Dipendenti}(\underline{Matricola}, Nome, \textit{Supervisore})
+		\end{itemize}
+	\end{frame}
+	
+	% ==============================================================================
+	\section{Algebra Relazionale}
+	% ==============================================================================
+	
+	\begin{frame}{Operatori Relazionali}
+		Gli operatori agiscono su una o più relazioni per ottenerne una nuova. Sono la base del linguaggio SQL.
+		\begin{itemize}
+			\item \textbf{Selezione} ($\sigma$)
+			\item \textbf{Proiezione} ($\pi$)
+			\item \textbf{Congiunzione o Join} ($\bowtie$)
+			\item \textbf{Operazioni insiemistiche} (Unione, Intersezione, Differenza)
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}{Selezione ($\sigma$)}
+		\begin{block}{Definizione}
+			Estrae le \textbf{righe} (tuple) che soddisfano una condizione $P$.
+		\end{block}
+		\textbf{Caratteristiche:}
+		\begin{itemize}
+			\item Grado: uguale alla tabella originale.
+			\item Cardinalità: $\le$ tabella originale.
+			\item Notazione: $\sigma_P(T)$
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}{Proiezione ($\pi$)}
+		\begin{block}{Definizione}
+			Estrae solo alcune \textbf{colonne} (attributi) specificate in una lista $L$.
+		\end{block}
+		\textbf{Caratteristiche:}
+		\begin{itemize}
+			\item Grado: uguale al numero di colonne in $L$.
+			\item Cardinalità: $\le$ tabella originale (rimuove i duplicati se l'operazione è puramente insiemistica).
+			\item Notazione: $\pi_L(T)$
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}{Congiunzione (Join - $\bowtie$)}
+		Combina due tabelle $R$ e $S$ collegando le righe che hanno valori corrispondenti negli attributi comuni.
+		\begin{itemize}
+			\item \textbf{Equi-Join:} mantiene le colonne duplicate di confronto.
+			\item \textbf{Natural Join:} elimina le colonne duplicate (ridondanza).
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}{Tipi di Join}
+		\begin{block}{Join Interno (Inner Join)}
+			Mostra solo le righe che hanno corrispondenza in entrambe le tabelle.
+		\end{block}
+		\begin{alertblock}{Problema di Assenza}
+			Con l'inner join si perdono le righe che non hanno corrispondenza (es. Clienti senza ordini, Agenti senza clienti).
+		\end{alertblock}
+	\end{frame}
+	
+	\begin{frame}{Join Esterni (Outer Join)}
+		Servono a mantenere le righe anche se non c'è corrispondenza (completando con NULL).
+		\begin{itemize}
+			\item \textbf{Left Join:} Tutte le righe della tabella di Sinistra + corrispondenze di Destra.
+			\item \textbf{Right Join:} Tutte le righe della tabella di Destra + corrispondenze di Sinistra.
+			\item \textbf{Full Join:} Tutte le righe di entrambe le tabelle.
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}{Self Join}
+		È una congiunzione di una tabella con se stessa.
+		\begin{itemize}
+			\item Utile per associazioni ricorsive.
+			\item Richiede l'uso di alias per distinguere le due "copie" della tabella.
+		\end{itemize}
+		\textit{Esempio: Trovare il nome del capo di ogni impiegato.}
+	\end{frame}
+	
+	\begin{frame}{Operazioni Insiemistiche}
+		Richiedono che le due tabelle abbiano lo stesso schema (stessi attributi).
+		\begin{itemize}
+			\item \textbf{Unione ($R \cup S$)}: righe in R oppure in S.
+			\item \textbf{Intersezione ($R \cap S$)}: righe comuni a R e S.
+			\item \textbf{Differenza ($R - S$)}: righe in R ma non in S.
+		\end{itemize}
+	\end{frame}
+	
+	% ==============================================================================
+	\section{Normalizzazione}
+	% ==============================================================================
+	
+	\begin{frame}{Perché Normalizzare?}
+		Se le tabelle non sono ben progettate, si generano \textbf{ridondanze} (dati ripetuti).
+		\vspace{0.5cm}
+		La ridondanza causa \textbf{Anomalie}:
+		\begin{itemize}
+			\item Occupazione inutile di spazio.
+			\item Inconsistenza dei dati.
+			\item Problemi nelle operazioni di modifica.
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}{Le Anomalie}
+		Esempio Tabella \textit{Inventario} con indirizzo magazzino ripetuto.
+		\begin{enumerate}
+			\item \textbf{Anomalia di Aggiornamento:} Se cambia l'indirizzo, devo aggiornarlo in tutte le righe. Rischio inconsisitenza.
+			\item \textbf{Anomalia di Cancellazione:} Se cancello l'ultimo prodotto di un magazzino, perdo anche l'indirizzo del magazzino.
+			\item \textbf{Anomalia di Inserimento:} Non posso inserire un nuovo magazzino se non ho ancora prodotti da associargli.
+		\end{enumerate}
+	\end{frame}
+	
+	\begin{frame}{Il Processo di Normalizzazione}
+		La normalizzazione è il processo di scomposizione delle tabelle per eliminare le ridondanze e le anomalie.
+		\vspace{0.3cm}
+		\begin{block}{Concetto chiave: Dipendenza Funzionale}
+			Si ha dipendenza funzionale $A \rightarrow B$ quando il valore di un attributo $A$ determina univocamente il valore di $B$.
+		\end{block}
+	\end{frame}
+	
+	\begin{frame}{Soluzione Esempio Magazzino}
+		Scomporre la tabella \textbf{Inventario} in due tabelle:
+		\begin{enumerate}
+			\item \textbf{Inventario}(\underline{Prodotto}, \underline{Magazzino}, Quantità)
+			\item \textbf{Negozi}(\underline{Magazzino}, Indirizzo)
+		\end{enumerate}
+		\vspace{0.5cm}
+		In questo modo, l'indirizzo è memorizzato una sola volta per ogni magazzino.
+	\end{frame}
+	
+	\begin{frame}{Conclusioni}
+		\begin{itemize}
+			\item Il \textbf{Modello Relazionale} è lo standard attuale per la maggior parte dei sistemi.
+			\item La corretta \textbf{Progettazione Logica} (derivazione E-R e normalizzazione) è cruciale per l'efficienza e l'integrità dei dati.
+			\item L'\textbf{Algebra Relazionale} fornisce le basi teoriche per interrogare i dati (SQL).
+		\end{itemize}
+		\vspace{1cm}
+		\centering
+		\textbf{Grazie per l'attenzione!}
+	\end{frame}
+	
+\end{document}
