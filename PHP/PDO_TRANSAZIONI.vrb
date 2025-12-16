@@ -1,0 +1,30 @@
+\frametitle{Esempio Completo - Continuazione}
+\begin{lstlisting}[basicstyle=\ttfamily\tiny]
+				public function leggiPerId($id) {
+					$sql = "SELECT * FROM studenti WHERE id = :id";
+					$stmt = $this->pdo->prepare($sql);
+					$stmt->execute(['id' => $id]);
+					return $stmt->fetch(PDO::FETCH_ASSOC);
+				}
+				
+				public function aggiorna($id, $nome, $cognome, $classe) {
+					$sql = "UPDATE studenti
+					SET nome = :nome, cognome = :cognome, classe = :classe
+					WHERE id = :id";
+					$stmt = $this->pdo->prepare($sql);
+					return $stmt->execute([
+					'id' => $id,
+					'nome' => $nome,
+					'cognome' => $cognome,
+					'classe' => $classe
+					]);
+				}
+				
+				public function elimina($id) {
+					$sql = "DELETE FROM studenti WHERE id = :id";
+					$stmt = $this->pdo->prepare($sql);
+					return $stmt->execute(['id' => $id]);
+				}
+			}
+			?>
+		\end{lstlisting}
