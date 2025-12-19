@@ -798,10 +798,10 @@ Se la partecipazione di un'entità E ha cardinalità massima 1, è possibile eli
 \begin{frame}{Relazioni Ternarie: Esempio Fornitura}
 \begin{center}
 \begin{tikzpicture}[scale=0.65]
-\node[rectangle, draw] (dip) at (0,2) {Dipartimento};
+\node[rectangle, draw] (dip) at (0,2) {Prodotto};
 \node[diamond, draw, aspect=1.5] (forn) at (3.5,1) {Fornitura};
-\node[rectangle, draw] (prod) at (7,2) {Prodotto};
-\node[rectangle, draw] (vend) at (3.5,-1) {Venditore};
+\node[rectangle, draw] (prod) at (7,2) {Parte};
+\node[rectangle, draw] (vend) at (3.5,-1) {Fornitore};
 
 \draw (dip) -- (forn);
 \draw (prod) -- (forn);

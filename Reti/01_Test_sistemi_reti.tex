@@ -68,14 +68,14 @@
     \item Un'area geografica di circa 10 metri (una stanza)
     \item Un'area urbana o metropolitana (10-100 km)
     \item Un singolo edificio o campus (fino a 1 km)
-    \item Continenti diversi (oltre 1000 km)
+    \item Una città molto grande
 \end{enumerate}
 
 \item In una topologia a stella:
 \begin{enumerate}[label=\alph*)]
     \item Ogni nodo è collegato a un nodo centrale (hub o switch)
     \item Tutti i nodi condividono un unico cavo bus
-    \item I nodi sono collegati in cerchio senza gerarchia
+    \item I nodi sono collegati in modo da formare idealmente una stella
     \item Ogni nodo ha connessione diretta con tutti gli altri nodi
 \end{enumerate}
 
@@ -471,13 +471,14 @@
     \item n$^2$ - 2
 \end{enumerate}
 
-\item Gli indirizzi APIPA (169.254.x.x) vengono assegnati automaticamente quando:
+\item Un computer Windows che non riesce a contattare il server DHCP assegna automaticamente a se stesso un indirizzo IP nel range:
 \begin{enumerate}[label=\alph*)]
-    \item Il server DHCP non è disponibile o non risponde
-    \item La velocità della rete supera 1 Gbps
-    \item Si utilizza esclusivamente IPv6
-    \item Il router principale è configurato correttamente
+	\item 169.254.0.0/16 (APIPA - Automatic Private IP Addressing)
+	\item 10.0.0.0/8 (rete privata di classe A)
+	\item 192.168.0.0/16 (rete privata di classe C)
+	\item 127.0.0.0/8 (loopback)
 \end{enumerate}
+
 
 \item Una subnet mask 255.255.248.0 corrisponde a:
 \begin{enumerate}[label=\alph*)]

@@ -1,0 +1,16 @@
+\frametitle{Tabella MATERIE}
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+\textbf{id\_materia} & \textbf{nome} \\
+\hline
+MA01 & Informatica \\
+MA02 & Fisica \\
+MA03 & Italiano \\
+MA04 & Storia \\
+\hline
+\end{tabular}
+\end{center}
+
+\vspace{0.5cm}
+\textbf{Chiave primaria:} id\_materia

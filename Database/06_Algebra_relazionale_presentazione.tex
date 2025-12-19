@@ -1,0 +1,1082 @@
+\documentclass[aspectratio=169,11pt]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows,positioning}
+
+% Tema
+\usetheme{Madrid}
+\usecolortheme{whale}
+
+% Colori personalizzati
+\definecolor{darkblue}{RGB}{0,51,102}
+\definecolor{lightblue}{RGB}{102,178,255}
+\definecolor{orange}{RGB}{255,128,0}
+
+\setbeamercolor{structure}{fg=darkblue}
+\setbeamercolor{frametitle}{bg=darkblue,fg=white}
+
+% Informazioni
+\title{Modello Relazionale: Algebra Relazionale}
+\author{Prof. Fedeli Massimo - Tutti i diritti riservati}
+\institute{ITS 4.0}
+
+\begin{document}
+
+% Slide 1: Titolo
+\begin{frame}
+\titlepage
+\end{frame}
+
+% Slide 2: Indice
+\begin{frame}{Indice}
+\tableofcontents
+\end{frame}
+
+% SEZIONE 1: INTRODUZIONE
+\section{Introduzione al Modello Relazionale}
+
+% Slide 3
+\begin{frame}{Database Relazionali}
+\begin{block}{Definizione}
+Un \textbf{database relazionale} è una collezione di \textcolor{orange}{tabelle}
+\end{block}
+
+\begin{center}
+\begin{tikzpicture}[node distance=1.5cm]
+\node[draw, rectangle, fill=orange!30, minimum width=4cm, minimum height=1cm] (db) {Database relazionali};
+\node[draw, rectangle, fill=lightblue!30, below of=db, minimum width=3cm] (tab) {Tabelle};
+
+\draw[->, thick] (db) -- node[right] {è una collezione di} (tab);
+\end{tikzpicture}
+\end{center}
+\end{frame}
+
+% Slide 4
+\begin{frame}{Operazioni sulle Tabelle}
+\begin{columns}
+\begin{column}{0.5\textwidth}
+\textbf{Operazioni di base:}
+\begin{itemize}
+\item Selezione
+\item Proiezione
+\end{itemize}
+\textcolor{darkblue}{(operazioni unarie)}
+\end{column}
+
+\begin{column}{0.5\textwidth}
+\textbf{Operazioni complesse:}
+\begin{itemize}
+\item Prodotto cartesiano
+\item Unione
+\item Differenza
+\end{itemize}
+\textcolor{darkblue}{(operazioni binarie)}
+\end{column}
+\end{columns}
+
+\vspace{0.5cm}
+\begin{alertblock}{Operazioni derivate}
+Intersezione, Congiunzione (Join)
+\end{alertblock}
+\end{frame}
+
+
+% Slide 6
+\begin{frame}{Storia del Modello Relazionale}
+\begin{block}{E.F. Codd (1970)}
+Il modello relazionale è stato introdotto formalmente da Edgar F. Codd nel 1970
+\end{block}
+
+\textbf{Caratteristiche principali:}
+\begin{itemize}
+\item Descrizione semplice ma rigorosa dei dati
+\item Basato sul concetto di \textbf{relazione matematica}
+\item Fondamento teorico: teoria degli insiemi e logica dei predicati
+\end{itemize}
+\end{frame}
+
+% Slide 7
+\begin{frame}{Rappresentazione dei Dati}
+\begin{itemize}
+\item I dati sono rappresentati come \textbf{tabelle bidimensionali}
+\item Ogni tabella rappresenta un'entità del mondo reale
+\item Le righe sono \textbf{tuple} (record)
+\item Le colonne sono \textbf{attributi} (campi)
+\end{itemize}
+
+\vspace{0.5cm}
+\begin{exampleblock}{Esempio}
+Tabella STUDENTI: ogni riga rappresenta uno studente
+\end{exampleblock}
+\end{frame}
+
+% SEZIONE 2: LINGUAGGI DI INTERROGAZIONE
+\section{Linguaggi di Interrogazione}
+
+% Slide 8
+\begin{frame}{Linguaggi di Interrogazione}
+\textbf{Due famiglie principali:}
+
+\begin{enumerate}
+\item \textbf{Algebra Relazionale}
+\begin{itemize}
+\item Linguaggio procedurale
+\item Notazione algebrica
+\item Usa 5 operatori fondamentali
+\end{itemize}
+
+\item \textbf{Calcolo Relazionale}
+\begin{itemize}
+\item Linguaggio dichiarativo
+\item Notazione logica
+\item Base per SQL
+\end{itemize}
+\end{enumerate}
+\end{frame}
+
+% Slide 9
+\begin{frame}{Algebra Relazionale}
+\begin{block}{Definizione}
+Linguaggio procedurale con notazione algebrica che utilizza \textcolor{orange}{5 operatori} fondamentali
+\end{block}
+
+\textbf{Caratteristiche:}
+\begin{itemize}
+\item Usa simboli matematici
+\item Permette di formulare interrogazioni complesse
+\item Fornisce il pieno potere espressivo
+\end{itemize}
+
+\vspace{0.3cm}
+\centering
+\Large \textcolor{darkblue}{Usa simboli matematici! \(\sigma, \pi, \times, \cup, -\)}
+\end{frame}
+
+% Slide 10
+\begin{frame}{Calcolo Relazionale e SQL}
+\begin{block}{Calcolo Relazionale}
+Linguaggio di alto livello con caratteristiche dichiarative
+\end{block}
+
+\textbf{SQL (Structured Query Language):}
+\begin{itemize}
+\item Parzialmente dichiarativo
+\item L'utente specifica \textbf{cosa} vuole ottenere
+\item Non specifica \textbf{come} ottenerlo
+\item Il DBMS decide la strategia di esecuzione
+\end{itemize}
+
+\begin{exampleblock}{Ricorda}
+SQL è il linguaggio che studieremo nella prossima unità!
+\end{exampleblock}
+\end{frame}
+
+% Slide 11
+\begin{frame}{Dichiarativo vs Procedurale}
+\begin{columns}
+\begin{column}{0.48\textwidth}
+\textbf{Linguaggio Dichiarativo}
+\begin{itemize}
+\item[\textcolor{green}{\checkmark}] Specifica il risultato
+\item[\textcolor{green}{\checkmark}] Non i passaggi
+\item[\textcolor{green}{\checkmark}] Più semplice
+\end{itemize}
+\end{column}
+
+\begin{column}{0.48\textwidth}
+\textbf{Linguaggio Procedurale}
+\begin{itemize}
+\item Specifica i passaggi
+\item Sequenza di operazioni
+\item Più dettagliato
+\end{itemize}
+\end{column}
+\end{columns}
+
+\vspace{0.5cm}
+\begin{alertblock}{SQL}
+SQL è dichiarativo: dici \textbf{cosa} vuoi, non \textbf{come} ottenerlo
+\end{alertblock}
+\end{frame}
+
+% SEZIONE 3: ALGEBRA RELAZIONALE - OPERATORI
+\section{Algebra Relazionale: Operatori}
+
+% Slide 12
+\begin{frame}{I 5 Operatori Fondamentali}
+\begin{center}
+\begin{tabular}{cll}
+\toprule
+\textbf{Simbolo} & \textbf{Nome} & \textbf{Tipo} \\
+\midrule
+\(\sigma\) & Selezione & Unario \\
+\(\pi\) & Proiezione & Unario \\
+\(\times\) & Prodotto cartesiano & Binario \\
+\(-\) & Differenza & Binario \\
+\(\cup\) & Unione & Binario \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\vspace{0.5cm}
+\textbf{Proprietà importante:} L'algebra è \textcolor{orange}{chiusa} \\
+\(\Rightarrow\) Ogni operazione restituisce una relazione!
+\end{frame}
+
+% Slide 13
+\begin{frame}{Operatori Unari vs Binari}
+\begin{block}{Operatori Unari}
+Si applicano a \textbf{una sola} relazione e restituiscono una relazione
+\end{block}
+
+\begin{block}{Operatori Binari}
+Si applicano a \textbf{due} relazioni e restituiscono una relazione
+\end{block}
+
+\vspace{0.5cm}
+\begin{center}
+\begin{tikzpicture}
+\node[draw, circle, fill=lightblue!30] (r1) {R};
+\node[draw, circle, fill=orange!30, right=3cm of r1] (r2) {R};
+\node[draw, circle, fill=orange!30, right=0.5cm of r2] (s) {S};
+\node[below=0.5cm of r1] {Unario};
+\node[below=0.5cm of r2] {Binario};
+\end{tikzpicture}
+\end{center}
+\end{frame}
+
+% Slide 14
+\begin{frame}{Operatori Derivati}
+\textbf{Dai 5 operatori di base derivano:}
+
+\begin{itemize}
+\item \textbf{Intersezione} (\(\cap\))
+\item \textbf{Congiunzione (Join)} (\(\bowtie\))
+\begin{itemize}
+\item Natural Join
+\item Left Join
+\item Right Join
+\item Full Join
+\end{itemize}
+\end{itemize}
+
+\vspace{0.3cm}
+\begin{alertblock}{Importante}
+Questi operatori sono molto utili nella pratica!
+\end{alertblock}
+\end{frame}
+
+% Slide 15
+\begin{frame}{Tabelle come Insiemi}
+\begin{block}{Concetto chiave}
+Le tabelle relazionali sono \textbf{insiemi} e le righe sono \textbf{elementi}
+\end{block}
+
+\textbf{Conseguenze:}
+\begin{itemize}
+\item Possiamo applicare operazioni insiemistiche
+\item Unione, intersezione, differenza
+\item Il risultato è sempre una relazione
+\end{itemize}
+
+\begin{center}
+\textcolor{darkblue}{\large Tabella = Insieme di tuple}
+\end{center}
+\end{frame}
+
+% SEZIONE 4: ESEMPIO PRATICO
+\section{Esempio di Database}
+
+% Slide 16
+\begin{frame}{Database di Esempio}
+\begin{block}{Scenario}
+Database scolastico con tre tabelle: \texttt{libri}, \texttt{docenti}, \texttt{materie}
+\end{block}
+
+\begin{center}
+\begin{tikzpicture}[node distance=2cm]
+\node[draw, rectangle, fill=lightblue!30] (lib) {libri};
+\node[draw, rectangle, fill=lightblue!30, below left=1cm and -0.5cm of lib] (doc) {docenti};
+\node[draw, rectangle, fill=lightblue!30, below right=1cm and -0.5cm of lib] (mat) {materie};
+
+\draw[->, thick] (lib) -- (mat);
+\draw[->, thick] (doc) -- (mat);
+\end{tikzpicture}
+\end{center}
+\end{frame}
+
+% Slide 17
+\begin{frame}[fragile]{Tabella LIBRI}
+\small
+\begin{center}
+\begin{tabular}{|l|l|l|l|l|l|}
+\hline
+\textbf{isbn} & \textbf{titolo} & \textbf{autore} & \textbf{editore} & \textbf{id\_materia} & \textbf{anno} \\
+\hline
+11223344 & Il linguaggio C & Camagni & Hoepli & MA01 & 2020 \\
+11223355 & Il Novecento & Verdi & Perinazzi & MA04 & 2021 \\
+11223366 & Java & Nikolassy & Hoepli & MA01 & 2022 \\
+\hline
+\end{tabular}
+\end{center}
+
+\vspace{0.3cm}
+\textbf{Chiave primaria:} isbn \\
+\textbf{Chiave esterna:} id\_materia
+\end{frame}
+
+% Slide 18
+\begin{frame}[fragile]{Tabella DOCENTI}
+\small
+\begin{center}
+\begin{tabular}{|l|l|l|l|l|}
+\hline
+\textbf{matricola} & \textbf{cognome} & \textbf{nome} & \textbf{id\_materia} & \textbf{telefono} \\
+\hline
+10100 & Verdi & Mario & MA01 & 111.1234567 \\
+20100 & Bianchi & Filippo & MA02 & 222.1234567 \\
+30100 & Neri & Antonio & MA01 & 333.1234567 \\
+\hline
+\end{tabular}
+\end{center}
+
+\vspace{0.3cm}
+\textbf{Chiave primaria:} matricola \\
+\textbf{Chiave esterna:} id\_materia
+\end{frame}
+
+% Slide 19
+\begin{frame}[fragile]{Tabella MATERIE}
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+\textbf{id\_materia} & \textbf{nome} \\
+\hline
+MA01 & Informatica \\
+MA02 & Fisica \\
+MA03 & Italiano \\
+MA04 & Storia \\
+\hline
+\end{tabular}
+\end{center}
+
+\vspace{0.5cm}
+\textbf{Chiave primaria:} id\_materia
+\end{frame}
+
+% SEZIONE 5: SELEZIONE
+\section{Operatore di Selezione}
+
+% Slide 20
+\begin{frame}{Selezione (\(\sigma\)) - Introduzione}
+\begin{block}{Definizione}
+La \textbf{selezione} restituisce un sottoinsieme di tuple che soddisfano una condizione
+\end{block}
+
+\textbf{Caratteristiche:}
+\begin{itemize}
+\item Operatore unario (una relazione → una relazione)
+\item Seleziona righe (tuple) in base a una condizione
+\item Simbolo: \(\sigma\) (sigma)
+\end{itemize}
+
+\begin{center}
+\Large \textcolor{orange}{\(\sigma_{\text{condizione}}(R)\)}
+\end{center}
+\end{frame}
+
+% Slide 21
+\begin{frame}{Sintassi della Selezione}
+\textbf{Struttura generale:}
+
+\begin{center}
+\Large \(\sigma_{\text{<condizione booleana>}}(R)\)
+\end{center}
+
+\vspace{0.5cm}
+\textbf{La condizione può essere:}
+\begin{itemize}
+\item \texttt{attributo = valore}
+\item \texttt{attributo > valore}
+\item \texttt{attributo <> valore}
+\item Condizioni complesse con AND, OR, NOT
+\end{itemize}
+\end{frame}
+
+% Slide 22
+\begin{frame}{Esempio di Selezione}
+\textbf{Richiesta:} Selezionare i libri con editore "Hoepli"
+
+\vspace{0.3cm}
+\textbf{In algebra relazionale:}
+\begin{center}
+\Large \(\sigma_{\text{editore = "Hoepli"}}(\text{libri})\)
+\end{center}
+
+\vspace{0.3cm}
+\textbf{Risultato:}
+\small
+\begin{center}
+\begin{tabular}{|l|l|l|l|l|l|}
+\hline
+\textbf{isbn} & \textbf{titolo} & \textbf{autore} & \textbf{editore} & \textbf{id\_materia} & \textbf{anno} \\
+\hline
+11223344 & Il linguaggio C & Camagni & \textcolor{orange}{Hoepli} & MA01 & 2020 \\
+11223366 & Java & Nikolassy & \textcolor{orange}{Hoepli} & MA01 & 2022 \\
+\hline
+\end{tabular}
+\end{center}
+\end{frame}
+
+% Slide 23
+\begin{frame}{Selezione con Condizioni Multiple}
+\textbf{Operatori logici disponibili:}
+\begin{itemize}
+\item AND (congiunzione)
+\item OR (disgiunzione)
+\item NOT (negazione)
+\end{itemize}
+
+\vspace{0.5cm}
+\textbf{Esempio:}
+\begin{center}
+\(\sigma_{\text{autore = "Camagni" AND editore = "Hoepli"}}(\text{libri})\)
+\end{center}
+
+\begin{alertblock}{Proprietà Commutativa}
+Più selezioni consecutive possono essere combinate con AND
+\end{alertblock}
+\end{frame}
+
+% Slide 24
+\begin{frame}{Proprietà Commutativa della Selezione}
+\textbf{Le selezioni godono della proprietà commutativa:}
+
+\begin{center}
+\(\sigma_{\text{cond1}}(\sigma_{\text{cond2}}(R)) = \sigma_{\text{cond1 AND cond2}}(R)\)
+\end{center}
+
+\vspace{0.5cm}
+\textbf{Vantaggio:}
+\begin{itemize}
+\item Possiamo combinare più condizioni
+\item L'ordine non importa
+\item Ottimizzazione delle query
+\end{itemize}
+\end{frame}
+
+% SEZIONE 6: PROIEZIONE
+\section{Operatore di Proiezione}
+
+% Slide 25
+\begin{frame}{Proiezione (\(\pi\)) - Introduzione}
+\begin{block}{Definizione}
+La \textbf{proiezione} restituisce un sottoinsieme di attributi (colonne)
+\end{block}
+
+\textbf{Caratteristiche:}
+\begin{itemize}
+\item Operatore unario
+\item Seleziona colonne (attributi)
+\item Simbolo: \(\pi\) (pi greco)
+\item Elimina duplicati automaticamente
+\end{itemize}
+
+\begin{center}
+\Large \textcolor{orange}{\(\pi_{\text{lista attributi}}(R)\)}
+\end{center}
+\end{frame}
+
+% Slide 26
+\begin{frame}{Sintassi della Proiezione}
+\textbf{Struttura generale:}
+
+\begin{center}
+\Large \(\pi_{\text{attr}_1, \text{attr}_2, \ldots, \text{attr}_n}(R)\)
+\end{center}
+
+\vspace{0.5cm}
+\textbf{Note importanti:}
+\begin{itemize}
+\item Il numero di attributi è il \textcolor{orange}{grado della proiezione}
+\item Gli attributi sono separati da virgola
+\item L'ordine degli attributi è significativo
+\end{itemize}
+\end{frame}
+
+% Slide 27
+\begin{frame}{Esempio di Proiezione (1)}
+\textbf{Richiesta:} Selezionare solo il titolo dei libri
+
+\vspace{0.3cm}
+\textbf{In algebra relazionale:}
+\begin{center}
+\Large \(\pi_{\text{titolo}}(\text{libri})\)
+\end{center}
+
+\vspace{0.3cm}
+\textbf{Risultato:}
+\begin{center}
+\begin{tabular}{|l|}
+\hline
+\textbf{titolo} \\
+\hline
+Il linguaggio C \\
+Il Novecento \\
+Java \\
+\hline
+\end{tabular}
+\end{center}
+
+\small Grado della proiezione: 1
+\end{frame}
+
+% Slide 28
+\begin{frame}{Esempio di Proiezione (2)}
+\textbf{Richiesta:} Selezionare titolo e autore dei libri
+
+\vspace{0.3cm}
+\textbf{In algebra relazionale:}
+\begin{center}
+\Large \(\pi_{\text{titolo, autore}}(\text{libri})\)
+\end{center}
+
+\vspace{0.3cm}
+\textbf{Risultato:}
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+\textbf{titolo} & \textbf{autore} \\
+\hline
+Il linguaggio C & Camagni \\
+Il Novecento & Verdi \\
+Java & Nikolassy \\
+\hline
+\end{tabular}
+\end{center}
+
+\small Grado della proiezione: 2
+\end{frame}
+
+% Slide 29
+\begin{frame}{Combinazione Selezione e Proiezione}
+\textbf{Possiamo combinare i due operatori!}
+
+\vspace{0.3cm}
+\textbf{Esempio:} Titolo e anno dei libri di Camagni
+
+\begin{center}
+\Large \(\pi_{\text{titolo, anno}}(\sigma_{\text{autore = "Camagni"}}(\text{libri}))\)
+\end{center}
+
+\vspace{0.3cm}
+\textbf{Esecuzione:}
+\begin{enumerate}
+\item Prima: selezione (filtra le righe)
+\item Poi: proiezione (seleziona le colonne)
+\end{enumerate}
+
+\begin{alertblock}{Importante}
+L'ordine delle operazioni è significativo!
+\end{alertblock}
+\end{frame}
+
+% Slide 30
+\begin{frame}{Esempio Completo}
+\textbf{Passi dell'elaborazione:}
+
+\begin{enumerate}
+\item \textbf{Selezione:} \\
+\texttt{LibriDiCamagni} \(\leftarrow \sigma_{\text{autore = "Camagni"}}(\text{libri})\)
+
+\item \textbf{Proiezione:} \\
+\texttt{Risultato} \(\leftarrow \pi_{\text{titolo, anno}}(\text{LibriDiCamagni})\)
+\end{enumerate}
+
+\vspace{0.5cm}
+\textbf{Risultato finale:}
+\begin{center}
+\begin{tabular}{|l|c|}
+\hline
+\textbf{titolo} & \textbf{anno} \\
+\hline
+Il linguaggio C & 2020 \\
+\hline
+\end{tabular}
+\end{center}
+\end{frame}
+
+% SEZIONE 7: RIDENOMINAZIONE
+\section{Operatore di Ridenominazione}
+
+% Slide 31
+\begin{frame}{Ridenominazione (\(\rho\))}
+\begin{block}{Definizione}
+La \textbf{ridenominazione} consente di rinominare gli attributi per eliminare ambiguità
+\end{block}
+
+\textbf{Sintassi:}
+\begin{center}
+\Large \(\rho_{\text{nuovoNome} \leftarrow \text{vecchioNome}}(\text{tabella})\)
+\end{center}
+
+\vspace{0.3cm}
+\textbf{Utilizzo:}
+\begin{itemize}
+\item Chiarire risultati intermedi
+\item Evitare conflitti di nomi
+\item Preparare join complesse
+\end{itemize}
+\end{frame}
+
+% Slide 32
+\begin{frame}{Esempio di Ridenominazione}
+\textbf{Scenario:} Rinominare "nome" in "disciplina" nella tabella materie
+
+\vspace{0.3cm}
+\begin{center}
+\Large \(\rho_{\text{disciplina} \leftarrow \text{nome}}(\text{materie})\)
+\end{center}
+
+\vspace{0.3cm}
+\textbf{Prima:}
+\begin{tabular}{|l|l|}
+\hline
+id\_materia & \textcolor{red}{nome} \\
+\hline
+\end{tabular}
+
+\textbf{Dopo:}
+\begin{tabular}{|l|l|}
+\hline
+id\_materia & \textcolor{green}{disciplina} \\
+\hline
+\end{tabular}
+\end{frame}
+
+% SEZIONE 8: OPERATORI BINARI
+\section{Operatori Binari}
+
+% Slide 33
+\begin{frame}{Operatori Binari - Introduzione}
+\begin{block}{Requisito}
+Le due relazioni devono avere la \textcolor{orange}{stessa struttura}
+\end{block}
+
+\textbf{I tre operatori insiemistici:}
+\begin{enumerate}
+\item \textbf{Unione} (\(\cup\))
+\item \textbf{Intersezione} (\(\cap\))
+\item \textbf{Differenza} (\(-\))
+\end{enumerate}
+
+\vspace{0.3cm}
+Più l'operatore:
+\begin{itemize}
+\item \textbf{Prodotto Cartesiano} (\(\times\))
+\end{itemize}
+\end{frame}
+
+% Slide 34
+\begin{frame}{Tabelle di Esempio}
+\textbf{Per gli esempi useremo:}
+
+\begin{columns}
+\begin{column}{0.48\textwidth}
+\texttt{alunni\_ripetenti}
+\small
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{matr.} & \textbf{cognome} & \textbf{nome} \\
+\hline
+10100 & Verdi & Mario \\
+20100 & Bianchi & Filippo \\
+30100 & Neri & Antonio \\
+\hline
+\end{tabular}
+\end{column}
+
+\begin{column}{0.48\textwidth}
+\texttt{alunni\_motorizzati}
+\small
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{matr.} & \textbf{cognome} & \textbf{nome} \\
+\hline
+10100 & Verdi & Mario \\
+40100 & Gialli & Anna \\
+50100 & Rossi & Pina \\
+\hline
+\end{tabular}
+\end{column}
+\end{columns}
+
+\vspace{0.5cm}
+\small \textit{Stesso schema: matricola, cognome, nome}
+\end{frame}
+
+% Slide 35
+\begin{frame}{Unione (\(\cup\))}
+\begin{block}{Definizione}
+Restituisce \textbf{tutte le tuple} presenti in almeno una delle due relazioni
+\end{block}
+
+\textbf{Sintassi:}
+\begin{center}
+\Large \(R \cup S\)
+\end{center}
+
+\vspace{0.3cm}
+\textbf{Proprietà:}
+\begin{itemize}
+\item Elimina automaticamente i duplicati
+\item Commutativa: \(R \cup S = S \cup R\)
+\item Le relazioni devono avere la stessa struttura
+\end{itemize}
+\end{frame}
+
+% Slide 36
+\begin{frame}{Esempio di Unione}
+\textbf{Operazione:}
+\begin{center}
+\texttt{alunni\_ripetenti} \(\cup\) \texttt{alunni\_motorizzati}
+\end{center}
+
+\vspace{0.3cm}
+\textbf{Risultato:}
+\small
+\begin{center}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{matricola} & \textbf{cognome} & \textbf{nome} \\
+\hline
+10100 & Verdi & Mario \\
+20100 & Bianchi & Filippo \\
+30100 & Neri & Antonio \\
+40100 & Gialli & Anna \\
+50100 & Rossi & Pina \\
+\hline
+\end{tabular}
+\end{center}
+
+\small \textcolor{orange}{5 righe totali (Verdi Mario compare una sola volta)}
+\end{frame}
+
+% Slide 37
+\begin{frame}{Intersezione (\(\cap\))}
+\begin{block}{Definizione}
+Restituisce le tuple che sono presenti in \textbf{entrambe} le relazioni
+\end{block}
+
+\textbf{Sintassi:}
+\begin{center}
+\Large \(R \cap S\)
+\end{center}
+
+\vspace{0.3cm}
+\textbf{Proprietà:}
+\begin{itemize}
+\item Solo le righe comuni
+\item Commutativa: \(R \cap S = S \cap R\)
+\item Operatore derivato (non fondamentale)
+\end{itemize}
+\end{frame}
+
+% Slide 38
+\begin{frame}{Esempio di Intersezione}
+\textbf{Operazione:}
+\begin{center}
+\texttt{alunni\_ripetenti} \(\cap\) \texttt{alunni\_motorizzati}
+\end{center}
+
+\vspace{0.3cm}
+\textbf{Risultato:}
+\begin{center}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{matricola} & \textbf{cognome} & \textbf{nome} \\
+\hline
+10100 & Verdi & Mario \\
+\hline
+\end{tabular}
+\end{center}
+
+\vspace{0.5cm}
+\textcolor{orange}{Solo 1 riga: quella presente in entrambe le tabelle}
+\end{frame}
+
+% Slide 39
+\begin{frame}{Differenza (\(-\))}
+\begin{block}{Definizione}
+Restituisce le tuple presenti nella \textbf{prima} relazione ma \textbf{non} nella seconda
+\end{block}
+
+\textbf{Sintassi:}
+\begin{center}
+\Large \(R - S\)
+\end{center}
+
+\vspace{0.3cm}
+\textbf{Proprietà:}
+\begin{itemize}
+\item \textcolor{red}{NON commutativa:} \(R - S \neq S - R\)
+\item L'ordine è importante!
+\end{itemize}
+\end{frame}
+
+% Slide 40
+\begin{frame}{Esempio di Differenza}
+\textbf{Operazione 1:}
+\texttt{alunni\_ripetenti} \(-\) \texttt{alunni\_motorizzati}
+
+\small
+\begin{tabular}{|l|l|l|}
+\hline
+20100 & Bianchi & Filippo \\
+30100 & Neri & Antonio \\
+\hline
+\end{tabular}
+
+\vspace{0.5cm}
+\textbf{Operazione 2:}
+\texttt{alunni\_motorizzati} \(-\) \texttt{alunni\_ripetenti}
+
+\small
+\begin{tabular}{|l|l|l|}
+\hline
+40100 & Gialli & Anna \\
+50100 & Rossi & Pina \\
+\hline
+\end{tabular}
+
+\vspace{0.3cm}
+\normalsize \textcolor{red}{Risultati diversi! L'ordine conta!}
+\end{frame}
+
+% SEZIONE 9: PRODOTTO CARTESIANO
+\section{Prodotto Cartesiano e Join}
+
+% Slide 41
+\begin{frame}{Prodotto Cartesiano (\(\times\))}
+\begin{block}{Definizione}
+Produce una nuova tupla dalla combinazione di \textbf{ogni tupla} di R con \textbf{ogni tupla} di S
+\end{block}
+
+\textbf{Sintassi:}
+\begin{center}
+\Large \(R \times S\)
+\end{center}
+
+\textbf{Caratteristiche:}
+\begin{itemize}
+\item Combina tutte le righe possibili
+\item Genera molte tuple "inutili"
+\item Base per la JOIN
+\end{itemize}
+\end{frame}
+
+% Slide 42
+\begin{frame}{Esempio di Prodotto Cartesiano}
+\textbf{Operazione:} \texttt{libri} \(\times\) \texttt{materie}
+
+\vspace{0.3cm}
+\textbf{Risultato parziale:}
+\tiny
+\begin{tabular}{|l|l|l|l|l|l|l|l|}
+\hline
+\textbf{isbn} & \textbf{titolo} & \textbf{id\_mat.} & \textbf{anno} & \textbf{ID\_mat.} & \textbf{nome} \\
+\hline
+11223344 & Il linguaggio C & MA01 & 2020 & \textcolor{orange}{MA01} & Informatica \\
+11223344 & Il linguaggio C & MA01 & 2020 & \textcolor{red}{MA02} & Fisica \\
+\ldots & \ldots & \ldots & \ldots & \ldots & \ldots \\
+\hline
+\end{tabular}
+
+\vspace{0.3cm}
+\normalsize
+Se \texttt{libri} ha 3 righe e \texttt{materie} ha 4 righe: \\
+\textcolor{orange}{Risultato = 3 × 4 = 12 righe!}
+\end{frame}
+
+% Slide 43
+\begin{frame}{Problema del Prodotto Cartesiano}
+\begin{alertblock}{Attenzione!}
+Il prodotto cartesiano da solo non è molto utile!
+\end{alertblock}
+
+\textbf{Problemi:}
+\begin{itemize}
+\item Genera troppe tuple
+\item La maggior parte sono "senza senso"
+\item Combinazioni non significative
+\end{itemize}
+
+\vspace{0.5cm}
+\textbf{Soluzione:}
+\begin{center}
+\Large Prodotto cartesiano + Selezione = \textcolor{orange}{JOIN}
+\end{center}
+\end{frame}
+
+% SEZIONE 10: JOIN
+% Slide 44
+\begin{frame}{Congiunzione o Join (\(\bowtie\))}
+\begin{block}{Definizione}
+La \textbf{Join} combina tuple di due relazioni che hanno \textbf{un attributo in comune}
+\end{block}
+
+\textbf{Sintassi:}
+\begin{center}
+\Large \(R \bowtie_{\text{condizione}} S\)
+\end{center}
+
+\vspace{0.3cm}
+\textbf{Pronuncia:} Il simbolo \(\bowtie\) si pronuncia "bowtie" (cravatta a farfalla)
+
+
+\end{frame}
+
+% Slide 45
+\begin{frame}{Esempio di Join}
+\textbf{Operazione:}
+\begin{center}
+\texttt{libri} \(\bowtie_{\text{id\_materia = ID\_materia}}\) \texttt{materie}
+\end{center}
+
+\vspace{0.3cm}
+\textbf{Equivale a:}
+\begin{enumerate}
+\item Prodotto cartesiano
+\item Selezione con condizione di uguaglianza
+\item Elimina colonne duplicate
+\end{enumerate}
+
+\begin{alertblock}{Equi-Join}
+Quando la condizione è un'uguaglianza, si chiama \textbf{equi-join}
+\end{alertblock}
+\end{frame}
+
+% Slide 46
+\begin{frame}{Natural Join (\(*\))}
+\begin{block}{Natural Join}
+Join automatica sugli attributi con lo \textbf{stesso nome}
+\end{block}
+
+\textbf{Sintassi:}
+\begin{center}
+\Large \(R * S\)
+\end{center}
+
+\vspace{0.3cm}
+\textbf{Esempio:}
+\begin{center}
+\texttt{libri} \(* \) \texttt{materie}
+\end{center}
+
+\small Unisce automaticamente su \texttt{id\_materia}! \\
+\textcolor{orange}{Nota:} Gli attributi comuni appaiono una sola volta
+\end{frame}
+
+% Slide 47
+\begin{frame}{Left Join}
+\begin{block}{Left Join}
+Conserva \textbf{tutte le righe} della tabella di \textcolor{orange}{sinistra}
+\end{block}
+
+\textbf{Esempio:}
+\begin{center}
+\texttt{linee} = \(\bowtie_{\text{id\_autista}}\) \texttt{autisti}
+\end{center}
+
+\textbf{Risultato:}
+\begin{itemize}
+\item Tutte le linee, anche senza autista
+\item Campi mancanti: NULL
+\end{itemize}
+\end{frame}
+
+% Slide 48
+\begin{frame}{Right Join}
+\begin{block}{Right Join}
+Conserva \textbf{tutte le righe} della tabella di \textcolor{orange}{destra}
+\end{block}
+
+\textbf{Esempio:}
+\begin{center}
+\texttt{linee} \(\bowtie =_{\text{id\_autista}}\) \texttt{autisti}
+\end{center}
+
+\textbf{Risultato:}
+\begin{itemize}
+\item Tutti gli autisti, anche senza linea
+\item Campi mancanti: NULL
+\end{itemize}
+\end{frame}
+
+% Slide 49
+\begin{frame}{Full Join}
+\begin{block}{Full Join}
+Conserva \textbf{tutte le righe} di \textcolor{orange}{entrambe} le tabelle
+\end{block}
+
+\textbf{Sintassi:}
+\begin{center}
+\texttt{linee} = \(\bowtie =_{\text{id\_autista}}\) \texttt{autisti}
+\end{center}
+
+\textbf{Risultato:}
+\begin{itemize}
+\item Tutte le linee (anche senza autista)
+\item Tutti gli autisti (anche senza linea)
+\item Campi mancanti: NULL
+\end{itemize}
+\end{frame}
+
+% Slide 50
+\begin{frame}{Riepilogo delle Join}
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+\textbf{Tipo di Join} & \textbf{Cosa conserva} \\
+\midrule
+Equi-Join / Natural Join & Solo righe corrispondenti \\
+Left Join & Tutte le righe di sinistra \\
+Right Join & Tutte le righe di destra \\
+Full Join & Tutte le righe di entrambe \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\vspace{0.5cm}
+\begin{alertblock}{In SQL}
+Queste operazioni corrispondono a: \\
+INNER JOIN, LEFT JOIN, RIGHT JOIN, FULL OUTER JOIN
+\end{alertblock}
+\end{frame}
+
+% Slide finale
+\begin{frame}
+\begin{center}
+{\Huge Grazie per l'attenzione!}
+
+\vspace{1cm}
+
+{\Large Domande?}
+
+\vspace{1.5cm}
+
+\textit{IIS Fermi Sacconi Ceci} \\
+\textit{Informatica - 5B Inf.} \\
+\textit{A.S. 2025/26}
+\end{center}
+\end{frame}
+
+\end{document}

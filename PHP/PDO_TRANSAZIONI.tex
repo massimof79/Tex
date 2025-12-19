@@ -834,12 +834,27 @@
 			password: qualsiasi
 		\end{verbatim}
 		
+	\end{frame}
+	
+	
+		% Slide 32
+	\begin{frame}[fragile]{Esempio di Vulnerabilità}
+		
+		\textbf{Input malevolo}:
+		\begin{verbatim}
+			username: admin' OR '1'='1
+			password: qualsiasi
+		\end{verbatim}
+		
 		\textbf{Query risultante}:
 		\begin{verbatim}
 			SELECT * FROM utenti WHERE username = 'admin' 
 			OR '1'='1' AND password = 'qualsiasi'
 		\end{verbatim}
 	\end{frame}
+	
+	
+	
 	
 	% Slide 33
 	\begin{frame}[fragile]{Attacco SQL Injection - Diagramma}
