@@ -1,0 +1,366 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{geometry}
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{fancyhdr}
+\usepackage{xcolor}
+
+\geometry{a4paper, margin=2.5cm}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{Algebra Relazionale - Database Cinema}
+\rhead{IIS Fermi Sacconi Ceci - Soluzioni}
+\cfoot{\thepage}
+
+\title{\textbf{Esercizi di Algebra Relazionale}\\Database Cinematografico\\[0.3cm]\large Con Soluzioni}
+\author{Prof. Fedeli Massimo\\}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Schema del Database}
+
+\subsection*{Movies}
+\begin{itemize}[noitemsep]
+    \item Movie\_ID (number) - chiave primaria
+    \item Title (string)
+    \item ReleaseDate (date)
+    \item Genre\_ID (number) - chiave esterna verso Genres
+    \item Budget (number)
+    \item OpeningWeek (number)
+    \item Profit (number)
+    \item Runtime (number)
+    \item Certificate (number)
+    \item SequelOf (number) - chiave esterna verso Movies
+    \item Distribution (string)
+\end{itemize}
+
+\subsection*{Genres}
+\begin{itemize}[noitemsep]
+    \item Genre\_ID (number) - chiave primaria
+    \item Name (string)
+\end{itemize}
+
+\subsection*{Persons}
+\begin{itemize}[noitemsep]
+    \item Person\_ID (number) - chiave primaria
+    \item Firstname (string)
+    \item Lastname (string)
+\end{itemize}
+
+\subsection*{PersonsMovies}
+\begin{itemize}[noitemsep]
+    \item Person\_ID (number) - chiave esterna verso Persons
+    \item Movie\_ID (number) - chiave esterna verso Movies
+    \item Role (string) - esempio: "Director", "Actor", "Producer"
+\end{itemize}
+
+\vspace{1cm}
+
+\section*{Esercizi e Soluzioni}
+
+\subsection*{Esercizi Base (Selezione e Proiezione)}
+
+\begin{enumerate}[leftmargin=*]
+
+\item \textbf{Titoli dei film}\\
+Estrarre i titoli di tutti i film presenti nel database.
+
+\vspace{0.3cm}
+\textcolor{blue}{\textbf{Soluzione:}}
+$$\pi_{\text{Title}}(\text{Movies})$$
+
+\vspace{0.5cm}
+
+\item \textbf{Film d'azione}\\
+Trovare tutti i film del genere "Action" (assumendo Genre\_ID = 1). Mostrare Movie\_ID e Title.
+
+\vspace{0.3cm}
+\textcolor{blue}{\textbf{Soluzione:}}
+$$\pi_{\text{Movie\_ID, Title}}(\sigma_{\text{Genre\_ID} = 1}(\text{Movies}))$$
+
+\vspace{0.5cm}
+
+\item \textbf{Film con budget elevato}\\
+Estrarre titolo e budget dei film con budget superiore a 100 milioni.
+
+\vspace{0.3cm}
+\textcolor{blue}{\textbf{Soluzione:}}
+$$\pi_{\text{Title, Budget}}(\sigma_{\text{Budget} > 100000000}(\text{Movies}))$$
+
+\vspace{0.5cm}
+
+\item \textbf{Film lunghi}\\
+Trovare i film con durata (Runtime) superiore a 150 minuti. Mostrare Title e Runtime.
+
+\vspace{0.3cm}
+\textcolor{blue}{\textbf{Soluzione:}}
+$$\pi_{\text{Title, Runtime}}(\sigma_{\text{Runtime} > 150}(\text{Movies}))$$
+
+\vspace{0.5cm}
+
+\item \textbf{Nomi completi delle persone}\\
+Estrarre il nome completo (Firstname e Lastname) di tutte le persone nel database.
+
+\vspace{0.3cm}
+\textcolor{blue}{\textbf{Soluzione:}}
+$$\pi_{\text{Firstname, Lastname}}(\text{Persons})$$
+
+\vspace{0.5cm}
+
+\subsection*{Esercizi con Join}
+
+\item \textbf{Film con genere}\\
+Estrarre titolo del film e nome del genere per tutti i film.
+
+\vspace{0.3cm}
+\textcolor{blue}{\textbf{Soluzione:}}
+$$\pi_{\text{Title, Name}}(\text{Movies} \bowtie_{\text{Movies.Genre\_ID} = \text{Genres.Genre\_ID}} \text{Genres})$$
+
+\textit{Oppure con join naturale se i nomi degli attributi coincidono:}
+$$\pi_{\text{Title, Name}}(\text{Movies} \bowtie \text{Genres})$$
+
+\vspace{0.5cm}
+
+\item \textbf{Registi e i loro film}\\
+Trovare il nome completo dei registi (Role = "Director") e i titoli dei film che hanno diretto.
+
+\vspace{0.3cm}
+\textcolor{blue}{\textbf{Soluzione:}}
+\begin{align*}
+\text{Temp} &= \sigma_{\text{Role} = \text{"Director"}}(\text{PersonsMovies})\\
+\text{Temp2} &= \text{Temp} \bowtie_{\text{Temp.Person\_ID} = \text{Persons.Person\_ID}} \text{Persons}\\
+\text{Result} &= \pi_{\text{Firstname, Lastname, Title}}(\text{Temp2} \bowtie_{\text{Temp2.Movie\_ID} = \text{Movies.Movie\_ID}} \text{Movies})
+\end{align*}
+
+\textit{Forma compatta:}
+$$\pi_{\text{Firstname, Lastname, Title}}((\sigma_{\text{Role} = \text{"Director"}}(\text{PersonsMovies}) \bowtie \text{Persons}) \bowtie \text{Movies})$$
+
+\vspace{0.5cm}
+
+\item \textbf{Attori in film d'azione}\\
+Estrarre il nome degli attori (Role = "Actor") che hanno recitato in film d'azione (Genre Name = "Action").
+
+\vspace{0.3cm}
+\textcolor{blue}{\textbf{Soluzione:}}
+\begin{align*}
+\text{ActionMovies} &= \pi_{\text{Movie\_ID}}(\text{Movies} \bowtie_{\text{Movies.Genre\_ID} = \text{Genres.Genre\_ID}} \sigma_{\text{Name} = \text{"Action"}}(\text{Genres}))\\
+\text{Actors} &= \sigma_{\text{Role} = \text{"Actor"}}(\text{PersonsMovies})\\
+\text{ActionActors} &= \text{Actors} \bowtie_{\text{Actors.Movie\_ID} = \text{ActionMovies.Movie\_ID}} \text{ActionMovies}\\
+\text{Result} &= \pi_{\text{Firstname, Lastname}}(\text{ActionActors} \bowtie_{\text{ActionActors.Person\_ID} = \text{Persons.Person\_ID}} \text{Persons})
+\end{align*}
+
+\vspace{0.5cm}
+
+\item \textbf{Film commedia con cast}\\
+Per tutti i film di genere "Comedy", mostrare il titolo del film, il nome della persona e il suo ruolo.
+
+\vspace{0.3cm}
+\textcolor{blue}{\textbf{Soluzione:}}
+\begin{align*}
+\text{Comedy} &= \text{Movies} \bowtie_{\text{Movies.Genre\_ID} = \text{Genres.Genre\_ID}} \sigma_{\text{Name} = \text{"Comedy"}}(\text{Genres})\\
+\text{ComedyCast} &= \text{Comedy} \bowtie_{\text{Comedy.Movie\_ID} = \text{PersonsMovies.Movie\_ID}} \text{PersonsMovies}\\
+\text{Result} &= \pi_{\text{Title, Firstname, Lastname, Role}}(\text{ComedyCast} \bowtie_{\text{ComedyCast.Person\_ID} = \text{Persons.Person\_ID}} \text{Persons})
+\end{align*}
+
+\vspace{0.5cm}
+
+\item \textbf{Sequel}\\
+Trovare i titoli dei film che sono sequel di altri film, mostrando sia il titolo del sequel che il titolo del film originale.
+
+\vspace{0.3cm}
+\textcolor{blue}{\textbf{Soluzione:}}
+\begin{align*}
+\text{Sequels} &= \sigma_{\text{SequelOf IS NOT NULL}}(\text{Movies})\\
+\text{Originals} &= \rho_{\text{Orig}(\text{Movie\_ID2, Title2, ...})}(\text{Movies})\\
+\text{Result} &= \pi_{\text{Title, Title2}}(\text{Sequels} \bowtie_{\text{Sequels.SequelOf} = \text{Orig.Movie\_ID2}} \text{Orig})
+\end{align*}
+
+\textit{Nota: Orig.Title2 rappresenta il titolo del film originale}
+
+\vspace{0.5cm}
+
+\subsection*{Esercizi con Operazioni Insiemistiche}
+
+\item \textbf{Persone che sono sia attori che registi}\\
+Trovare le persone che hanno lavorato sia come attore che come regista (in film diversi o nello stesso).
+
+\vspace{0.3cm}
+\textcolor{blue}{\textbf{Soluzione:}}
+\begin{align*}
+\text{Directors} &= \pi_{\text{Person\_ID}}(\sigma_{\text{Role} = \text{"Director"}}(\text{PersonsMovies}))\\
+\text{Actors} &= \pi_{\text{Person\_ID}}(\sigma_{\text{Role} = \text{"Actor"}}(\text{PersonsMovies}))\\
+\text{Both} &= \text{Directors} \cap \text{Actors}\\
+\text{Result} &= \pi_{\text{Firstname, Lastname}}(\text{Both} \bowtie_{\text{Both.Person\_ID} = \text{Persons.Person\_ID}} \text{Persons})
+\end{align*}
+
+\vspace{0.5cm}
+
+\item \textbf{Film drammatici o thriller}\\
+Estrarre i titoli dei film che sono del genere "Drama" oppure "Thriller".
+
+\vspace{0.3cm}
+\textcolor{blue}{\textbf{Soluzione:}}
+\begin{align*}
+\text{Drama} &= \pi_{\text{Title}}(\text{Movies} \bowtie \sigma_{\text{Name} = \text{"Drama"}}(\text{Genres}))\\
+\text{Thriller} &= \pi_{\text{Title}}(\text{Movies} \bowtie \sigma_{\text{Name} = \text{"Thriller"}}(\text{Genres}))\\
+\text{Result} &= \text{Drama} \cup \text{Thriller}
+\end{align*}
+
+\textit{Alternativa con OR:}
+$$\pi_{\text{Title}}(\text{Movies} \bowtie \sigma_{\text{Name} = \text{"Drama"} \lor \text{Name} = \text{"Thriller"}}(\text{Genres}))$$
+
+\vspace{0.5cm}
+
+\item \textbf{Registi che non hanno mai recitato}\\
+Trovare i registi che non hanno mai lavorato come attori.
+
+\vspace{0.3cm}
+\textcolor{blue}{\textbf{Soluzione:}}
+\begin{align*}
+\text{AllDirectors} &= \pi_{\text{Person\_ID}}(\sigma_{\text{Role} = \text{"Director"}}(\text{PersonsMovies}))\\
+\text{AllActors} &= \pi_{\text{Person\_ID}}(\sigma_{\text{Role} = \text{"Actor"}}(\text{PersonsMovies}))\\
+\text{OnlyDirectors} &= \text{AllDirectors} - \text{AllActors}\\
+\text{Result} &= \pi_{\text{Firstname, Lastname}}(\text{OnlyDirectors} \bowtie \text{Persons})
+\end{align*}
+
+\vspace{0.5cm}
+
+\subsection*{Esercizi Avanzati}
+
+\item \textbf{Film profittevoli}\\
+Trovare i film dove il profitto (Profit) è maggiore del budget (Budget). Mostrare Title, Budget e Profit.
+
+\vspace{0.3cm}
+\textcolor{blue}{\textbf{Soluzione:}}
+$$\pi_{\text{Title, Budget, Profit}}(\sigma_{\text{Profit} > \text{Budget}}(\text{Movies}))$$
+
+\vspace{0.5cm}
+
+\item \textbf{Distributori di film d'azione}\\
+Estrarre i nomi dei distributori (Distribution) che hanno distribuito almeno un film d'azione.
+
+\vspace{0.3cm}
+\textcolor{blue}{\textbf{Soluzione:}}
+\begin{align*}
+\text{ActionMovies} &= \text{Movies} \bowtie \sigma_{\text{Name} = \text{"Action"}}(\text{Genres})\\
+\text{Result} &= \pi_{\text{Distribution}}(\text{ActionMovies})
+\end{align*}
+
+\vspace{0.5cm}
+
+\item \textbf{Persone coinvolte in film con alto incasso}\\
+Trovare il nome delle persone che hanno lavorato (in qualsiasi ruolo) in film con OpeningWeek superiore a 50 milioni.
+
+\vspace{0.3cm}
+\textcolor{blue}{\textbf{Soluzione:}}
+\begin{align*}
+\text{HighGrossing} &= \sigma_{\text{OpeningWeek} > 50000000}(\text{Movies})\\
+\text{InvolvedPersons} &= \text{HighGrossing} \bowtie \text{PersonsMovies}\\
+\text{Result} &= \pi_{\text{Firstname, Lastname}}(\text{InvolvedPersons} \bowtie \text{Persons})
+\end{align*}
+
+\vspace{0.5cm}
+
+\item \textbf{Film dello stesso genere di un film specifico}\\
+Dato il film "Inception" (assumendo Movie\_ID = 10), trovare tutti gli altri film dello stesso genere.
+
+\vspace{0.3cm}
+\textcolor{blue}{\textbf{Soluzione:}}
+\begin{align*}
+\text{InceptionGenre} &= \pi_{\text{Genre\_ID}}(\sigma_{\text{Movie\_ID} = 10}(\text{Movies}))\\
+\text{SameGenre} &= \text{Movies} \bowtie_{\text{Movies.Genre\_ID} = \text{InceptionGenre.Genre\_ID}} \text{InceptionGenre}\\
+\text{Result} &= \pi_{\text{Title}}(\sigma_{\text{Movie\_ID} \neq 10}(\text{SameGenre}))
+\end{align*}
+
+\vspace{0.5cm}
+
+\item \textbf{Collaborazioni tra registi e attori}\\
+Trovare le coppie regista-attore che hanno collaborato (lavorato insieme nello stesso film), mostrando i loro nomi e il titolo del film.
+
+\vspace{0.3cm}
+\textcolor{blue}{\textbf{Soluzione:}}
+\begin{align*}
+\text{Directors} &= \rho_{\text{D}(\text{Person\_ID\_D, Movie\_ID, Role\_D})}(\sigma_{\text{Role} = \text{"Director"}}(\text{PersonsMovies}))\\
+\text{Actors} &= \rho_{\text{A}(\text{Person\_ID\_A, Movie\_ID, Role\_A})}(\sigma_{\text{Role} = \text{"Actor"}}(\text{PersonsMovies}))\\
+\text{Collab} &= \text{Directors} \bowtie_{\text{D.Movie\_ID} = \text{A.Movie\_ID}} \text{Actors}\\
+\text{DirectorNames} &= \rho_{\text{DN}(\text{Person\_ID\_D, FirstnameD, LastnameD})}(\text{Persons})\\
+\text{ActorNames} &= \rho_{\text{AN}(\text{Person\_ID\_A, FirstnameA, LastnameA})}(\text{Persons})\\
+\text{WithNames} &= ((\text{Collab} \bowtie \text{DirectorNames}) \bowtie \text{ActorNames}) \bowtie \text{Movies}\\
+\text{Result} &= \pi_{\text{FirstnameD, LastnameD, FirstnameA, LastnameA, Title}}(\text{WithNames})
+\end{align*}
+
+\vspace{0.5cm}
+
+\item \textbf{Generi senza film lunghi}\\
+Trovare i generi che non hanno film con durata superiore a 180 minuti.
+
+\vspace{0.3cm}
+\textcolor{blue}{\textbf{Soluzione:}}
+\begin{align*}
+\text{AllGenres} &= \pi_{\text{Genre\_ID}}(\text{Genres})\\
+\text{LongMovies} &= \sigma_{\text{Runtime} > 180}(\text{Movies})\\
+\text{GenresWithLong} &= \pi_{\text{Genre\_ID}}(\text{LongMovies})\\
+\text{GenresWithoutLong} &= \text{AllGenres} - \text{GenresWithLong}\\
+\text{Result} &= \pi_{\text{Name}}(\text{GenresWithoutLong} \bowtie \text{Genres})
+\end{align*}
+
+\vspace{0.5cm}
+
+\item \textbf{Film di maggior successo per genere}\\
+Per ogni genere, trovare il film con il profitto più alto. Mostrare il nome del genere, il titolo del film e il profitto.
+
+\vspace{0.3cm}
+\textcolor{blue}{\textbf{Soluzione:}}
+
+\textit{Questo è l'esercizio più complesso. Richiede un approccio in più passi:}
+
+\begin{align*}
+\text{MoviesWithGenre} &= \text{Movies} \bowtie \text{Genres}\\
+\text{M1} &= \rho_{\text{M1}(\text{Movie\_ID1, Title1, Genre\_ID1, Profit1, Name1, ...})}(\text{MoviesWithGenre})\\
+\text{M2} &= \rho_{\text{M2}(\text{Movie\_ID2, Title2, Genre\_ID2, Profit2, Name2, ...})}(\text{MoviesWithGenre})\\
+\text{NotMax} &= \pi_{\text{Movie\_ID1}}(\sigma_{\text{M1.Genre\_ID1} = \text{M2.Genre\_ID2} \land \text{M1.Profit1} < \text{M2.Profit2}}(\text{M1} \times \text{M2}))\\
+\text{AllMovies} &= \pi_{\text{Movie\_ID}}(\text{Movies})\\
+\text{MaxMovies} &= \text{AllMovies} - \text{NotMax}\\
+\text{Result} &= \pi_{\text{Name, Title, Profit}}(\text{MaxMovies} \bowtie \text{MoviesWithGenre})
+\end{align*}
+
+\textit{Spiegazione: Si confronta ogni film con tutti gli altri dello stesso genere. Se esiste un film con profitto maggiore nello stesso genere, quello non è il massimo. I film che non risultano "non massimi" sono i film con profitto massimo per il loro genere.}
+
+\vspace{0.5cm}
+
+\end{enumerate}
+
+\section*{Note Tecniche}
+
+\subsection*{Operatori dell'Algebra Relazionale}
+
+\begin{itemize}
+    \item $\sigma$ (sigma) - \textbf{Selezione}: filtra le righe secondo una condizione
+    \item $\pi$ (pi) - \textbf{Proiezione}: seleziona colonne specifiche
+    \item $\bowtie$ (bowtie) - \textbf{Join}: combina relazioni correlate
+    \item $\times$ (times) - \textbf{Prodotto cartesiano}: combina ogni riga di una relazione con ogni riga di un'altra
+    \item $\cup$ (union) - \textbf{Unione}: combina tuple di due relazioni (elimina duplicati)
+    \item $\cap$ (intersection) - \textbf{Intersezione}: tuple presenti in entrambe le relazioni
+    \item $-$ (minus) - \textbf{Differenza}: tuple nella prima relazione ma non nella seconda
+    \item $\rho$ (rho) - \textbf{Ridenominazione}: rinomina relazioni o attributi
+\end{itemize}
+
+\subsection*{Consigli per la Risoluzione}
+
+\begin{enumerate}
+    \item Identificare quali relazioni sono necessarie
+    \item Applicare prima le selezioni per ridurre i dati
+    \item Eseguire i join necessari
+    \item Applicare le proiezioni alla fine per selezionare gli attributi richiesti
+    \item Per query complesse, usare risultati intermedi con nomi significativi
+    \item La ridenominazione è essenziale quando si devono fare self-join o confronti
+\end{enumerate}
+
+\end{document}

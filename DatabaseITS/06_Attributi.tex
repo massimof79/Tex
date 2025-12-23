@@ -1,0 +1,440 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{er,positioning,shapes}
+
+\geometry{margin=2.5cm}
+
+\title{\textbf{Tipologie di Attributi nel Modello Entità-Relazione}}
+\author{Prof. Fedeli Massimo - Tutti i diritti riservati}
+
+
+\definecolor{primarycolor}{RGB}{41,128,185}
+\definecolor{secondarycolor}{RGB}{52,152,219}
+\definecolor{examplecolor}{RGB}{241,196,15}
+
+\begin{document}
+	
+	\maketitle
+	
+	\section{Introduzione}
+	
+	Nel modello Entità-Relazione (E-R), gli attributi rappresentano le proprietà che caratterizzano un'entità o una relazione. La corretta classificazione degli attributi è fondamentale per una progettazione efficace del database.
+	
+	In questo documento esamineremo le diverse tipologie di attributi:
+	\begin{itemize}
+		\item Attributi semplici vs. composti
+		\item Attributi monovalore vs. multivalore
+		\item Attributi calcolati (derivati)
+	\end{itemize}
+	
+	\section{Attributi Semplici}
+	
+	\subsection{Definizione}
+	Un \textbf{attributo semplice} (o atomico) è un attributo che non può essere suddiviso in componenti più elementari. Rappresenta un valore indivisibile all'interno del contesto del dominio applicativo.
+	
+	\subsection{Caratteristiche}
+	\begin{itemize}
+		\item Non possono essere ulteriormente scomposti
+		\item Rappresentano informazioni elementari
+		\item Sono gli attributi più comuni nei database
+	\end{itemize}
+	
+	\subsection{Esempi Pratici}
+	
+	\begin{tcolorbox}[colback=examplecolor!10,colframe=examplecolor!80,title=Esempio 1: Entità STUDENTE]
+		\textbf{Attributi semplici:}
+		\begin{itemize}
+			\item \texttt{Matricola}: "2024001"
+			\item \texttt{Nome}: "Mario"
+			\item \texttt{Cognome}: "Rossi"
+			\item \texttt{DataNascita}: "15/03/2005"
+			\item \texttt{Email}: "mario.rossi@studenti.school.it"
+		\end{itemize}
+	\end{tcolorbox}
+	
+	\begin{tcolorbox}[colback=examplecolor!10,colframe=examplecolor!80,title=Esempio 2: Entità PRODOTTO]
+		\textbf{Attributi semplici:}
+		\begin{itemize}
+			\item \texttt{CodiceProdotto}: "P-12345"
+			\item \texttt{NomeProdotto}: "Laptop Dell XPS 15"
+			\item \texttt{Prezzo}: 1299.99
+			\item \texttt{Peso}: 1.8 (kg)
+			\item \texttt{Colore}: "Argento"
+		\end{itemize}
+	\end{tcolorbox}
+	
+	\section{Attributi Composti}
+	
+	\subsection{Definizione}
+	Un \textbf{attributo composto} è un attributo che può essere suddiviso in sotto-attributi più elementari, ciascuno con un significato indipendente. Rappresenta un'informazione strutturata che può essere vista sia come unità sia come insieme di parti.
+	
+	\subsection{Caratteristiche}
+	\begin{itemize}
+		\item Possono essere scomposti in componenti più semplici
+		\item Ogni componente ha un significato autonomo
+		\item Offrono flessibilità nell'accesso ai dati
+		\item Possono avere più livelli di composizione
+	\end{itemize}
+	
+	\subsection{Esempi Pratici}
+	
+	\begin{tcolorbox}[colback=secondarycolor!10,colframe=secondarycolor!80,title=Esempio 1: Attributo INDIRIZZO]
+		\textbf{Attributo composto:} \texttt{Indirizzo}
+		
+		\textbf{Sotto-attributi:}
+		\begin{itemize}
+			\item \texttt{Via}: "Via Roma"
+			\item \texttt{NumeroCivico}: "123"
+			\item \texttt{CAP}: "63100"
+			\item \texttt{Città}: "Ascoli Piceno"
+			\item \texttt{Provincia}: "AP"
+		\end{itemize}
+		
+		\textbf{Valore completo:} "Via Roma 123, 63100 Ascoli Piceno (AP)"
+	\end{tcolorbox}
+	
+	\begin{tcolorbox}[colback=secondarycolor!10,colframe=secondarycolor!80,title=Esempio 2: Attributo NOME\_COMPLETO]
+		\textbf{Attributo composto:} \texttt{NomeCompleto}
+		
+		\textbf{Sotto-attributi:}
+		\begin{itemize}
+			\item \texttt{Nome}: "Giovanni"
+			\item \texttt{SecondoNome}: "Paolo"
+			\item \texttt{Cognome}: "Bianchi"
+		\end{itemize}
+		
+		\textbf{Valore completo:} "Giovanni Paolo Bianchi"
+	\end{tcolorbox}
+	
+	\begin{tcolorbox}[colback=secondarycolor!10,colframe=secondarycolor!80,title=Esempio 3: Attributo DATA\_ORA (composizione a più livelli)]
+		\textbf{Attributo composto:} \texttt{DataOra}
+		
+		\textbf{Sotto-attributi:}
+		\begin{itemize}
+			\item \texttt{Data}:
+			\begin{itemize}
+				\item \texttt{Giorno}: 15
+				\item \texttt{Mese}: 11
+				\item \texttt{Anno}: 2024
+			\end{itemize}
+			\item \texttt{Ora}:
+			\begin{itemize}
+				\item \texttt{Ore}: 14
+				\item \texttt{Minuti}: 30
+				\item \texttt{Secondi}: 00
+			\end{itemize}
+		\end{itemize}
+	\end{tcolorbox}
+	
+	\subsection{Quando utilizzare attributi composti}
+	
+	\textbf{Utilizzare attributi composti quando:}
+	\begin{itemize}
+		\item Si necessita di accedere sia all'informazione completa che alle singole componenti
+		\item Le componenti hanno un significato autonomo nell'applicazione
+		\item Si vuole mantenere flessibilità per query e ricerche sui singoli elementi
+	\end{itemize}
+	
+	\section{Attributi Monovalore}
+	
+	\subsection{Definizione}
+	Un \textbf{attributo monovalore} (o singolo) è un attributo che può assumere un solo valore per ciascuna istanza dell'entità. È la tipologia più comune di attributo.
+	
+	\subsection{Caratteristiche}
+	\begin{itemize}
+		\item Hanno cardinalità (1,1)
+		\item Un'istanza dell'entità ha esattamente un valore per l'attributo
+		\item Rappresentano proprietà univoche
+	\end{itemize}
+	
+	\subsection{Esempi Pratici}
+	
+	\begin{tcolorbox}[colback=primarycolor!10,colframe=primarycolor!80,title=Esempio: Entità DIPENDENTE]
+		\textbf{Attributi monovalore:}
+		\begin{itemize}
+			\item \texttt{CodiceFiscale}: "RSSMRA85M15F839K" \\
+			\textit{Ogni dipendente ha un solo codice fiscale}
+			
+			\item \texttt{DataAssunzione}: "01/09/2020" \\
+			\textit{Ogni dipendente ha una sola data di assunzione}
+			
+			\item \texttt{Stipendio}: 2500.00 \\
+			\textit{Ogni dipendente ha un solo stipendio corrente}
+			
+			\item \texttt{Reparto}: "Amministrazione" \\
+			\textit{Ogni dipendente appartiene a un solo reparto}
+		\end{itemize}
+	\end{tcolorbox}
+	
+	\section{Attributi Multivalore}
+	
+	\subsection{Definizione}
+	Un \textbf{attributo multivalore} è un attributo che può assumere più valori contemporaneamente per la stessa istanza dell'entità. Rappresenta un insieme di valori per una singola proprietà.
+	
+	\subsection{Caratteristiche}
+	\begin{itemize}
+		\item Possono avere zero, uno o più valori
+		\item Hanno cardinalità (0,n) o (1,n)
+		\item Richiedono attenzione particolare nella normalizzazione
+		\item Nel diagramma E-R sono rappresentati con doppia ellisse
+	\end{itemize}
+	
+	\subsection{Esempi Pratici}
+	
+	\begin{tcolorbox}[colback=primarycolor!10,colframe=primarycolor!80,title=Esempio 1: Entità PERSONA]
+		\textbf{Attributo multivalore:} \texttt{NumeriTelefono}
+		
+		\textbf{Valori possibili per Mario Rossi:}
+		\begin{itemize}
+			\item "0736-123456" (telefono fisso)
+			\item "333-1234567" (cellulare personale)
+			\item "348-7654321" (cellulare lavoro)
+		\end{itemize}
+		
+		\textit{Una persona può avere più numeri di telefono}
+	\end{tcolorbox}
+	
+	\begin{tcolorbox}[colback=primarycolor!10,colframe=primarycolor!80,title=Esempio 2: Entità LIBRO]
+		\textbf{Attributo multivalore:} \texttt{Autori}
+		
+		\textbf{Valori per "Fondamenti di Database":}
+		\begin{itemize}
+			\item "Elmasri, Ramez"
+			\item "Navathe, Shamkant"
+		\end{itemize}
+		
+		\textit{Un libro può avere più autori}
+	\end{tcolorbox}
+	
+	\begin{tcolorbox}[colback=primarycolor!10,colframe=primarycolor!80,title=Esempio 3: Entità STUDENTE]
+		\textbf{Attributo multivalore:} \texttt{LingueStraniere}
+		
+		\textbf{Valori per uno studente:}
+		\begin{itemize}
+			\item "Inglese"
+			\item "Francese"
+			\item "Spagnolo"
+		\end{itemize}
+		
+		\textit{Uno studente può conoscere più lingue straniere}
+	\end{tcolorbox}
+	
+	\subsection{Considerazioni sulla Normalizzazione}
+	
+	Gli attributi multivalore violano la Prima Forma Normale (1NF). Durante la trasformazione in modello relazionale, vanno trattati creando:
+	\begin{enumerate}
+		\item Una tabella separata per l'attributo multivalore
+		\item Una relazione uno-a-molti tra l'entità principale e la nuova tabella
+	\end{enumerate}
+	
+	\textbf{Esempio di trasformazione:}
+	
+	\textit{Modello E-R:}
+	\begin{verbatim}
+		PERSONA(CodiceFiscale, Nome, Cognome, {NumeriTelefono})
+	\end{verbatim}
+	
+	\textit{Modello Relazionale normalizzato:}
+	\begin{verbatim}
+		PERSONA(CodiceFiscale, Nome, Cognome)
+		TELEFONO(CodiceFiscale*, NumeroTelefono)
+	\end{verbatim}
+	
+	\section{Attributi Calcolati (Derivati)}
+	
+	\subsection{Definizione}
+	Un \textbf{attributo calcolato} (o derivato) è un attributo il cui valore può essere ricavato da altri attributi presenti nel database, mediante un'operazione o calcolo. Il valore non viene memorizzato fisicamente ma calcolato quando necessario.
+	
+	\subsection{Caratteristiche}
+	\begin{itemize}
+		\item Il valore è derivato da altri attributi
+		\item Non dovrebbero essere memorizzati nel database (ridondanza)
+		\item Sono indicati con ellisse tratteggiata nel diagramma E-R
+		\item Possono essere calcolati mediante query o viste
+	\end{itemize}
+	
+	\subsection{Esempi Pratici}
+	
+	\begin{tcolorbox}[colback=green!10,colframe=green!60,title=Esempio 1: PERSONA - Età]
+		\textbf{Attributo calcolato:} \texttt{Età}
+		
+		\textbf{Attributo base:} \texttt{DataNascita} = "15/03/2005"
+		
+		\textbf{Calcolo:}
+		\begin{verbatim}
+			Età = AnnoCorrente - AnnoNascita
+			Età = 2024 - 2005 = 19 anni
+		\end{verbatim}
+		
+		\textit{L'età cambia automaticamente ogni anno e dipende dalla data di nascita}
+	\end{tcolorbox}
+	
+	\begin{tcolorbox}[colback=green!10,colframe=green!60,title=Esempio 2: ORDINE - Totale]
+		\textbf{Attributo calcolato:} \texttt{TotaleOrdine}
+		
+		\textbf{Attributi base:}
+		\begin{itemize}
+			\item Prodotti nell'ordine con Quantità e PrezzoUnitario
+		\end{itemize}
+		
+		\textbf{Calcolo:}
+		\begin{verbatim}
+			TotaleOrdine = Somma(Quantità × PrezzoUnitario)
+			
+			Esempio:
+			- Prodotto A: 2 × 10.00 = 20.00
+			- Prodotto B: 1 × 35.00 = 35.00
+			- Prodotto C: 3 × 8.50 = 25.50
+			TotaleOrdine = 80.50 €
+		\end{verbatim}
+	\end{tcolorbox}
+	
+	\begin{tcolorbox}[colback=green!10,colframe=green!60,title=Esempio 3: STUDENTE - Media Voti]
+		\textbf{Attributo calcolato:} \texttt{MediaVoti}
+		
+		\textbf{Attributi base:} Voti degli esami sostenuti
+		
+		\textbf{Calcolo:}
+		\begin{verbatim}
+			MediaVoti = Somma(Voti) / NumeroEsami
+			
+			Esempio:
+			Voti: 28, 30, 27, 25, 29, 30
+			MediaVoti = (28+30+27+25+29+30) / 6 = 28.17
+		\end{verbatim}
+	\end{tcolorbox}
+	
+	\begin{tcolorbox}[colback=green!10,colframe=green!60,title=Esempio 4: DIPENDENTE - Anzianità]
+		\textbf{Attributo calcolato:} \texttt{AnniServizio}
+		
+		\textbf{Attributo base:} \texttt{DataAssunzione} = "01/09/2015"
+		
+		\textbf{Calcolo:}
+		\begin{verbatim}
+			AnniServizio = DataCorrente - DataAssunzione
+			AnniServizio = 2024 - 2015 = 9 anni
+		\end{verbatim}
+	\end{tcolorbox}
+	
+	\begin{tcolorbox}[colback=green!10,colframe=green!60,title=Esempio 5: RETTANGOLO - Area]
+		\textbf{Attributo calcolato:} \texttt{Area}
+		
+		\textbf{Attributi base:}
+		\begin{itemize}
+			\item \texttt{Base} = 10 cm
+			\item \texttt{Altezza} = 5 cm
+		\end{itemize}
+		
+		\textbf{Calcolo:}
+		\begin{verbatim}
+			Area = Base × Altezza
+			Area = 10 × 5 = 50 cm²
+		\end{verbatim}
+	\end{tcolorbox}
+	
+	\subsection{Vantaggi e Svantaggi}
+	
+	\textbf{Vantaggi del non memorizzare:}
+	\begin{itemize}
+		\item Evita ridondanza dei dati
+		\item Garantisce sempre valori aggiornati
+		\item Riduce lo spazio di archiviazione
+		\item Elimina problemi di inconsistenza
+	\end{itemize}
+	
+	\textbf{Quando considerare la memorizzazione:}
+	\begin{itemize}
+		\item Calcoli molto complessi o costosi
+		\item Valori storici da preservare (es: età al momento dell'iscrizione)
+		\item Necessità di elevate performance
+		\item Dati che raramente cambiano
+	\end{itemize}
+	
+	\section{Tabella Riepilogativa}
+	
+	\begin{table}[h]
+		\centering
+		\begin{tabular}{|l|p{10cm}|}
+			\hline
+			\textbf{Tipo} & \textbf{Caratteristiche Principali} \\
+			\hline
+			\textbf{Semplice} & Valore atomico, indivisibile (es: Nome, Prezzo) \\
+			\hline
+			\textbf{Composto} & Suddivisibile in sotto-attributi (es: Indirizzo, NomeCompleto) \\
+			\hline
+			\textbf{Monovalore} & Un solo valore per istanza (es: CodiceFiscale, DataNascita) \\
+			\hline
+			\textbf{Multivalore} & Più valori per istanza (es: NumeriTelefono, Lingue) \\
+			\hline
+			\textbf{Calcolato} & Derivato da altri attributi (es: Età, TotaleOrdine) \\
+			\hline
+		\end{tabular}
+		\caption{Confronto tra tipologie di attributi}
+	\end{table}
+	
+	\section{Esempi Combinati}
+	
+	Un attributo può appartenere a più categorie contemporaneamente:
+	
+	\begin{tcolorbox}[colback=yellow!10,colframe=orange!80,title=Esempio Complesso: Entità DIPENDENTE]
+		\textbf{Attributi con classificazione multipla:}
+		
+		\begin{itemize}
+			\item \texttt{CodiceFiscale}: \textit{Semplice + Monovalore}
+			\item \texttt{Indirizzo}: \textit{Composto + Monovalore}
+			\item \texttt{NumeriTelefono}: \textit{Semplice + Multivalore}
+			\item \texttt{NomeCompleto}: \textit{Composto + Monovalore}
+			\item \texttt{Età}: \textit{Semplice + Monovalore + Calcolato}
+			\item \texttt{Competenze}: \textit{Semplice + Multivalore}
+		\end{itemize}
+	\end{tcolorbox}
+	
+	\section{Esercizi}
+	
+	\subsection{Esercizio 1: Classificazione}
+	Classifica i seguenti attributi dell'entità \texttt{VEICOLO}:
+	\begin{enumerate}
+		\item Targa
+		\item Proprietario (Nome, Cognome, CodiceFiscale)
+		\item AnnoImmatricolazione
+		\item EtàVeicolo
+		\item Colori (un veicolo può essere bicolore)
+	\end{enumerate}
+	
+	\subsection{Esercizio 2: Progettazione}
+	Progetta gli attributi per un'entità \texttt{CORSO\_UNIVERSITARIO}, identificando:
+	\begin{itemize}
+		\item Almeno 2 attributi semplici
+		\item Almeno 1 attributo composto
+		\item Almeno 1 attributo multivalore
+		\item Almeno 1 attributo calcolato
+	\end{itemize}
+	
+	\subsection{Esercizio 3: Normalizzazione}
+	Dato lo schema:
+	\begin{verbatim}
+		CLIENTE(ID, Nome, Cognome, {Email}, Indirizzo, NumeroOrdini)
+	\end{verbatim}
+	
+	Identifica gli attributi problematici e proponi una normalizzazione.
+	
+	\section{Conclusioni}
+	
+	La corretta identificazione e classificazione degli attributi è fondamentale per:
+	\begin{itemize}
+		\item Una progettazione database efficiente
+		\item La normalizzazione corretta delle tabelle
+		\item L'ottimizzazione delle performance
+		\item La manutenibilità del sistema
+	\end{itemize}
+	
+	Ricorda sempre di analizzare il dominio applicativo per scegliere la tipologia di attributo più appropriata per ogni informazione da rappresentare.
+	
+\end{document}

@@ -1,0 +1,722 @@
+\documentclass[aspectratio=169]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{booktabs}
+\usepackage{xcolor}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+
+\title{SQL - DDL (Data Definition Language)}
+\subtitle{Linguaggio di Definizione dei Dati}
+\author{Prof. Fedeli Massimo - Tutti i diritti riservati}
+\institute{Fabbrica Digitale}
+\date{\today}
+
+\begin{document}
+	
+	\frame{\titlepage}
+	
+	\begin{frame}{Indice}
+		\tableofcontents
+	\end{frame}
+	
+	\section{Introduzione a SQL}
+	
+	\begin{frame}{SQL e DBMS}
+		\begin{itemize}
+			\item \textbf{DBMS} $\rightarrow$ ``strato software'' che si frappone fra l'utente e i dati veri e propri presenti nel database
+			\item Permette di gestirli e organizzarli
+			\item Tramite il DBMS utente e applicazioni \textbf{non} accedono direttamente al supporto fisico dove sono memorizzati i dati
+			\item I dati vengono ``visti'' attraverso la loro \textbf{rappresentazione logica} (modello logico)
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}{Astrazione e Virtualizzazione}
+		\begin{itemize}
+			\item Se nel ciclo di vita di un sistema informativo vengono sostituiti gli archivi fisici anche modificando la struttura dei file
+			\item Ma mantenendo lo stesso \textcolor{blue}{schema logico}
+			\item Le applicazioni non necessitano di interventi
+			\item In quanto agiscono a uno strato superiore di virtualizzazione
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}{Schema del Database}
+		La rappresentazione logica viene anche chiamata:
+		\begin{itemize}
+			\item ``schema del database''
+			\item L'utente del database può interagire con esso solo tramite questa rappresentazione dei dati
+			\item Direttamente utilizzando gli strumenti grafici messi a disposizione dal DBMS
+			\item Mediante appositi linguaggi di programmazione (\textbf{SQL})
+		\end{itemize}
+	\end{frame}
+	
+	\section{Interfacce Grafiche}
+	
+	\begin{frame}{Interfacce Grafiche dei DBMS}
+		La maggior parte dei moderni DBMS offre all'utente un'interfaccia grafica che semplifica le operazioni di:
+		\begin{itemize}
+			\item Creazione delle tabelle
+			\item Definizione dei vincoli
+			\item Interrogazione per individuare istanze ed estrarre elenchi
+			\item Definizione e aggiornamento dei dati
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}{MySQL e phpMyAdmin}
+		\textbf{MySQL} è il database \textcolor{red}{open source} più popolare al mondo:
+		\begin{itemize}
+			\item Fornisce la soluzione a ogni tipo di applicazione
+			\item Database scalabile in rete e ad alte prestazioni
+			\item Mette a disposizione dell'utente un'interfaccia grafica (\textcolor{blue}{phpMyAdmin})
+			\item Consente di definire le tabelle
+			\item Importare ed esportare i dati in molteplici formati senza scrivere alcuna riga di codice
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}{DBMS - Integrazione}
+		\begin{itemize}
+			\item È ``ospitato'' all'interno di Apache, il Web server più utilizzato nel Web
+			\item Integrato in svariati prodotti (XAMPP, WAMP, LAMP, ecc.)
+			\item Disponibili altri prodotti free per la sua gestione:
+			\begin{itemize}
+				\item HeidiSQL
+				\item MariaDB
+			\end{itemize}
+			\item Offrono ulteriori possibilità sia per l'amministrazione che per la gestione dei dati
+		\end{itemize}
+	\end{frame}
+	
+	\section{Il Linguaggio SQL}
+	
+	\begin{frame}{SQL - Structured Query Language}
+		\begin{itemize}
+			\item Il linguaggio SQL (Structured Query Language) consente di interagire con i dati presenti nelle basi di dati
+			\item Se utilizzato da solo, l'SQL non permette di programmare un'intera applicazione
+			\item SQL \textbf{non è computazionalmente completo}, dato che non ha nel suo set di istruzioni le tre strutture fondamentali
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}{Sottolinguaggi di SQL - DDL}
+		SQL può essere suddiviso in quattro sotto linguaggi:
+		
+		\textbf{DDL - Data Definition Language} (Linguaggio di definizione dei dati)
+		\begin{itemize}
+			\item È la parte del linguaggio SQL che comprende tutti i comandi preposti alla creazione di tabelle
+			\item Definizione dei dati in esse contenuti
+			\item Si definiscono/modificano le strutture delle relazioni dello schema della base di dati (\textcolor{blue}{livello intensionale})
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}{Sottolinguaggi di SQL - DML}
+		\textbf{DML - Data Manipulation Language}
+		\begin{itemize}
+			\item È la parte del linguaggio contenente tutti i comandi per la \textcolor{red}{modifica dei dati} contenuti nelle tabelle
+			\item In termini di:
+			\begin{itemize}
+				\item Aggiunta
+				\item Eliminazione
+				\item Modifica
+				\item Aggiornamento dei dati
+			\end{itemize}
+			\item Livello \textcolor{blue}{estensionale}
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}{Sottolinguaggi di SQL - DCL}
+		\textbf{DCL - Data Control Language}
+		\begin{itemize}
+			\item Appartengono a questa sezione di SQL tutti i comandi che rendono possibile la \textcolor{blue}{gestione dei permessi di accesso} alle risorse del database
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}{Sottolinguaggi di SQL - QL}
+		\textbf{QL - Query Language}
+		\begin{itemize}
+			\item Rappresenta il fulcro di quasi tutte le attività legate ai database
+			\item I comandi appartenenti a questa sezione di SQL consentono:
+			\begin{itemize}
+				\item L'interrogazione
+				\item Il raggruppamento
+				\item Il conteggio
+				\item L'ottenimento di prospetti personalizzati dei dati presenti nelle varie tabelle dei database
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}{SQL - Linguaggio Dichiarativo}
+		Il linguaggio SQL è un \textbf{linguaggio dichiarativo}:
+		\begin{itemize}
+			\item Si pone a un livello di astrazione superiore rispetto ai linguaggi di programmazione tradizionali
+			\item Utilizzabile in modalità interattiva oppure compilata
+			\item Molte possibilità di utilizzo:
+			\begin{itemize}
+				\item Linguaggi testuali interattivi (SQL)
+				\item Comandi simili a quelli interattivi ``immersi'' in un linguaggio ospite (COBOL, Java, C, ...)
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+	
+	\section{Creazione di Tabelle}
+	
+	\begin{frame}[fragile]{CREATE TABLE - Sintassi}
+		La creazione di una nuova relazione (tabella) viene effettuata in linguaggio SQL mediante il costrutto:
+		
+		\begin{verbatim}
+			CREATE TABLE nomeTabella
+			(
+			nomeAttributo1 tipo [valoreDefault] [vincoli],
+			nomeAttributo2 tipo [valoreDefault] [vincoli],
+			...
+			);
+		\end{verbatim}
+		
+		Per ciascun attributo si deve indicare:
+		\begin{itemize}
+			\item Il nome e il suo dominio
+			\item Facoltativamente: valore di default e vincoli
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}[fragile]{Esempio CREATE TABLE}
+		Vogliamo creare nel database \texttt{scuola} una tabella \texttt{studenti} per memorizzare:
+		\begin{itemize}
+			\item Nome e cognome dell'alunno
+			\item Matricola
+			\item Indirizzo
+		\end{itemize}
+		
+		\begin{verbatim}
+			CREATE TABLE studenti(
+			matricola CHAR(4) PRIMARY KEY,
+			nome CHAR(40),
+			indirizzo CHAR(80)
+			);
+		\end{verbatim}
+	\end{frame}
+	
+	\section{Tipi di Dati}
+	
+	\begin{frame}{Domini e Tipi di Dati}
+		Il dominio di un attributo è l'insieme dei valori che possono essere presenti in una colonna:
+		\begin{itemize}
+			\item \textbf{Standard}: definito implicitamente dal linguaggio come per il tipo di dato dei linguaggi di programmazione
+			\item \textbf{Definiti dall'utente}: semplici, ma riutilizzabili
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}{Categorie di Tipi di Dati}
+		I principali tipi di dati disponibili sono raggruppati in cinque categorie:
+		\begin{enumerate}
+			\item Numerici
+			\item Stringhe di caratteri
+			\item Stringhe di bit
+			\item Date
+			\item Booleani
+			\item Immagini
+		\end{enumerate}
+	\end{frame}
+	
+	\begin{frame}{Dati Numerici Interi}
+		I dati numerici sono di due tipi, con e senza decimali:
+		
+		\textbf{Numeri interi}: possono essere di dimensioni differenti
+		\begin{itemize}
+			\item \texttt{INTEGER, INT, SMALLINT, BIGINT}
+			\item È possibile indicare l'assenza di segno con la clausola \texttt{UNSIGNED}
+		\end{itemize}
+		
+		\textbf{Numeri reali con dimensionamento fisso}:
+		\begin{itemize}
+			\item \texttt{NUMERIC(n,d)} oppure \texttt{DECIMAL(n,d)}
+			\item n = numero di cifre totali
+			\item d = cifre decimali
+		\end{itemize}
+		
+		Esempio: \texttt{NUMERIC(4.2)} → numeri reali tra -99.99 e +99.99
+	\end{frame}
+	
+	\begin{frame}{Dati Numerici Reali}
+		\textbf{Numeri reali a virgola mobile}:
+		\begin{itemize}
+			\item \texttt{FLOAT} oppure \texttt{REAL} (precisione singola)
+			\item \texttt{DOUBLE} (precisione doppia)
+		\end{itemize}
+		
+		\vspace{0.5cm}
+		
+		In alcune versioni di SQL è possibile definire la dimensione della mantissa e dell'esponente:
+		\begin{itemize}
+			\item \texttt{FLOAT (5,2)} → mantissa 5 cifre frazionarie, esponente 2 cifre intere
+			\item \texttt{DOUBLE (8.4)} → mantissa 8 cifre frazionarie, esponente 4 cifre intere
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}{Chiavi Artificiali - AUTO\_INCREMENT}
+		Per i numeri interi l'aggiunta della keyword \texttt{AUTO\_INCREMENT} consente di creare dei campi numerici che si autoincrementano a ogni nuovo inserimento nella tabella.
+		
+		\vspace{0.5cm}
+		
+		Particolarmente utilizzati nelle \textcolor{red}{chiavi artificiali}:
+		\begin{itemize}
+			\item \texttt{INTEGER AUTO\_INCREMENT}
+			\item \texttt{SMALLINT AUTO\_INCREMENT}
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}{Stringhe di Caratteri}
+		Le stringhe di caratteri possono essere di lunghezza fissa oppure variabile:
+		
+		\vspace{0.3cm}
+		
+		\texttt{CHAR(n)}: definisce attributi con lunghezza fissa di n caratteri
+		\begin{itemize}
+			\item Occupa sempre una quantità fissa di spazio
+			\item Indipendentemente dalla lunghezza effettiva della stringa
+		\end{itemize}
+		
+		\vspace{0.3cm}
+		
+		\texttt{VARCHAR(n)}: definisce attributi con lunghezza variabile con un numero massimo n di caratteri
+		\begin{itemize}
+			\item Occupa solo lo spazio necessario per la lunghezza effettiva della stringa
+			\item Nel tipo VARCHAR l'occupazione totale di memoria richiede un byte aggiuntivo utilizzato dal DBMS come prefisso
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}{Stringhe di Bit}
+		Le stringhe di bit possono essere di lunghezza fissa oppure variabile, con dimensione minima di un bit:
+		
+		\begin{itemize}
+			\item \texttt{BIT(n)}: definisce attributi con lunghezza fissa di n bit
+			\item \texttt{BIT VARYING(n)}: definisce attributi con lunghezza variabile con un numero massimo n di bit
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}{Data e Ora}
+		Possono essere di differenti tipi e complessità:
+		
+		\begin{itemize}
+			\item \texttt{DATE}: ha 10 posizioni composta da tre parti, con componenti '\texttt{AAAA-MM-GG}'
+			\item \texttt{TIME}: ha almeno 8 posizioni strutturato con componenti '\texttt{hh:mm:ss}'
+			\item \texttt{TIMESTAMP}: comprende entrambi, con componenti '\texttt{AAAAMMGGhhmmss}'
+			\begin{itemize}
+				\item Estremamente importante per aggiungere le marche temporali
+				\item Fondamentali per tutti i record che richiedono una validazione con data certa
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}{Gestione Date}
+		\begin{itemize}
+			\item Il DBMS provvede automaticamente alla validazione delle date
+			\item Accetta solo valori coerenti in base alla durata dei singoli mesi
+			\item Riconoscendo gli anni bisestili tramite un calendario perpetuo
+			\item Sono definite un insieme di funzioni che permettono l'agevole gestione di questi tipi di dati
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}{Boolean e BLOB}
+		\textbf{Domini e tipi di dati: booleani (introdotti in SQL-3)}
+		
+		Anche se si potevano implementare attributi booleani semplicemente con stringhe di bit di lunghezza unitaria, SQL-3 ha introdotto come tipo semplice il \texttt{BOOLEAN}, che può assumere i valori \texttt{TRUE} e \texttt{FALSE}.
+		
+		\vspace{0.5cm}
+		
+		\textbf{Domini tipi di dati per documenti di grandi dimensioni (SQL-3)}
+		
+		Introdotti per rappresentare oggetti di grandi dimensioni costituiti da una sequenza arbitraria di valori binari o di caratteri:
+		\begin{itemize}
+			\item \texttt{BLOB} (binary large object)
+			\item \texttt{CLOB} (character large object)
+		\end{itemize}
+	\end{frame}
+	
+	\section{Vincoli di Base}
+	
+	\begin{frame}{Vincoli Intrarelazionali}
+		Con la creazione della tabella è possibile completare la definizione degli attributi aggiungendo alcune caratteristiche essenziali per la corretta memorizzazione dei dati:
+		\begin{itemize}
+			\item Vincoli di chiave
+			\item Vincoli di integrità referenziale (intrarelazionali)
+		\end{itemize}
+		
+		\vspace{0.5cm}
+		
+		I \textbf{vincoli intrarelazionali} sono quelli esistenti sui campi di un'unica relazione e devono essere rispettati da tutte le istanze di quel dominio o attributo.
+	\end{frame}
+	
+	\begin{frame}{Valori di Default e NULL}
+		Per ciascun attributo è possibile indicare quale deve essere il suo valore di \texttt{DEFAULT}:
+		\begin{itemize}
+			\item Può essere sia un valore qualunque del suo dominio
+			\item Sia il valore \texttt{NOT NULL}
+			\item Dove non specificato il valore di default è \texttt{NULL}
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}[fragile]{Esempio DEFAULT e AUTO\_INCREMENT}
+		\begin{verbatim}
+			CREATE TABLE interrogazioni(
+			ID_interrogazione INT NOT NULL AUTO_INCREMENT,
+			id_alunno INT NOT NULL,
+			data_interrogazione DATE,
+			voto INT DEFAULT 1
+			)
+		\end{verbatim}
+		
+		\begin{itemize}
+			\item \texttt{ID\_Interrogazione} $\rightarrow$ Intero, not null, si autoincrementa
+			\item \texttt{voto} $\rightarrow$ intero con valore di default 1
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}[fragile]{Vincolo CHECK}
+		È possibile limitare i valori per ogni attributo usando la clausola \texttt{CHECK}:
+		
+		\begin{verbatim}
+			CREATE TABLE interrogazioni(
+			ID_interrogazione INT NOT NULL AUTO_INCREMENT,
+			id_alunno INT DEFAULT NOT NULL,
+			data_interrogazione DATE,
+			voto INT DEFAULT 1 CHECK (VALUE >= 1 AND value <= 10)
+			)
+		\end{verbatim}
+		
+		Il voto deve essere compreso tra 1 e 10.
+	\end{frame}
+	
+	\section{Chiavi Primarie}
+	
+	\begin{frame}[fragile]{Primary Key - Un Attributo}
+		L'indicazione della chiave primaria viene effettuata con la clausola \texttt{PRIMARY KEY (PK)}:
+		
+		\begin{verbatim}
+			CREATE TABLE interrogazioni(
+			ID_interrogazione INT NOT NULL AUTO_INCREMENT 
+			PRIMARY KEY,
+			id_studente CHAR(20),
+			id_materia INT,
+			data_interrogazione DATE,
+			voto INT DEFAULT 1 CHECK (voto >= 1 AND voto <= 10)
+			)
+		\end{verbatim}
+	\end{frame}
+	
+	\begin{frame}[fragile]{Primary Key - Chiave Composta}
+		A differenza di \texttt{UNIQUE} e \texttt{NOT NULL} che possono essere definiti su più attributi della stessa tabella, il vincolo \texttt{PRIMARY KEY} deve essere unico nella tabella.
+		
+		Nel caso di chiave composta da più attributi si utilizza la seguente notazione:
+		
+		\begin{verbatim}
+			CREATE TABLE interrogazioni(
+			id_studente CHAR(20),
+			id_materia INT,
+			data_interrogazione DATE,
+			voto INT DEFAULT 1 CHECK (voto >= 1 AND voto <= 10),
+			PRIMARY KEY(id_studente, id_materia, data_interrogazione)
+			)
+		\end{verbatim}
+		
+		Per gli attributi che fanno parte della chiave primaria il vincolo \texttt{NOT NULL} è implicito.
+	\end{frame}
+	
+	\begin{frame}[fragile]{Aggiunta Primary Key a Tabella Esistente}
+		È possibile aggiungere in un secondo tempo il vincolo di chiave primaria su uno o più campi mediante la clausola di modifica \texttt{ALTER}:
+		
+		\begin{verbatim}
+			ALTER TABLE dipartimenti 
+			ADD PRIMARY KEY(nome_dipartimento)
+		\end{verbatim}
+	\end{frame}
+	
+	\begin{frame}[fragile]{Aggiunta Attributo a Tabella Esistente}
+		Con la stessa clausola possiamo aggiungere attributi a una tabella:
+		
+		\begin{verbatim}
+			ALTER TABLE docenti ADD data_nascita DATE
+		\end{verbatim}
+		
+		\vspace{0.5cm}
+		
+		\begin{alertblock}{Attenzione}
+			Lasciamo al lettore verificare la correttezza delle istruzioni nei diversi database in quanto, pur essendo uno standard, le istruzioni spesso non sono completamente compatibili e hanno lievi differenze sintattiche.
+			
+			Per esempio, Access non permette di specificare la dimensione del campo numerico e con \texttt{NUMERIC} indica il reale a doppia precisione.
+		\end{alertblock}
+	\end{frame}
+	
+	\section{Vincolo UNIQUE}
+	
+	\begin{frame}{Il Vincolo di Unicità UNIQUE}
+		\begin{itemize}
+			\item Per dichiarare una o più colonne i cui valori devono essere necessariamente distinti all'interno di una tabella SQL prevede il vincolo \texttt{UNIQUE}
+			\item La clausola unique si applica ad un attributo o un insieme di attributi di una tabella e impone che i valori dell'attributo siano una superchiave
+			\item Viene fatta eccezione per il valore \texttt{NULL}, il quale può comparire su diverse righe senza violare il vincolo
+			\item In una tabella è possibile specificare più chiavi \texttt{UNIQUE} ma una sola \texttt{PRIMARY KEY}
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}[fragile]{UNIQUE - Esempio 1}
+		\begin{verbatim}
+			CREATE TABLE Studenti (
+			ID INT PRIMARY KEY,
+			Nome VARCHAR(50),
+			Cognome VARCHAR(50),
+			DataNascita DATE,
+			UNIQUE(Nome, Cognome)
+			);
+		\end{verbatim}
+		
+		Le coppie Nome e Cognome devono avere sempre valori diversi.
+	\end{frame}
+	
+	\begin{frame}[fragile]{UNIQUE - Esempio 2}
+		\begin{verbatim}
+			CREATE TABLE Studenti (
+			ID INT PRIMARY KEY,
+			Nome VARCHAR(50) UNIQUE,
+			Cognome VARCHAR(50) UNIQUE,
+			DataNascita DATE
+			);
+		\end{verbatim}
+		
+		In questo caso si impone che nome e cognome singolarmente abbiano sempre valori diversi.
+	\end{frame}
+	
+	\section{Chiavi Esterne (Foreign Key)}
+	
+	\begin{frame}{Vincoli Interrelazionali - Foreign Key}
+		I vincoli interrelazionali sono quelli esistenti tra due differenti tabelle (relazioni) e riguardano le chiavi esterne.
+		
+		Due tabelle (relazioni) si chiamano rispettivamente:
+		\begin{itemize}
+			\item \textbf{Esterna}: tabella contenente l'insieme delle chiavi, dove è definito l'attributo
+			\begin{itemize}
+				\item Tabella che ha esistenza propria (es. anagrafica dipendenti)
+			\end{itemize}
+			\item \textbf{Interna}: tabella contenente la chiave Foreign Key di collegamento alla tabella esterna, che prende appunto il nome di chiave esterna
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}{Foreign Key - Definizione}
+		\begin{itemize}
+			\item La Foreign Key crea un legame tra i valori di un attributo della tabella interna e i valori di un attributo di un'altra tabella esterna
+			\item Il vincolo impone che per ogni riga della tabella, il valore dell'attributo specificato, se diverso dal valore nullo, sia presente nelle righe della tabella esterna (principale)
+			\item L'unico requisito che la sintassi impone è che l'attributo cui si fa riferimento nella tabella esterna sia soggetto a un vincolo \texttt{UNIQUE}
+			\item Tipicamente l'attributo della tabella esterna fa parte della chiave primaria
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}{Foreign Key - Notazioni}
+		Ci sono due notazioni che permettono di definire questo vincolo e utilizzano le clausole \texttt{REFERENCES} e \texttt{FOREIGN KEY}:
+		\begin{itemize}
+			\item A seconda del caso, il vincolo di integrità referenziale riguarda uno o più di un attributo delle tabelle interne
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}[fragile]{Foreign Key - Esempio 1}
+		Mettiamo in relazione i \textbf{dipartimenti} (tabella interna) con i \textbf{docenti} (esterna):
+		
+		\begin{verbatim}
+			CREATE TABLE dipartimenti(
+			nome_dipartimento CHAR(15) PRIMARY KEY
+			)
+		\end{verbatim}
+		
+		\begin{verbatim}
+			CREATE TABLE docenti(
+			ID_docente INT NOT NULL PRIMARY KEY,
+			nome CHAR(20) NOT NULL,
+			cognome CHAR(20) NOT NULL,
+			dipartimento CHAR(15) 
+			REFERENCES dipartimenti(nome_dipartimento)
+			)
+		\end{verbatim}
+	\end{frame}
+	
+	\begin{frame}[fragile]{Foreign Key - Esempio 2 (Chiave Composta)}
+		Relazione tra \textbf{studenti} (interna) e \textbf{corsi} (esterna):
+		
+		\begin{verbatim}
+			CREATE TABLE corsi(
+			classe INT,
+			sezione CHAR(4),
+			nome_corso CHAR(25),
+			PRIMARY KEY(classe, sezione)
+			)
+		\end{verbatim}
+		
+		\begin{verbatim}
+			CREATE TABLE studenti(
+			matricola CHAR(20) PRIMARY KEY,
+			nome VARCHAR(20), cognome VARCHAR(20),
+			data_nascita DATE,
+			classe INT, sez CHAR(4),
+			FOREIGN KEY(classe, sez) 
+			REFERENCES corsi(classe, sez)
+			)
+		\end{verbatim}
+	\end{frame}
+	
+	\section{Operazioni su Foreign Key}
+	
+	\begin{frame}{Cancellazione e Modifica con FK}
+		Nel ciclo di vita del database potrebbero essere effettuate azioni sui dati di una tabella esterna:
+		\begin{itemize}
+			\item I dati potrebbero essere modificati (\texttt{UPDATE})
+			\item Potrebbe essere cancellato l'intero record (\texttt{DELETE})
+		\end{itemize}
+		
+		\vspace{0.5cm}
+		
+		\textbf{Esempio}: Se venisse cancellato il dipartimento di fisica, quale conseguenza ne deriverebbe per la chiave esterna presente nella tabella docenti?
+	\end{frame}
+	
+	\begin{frame}{Operazioni Alternative}
+		Nel DBMS è possibile impostare un'operazione alternativa da effettuare in caso di violazione del vincolo di integrità referenziale nella tabella interna:
+		
+		\begin{itemize}
+			\item \texttt{SET NULL}: pone uguale a NULL la chiave esterna
+			\item \texttt{CASCADE}: esegue la medesima operazione (UPDATE/DELETE) sui record connessi
+			\item \texttt{SET DEFAULT}: ripristina i valori di default
+			\item \texttt{NO ACTION}: nessuna azione
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}[fragile]{Esempio con Operazioni Alternative}
+		\begin{verbatim}
+			CREATE TABLE docenti(
+			ID_docente INT NOT NULL PRIMARY KEY,
+			nome CHAR(20) NOT NULL,
+			cognome CHAR(20) NOT NULL,
+			dipartimento CHAR(15) 
+			REFERENCES dipartimenti(nome_dipartimento)
+			ON DELETE SET DEFAULT 
+			ON UPDATE CASCADE
+			)
+		\end{verbatim}
+	\end{frame}
+	
+	\begin{frame}[fragile]{Esempio Studenti con FK}
+		\begin{verbatim}
+			CREATE TABLE studenti(
+			matricola CHAR(20) PRIMARY KEY,
+			nome VARCHAR(20),
+			cognome VARCHAR(20),
+			data_nascita DATE,
+			classe INT,
+			sez CHAR(4),
+			FOREIGN KEY(classe, sez) 
+			REFERENCES corsi(classe, sez)
+			ON DELETE SET DEFAULT 
+			ON UPDATE SET DEFAULT
+			)
+		\end{verbatim}
+	\end{frame}
+	
+	\begin{frame}{Cancellazione con SET NULL}
+		\textbf{A) Cancellazione con vincolo SET NULL}
+		
+		Effettuando la cancellazione del record \textit{Fisica} nella tabella \textit{dipartimenti} automaticamente il DBMS provvede ad aggiornare tutti i riferimenti a esso presenti nelle chiavi esterne sostituendo in essi il valore \texttt{NULL}.
+	\end{frame}
+	
+	\begin{frame}{Cancellazione/Modifica con CASCADE}
+		\textbf{B) Cancellazione/modifica con vincolo CASCADE}
+		
+		In questo caso effettuando la cancellazione del record \textit{Fisica} nella tabella \textit{dipartimenti} automaticamente il DBMS provvede a cancellare tutti i record che hanno una chiave esterna che contiene il valore rimosso.
+		
+		\vspace{0.5cm}
+		
+		Analogamente, se venisse modificato un valore nella chiave della tabella esterna, la stessa modifica verrebbe effettuata in tutte le sue occorrenze.
+	\end{frame}
+	
+	\begin{frame}{Cancellazione con SET DEFAULT}
+		\textbf{C) Cancellazione con vincolo SET DEFAULT}
+		
+		Effettuando la cancellazione del record \textit{Fisica} nella tabella \textit{dipartimenti}, il DBMS provvede a inserire in tutti i record che hanno una chiave esterna che contiene il valore rimosso un valore definito all'atto della creazione della tabella:
+		\begin{itemize}
+			\item Per gli attributi alfanumerici spesso è il campo vuoto, cioè ``''
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}{Cancellazione con NO ACTION}
+		\textbf{D) Cancellazione con vincolo NO ACTION}
+		
+		In questo caso non vengono fatti controlli sulle altre tabelle, lasciandole invariate, quindi la cancellazione del record \textit{Fisica} nella tabella \textit{dipartimenti} non provoca modifiche nella tabella interna.
+	\end{frame}
+	
+	\begin{frame}{Riepilogo Operazioni su FK}
+		Le opzioni \texttt{ON DELETE} e \texttt{ON UPDATE} impongono ai DBMS le azioni seguenti:
+		
+		\begin{center}
+			\begin{tabular}{ll}
+				\toprule
+				\textbf{Opzione} & \textbf{Azione} \\
+				\midrule
+				CASCADE & Propagare in ``cascata'' (CASCADE) le cancellazioni \\
+				& (DELETE) oppure le modifiche (UPDATE) anche alla \\
+				& tabella dal lato molti \\
+				\addlinespace
+				NO ACTION & Impedire il tentativo di cancellazione o modifica \\
+				& annullando l'intera operazione \\
+				\addlinespace
+				SET NULL & Assegnare alla chiave esterna il valore NULL \\
+				SET DEFAULT & (se si usa SET NULL) oppure il valore di default \\
+				& (se si usa SET DEFAULT) \\
+				\bottomrule
+			\end{tabular}
+		\end{center}
+		
+		In genere, nei DBMS l'opzione \texttt{NO ACTION} è quella di default, accompagnata da un messaggio di errore per l'utente che segnala il tentativo di violazione dell'integrità referenziale.
+	\end{frame}
+	
+	\section{Inserimento Dati}
+	
+	\begin{frame}{Inserimento di Dati con Riferimenti Mancanti}
+		\begin{itemize}
+			\item Come per le operazioni di cancellazione e di modifica, anche le operazioni di inserimento di dati in tabelle tra loro connesse sono soggette a vincoli referenziali
+			\item Un dato che deve essere inserito potrebbe non essere presente nella tabella esterna
+			\item L'impostazione di questi vincoli viene ricondotta quindi a quelle di \texttt{UPDATE}
+			\item Considerando gli effetti dell'inserimento di un nuovo attributo equivalenti a quelli della variazione di un attributo presente in uno mancante
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}{Regole di Inserimento}
+		\begin{enumerate}
+			\item \textbf{Inserzione dipendente}: consente l'inserzione di un'istanza nella tabella interna solo se la chiave nella tabella esterna esiste già
+			
+			\item \textbf{Inserzione automatica}: viene effettuata l'inserzione di un'istanza nella tabella interna e, nel caso in cui l'istanza nella tabella esterna non esista, viene creata
+			
+			\item \textbf{Inserzione nulla}: viene effettuata l'inserzione di una tupla nella tabella interna e, nel caso che l'istanza nella tabella esterna non esista, la fk nella tabella interna viene messa a NULL
+		\end{enumerate}
+	\end{frame}
+	
+	\begin{frame}{Regole di Inserimento (continua)}
+		\begin{enumerate}
+			\setcounter{enumi}{3}
+			\item \textbf{Inserzione di default}: viene effettuata l'inserzione di un'istanza dell'entità interna e, se l'istanza dell'entità esterna non esiste, la fk della tabella interna viene impostata a un valore predefinito
+			
+			\item \textbf{Nessun effetto}: con questa regola è sempre permessa l'inserzione di un'istanza nella tabella interna e non è richiesta in alcun modo l'esistenza nella tabella esterna
+		\end{enumerate}
+	\end{frame}
+	
+	\begin{frame}{Conclusioni}
+		\begin{center}
+			\Large
+			Grazie per l'attenzione!
+			
+			\vspace{1cm}
+			
+			\normalsize
+			Per domande o chiarimenti:
+			
+			Prof. Massimo
+			
+			IIS Fermi Sacconi Ceci - Ascoli Piceno
+		\end{center}
+	\end{frame}
+	
+\end{document}

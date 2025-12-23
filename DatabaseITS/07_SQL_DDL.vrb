@@ -1,0 +1,15 @@
+\frametitle{Esempio Studenti con FK}
+\begin{verbatim}
+			CREATE TABLE studenti(
+			matricola CHAR(20) PRIMARY KEY,
+			nome VARCHAR(20),
+			cognome VARCHAR(20),
+			data_nascita DATE,
+			classe INT,
+			sez CHAR(4),
+			FOREIGN KEY(classe, sez)
+			REFERENCES corsi(classe, sez)
+			ON DELETE SET DEFAULT
+			ON UPDATE SET DEFAULT
+			)
+		\end{verbatim}

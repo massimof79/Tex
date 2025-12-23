@@ -1,0 +1,417 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{xcolor}
+
+\geometry{left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
+
+\hypersetup{
+	colorlinks=true,
+	linkcolor=blue,
+	filecolor=magenta,      
+	urlcolor=cyan,
+}
+
+\title{\textbf{Regole di Derivazione dal Modello Concettuale al Modello Logico}}
+\author{Prof. Fedeli Massimo\\
+	IIS Fermi Sacconi Cpia - Ascoli Piceno}
+\date{}
+
+\begin{document}
+	
+	\maketitle
+	
+	\section*{Introduzione}
+	La trasformazione dal modello concettuale (schema Entità-Relazione) al modello logico (schema relazionale) è un processo fondamentale nella progettazione di basi di dati. Questo documento descrive le regole sistematiche per effettuare questa conversione.
+	
+	\section{Traduzione delle Entità}
+	
+	\textbf{Regola Base:} Ogni entità del modello E-R diventa una relazione (tabella) nel modello logico.
+	
+	\subsection{Componenti della traduzione}
+	\begin{itemize}
+		\item Il \textbf{nome dell'entità} diventa il nome della relazione
+		\item Gli \textbf{attributi dell'entità} diventano attributi (colonne) della relazione
+		\item Gli \textbf{attributi identificatori} (chiave primaria) dell'entità diventano la chiave primaria della relazione
+	\end{itemize}
+	
+	\subsection{Esempio}
+	\textbf{Modello E-R:}
+	
+	\texttt{STUDENTE (Matricola, Nome, Cognome, DataNascita)}
+	\begin{itemize}[label={}]
+		\item Chiave: Matricola
+	\end{itemize}
+	
+	\textbf{Modello Logico:}
+	
+	\texttt{STUDENTE (Matricola, Nome, Cognome, DataNascita)}
+	\begin{itemize}[label={}]
+		\item \textbf{PK}: Matricola
+	\end{itemize}
+	
+	\section{Traduzione delle Relazioni (Associazioni)}
+	
+	La traduzione delle relazioni dipende dalla loro cardinalità.
+	
+	\subsection{Relazioni Uno a Molti (1:N)}
+	
+	\textbf{Regola:} Si propaga la chiave primaria dell'entità con cardinalità (1,1) o (0,1) nell'entità con cardinalità (0,N) o (1,N) come chiave esterna.
+	
+	\textbf{Procedura:}
+	\begin{enumerate}
+		\item Non si crea una nuova tabella per la relazione
+		\item Si aggiunge la chiave primaria del lato "uno" come chiave esterna nel lato "molti"
+		\item Gli eventuali attributi della relazione vengono aggiunti all'entità sul lato "molti"
+	\end{enumerate}
+	
+	\textbf{Esempio:}
+	
+	\textbf{Modello E-R:}
+	
+	\texttt{DIPARTIMENTO (CodDip, Nome)}
+	
+	\texttt{IMPIEGATO (CodImp, Nome, Stipendio)}
+	
+	\texttt{APPARTIENE: DIPARTIMENTO (1,1) --- (0,N) IMPIEGATO}
+	
+	\textbf{Modello Logico:}
+	
+	\texttt{DIPARTIMENTO (CodDip, Nome)}
+	\begin{itemize}[label={}]
+		\item PK: CodDip
+	\end{itemize}
+	
+	\texttt{IMPIEGATO (CodImp, Nome, Stipendio, CodDip)}
+	\begin{itemize}[label={}]
+		\item PK: CodImp
+		\item FK: CodDip REFERENCES DIPARTIMENTO
+	\end{itemize}
+	
+	\subsection{Relazioni Molti a Molti (N:M)}
+	
+	\textbf{Regola:} Si crea una nuova relazione (tabella) che rappresenta l'associazione.
+	
+	\textbf{Procedura:}
+	\begin{enumerate}
+		\item Si crea una nuova tabella per la relazione
+		\item La chiave primaria è composta dalle chiavi primarie delle due entità coinvolte
+		\item Si aggiungono le chiavi esterne verso entrambe le entità
+		\item Gli eventuali attributi della relazione diventano attributi della nuova tabella
+	\end{enumerate}
+	
+	\textbf{Esempio:}
+	
+	\textbf{Modello E-R:}
+	
+	\texttt{STUDENTE (Matricola, Nome)}
+	
+	\texttt{CORSO (CodCorso, Titolo)}
+	
+	\texttt{FREQUENTA: STUDENTE (0,N) --- (0,N) CORSO}
+	\begin{itemize}[label={}]
+		\item Attributo: Voto
+	\end{itemize}
+	
+	\textbf{Modello Logico:}
+	
+	\texttt{STUDENTE (Matricola, Nome)}
+	\begin{itemize}[label={}]
+		\item PK: Matricola
+	\end{itemize}
+	
+	\texttt{CORSO (CodCorso, Titolo)}
+	\begin{itemize}[label={}]
+		\item PK: CodCorso
+	\end{itemize}
+	
+	\texttt{FREQUENTA (Matricola, CodCorso, Voto)}
+	\begin{itemize}[label={}]
+		\item PK: (Matricola, CodCorso)
+		\item FK: Matricola REFERENCES STUDENTE
+		\item FK: CodCorso REFERENCES CORSO
+	\end{itemize}
+	
+	\subsection{Relazioni Uno a Uno (1:1)}
+	
+	\textbf{Regola:} Esistono tre alternative, da scegliere in base al contesto.
+	
+	\textbf{Alternativa 1 - Accorpamento:} Unire le due entità in un'unica tabella (se logicamente coerente).
+	
+	\textbf{Alternativa 2 - Chiave esterna lato opzionale:} Propagare la chiave dell'entità con partecipazione obbligatoria (1,1) nell'entità con partecipazione opzionale (0,1).
+	
+	\textbf{Alternativa 3 - Tabella separata:} Creare una tabella separata per la relazione (raramente usato).
+	
+	\textbf{Esempio (Alternativa 2):}
+	
+	\textbf{Modello E-R:}
+	
+	\texttt{PERSONA (CF, Nome, Cognome)}
+	
+	\texttt{PASSAPORTO (NumPassaporto, DataRilascio, Scadenza)}
+	
+	\texttt{POSSIEDE: PERSONA (0,1) --- (1,1) PASSAPORTO}
+	
+	\textbf{Modello Logico:}
+	
+	\texttt{PERSONA (CF, Nome, Cognome)}
+	\begin{itemize}[label={}]
+		\item PK: CF
+	\end{itemize}
+	
+	\texttt{PASSAPORTO (NumPassaporto, DataRilascio, Scadenza, CF)}
+	\begin{itemize}[label={}]
+		\item PK: NumPassaporto
+		\item FK: CF REFERENCES PERSONA
+	\end{itemize}
+	
+	\subsection{Relazioni Ternarie (e n-arie)}
+	
+	\textbf{Regola:} Si crea sempre una nuova relazione (tabella) che contiene le chiavi esterne di tutte le entità coinvolte.
+	
+	\textbf{Procedura:}
+	\begin{enumerate}
+		\item Si crea una nuova tabella per la relazione ternaria
+		\item Si aggiungono le chiavi esterne verso tutte e tre (o più) le entità coinvolte
+		\item La chiave primaria è generalmente composta da tutte le chiavi esterne (salvo vincoli specifici di cardinalità)
+		\item Gli eventuali attributi della relazione diventano attributi della nuova tabella
+	\end{enumerate}
+	
+	\textbf{Note sulla chiave primaria:}
+	\begin{itemize}
+		\item Se tutte le cardinalità sono (0,N) o (1,N), la chiave primaria è composta da tutte le chiavi esterne
+		\item Se una o più entità hanno cardinalità (0,1) o (1,1), potrebbero non far parte della chiave primaria
+		\item La scelta dipende dall'analisi semantica della relazione
+	\end{itemize}
+	
+	\textbf{Esempio:}
+	
+	\textbf{Modello E-R:}
+	
+	\texttt{FORNITORE (CodFornitore, Nome, Città)}
+	
+	\texttt{PRODOTTO (CodProdotto, Descrizione, Prezzo)}
+	
+	\texttt{PROGETTO (CodProgetto, Titolo, Budget)}
+	
+	\texttt{FORNITURA: FORNITORE (0,N) --- (0,N) PRODOTTO --- (0,N) PROGETTO}
+	\begin{itemize}[label={}]
+		\item Attributi: Quantità, DataFornitura
+	\end{itemize}
+	
+	\textit{Nota: Un fornitore può fornire lo stesso prodotto a progetti diversi, e uno stesso prodotto può essere fornito da fornitori diversi allo stesso progetto.}
+	
+	\textbf{Modello Logico:}
+	
+	\texttt{FORNITORE (CodFornitore, Nome, Città)}
+	\begin{itemize}[label={}]
+		\item PK: CodFornitore
+	\end{itemize}
+	
+	\texttt{PRODOTTO (CodProdotto, Descrizione, Prezzo)}
+	\begin{itemize}[label={}]
+		\item PK: CodProdotto
+	\end{itemize}
+	
+	\texttt{PROGETTO (CodProgetto, Titolo, Budget)}
+	\begin{itemize}[label={}]
+		\item PK: CodProgetto
+	\end{itemize}
+	
+	\texttt{FORNITURA (CodFornitore, CodProdotto, CodProgetto, Quantità, DataFornitura)}
+	\begin{itemize}[label={}]
+		\item PK: (CodFornitore, CodProdotto, CodProgetto)
+		\item FK: CodFornitore REFERENCES FORNITORE
+		\item FK: CodProdotto REFERENCES PRODOTTO
+		\item FK: CodProgetto REFERENCES PROGETTO
+	\end{itemize}
+	
+	\textbf{Esempio con cardinalità particolari:}
+	
+	Se nel modello E-R la cardinalità di PROGETTO fosse (0,1), indicando che ogni combinazione fornitore-prodotto può essere associata al massimo a un progetto, la chiave primaria cambierebbe:
+	
+	\texttt{FORNITURA (CodFornitore, CodProdotto, CodProgetto, Quantità, DataFornitura)}
+	\begin{itemize}[label={}]
+		\item PK: (CodFornitore, CodProdotto)
+		\item FK: CodFornitore REFERENCES FORNITORE
+		\item FK: CodProdotto REFERENCES PRODOTTO
+		\item FK: CodProgetto REFERENCES PROGETTO
+	\end{itemize}
+	
+	\section{Traduzione delle Generalizzazioni (Gerarchie IS-A)}
+	
+	Esistono tre strategie principali per tradurre le gerarchie di generalizzazione.
+	
+	\subsection{Strategia della Relazione Unica}
+	
+	\textbf{Descrizione:} Si crea un'unica tabella che contiene tutti gli attributi dell'entità padre e di tutte le entità figlie.
+	
+	\textbf{Vantaggi:} Semplice, nessun join necessario per recuperare i dati.
+	
+	\textbf{Svantaggi:} Molti valori NULL se le sottoclassi hanno molti attributi specifici.
+	
+	\textbf{Quando usarla:} Quando le sottoclassi hanno pochi attributi specifici.
+	
+	\textbf{Esempio:}
+	
+	\textbf{Modello E-R:}
+	
+	\texttt{PERSONA (CF, Nome, Cognome)}
+	\begin{itemize}[label={}]
+		\item |---STUDENTE (Matricola, CorsoLaurea)
+		\item |---DOCENTE (Dipartimento, Ruolo)
+	\end{itemize}
+	
+	\textbf{Modello Logico:}
+	
+	\texttt{PERSONA (CF, Nome, Cognome, TipoPersona, Matricola, CorsoLaurea, Dipartimento, Ruolo)}
+	\begin{itemize}[label={}]
+		\item PK: CF
+		\item TipoPersona: discriminante per identificare il tipo
+	\end{itemize}
+	
+	\subsection{Strategia delle Relazioni Separate}
+	
+	\textbf{Descrizione:} Si crea una tabella per l'entità padre e una tabella separata per ogni entità figlia.
+	
+	\textbf{Vantaggi:} Nessun valore NULL, struttura pulita.
+	
+	\textbf{Svantaggi:} Richiede join per recuperare informazioni complete.
+	
+	\textbf{Quando usarla:} Quando le sottoclassi hanno molti attributi specifici.
+	
+	\textbf{Esempio:}
+	
+	\textbf{Modello E-R:}
+	
+	\texttt{PERSONA (CF, Nome, Cognome)}
+	\begin{itemize}[label={}]
+		\item |--- STUDENTE (Matricola, CorsoLaurea)
+		\item |---DOCENTE (Dipartimento, Ruolo)
+	\end{itemize}
+	
+	\textbf{Modello Logico:}
+	
+	\texttt{PERSONA (CF, Nome, Cognome)}
+	\begin{itemize}[label={}]
+		\item PK: CF
+	\end{itemize}
+	
+	\texttt{STUDENTE (CF, Matricola, CorsoLaurea)}
+	\begin{itemize}[label={}]
+		\item PK: CF
+		\item FK: CF REFERENCES PERSONA
+	\end{itemize}
+	
+	\texttt{DOCENTE (CF, Dipartimento, Ruolo)}
+	\begin{itemize}[label={}]
+		\item PK: CF
+		\item FK: CF REFERENCES PERSONA
+	\end{itemize}
+	
+	\subsection{Strategia delle Sottoclassi Indipendenti}
+	
+	\textbf{Descrizione:} Si crea solo una tabella per ogni sottoclasse, duplicando gli attributi del padre.
+	
+	\textbf{Vantaggi:} Nessun join necessario, nessun NULL.
+	
+	\textbf{Svantaggi:} Ridondanza degli attributi del padre, problemi di integrità.
+	
+	\textbf{Quando usarla:} Quando la generalizzazione è \textbf{totale e disgiunta}, e si accede raramente all'entità padre.
+	
+	\textbf{Esempio:}
+	
+	\textbf{Modello E-R:}
+	
+	\texttt{PERSONA (CF, Nome, Cognome)}
+	\begin{itemize}[label={}]
+		\item |---STUDENTE (Matricola, CorsoLaurea)
+		\item |---DOCENTE (Dipartimento, Ruolo)
+	\end{itemize}
+	
+	\textbf{Modello Logico:}
+	
+	\texttt{STUDENTE (CF, Nome, Cognome, Matricola, CorsoLaurea)}
+	\begin{itemize}[label={}]
+		\item PK: CF
+	\end{itemize}
+	
+	\texttt{DOCENTE (CF, Nome, Cognome, Dipartimento, Ruolo)}
+	\begin{itemize}[label={}]
+		\item PK: CF
+	\end{itemize}
+	
+	\section{Traduzione degli Attributi}
+	
+	\subsection{Attributi Semplici}
+	Diventano direttamente attributi della relazione.
+	
+	\subsection{Attributi Composti}
+	Si decompongono nei loro componenti atomici.
+	
+	\textbf{Esempio:}
+	
+	Indirizzo (Via, Città, CAP) $\rightarrow$ Via, Città, CAP
+	
+	\subsection{Attributi Multivalore}
+	Si creano tabelle separate con chiave esterna verso l'entità principale.
+	
+	\textbf{Esempio:}
+	
+	\textbf{Modello E-R:}
+	
+	\texttt{PERSONA (CF, Nome, \{Telefono\})}
+	
+	\textbf{Modello Logico:}
+	
+	\texttt{PERSONA (CF, Nome)}
+	\begin{itemize}[label={}]
+		\item PK: CF
+	\end{itemize}
+	
+	\texttt{TELEFONO (CF, NumeroTelefono)}
+	\begin{itemize}[label={}]
+		\item PK: (CF, NumeroTelefono)
+		\item FK: CF REFERENCES PERSONA
+	\end{itemize}
+	
+	\subsection{Attributi Derivati}
+	Generalmente non vengono memorizzati (si calcolano quando necessario), a meno che non ci siano esigenze di prestazioni.
+	
+	\section{Vincoli di Integrità}
+	
+	Durante la traduzione è importante preservare tutti i vincoli:
+	
+	\subsection{Vincoli di Chiave}
+	\begin{itemize}
+		\item Chiave primaria (PRIMARY KEY)
+		\item Chiave candidata (UNIQUE)
+	\end{itemize}
+	
+	\subsection{Vincoli di Integrità Referenziale}
+	\begin{itemize}
+		\item Chiavi esterne (FOREIGN KEY)
+		\item Politiche di cancellazione e aggiornamento (CASCADE, SET NULL, RESTRICT)
+	\end{itemize}
+	
+	\subsection{Vincoli di Dominio}
+	\begin{itemize}
+		\item NOT NULL per partecipazioni obbligatorie
+		\item CHECK per vincoli sui valori
+	\end{itemize}
+	
+	\subsection{Vincoli di Cardinalità}
+	Alcuni vincoli di cardinalità complessi potrebbero richiedere trigger o asserzioni.
+	
+	\section*{Conclusione}
+	La derivazione dal modello concettuale al modello logico è un processo sistematico che, se seguito correttamente, garantisce uno schema relazionale corretto, efficiente e fedele al modello concettuale di partenza. La conoscenza approfondita di queste regole è fondamentale per ogni progettista di basi di dati.
+	
+\end{document}

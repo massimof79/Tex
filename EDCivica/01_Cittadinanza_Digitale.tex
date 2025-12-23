@@ -1,0 +1,905 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+
+% --- Pacchetti e Configurazione ---
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{booktabs}
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage{tikz}
+
+% --- Tema e Colori ---
+\usetheme{Madrid}
+\usecolortheme{seahorse}
+
+% --- Metadati ---
+\title[Cittadinanza Digitale]{Cittadinanza Digitale Consapevole}
+\subtitle{Diritti, Doveri e Uso Responsabile del Web}
+\author{Classe II Indirizzo Informatica}
+\institute{Educazione Civica}
+\date{A.S. 2024/2025}
+
+\begin{document}
+	
+	% 1. Slide Titolo
+	\begin{frame}
+		\titlepage
+	\end{frame}
+	
+	% 2. Introduzione
+	\begin{frame}{1. Che cosa è la Cittadinanza Digitale?}
+		La cittadinanza digitale rappresenta l'insieme di competenze, conoscenze e comportamenti necessari per partecipare attivamente e responsabilmente alla comunità digitale moderna.
+		
+		\vspace{0.3cm}
+		
+		\begin{block}{I Tre Pilastri Fondamentali}
+			\begin{itemize}
+				\item \textbf{Accesso consapevole}: Capacità di trovare, valutare e utilizzare informazioni online in modo critico e sicuro
+				\item \textbf{Uso responsabile}: Comportamenti etici nella creazione e condivisione di contenuti digitali
+				\item \textbf{Protezione}: Salvaguardia dell'identità digitale, della privacy personale e della sicurezza informatica
+			\end{itemize}
+		\end{block}
+		
+		\vspace{0.2cm}
+		\small{Nel 2024, oltre l'85\% della popolazione italiana è connessa a Internet: essere cittadini digitali consapevoli è ormai indispensabile.}
+	\end{frame}
+	
+	% 3. Contesto Normativo
+	\begin{frame}{2. Il Quadro Normativo di Riferimento}
+		Il framework legislativo che regola la cittadinanza digitale si basa su norme europee e nazionali:
+		
+		\vspace{0.3cm}
+		
+		\begin{itemize}
+			\item \textbf{DigComp 2.2 (2022)}: Framework europeo delle competenze digitali per i cittadini, che identifica 21 competenze organizzate in 5 aree (informazione, comunicazione, creazione contenuti, sicurezza, problem solving)
+			
+			\item \textbf{Linee Guida MIUR 2023}: Integrazione dell'educazione civica digitale come insegnamento trasversale obbligatorio per almeno 33 ore annue in tutti gli ordini di scuola
+			
+			\item \textbf{GDPR (Regolamento UE 2016/679)}: Protezione dei dati personali a livello europeo, garantisce il controllo sui propri dati e stabilisce obblighi per chi li tratta
+			
+			\item \textbf{Legge 71/2017}: Disposizioni a tutela dei minori per la prevenzione e il contrasto del cyberbullismo
+		\end{itemize}
+	\end{frame}
+	
+	% 4. I Diritti
+	\begin{frame}{3. I Diritti del Cittadino Digitale}
+		Ogni cittadino digitale gode di diritti fondamentali che vanno conosciuti e tutelati:
+		
+		\vspace{0.3cm}
+		
+		\begin{itemize}
+			\item \textbf{Diritto all'Accesso}: Garantire a tutti la possibilità di connettersi alla rete, abbattendo il digital divide geografico, economico e culturale. In Italia ancora il 15\% della popolazione non ha accesso regolare a Internet
+			
+			\item \textbf{Diritto alla Privacy}: Controllare i propri dati personali, sapere chi li raccoglie, per quali finalità e poter chiederne la cancellazione (diritto all'oblio). Include la protezione da profilazione invasiva
+			
+			\item \textbf{Diritto alla Libertà di Espressione}: Manifestare liberamente il proprio pensiero online senza censure preventive, nel rispetto della dignità altrui e dei limiti previsti dalla legge (no diffamazione, incitamento all'odio)
+			
+			\item \textbf{Diritto all'Identità Digitale}: Costruire e gestire la propria presenza online in modo autentico e sicuro
+		\end{itemize}
+	\end{frame}
+	
+	% 5. I Doveri
+	\begin{frame}{4. I Doveri del Cittadino Digitale}
+		Ai diritti corrispondono precise responsabilità verso la comunità digitale:
+		
+		\vspace{0.3cm}
+		
+		\begin{exampleblock}{Responsabilità Legali e Sociali}
+			\begin{itemize}
+				\item \textbf{Rispettare la legge}: Le norme del mondo reale valgono anche online (no diffamazione, minacce, violazione copyright, stalking digitale). La pena per diffamazione online è aggravata
+				
+				\item \textbf{Verificare le fonti}: Prima di condividere una notizia, controllarne l'attendibilità attraverso il fact-checking. Il 67\% delle fake news viene diffuso per superficialità, non per malafede
+				
+				\item \textbf{Proteggere l'ambiente digitale}: Utilizzare password sicure, aggiornare i software, non diffondere malware, segnalare contenuti illeciti, rispettare la netiquette
+				
+				\item \textbf{Essere rispettosi}: Evitare linguaggio offensivo, flame war e comportamenti che possano danneggiare la dignità altrui
+			\end{itemize}
+		\end{exampleblock}
+	\end{frame}
+	
+	% 6. Identità Digitale
+	\begin{frame}{5. Identità Digitale in Italia: SPID e CIE}
+		L'identità digitale è il sistema che permette di accedere ai servizi online con credenziali certificate:
+		
+		\vspace{0.3cm}
+		
+		\begin{columns}
+			\column{0.5\textwidth}
+			\textbf{SPID (Sistema Pubblico Identità Digitale)}
+			\begin{itemize}
+				\item Credenziali uniche per tutti i servizi della PA
+				\item 3 livelli di sicurezza crescente
+				\item Oltre 35 milioni di identità attive
+				\item Riconosciuto anche da privati
+			\end{itemize}
+			
+			\column{0.5\textwidth}
+			\textbf{CIE e Strumenti Associati}
+			\begin{itemize}
+				\item Carta Identità Elettronica con chip NFC
+				\item Funzione di accesso ai servizi online
+				\item PEC: Posta certificata con valore legale
+				\item Domicilio digitale per notifiche PA
+			\end{itemize}
+		\end{columns}
+		
+		\vspace{0.3cm}
+		\small{\textit{Dal 2025 l'IT Wallet integrerà documenti digitali, pagamenti e servizi in un'unica app.}}
+	\end{frame}
+	
+	% 7. Posta Elettronica Intro
+	\begin{frame}{6. Email: Strumento Fondamentale di Comunicazione}
+		L'email rimane lo strumento professionale più utilizzato per la comunicazione formale:
+		
+		\vspace{0.3cm}
+		
+		\begin{itemize}
+			\item \textbf{Traccia permanente}: Ogni email lascia una documentazione scritta consultabile nel tempo, utile per conferme e verifiche
+			
+			\item \textbf{Valore probatorio}: In molti contesti legali e professionali l'email ha valore di prova documentale
+			
+			\item \textbf{Porta d'accesso professionale}: Primo contatto con università, datori di lavoro, istituzioni. La qualità della comunicazione via email riflette la professionalità
+			
+			\item \textbf{Differenza da chat}: A differenza dei messaggi istantanei, l'email richiede maggiore formalità, struttura e riflessione prima dell'invio
+		\end{itemize}
+		
+		\vspace{0.3cm}
+		\small{Nel mondo professionale si stima che un dipendente riceva in media 120 email al giorno: saper comunicare efficacemente è essenziale.}
+	\end{frame}
+	
+	% 8. Netiquette Email
+	\begin{frame}{7. Netiquette della Posta Elettronica}
+		La netiquette è l'insieme delle regole di buon comportamento nella comunicazione digitale:
+		
+		\vspace{0.3cm}
+		
+		\begin{enumerate}
+			\item \textbf{Oggetto chiaro e specifico}: Deve riassumere il contenuto in 5-8 parole. Es. "Richiesta informazioni progetto DigComp" invece di "Domanda"
+			
+			\item \textbf{Saluti appropriati}: 
+			\begin{itemize}
+				\item Formale: "Gentile Prof./Dott.", "Cordiali saluti"
+				\item Informale tra pari: "Ciao [Nome]", "A presto"
+			\end{itemize}
+			
+			\item \textbf{Corpo del messaggio}: Breve (max 200 parole), strutturato in paragrafi, con richiesta esplicita se necessario
+			
+			\item \textbf{Firma}: Nome completo, ruolo/classe, contatti (se professionale)
+			
+			\item \textbf{Risposta tempestiva}: Idealmente entro 24-48 ore lavorative
+			
+			\item \textbf{Tono professionale}: Evitare abbreviazioni da chat, emoji eccessive, tono aggressivo
+		\end{enumerate}
+	\end{frame}
+	
+	% 9. Errori Email
+	\begin{frame}{8. Errori Comuni da Evitare nella Email}
+		Questi errori possono compromettere la comunicazione e la reputazione professionale:
+		
+		\vspace{0.3cm}
+		
+		\begin{table}
+			\begin{tabular}{p{4cm}p{6cm}}
+				\toprule
+				\textbf{Errore} & \textbf{Effetto e Soluzione} \\
+				\midrule
+				Tutto in MAIUSCOLO & Equivale a urlare. Usare normale capitalizzazione \\
+				\midrule
+				Allegati troppo grandi & Blocco casella (max 10-25 MB). Usare servizi cloud con link \\
+				\midrule
+				Oggetto vuoto o generico & Email ignorata o finisce in spam. Essere specifici \\
+				\midrule
+				Rispondere a tutti inutilmente & Sovraccarico caselle. Usare "Rispondi" selettivamente \\
+				\midrule
+				Errori grammaticali & Impressione di superficialità. Rileggere prima di inviare \\
+				\midrule
+				Inviare senza controllare & Destinatari sbagliati o allegati mancanti \\
+				\bottomrule
+			\end{tabular}
+		\end{table}
+	\end{frame}
+	
+	% 10. Privacy Email
+	\begin{frame}{9. Protezione della Privacy nella Posta Elettronica}
+		L'email è uno dei principali vettori di attacco informatico e violazione della privacy:
+		
+		\vspace{0.3cm}
+		
+		\begin{itemize}
+			\item \textbf{Uso del BCC/CCN (Copia Carbone Nascosta)}: Quando si invia a gruppi, usare CCN per non esporre gli indirizzi di tutti i destinatari. Protezione GDPR
+			
+			\item \textbf{Anti-Phishing}: 
+			\begin{itemize}
+				\item Non cliccare su link sospetti o allegati inattesi
+				\item Verificare il mittente (attenzione a domini simili: paypa1.com vs paypal.com)
+				\item Nessuna banca/istituzione seria chiede password via email
+			\end{itemize}
+			
+			\item \textbf{Autenticazione a Due Fattori (2FA)}: Attivare sempre la verifica in due passaggi (password + codice SMS/app). Riduce del 99,9\% i rischi di accesso non autorizzato
+			
+			\item \textbf{Password robuste}: Almeno 12 caratteri, combinazione maiuscole/minuscole/numeri/simboli, diverse per ogni account
+			
+			\item \textbf{Aggiornamenti}: Mantenere aggiornato il client email per patch di sicurezza
+		\end{itemize}
+	\end{frame}
+	
+	% 11. Email Scolastica
+	\begin{frame}{10. Email Istituzionale: Responsabilità e Buone Pratiche}
+		L'account scolastico (@istituto.edu.it) è uno strumento professionale che richiede uso appropriato:
+		
+		\vspace{0.3cm}
+		
+		\begin{itemize}
+			\item \textbf{Solo uso didattico}: Non per registrazioni a social media, gaming, shopping online. Uso monitorato dall'istituto per finalità educative
+			
+			\item \textbf{Linguaggio formale con docenti}: 
+			\begin{itemize}
+				\item Usare "Gentile Prof./Prof.ssa" non "Ciao"
+				\item Specificare classe e sezione
+				\item Firmare con nome e cognome
+			\end{itemize}
+			
+			\item \textbf{Sicurezza}: 
+			\begin{itemize}
+				\item Non condividere la password con compagni
+				\item Non iscriversi a siti non verificati
+				\item Segnalare email sospette ai docenti
+			\end{itemize}
+			
+			\item \textbf{Conservazione}: Controllare regolarmente la casella, archiviare comunicazioni importanti
+			
+			\item \textbf{Conseguenze uso improprio}: L'account può essere sospeso e l'uso inappropriato può avere implicazioni disciplinari
+		\end{itemize}
+	\end{frame}
+	
+	% 12. Navigazione Web
+	\begin{frame}{11. Navigazione Web Consapevole: Pensiero Critico}
+		Navigare consapevolmente significa sviluppare capacità di analisi e valutazione delle fonti online:
+		
+		\vspace{0.3cm}
+		
+		\begin{itemize}
+			\item \textbf{Valutare l'autorevolezza}: 
+			\begin{itemize}
+				\item Chi ha scritto il contenuto? Verificare credenziali e competenze
+				\item Il sito è riconosciuto (università, enti di ricerca, testate giornalistiche registrate)?
+				\item Presenza di riferimenti bibliografici e fonti citabili?
+			\end{itemize}
+			
+			\item \textbf{Distinguere contenuti}: 
+			\begin{itemize}
+				\item Fatti vs opinioni personali
+				\item Articoli informativi vs contenuti sponsorizzati (native advertising)
+				\item Ricerche scientifiche vs blog personali
+			\end{itemize}
+			
+			\item \textbf{Cross-checking}: Verificare la stessa informazione su almeno 2-3 fonti indipendenti e autorevoli prima di considerarla attendibile
+			
+			\item \textbf{Data di pubblicazione}: Le informazioni sono aggiornate? Particolarmente importante per tecnologia, medicina, attualità
+		\end{itemize}
+	\end{frame}
+	
+	% 13. Riconoscere Fake News
+	\begin{frame}{12. Come Riconoscere le Fake News}
+		Le notizie false si diffondono 6 volte più velocemente di quelle vere. Ecco come individuarle:
+		
+		\vspace{0.3cm}
+		
+		\begin{alertblock}{Segnali di Allarme (Red Flags)}
+			\begin{itemize}
+				\item \textbf{Titoli sensazionalistici}: "SHOCK!", "Non crederai mai", "Stanno nascondendo la verità". Mirano a suscitare emozioni forti per ottenere click
+				
+				\item \textbf{URL sospetti}: Domini storpiati (amzon.co invece di amazon.com), suffissi insoliti (.co.de, .news-24)
+				
+				\item \textbf{Assenza di firma}: Articoli senza autore identificabile o data di pubblicazione
+				
+				\item \textbf{Immagini fuori contesto}: Foto di eventi diversi spacciati per attuali. Usare Google Images per verificare l'origine
+				
+				\item \textbf{Errori grammaticali}: Testi mal scritti, pieni di refusi
+				
+				\item \textbf{Assenza di altre fonti}: Se solo un sito riporta la notizia "bomba", probabilmente è falsa
+			\end{itemize}
+		\end{alertblock}
+		
+		\vspace{0.2cm}
+		\small{\textbf{Strumenti utili}: Factcheckers italiani (Pagella Politica, Open, Butac), Google News Lab}
+	\end{frame}
+	
+	% 14. Siti Sicuri
+	\begin{frame}{13. Parametri di Sicurezza nella Navigazione Web}
+		Identificare siti sicuri e affidabili protegge da furti di dati e truffe:
+		
+		\vspace{0.3cm}
+		
+		\begin{itemize}
+			\item \textbf{HTTPS (HyperText Transfer Protocol Secure)}: 
+			\begin{itemize}
+				\item Protocollo che cripta i dati tra browser e server
+				\item Essenziale per e-commerce, banking, inserimento password
+				\item Visibile nell'URL: https:// invece di http://
+			\end{itemize}
+			
+			\item \textbf{Certificato SSL/TLS valido}: 
+			\begin{itemize}
+				\item Simbolo del lucchetto chiuso nella barra indirizzi
+				\item Cliccandolo si vedono i dettagli del certificato
+				\item Attenzione: il lucchetto indica solo la crittografia, non l'affidabilità del sito
+			\end{itemize}
+			
+			\item \textbf{Informazioni legali trasparenti}: 
+			\begin{itemize}
+				\item Presenza nel footer: P.IVA, ragione sociale, contatti
+				\item Privacy policy e cookie policy chiare
+				\item Per e-commerce: reso, garanzie, modalità di pagamento
+			\end{itemize}
+			
+			\item \textbf{Recensioni e reputazione}: Verificare su Trustpilot o forum specializzati
+		\end{itemize}
+	\end{frame}
+	
+	% 15. Social Media Intro
+	\begin{frame}{14. Introduzione ai Social Media: Opportunità e Rischi}
+		I social media sono ambienti complessi di relazione, informazione e costruzione dell'identità:
+		
+		\vspace{0.3cm}
+		
+		\begin{itemize}
+			\item \textbf{Diffusione in Italia}: 
+			\begin{itemize}
+				\item 67\% degli adolescenti (13-19 anni) connessi quotidianamente
+				\item Età media primo smartphone: 11 anni
+				\item Piattaforme più usate: Instagram, TikTok, YouTube, Snapchat
+			\end{itemize}
+			
+			\item \textbf{Cambio di paradigma}: 
+			\begin{itemize}
+				\item Da consumatori passivi a produttori attivi di contenuti
+				\item Responsabilità su ciò che si pubblica e si condivide
+				\item Permanenza digitale: "ciò che pubblichi resta"
+			\end{itemize}
+			
+			\item \textbf{Funzioni principali}: 
+			\begin{itemize}
+				\item Socializzazione e mantenimento relazioni
+				\item Informazione e intrattenimento
+				\item Espressione creativa e costruzione identità
+				\item Marketing e influencer economy
+			\end{itemize}
+		\end{itemize}
+		
+		\vspace{0.2cm}
+		\small{L'uso consapevole richiede equilibrio tra opportunità sociali e protezione del benessere personale.}
+	\end{frame}
+	
+	% 16. Diritti e Doveri Social
+	\begin{frame}{15. Diritti e Doveri sui Social Media}
+		Anche sui social valgono regole chiare per una convivenza digitale rispettosa:
+		
+		\vspace{0.3cm}
+		
+		\begin{columns}
+			\column{0.5\textwidth}
+			\textbf{I Tuoi Diritti}
+			\begin{itemize}
+				\item Essere protetto da insulti, molestie e cyberbullismo
+				\item Controllare chi vede i tuoi contenuti
+				\item Segnalare contenuti inappropriati
+				\item Richiedere la cancellazione dei tuoi dati
+				\item Non subire discriminazioni
+			\end{itemize}
+			
+			\column{0.5\textwidth}
+			\textbf{I Tuoi Doveri}
+			\begin{itemize}
+				\item Non diffondere foto/video altrui senza consenso (violazione privacy)
+				\item Non insultare o deridere altri utenti
+				\item Verificare notizie prima di condividerle
+				\item Rispettare il copyright su immagini e musica
+				\item Non impersonare altre persone
+			\end{itemize}
+		\end{columns}
+		
+		\vspace{0.3cm}
+		
+		\begin{alertblock}{Ricorda}
+			Pubblicare foto di minori senza autorizzazione dei genitori è reato. Anche condividere una foto ricevuta in privato può costituire violazione della privacy.
+		\end{alertblock}
+	\end{frame}
+	
+	% 17. Reputazione Online
+	\begin{frame}{16. La Tua Impronta Digitale: Gestire la Reputazione Online}
+		Ogni attività online lascia tracce permanenti che costruiscono la tua identità digitale:
+		
+		\vspace{0.3cm}
+		
+		\begin{itemize}
+			\item \textbf{"Internet non dimentica"}: 
+			\begin{itemize}
+				\item Screenshot, cache, archivi web conservano contenuti anche dopo la cancellazione
+				\item Post impulsivi fatti a 14 anni possono riemergere anni dopo
+				\item La reputazione digitale si costruisce nel tempo e si distrugge in un attimo
+			\end{itemize}
+			
+			\item \textbf{Social screening professionale}: 
+			\begin{itemize}
+				\item Il 70\% dei datori di lavoro verifica i profili social dei candidati
+				\item Università e istituzioni controllano l'impronta digitale nelle selezioni
+				\item Contenuti inappropriati possono precludere opportunità professionali
+			\end{itemize}
+			
+			\item \textbf{Coerenza identitaria}: 
+			\begin{itemize}
+				\item Mantenere coerenza tra vita reale e profilo digitale
+				\item Evitare contraddizioni tra diversi profili social
+				\item Curare l'immagine professionale (LinkedIn) separandola da quella personale
+			\end{itemize}
+		\end{itemize}
+		
+		\vspace{0.2cm}
+		\small{\textbf{Consiglio}: Googla periodicamente il tuo nome per verificare cosa emerge sulla tua persona.}
+	\end{frame}
+	
+	% 18. Impostazioni Privacy
+	\begin{frame}{17. Proteggere la Privacy sui Social Media}
+		Configurare correttamente le impostazioni di privacy è fondamentale per la sicurezza online:
+		
+		\vspace{0.3cm}
+		
+		\begin{itemize}
+			\item \textbf{Profilo privato}: 
+			\begin{itemize}
+				\item Rendere l'account visibile solo agli amici approvati
+				\item Su Instagram/TikTok: attivare "Account privato"
+				\item Valutare attentamente le richieste di amicizia
+			\end{itemize}
+			
+			\item \textbf{Gestione dei tag}: 
+			\begin{itemize}
+				\item Attivare l'approvazione manuale prima che una foto taggata appaia sul profilo
+				\item Rimuovere tag indesiderati da foto altrui
+				\item Limitare chi può taggarti
+			\end{itemize}
+			
+			\item \textbf{Visibilità dei contenuti}: 
+			\begin{itemize}
+				\item Impostare la visibilità predefinita su "Solo amici" anziché "Pubblico"
+				\item Usare le liste personalizzate per condividere con gruppi specifici
+				\item Disattivare la geolocalizzazione automatica dei post
+			\end{itemize}
+			
+			\item \textbf{Informazioni personali}: Nascondere numero di telefono, email, data di nascita completa, indirizzo di casa
+		\end{itemize}
+	\end{frame}
+	
+	% 19. Cyberbullismo
+	\begin{frame}{18. Cyberbullismo: Riconoscerlo e Contrastarlo}
+		Il cyberbullismo è una piaga sociale con conseguenze psicologiche gravi sulle vittime:
+		
+		\vspace{0.3cm}
+		
+		\begin{alertblock}{Definizione (Legge 71/2017)}
+			Qualunque forma di pressione, aggressione, molestia, ricatto, ingiuria, denigrazione, diffamazione, furto d'identità, alterazione, acquisizione illecita, manipolazione, trattamento illecito di dati personali in danno di minorenni, realizzata per via telematica, nonché la diffusione di contenuti online aventi ad oggetto anche uno o più componenti della famiglia del minore il cui scopo intenzionale e predominante sia quello di isolare un minore o un gruppo di minori ponendo in atto un serio abuso, un attacco dannoso, o la loro messa in ridicolo.
+		\end{alertblock}
+		
+		\vspace{0.3cm}
+		
+		\textbf{Caratteristiche distintive}:
+		\begin{itemize}
+			\item \textbf{Intenzionalità}: Atto deliberato di fare del male
+			\item \textbf{Ripetizione}: Comportamento sistematico nel tempo
+			\item \textbf{Squilibrio di potere}: Vittima in difficoltà a difendersi
+			\item \textbf{Amplificazione}: Il contenuto può diventare virale rapidamente
+		\end{itemize}
+	\end{frame}
+	
+	% 20. Contrastare il Bullo
+	\begin{frame}{19. Strategie di Contrasto al Cyberbullismo}
+		Azioni concrete per vittime, testimoni e comunità educativa:
+		
+		\vspace{0.3cm}
+		
+		\begin{columns}
+			\column{0.5\textwidth}
+			\textbf{Se sei vittima}:
+			\begin{itemize}
+				\item \textbf{Non rispondere}: Evitare escalation
+				\item \textbf{Bloccare}: Impedire ulteriori contatti
+				\item \textbf{Documentare}: Screenshot come prove
+				\item \textbf{Parlare}: Confidarsi con adulti fidati (genitori, docenti, psicologo)
+				\item \textbf{Segnalare}: Utilizzare strumenti di segnalazione delle piattaforme
+			\end{itemize}
+			
+			\column{0.5\textwidth}
+			\textbf{Se sei testimone}:
+			\begin{itemize}
+				\item \textbf{Non ridere}: Non alimentare il bullo
+				\item \textbf{Non condividere}: Bloccare la diffusione
+				\item \textbf{Supportare}: Messaggio privato alla vittima
+				\item \textbf{Segnalare}: Al referente cyberbullismo della scuola
+				\item \textbf{Denunciare}: Casi gravi alla Polizia Postale
+			\end{itemize}
+		\end{columns}
+		
+		\vspace{0.3cm}
+		
+		\begin{block}{Referente Cyberbullismo}
+			Ogni scuola ha un docente referente. In caso di necessità, rivolgersi a questa figura o al coordinatore di classe.
+		\end{block}
+	\end{frame}
+	
+	% 21. Dipendenza Digitale
+	\begin{frame}{20. Dipendenza Digitale e Benessere Psicologico}
+		L'uso eccessivo di dispositivi digitali può generare dipendenza e problemi di salute:
+		
+		\vspace{0.3cm}
+		
+		\begin{itemize}
+			\item \textbf{Nomofobia}: Paura di rimanere senza smartphone. Il 53\% degli adolescenti prova ansia se non può controllare il telefono
+			
+			\item \textbf{FOMO (Fear Of Missing Out)}: 
+			\begin{itemize}
+				\item Paura di perdersi eventi/esperienze sociali
+				\item Controllo compulsivo dei social per rimanere aggiornati
+				\item Ansia da esclusione sociale
+			\end{itemize}
+			
+			\item \textbf{Impatti sulla salute fisica}:
+			\begin{itemize}
+				\item Disturbi del sonno (luce blu, notifiche notturne)
+				\item Problemi posturali e affaticamento visivo
+				\item Sedentarietà eccessiva
+			\end{itemize}
+			
+			\item \textbf{Impatti psicologici}:
+			\begin{itemize}
+				\item Confronto sociale costante: "Gli altri hanno vite migliori"
+				\item Calo dell'autostima e depressione
+				\item Riduzione capacità di concentrazione e attenzione
+				\item Isolamento sociale paradossale (connessi ma soli)
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+	
+	% 22. Uso Equilibrato
+	\begin{frame}{21. Strategie per un Uso Equilibrato della Tecnologia}
+		Il benessere digitale richiede consapevolezza e autodisciplina:
+		
+		\vspace{0.3cm}
+		
+		\begin{itemize}
+			\item \textbf{Monitoraggio del tempo}:
+			\begin{itemize}
+				\item Utilizzare app integrate (Screen Time iOS, Benessere Digitale Android)
+				\item Impostare limiti giornalieri per app specifiche (es. max 1h social)
+				\item Analizzare statistiche settimanali di utilizzo
+			\end{itemize}
+			
+			\item \textbf{Zone e momenti "No-Phone"}:
+			\begin{itemize}
+				\item Durante i pasti in famiglia (favorisce dialogo)
+				\item Un'ora prima di dormire (migliora qualità del sonno)
+				\item Durante lo studio concentrato (tecnica Pomodoro)
+				\item In presenza di amici (presenza autentica)
+			\end{itemize}
+			
+			\item \textbf{Attività alternative offline}:
+			\begin{itemize}
+				\item Sport, hobby creativi (disegno, musica, scrittura)
+				\item Lettura di libri cartacei
+				\item Attività all'aperto e socializzazione diretta
+			\end{itemize}
+			
+			\item \textbf{Notifiche intelligenti}: Disattivare notifiche non essenziali, attivare modalità "Non disturbare"
+		\end{itemize}
+	\end{frame}
+	
+	% 23. Algoritmi e Fake News
+	\begin{frame}{22. Algoritmi, Echo Chambers e Disinformazione}
+		I social media utilizzano algoritmi che influenzano significativamente ciò che vediamo:
+		
+		\vspace{0.3cm}
+		
+		\begin{itemize}
+			\item \textbf{Come funzionano gli algoritmi}:
+			\begin{itemize}
+				\item Analizzano comportamento (like, condivisioni, tempo di visualizzazione)
+				\item Mostrano contenuti simili a quelli già apprezzati
+				\item Obiettivo: massimizzare engagement (tempo sulla piattaforma)
+			\end{itemize}
+			
+			\item \textbf{Echo Chambers (Camere dell'eco)}:
+			\begin{itemize}
+				\item Vediamo solo contenuti che confermano le nostre opinioni
+				\item Rafforzamento dei pregiudizi esistenti
+				\item Difficoltà nel confronto con posizioni diverse
+				\item Polarizzazione sociale crescente
+			\end{itemize}
+			
+			\item \textbf{Amplificazione fake news}:
+			\begin{itemize}
+				\item Le notizie false generano più emozioni (rabbia, paura)
+				\item Contenuti emotivi = più engagement = maggiore diffusione algoritmica
+				\item Studi dimostrano: fake news si diffondono 6 volte più velocemente delle notizie vere
+			\end{itemize}
+		\end{itemize}
+		
+		\vspace{0.2cm}
+		\small{\textbf{Soluzione}: Diversificare le fonti, seguire account con opinioni diverse, fact-checking sistematico}
+	\end{frame}
+	
+	% 24. Diritto all'Oblio
+	\begin{frame}{23. Diritto all'Oblio nel GDPR}
+		Il diritto alla cancellazione dei dati personali è un principio fondamentale del GDPR:
+		
+		\vspace{0.3cm}
+		
+		\textbf{Definizione (Art. 17 GDPR)}: L'interessato ha il diritto di ottenere dal titolare del trattamento la cancellazione dei dati personali che lo riguardano senza ingiustificato ritardo.
+		
+		\vspace{0.3cm}
+		
+		\textbf{Quando si può esercitare}:
+		\begin{itemize}
+			\item I dati \textbf{non sono più necessari} rispetto alle finalità per cui erano stati raccolti
+			\item L'interessato \textbf{revoca il consenso} e non esiste altra base giuridica per il trattamento
+			\item I dati sono stati \textbf{trattati illecitamente} (raccolti senza autorizzazione)
+			\item L'interessato \textbf{si oppone al trattamento} e non sussistono motivi legittimi prevalenti
+			\item La cancellazione è \textbf{necessaria per obbligo legale}
+		\end{itemize}
+		
+		\vspace{0.3cm}
+		
+		\textbf{Limiti}: Il diritto non si applica quando è necessario per:
+		\begin{itemize}
+			\item Esercizio del diritto alla libertà di espressione e informazione
+			\item Adempimento di obblighi legali
+			\item Motivi di interesse pubblico (sanità, ricerca scientifica)
+		\end{itemize}
+	\end{frame}
+	
+	% 25. DigComp 2.2
+	\begin{frame}{24. Le Competenze Digitali del Futuro: DigComp 2.2}
+		Il framework europeo identifica 21 competenze digitali organizzate in 5 aree:
+		
+		\vspace{0.3cm}
+		
+		\begin{enumerate}
+			\item \textbf{Alfabetizzazione su informazioni e dati}:
+			\begin{itemize}
+				\item Navigare, ricercare e filtrare dati e contenuti digitali
+				\item Valutare dati, informazioni e contenuti digitali
+				\item Gestire dati, informazioni e contenuti digitali
+			\end{itemize}
+			
+			\item \textbf{Comunicazione e collaborazione}:
+			\begin{itemize}
+				\item Interagire attraverso le tecnologie digitali
+				\item Condividere informazioni attraverso le tecnologie digitali
+				\item Collaborare attraverso le tecnologie digitali
+				\item Gestire l'identità digitale
+			\end{itemize}
+			
+			\item \textbf{Creazione di contenuti digitali}:
+			\begin{itemize}
+				\item Sviluppare contenuti digitali (come questa presentazione!)
+				\item Integrare e rielaborare contenuti digitali
+				\item Rispettare copyright e licenze
+			\end{itemize}
+		\end{enumerate}
+	\end{frame}
+	
+	\begin{frame}{24. DigComp 2.2 (continua)}
+		\begin{enumerate}
+			\setcounter{enumi}{3}
+			\item \textbf{Sicurezza}:
+			\begin{itemize}
+				\item Proteggere i dispositivi
+				\item Proteggere i dati personali e la privacy
+				\item Proteggere la salute e il benessere
+				\item Proteggere l'ambiente
+			\end{itemize}
+			
+			\item \textbf{Risolvere problemi}:
+			\begin{itemize}
+				\item Risolvere problemi tecnici
+				\item Identificare i bisogni e le risposte tecnologiche
+				\item Utilizzare in modo creativo le tecnologie digitali
+				\item Identificare i divari di competenze digitali
+			\end{itemize}
+		\end{enumerate}
+		
+		\vspace{0.3cm}
+		
+		\small{Ogni competenza è articolata su 8 livelli di padronanza, da Base a Altamente specializzato. L'obiettivo UE è che l'80\% dei cittadini raggiunga almeno competenze digitali di base entro il 2030.}
+	\end{frame}
+	
+	% 26. Impatto Psico-Sociale
+	\begin{frame}{25. Bilancio Critico dei Social Media}
+		Un'analisi equilibrata degli impatti psicologici e sociali dei social media:
+		
+		\vspace{0.3cm}
+		
+		\begin{columns}
+			\column{0.5\textwidth}
+			\textbf{Aspetti Positivi}
+			\begin{itemize}
+				\item Connessione con persone lontane geograficamente
+				\item Supporto sociale in comunità online (gruppi di interesse, supporto psicologico)
+				\item Accesso democratizzato all'informazione
+				\item Opportunità creative ed espressive
+				\item Mobilitazione sociale e attivismo
+				\item Opportunità professionali e networking
+			\end{itemize}
+			
+			\column{0.5\textwidth}
+			\textbf{Criticità e Rischi}
+			\begin{itemize}
+				\item Cyber-esclusione e cyberbullismo
+				\item Distrazione cognitiva e frammentazione dell'attenzione
+				\item Dipendenza comportamentale
+				\item Confronto sociale dannoso
+				\item Diffusione disinformazione
+				\item Violazione della privacy
+				\item Filter bubbles e polarizzazione
+			\end{itemize}
+		\end{columns}
+		
+		\vspace{0.3cm}
+		
+		\begin{block}{Conclusione}
+			I social media sono strumenti neutri: l'impatto dipende dalle modalità d'uso. L'educazione alla cittadinanza digitale è essenziale per massimizzare i benefici e minimizzare i rischi.
+		\end{block}
+	\end{frame}
+	
+	% 27. Pratiche di Protezione
+	\begin{frame}{26. Sintesi: Protezione Digitale a 360 Gradi}
+		Un approccio integrato alla sicurezza informatica personale:
+		
+		\vspace{0.3cm}
+		
+		\begin{itemize}
+			\item \textbf{Gestione Password}:
+			\begin{itemize}
+				\item Password diverse e complesse per ogni servizio (min 12 caratteri)
+				\item Uso di password manager (Bitwarden, 1Password, KeePass)
+				\item Cambio periodico delle password critiche (banking, email principale)
+				\item Mai salvare password in file non criptati
+			\end{itemize}
+			
+			\item \textbf{Sicurezza Navigazione}:
+			\begin{itemize}
+				\item Browser aggiornato all'ultima versione
+				\item Antivirus/antimalware attivo e aggiornato
+				\item Evitare reti WiFi pubbliche per operazioni sensibili (o usare VPN)
+				\item Cancellare periodicamente cookie e cronologia
+			\end{itemize}
+			
+			\item \textbf{Privacy sui Social}:
+			\begin{itemize}
+				\item Geolocalizzazione disattivata di default
+				\item Revisione periodica delle impostazioni privacy (cambiano spesso!)
+				\item Limitare app di terze parti collegate ai social
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+	
+	% 28. Responsabilità Giuridica
+	\begin{frame}{27. Responsabilità Giuridica nel Mondo Digitale}
+		Il diritto penale e civile si applicano pienamente anche alle condotte online:
+		
+		\vspace{0.3cm}
+		
+		\textbf{Principio fondamentale}: Non esiste "immunità digitale". Le leggi del mondo fisico valgono anche online.
+		
+		\vspace{0.3cm}
+		
+		\textbf{Reati più comuni}:
+		\begin{itemize}
+			\item \textbf{Diffamazione aggravata} (Art. 595 c.p.): Offendere la reputazione di qualcuno online. Aggravante: mezzo di pubblicità (social = diffusione potenzialmente virale). Pena: reclusione fino a 3 anni
+			
+			\item \textbf{Stalking telematico} (Art. 612-bis c.p.): Molestie reiterate che causano ansia o timore. Include messaggi ossessivi, controllo GPS, revenge porn
+			
+			\item \textbf{Violazione copyright} (Legge 633/1941): Distribuzione non autorizzata di opere protette (film, musica, software, immagini). Sanzioni civili e penali
+			
+			\item \textbf{Accesso abusivo a sistema informatico} (Art. 615-ter c.p.): Entrare in account altrui (anche se la password era facile da indovinare)
+			
+			\item \textbf{Sostituzione di persona} (Art. 494 c.p.): Creare profili fake spacciandosi per altri
+		\end{itemize}
+		
+		\vspace{0.2cm}
+		\small{Anche i minorenni possono essere imputabili penalmente dai 14 anni. I genitori rispondono civilmente dei danni causati dai figli.}
+	\end{frame}
+	
+	% 29. Risorse Utili
+	\begin{frame}{28. Risorse e Contatti Utili per Supporto}
+		Servizi istituzionali e organizzazioni di supporto per situazioni problematiche:
+		
+		\vspace{0.3cm}
+		
+		\begin{itemize}
+			\item \textbf{Generazioni Connesse} (\texttt{generazioniconnesse.it}): 
+			\begin{itemize}
+				\item Portale del MIUR per uso sicuro di internet
+				\item Materiali didattici per scuole e famiglie
+				\item Helpline 1.96.96 per segnalazioni
+			\end{itemize}
+			
+			\item \textbf{Polizia Postale} (\texttt{commissariatodips.it}):
+			\begin{itemize}
+				\item Segnalazione reati informatici
+				\item Sportelli in ogni provincia italiana
+				\item Form online per denunce
+			\end{itemize}
+			
+			\item \textbf{Telefono Azzurro} (19696):
+			\begin{itemize}
+				\item Supporto psicologico h24 per minori
+				\item Consulenza su cyberbullismo e abusi online
+				\item Chat disponibile sul sito \texttt{azzurro.it}
+			\end{itemize}
+			
+			\item \textbf{Garante Privacy} (\texttt{garanteprivacy.it}): Reclami per violazioni GDPR
+			
+			\item \textbf{AGCOM} (\texttt{agcom.it}): Segnalazione contenuti illegali online
+		\end{itemize}
+	\end{frame}
+	
+	% 30. Conclusione
+	\begin{frame}{29. Il Tuo Impegno come Cittadino Digitale}
+		La cittadinanza digitale è una responsabilità attiva, non una condizione passiva:
+		
+		\vspace{0.3cm}
+		
+		\begin{exampleblock}{Manifesto del Cittadino Digitale Consapevole}
+			"Sii il cambiamento che vuoi vedere nel web"
+			\begin{enumerate}
+				\item \textbf{Rispetta la privacy}: Tua e altrui. Pensa prima di pubblicare foto di altre persone
+				
+				\item \textbf{Verifica prima di condividere}: Non essere complice della disinformazione. Fact-checking sempre
+				
+				\item \textbf{Proteggi la tua identità}: Password sicure, 2FA attiva, informazioni personali limitate
+				
+				\item \textbf{Sii gentile}: Il linguaggio online ha conseguenze reali. Tratta gli altri con rispetto
+				
+				\item \textbf{Pensa al lungo termine}: La tua reputazione digitale ti seguirà per anni
+				
+				\item \textbf{Chiedi aiuto}: In caso di problemi, rivolgersi ad adulti fidati e autorità competenti
+			\end{enumerate}
+		\end{exampleblock}
+		
+		\vspace{0.3cm}
+		\small{\textit{La tecnologia è un moltiplicatore: amplifica sia il bene che il male. La scelta di come utilizzarla è nelle tue mani.}}
+	\end{frame}
+	
+	% Extra / Glossario (30)
+	\begin{frame}{30. Glossario dei Termini Tecnici}
+		\begin{multicols}{2}
+			\begin{itemize}
+				\item \textbf{Phishing}: Tecnica di truffa informatica per rubare credenziali fingendosi enti affidabili via email/SMS
+				
+				\item \textbf{Netiquette}: Insieme di regole di comportamento e buone maniere nella comunicazione digitale (network + etiquette)
+				
+				\item \textbf{Malware}: Software dannoso progettato per danneggiare sistemi o rubare dati (virus, trojan, ransomware, spyware)
+				
+				\item \textbf{Cloud}: Servizio di archiviazione e elaborazione dati su server remoti accessibili via internet
+				
+				\item \textbf{2FA/MFA}: Autenticazione a due/più fattori. Sistema di sicurezza che richiede due prove di identità
+				
+				\item \textbf{SSL/TLS}: Protocolli di crittografia che garantiscono comunicazioni sicure su internet (HTTPS)
+				
+				\item \textbf{Cookie}: File di testo salvati dal browser per memorizzare preferenze e tracciare attività
+				
+				\item \textbf{VPN}: Virtual Private Network. Connessione criptata per navigazione anonima e sicura
+				
+				\item \textbf{Firewall}: Sistema di protezione che filtra il traffico di rete in entrata/uscita
+				
+				\item \textbf{Ransomware}: Malware che cripta i file e chiede riscatto per il ripristino
+				
+				\item \textbf{Bot}: Programma automatico che esegue operazioni ripetitive (es. chatbot, social bot)
+				
+				\item \textbf{Deepfake}: Contenuto multimediale manipolato con AI per sostituire volti/voci in modo realistico
+			\end{itemize}
+		\end{multicols}
+	\end{frame}
+	
+\end{document}
