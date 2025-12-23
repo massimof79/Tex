@@ -315,6 +315,16 @@
 		\end{itemize}
 	\end{frame}
 	
+		\begin{frame}{Versioning del Kernel Linux}
+		
+		\textbf{Comando per visualizzare la versione:}
+		\begin{itemize}
+			\item uname -r
+		\end{itemize}
+	\end{frame}
+	
+	
+	
 	\section{La Shell}
 	
 	% Slide 11: La Shell - Introduzione
@@ -423,46 +433,58 @@
 	\end{frame}
 	
 	% Slide 14: Comandi Shell fondamentali
-	\begin{frame}[fragile]{Comandi Shell Fondamentali}
-		\begin{columns}
-			\column{0.5\textwidth}
-			\textbf{Navigazione file system:}
-			\begin{lstlisting}[language=bash]
-				pwd      # stampa directory corrente
-				ls       # elenca file
-				cd /path # cambia directory
-				mkdir    # crea directory
-				rmdir    # rimuove directory
-			\end{lstlisting}
-			
-			\textbf{Gestione file:}
-			\begin{lstlisting}[language=bash]
-				cp       # copia
-				mv       # sposta/rinomina
-				rm       # rimuove
-				touch    # crea file vuoto
-				cat      # mostra contenuto
-			\end{lstlisting}
-			
-			\column{0.5\textwidth}
-			\textbf{Informazioni di sistema:}
-			\begin{lstlisting}[language=bash]
-				uname -a # info sistema
-				whoami   # utente corrente
-				date     # data e ora
-				df -h    # spazio disco
-				free -h  # memoria
-			\end{lstlisting}
-			
-			\textbf{Gestione processi:}
-			\begin{lstlisting}[language=bash]
-				ps       # processi attivi
-				top      # monitor processi
-				kill PID # termina processo
-				bg/fg    # background/foreground
-			\end{lstlisting}
-		\end{columns}
-	\end{frame}
+\begin{frame}[fragile]{Comandi Shell Fondamentali}
+	
+	\lstset{
+		basicstyle=\ttfamily\small,
+		breaklines=true,
+		columns=fullflexible,
+		frame=single,
+		showstringspaces=false
+	}
+	
+	\begin{columns}[T]
+		
+		\column{0.5\textwidth}
+		\textbf{Navigazione file system:}
+		\begin{lstlisting}[language=bash]
+			pwd        # directory corrente
+			ls         # elenco file
+			cd /path   # cambia directory
+			mkdir dir  # crea directory
+			rmdir dir  # rimuove directory
+		\end{lstlisting}
+		
+		\textbf{Gestione file:}
+		\begin{lstlisting}[language=bash]
+			cp src dst # copia
+			mv a b     # sposta/rinomina
+			rm file    # rimuove
+			touch f    # crea file vuoto
+			cat file   # mostra contenuto
+		\end{lstlisting}
+		
+		\column{0.5\textwidth}
+		\textbf{Informazioni di sistema:}
+		\begin{lstlisting}[language=bash]
+			uname -a   # info sistema
+			whoami    # utente corrente
+			date       # data e ora
+			df -h      # spazio disco
+			free -h    # memoria
+		\end{lstlisting}
+		
+		\textbf{Gestione processi:}
+		\begin{lstlisting}[language=bash]
+			ps         # processi attivi
+			top        # monitor processi
+			kill PID   # termina processo
+			bg / fg    # background/foreground
+		\end{lstlisting}
+		
+	\end{columns}
+\end{frame}
+
 	
 	% Slide 15: Scripting Shell
 	\begin{frame}[fragile]{Shell Scripting}
@@ -495,41 +517,55 @@
 	\end{frame}
 	
 	% Slide 16: Variabili d'ambiente
-	\begin{frame}[fragile]{Variabili d'Ambiente}
-		\textbf{Variabili che influenzano il comportamento del sistema e dei programmi.}
-		
-		\begin{columns}
-			\column{0.5\textwidth}
-			\textbf{Variabili comuni:}
-			\begin{itemize}
-				\item \texttt{PATH} - percorsi eseguibili
-				\item \texttt{HOME} - directory home
-				\item \texttt{USER} - nome utente
-				\item \texttt{SHELL} - shell corrente
-				\item \texttt{LANG} - lingua sistema
-				\item \texttt{PWD} - directory corrente
-			\end{itemize}
-			
-			\column{0.5\textwidth}
-			\textbf{Gestione variabili:}
-			\begin{lstlisting}[language=bash]
-				# Visualizzare
-				echo $PATH
-				env | grep PATH
-				
-				# Impostare (temporanea)
-				export MYVAR="valore"
-				
-				# Impostare (permanente)
-				# Aggiungere in ~/.bashrc
-				export EDITOR=vim
-				
-				# Rimuovere
-				unset MYVAR
-			\end{lstlisting}
-		\end{columns}
-	\end{frame}
+\begin{frame}[fragile]{Variabili d'Ambiente}
 	
+	\textbf{Variabili che influenzano il comportamento del sistema e dei programmi.}
+	
+	\vspace{0.3cm}
+	
+	\lstset{
+		basicstyle=\ttfamily\small,
+		breaklines=true,
+		columns=fullflexible,
+		frame=single,
+		showstringspaces=false
+	}
+	
+	\begin{columns}[T]
+		
+		\column{0.5\textwidth}
+		\textbf{Variabili comuni:}
+		\begin{itemize}
+			\item \texttt{PATH} – percorsi eseguibili
+			\item \texttt{HOME} – directory home
+			\item \texttt{USER} – nome utente
+			\item \texttt{SHELL} – shell corrente
+			\item \texttt{LANG} – lingua sistema
+			\item \texttt{PWD} – directory corrente
+		\end{itemize}
+		
+		\column{0.5\textwidth}
+		\textbf{Gestione variabili:}
+\begin{lstlisting}[language=bash]
+	# Visualizzare
+	echo $PATH
+	env | grep PATH
+	
+	# Impostare (temporanea)
+	export MYVAR="valore"
+	
+	# Impostare (permanente)
+	# aggiungere in ~/.bashrc
+	export EDITOR=vim
+	
+	# Rimuovere
+	unset MYVAR
+\end{lstlisting}
+
+		
+	\end{columns}
+\end{frame}
+
 	\section{GNU/Linux}
 	
 	% Slide 17: Storia di GNU/Linux
