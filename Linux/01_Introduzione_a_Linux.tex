@@ -953,49 +953,69 @@
 	\end{frame}
 	
 	% Slide 26: Package Management
-	\begin{frame}[fragile]{Gestione dei Pacchetti}
-		\textbf{I package manager gestiscono l'installazione, aggiornamento e rimozione del software.}
+\begin{frame}[fragile]{Gestione dei Pacchetti}
+	\raggedright
+	\textbf{I package manager gestiscono l’installazione, aggiornamento e rimozione del software.}
+	
+	\begin{columns}[t]
+		\column{0.5\textwidth}
+		\textbf{APT (Debian/Ubuntu):}
 		
-		\begin{columns}
-			\column{0.5\textwidth}
-			\textbf{APT (Debian/Ubuntu):}
-			\begin{lstlisting}[language=bash]
-				# Aggiornare repository
-				sudo apt update
-				
-				# Aggiornare sistema
-				sudo apt upgrade
-				
-				# Installare pacchetto
-				sudo apt install nome-pacchetto
-				
-				# Rimuovere pacchetto
-				sudo apt remove nome-pacchetto
-				
-				# Cercare pacchetto
-				apt search termine
-			\end{lstlisting}
+		\raggedright
+		\begin{lstlisting}[
+			language=bash,
+			xleftmargin=0pt,
+			framexleftmargin=0pt,
+			columns=flexible,
+			keepspaces=true
+			]
+			# Aggiornare repository
+			sudo apt update
 			
-			\column{0.5\textwidth}
-			\textbf{DNF (Fedora/RHEL):}
-			\begin{lstlisting}[language=bash]
-				# Aggiornare sistema
-				sudo dnf upgrade
-				
-				# Installare pacchetto
-				sudo dnf install nome-pacchetto
-				
-				# Rimuovere pacchetto
-				sudo dnf remove nome-pacchetto
-				
-				# Cercare pacchetto
-				dnf search termine
-				
-				# Info pacchetto
-				dnf info nome-pacchetto
-			\end{lstlisting}
-		\end{columns}
-	\end{frame}
+			# Aggiornare sistema
+			sudo apt upgrade
+			
+			# Installare pacchetto
+			sudo apt install nome-pacchetto
+			
+			# Rimuovere pacchetto
+			sudo apt remove nome-pacchetto
+			
+			# Cercare pacchetto
+			apt search termine
+		\end{lstlisting}
+		
+		\column{0.5\textwidth}
+		\textbf{DNF (Fedora/RHEL):}
+		
+		\raggedright
+		\begin{lstlisting}[
+			language=bash,
+			xleftmargin=0pt,
+			framexleftmargin=0pt,
+			columns=flexible,
+			keepspaces=true
+			]
+			# Aggiornare sistema
+			sudo dnf upgrade
+			
+			# Installare pacchetto
+			sudo dnf install nome-pacchetto
+			
+			# Rimuovere pacchetto
+			sudo dnf remove nome-pacchetto
+			
+			# Cercare pacchetto
+			dnf search termine
+			
+			# Info pacchetto
+			dnf info nome-pacchetto
+		\end{lstlisting}
+		
+	\end{columns}
+\end{frame}
+
+
 	
 	% Slide 27: Desktop Environments
 	\begin{frame}{Desktop Environment}
@@ -1141,68 +1161,102 @@
 		\end{columns}
 	\end{frame}
 	
-	% Slide 30: Permessi e Utenti
-	\begin{frame}[fragile]{Sistema di Permessi in Linux}
-		\textbf{Linux è un sistema multiutente con controllo degli accessi.}
+% Slide 30: Permessi e Utenti
+\begin{frame}[fragile]{Sistema di Permessi in Linux}
+	\raggedright
+	\textbf{Linux è un sistema multiutente con controllo degli accessi.}
+	
+	\begin{columns}[t]
+		\column{0.5\textwidth}
 		
-		\begin{columns}
-			\column{0.5\textwidth}
-			\textbf{Tipi di permessi:}
-			\begin{itemize}
-				\item \textbf{r} (read) - lettura
-				\item \textbf{w} (write) - scrittura
-				\item \textbf{x} (execute) - esecuzione
-			\end{itemize}
+		\textbf{Tipi di permessi:}
+		\begin{itemize}
+			\item \textbf{r} (read) -- lettura
+			\item \textbf{w} (write) -- scrittura
+			\item \textbf{x} (execute) -- esecuzione
+		\end{itemize}
+		
+		\vspace{0.2cm}
+		
+		\textbf{Categorie:}
+		\begin{itemize}
+			\item \textbf{u} (user) -- proprietario
+			\item \textbf{g} (group) -- gruppo
+			\item \textbf{o} (others) -- altri
+		\end{itemize}
+		
+		\vspace{0.2cm}
+		
+		\textbf{Esempio:}
+		\raggedright
+		\begin{lstlisting}[
+			language=bash,
+			xleftmargin=0pt,
+			framexleftmargin=0pt,
+			columns=flexible,
+			keepspaces=true
+			]
+			-rwxr-xr-x 1 user group
+		\end{lstlisting}
+		
+		\begin{itemize}
+			\item user: rwx (7)
+			\item group: r-x (5)
+			\item others: r-x (5)
+		\end{itemize}
+		
+		\column{0.5\textwidth}
+		
+		\textbf{Modificare permessi:}
+		\raggedright
+		\begin{lstlisting}[
+			language=bash,
+			xleftmargin=0pt,
+			framexleftmargin=0pt,
+			columns=flexible,
+			keepspaces=true
+			]
+			# Simbolico
+			chmod u+x file
+			chmod go-w file
+			chmod a+r file
 			
-			\vspace{0.2cm}
-			
-			\textbf{Categorie:}
-			\begin{itemize}
-				\item \textbf{u} (user) - proprietario
-				\item \textbf{g} (group) - gruppo
-				\item \textbf{o} (others) - altri
-			\end{itemize}
-			
-			\vspace{0.2cm}
-			
-			\textbf{Esempio:}
-			\begin{lstlisting}
-				-rwxr-xr-x 1 user group
-			\end{lstlisting}
-			\begin{itemize}
-				\item user: rwx (7)
-				\item group: r-x (5)
-				\item others: r-x (5)
-			\end{itemize}
-			
-			\column{0.5\textwidth}
-			\textbf{Modificare permessi:}
-			\begin{lstlisting}[language=bash]
-				# Simbolico
-				chmod u+x file
-				chmod go-w file
-				chmod a+r file
-				
-				# Numerico (ottale)
-				chmod 755 file
-				chmod 644 file
-				chmod 600 file
-			\end{lstlisting}
-			
-			\textbf{Cambiare proprietà:}
-			\begin{lstlisting}[language=bash]
-				chown user:group file
-				chown user file
-				chgrp group file
-			\end{lstlisting}
-			
-			\textbf{sudo:}
-			\begin{lstlisting}[language=bash]
-				sudo comando
-				# Esegue comando come root
-			\end{lstlisting}
-		\end{columns}
-	\end{frame}
+			# Numerico (ottale)
+			chmod 755 file
+			chmod 644 file
+			chmod 600 file
+		\end{lstlisting}
+		
+		\textbf{Cambiare proprietà:}
+		\raggedright
+		\begin{lstlisting}[
+			language=bash,
+			xleftmargin=0pt,
+			framexleftmargin=0pt,
+			columns=flexible,
+			keepspaces=true
+			]
+			chown user:group file
+			chown user file
+			chgrp group file
+		\end{lstlisting}
+		
+		\textbf{sudo:}
+		\raggedright
+		\begin{lstlisting}[
+			language=bash,
+			xleftmargin=0pt,
+			framexleftmargin=0pt,
+			columns=flexible,
+			keepspaces=true
+			]
+			sudo comando
+			# Esegue il comando come root
+		\end{lstlisting}
+		
+	\end{columns}
+\end{frame}
+
 	
 	% Slide 31: Vantaggi di Linux
 	\begin{frame}{Vantaggi di GNU/Linux}

@@ -1,0 +1,774 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[italian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{trees,positioning,shapes,arrows}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{array}
+\usepackage{longtable}
+
+% Configurazione listings per il codice
+\lstset{
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    backgroundcolor=\color{gray!10},
+    commentstyle=\color{green!50!black},
+    keywordstyle=\color{blue},
+    stringstyle=\color{red},
+    showstringspaces=false
+}
+
+% Configurazione header e footer
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{Filesystem e Permessi in Linux}
+\fancyhead[R]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\title{\textbf{Navigare nel Filesystem Linux\\e Gestione dei Permessi}}
+\author{Prof. Fedeli Massimo}
+\date{}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+
+\begin{abstract}
+Questo documento fornisce una guida completa alla navigazione del filesystem Linux, alla comprensione della sua struttura gerarchica, all'utilizzo dei comandi di base per la gestione di file e directory, e alla gestione dei permessi e della proprietà dei file. Gli argomenti trattati includono la struttura delle directory, i metacaratteri della shell, i permessi dei file, e i comandi fondamentali per operare sul filesystem.
+\end{abstract}
+
+\newpage
+\tableofcontents
+\newpage
+
+\section{Struttura del Filesystem Linux}
+
+\subsection{Organizzazione Gerarchica}
+
+Il filesystem di Linux è organizzato come una gerarchia di directory che inizia dalla directory radice (\texttt{/}). A differenza dei sistemi Windows che utilizzano lettere di unità separate (C:, D:, ecc.), Linux integra tutti i dispositivi di storage in un'unica struttura ad albero.
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[
+    level 1/.style={sibling distance=3cm, level distance=1.5cm},
+    level 2/.style={sibling distance=2cm, level distance=1.5cm},
+    every node/.style={draw, rectangle, minimum width=1.2cm, minimum height=0.6cm, font=\ttfamily\small}
+]
+\node {/}
+    child {node {bin}}
+    child {node {boot}}
+    child {node {dev}}
+    child {node {etc}}
+    child {node {home}
+        child {node {joe}
+            child {node {Desktop}}
+            child {node {Documents}}
+        }
+    }
+    child {node {lib}}
+    child {node {mnt}}
+    child {node {opt}}
+    child {node {root}}
+    child {node {usr}};
+\end{tikzpicture}
+\caption{Struttura gerarchica del filesystem Linux}
+\end{figure}
+
+\subsection{Directory Principali del Sistema}
+
+\begin{longtable}{|p{3cm}|p{11cm}|}
+\hline
+\textbf{Directory} & \textbf{Descrizione} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Directory} & \textbf{Descrizione} \\
+\hline
+\endhead
+\texttt{/bin} & Contiene i comandi utente comuni di Linux, come \texttt{ls}, \texttt{sort}, \texttt{date} e \texttt{chmod}. \\
+\hline
+\texttt{/boot} & Contiene il kernel Linux avviabile, il disco RAM iniziale e i file di configurazione del bootloader (GRUB). \\
+\hline
+\texttt{/dev} & Contiene file che rappresentano punti di accesso ai dispositivi sul sistema, inclusi terminali (\texttt{tty*}), dischi rigidi (\texttt{hd*} o \texttt{sd*}), RAM (\texttt{ram*}) e CD-ROM (\texttt{cd*}). \\
+\hline
+\texttt{/etc} & Contiene i file di configurazione amministrativa. La maggior parte di questi file sono file di testo normale che possono essere modificati con qualsiasi editor di testo. \\
+\hline
+\texttt{/home} & Contiene le directory assegnate a ciascun utente regolare con un account di accesso. L'utente root è un'eccezione, utilizzando \texttt{/root} come propria home directory. \\
+\hline
+\texttt{/media} & Fornisce una posizione standard per il montaggio automatico di dispositivi (in particolare supporti rimovibili). Se il supporto ha un nome di volume, tale nome viene tipicamente utilizzato come punto di montaggio. \\
+\hline
+\texttt{/lib} & Contiene le librerie condivise necessarie alle applicazioni in \texttt{/bin} e \texttt{/sbin} per avviare il sistema. \\
+\hline
+\texttt{/mnt} & Un punto di montaggio comune per molti dispositivi. Alcune persone lo utilizzano ancora per montare temporaneamente filesystem locali o remoti. \\
+\hline
+\texttt{/opt} & Struttura di directory disponibile per memorizzare software aggiuntivo. \\
+\hline
+\texttt{/proc} & Contiene informazioni sulle risorse di sistema. \\
+\hline
+\texttt{/root} & Rappresenta la home directory dell'utente root. Non risiede sotto \texttt{/home} per motivi di sicurezza. \\
+\hline
+\texttt{/sbin} & Contiene comandi amministrativi e processi daemon. \\
+\hline
+\texttt{/sys} & Contiene parametri per la gestione dello storage a blocchi e dei cgroups. \\
+\hline
+\texttt{/tmp} & Contiene file temporanei utilizzati dalle applicazioni. \\
+\hline
+\texttt{/usr} & Contiene documentazione utente, giochi, file grafici (X11), librerie e vari altri comandi e file che non sono necessari durante il processo di avvio. \\
+\hline
+\texttt{/var} & Contiene directory di dati utilizzati da varie applicazioni. Include file condivisi come server FTP (\texttt{/var/ftp}) o web server (\texttt{/var/www}), tutti i file di log di sistema (\texttt{/var/log}) e file di spool in \texttt{/var/spool}. \\
+\hline
+\end{longtable}
+
+\subsection{Differenze con i Filesystem Windows}
+
+\begin{itemize}
+    \item \textbf{Lettere di unità:} In Windows, lettere di unità diverse rappresentano dispositivi di storage diversi. In Linux, tutti i dispositivi sono collegati alla gerarchia del filesystem.
+    
+    \item \textbf{Separatori:} Linux utilizza la barra normale (\texttt{/}) invece della barra rovesciata (\textbackslash) per separare i nomi di directory. Esempio: \texttt{/home/joe} invece di \texttt{C:\textbackslash home\textbackslash joe}.
+    
+    \item \textbf{Estensioni file:} In DOS i nomi file hanno quasi sempre suffissi (\texttt{.txt}, \texttt{.docx}). In Linux, le estensioni a tre caratteri non hanno significato obbligatorio, anche se possono essere utili per identificare il tipo di file.
+    
+    \item \textbf{Permessi:} Ogni file e directory in Linux ha permessi e proprietà associati. Windows ha aggiunto queste funzionalità solo nelle versioni successive.
+\end{itemize}
+
+\section{Comandi di Base per il Filesystem}
+
+\subsection{Navigazione tra Directory}
+
+Il comando \texttt{cd} (change directory) è uno dei comandi più basilari utilizzati dalla shell.
+
+\begin{lstlisting}[language=bash]
+$ cd /usr/share/
+$ pwd
+/usr/share
+$ cd doc
+$ pwd
+/usr/share/doc
+$ cd
+$ pwd
+/home/chris
+\end{lstlisting}
+
+\subsubsection{Identificazione delle Directory}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|p{9cm}|}
+\hline
+\textbf{Simbolo} & \textbf{Significato} \\
+\hline
+\texttt{\$HOME} & Variabile d'ambiente che memorizza il nome della home directory \\
+\hline
+\texttt{\~{}} & Tilde rappresenta la home directory \\
+\hline
+\texttt{.} & Un singolo punto riferisce alla directory corrente \\
+\hline
+\texttt{..} & Due punti riferiscono alla directory immediatamente superiore \\
+\hline
+\texttt{\$PWD} & Variabile d'ambiente che riferisce alla directory di lavoro corrente \\
+\hline
+\texttt{\$OLDPWD} & Variabile d'ambiente che riferisce alla directory di lavoro precedente \\
+\hline
+\end{tabular}
+\caption{Simboli per identificare le directory}
+\end{table}
+
+\subsection{Creazione e Gestione di Directory}
+
+\begin{lstlisting}[language=bash]
+# Creare una nuova directory
+$ mkdir test
+
+# Verificare i permessi della directory
+$ ls -ld test
+drwxr-xr-x 2 joe sales 1024 Jan 24 12:17 test
+
+# Cambiare i permessi
+$ chmod 700 test
+
+# Creare strutture di directory multiple
+$ mkdir -p $HOME/test/documents/memos/
+\end{lstlisting}
+
+\subsection{Comandi Principali}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|p{9cm}|}
+\hline
+\textbf{Comando} & \textbf{Risultato} \\
+\hline
+\texttt{cd} & Cambia a un'altra directory \\
+\hline
+\texttt{pwd} & Stampa il nome della directory di lavoro corrente \\
+\hline
+\texttt{mkdir} & Crea una directory \\
+\hline
+\texttt{chmod} & Cambia i permessi su un file o directory \\
+\hline
+\texttt{ls} & Elenca il contenuto di una directory \\
+\hline
+\end{tabular}
+\caption{Comandi fondamentali per file e directory}
+\end{table}
+
+\section{Metacaratteri e Operatori}
+
+\subsection{Metacaratteri per la Corrispondenza dei File}
+
+La shell bash consente di utilizzare metacaratteri per risparmiare pressioni di tasti e riferirsi facilmente a gruppi di file.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|p{9cm}|}
+\hline
+\textbf{Metacarattere} & \textbf{Funzione} \\
+\hline
+\texttt{*} & Corrisponde a qualsiasi numero di caratteri \\
+\hline
+\texttt{?} & Corrisponde a un singolo carattere \\
+\hline
+\texttt{[...]} & Corrisponde a uno qualsiasi dei caratteri tra parentesi, che possono includere un intervallo separato da trattino \\
+\hline
+\end{tabular}
+\caption{Metacaratteri per la corrispondenza dei file}
+\end{table}
+
+\subsubsection{Esempi di Pattern Matching}
+
+\begin{lstlisting}[language=bash]
+$ touch apple banana grape grapefruit watermelon
+
+# Corrispondenza con asterisco
+$ ls a*
+apple
+
+$ ls g*
+grape grapefruit
+
+$ ls *e*
+apple grape grapefruit watermelon
+
+# Corrispondenza con punto interrogativo
+$ ls ????e
+apple grape
+
+$ ls g???e*
+grape grapefruit
+
+# Corrispondenza con parentesi quadre
+$ ls [abw]*
+apple banana watermelon
+
+$ ls [a-g]*
+apple banana grape grapefruit
+\end{lstlisting}
+
+\subsection{Metacaratteri di Redirezione}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|p{9cm}|}
+\hline
+\textbf{Carattere} & \textbf{Funzione} \\
+\hline
+\texttt{<} & Dirige il contenuto di un file al comando \\
+\hline
+\texttt{>} & Dirige l'output standard di un comando a un file (sovrascrive) \\
+\hline
+\texttt{2>} & Dirige l'errore standard (messaggi di errore) al file \\
+\hline
+\texttt{\&>} & Dirige sia l'output standard che l'errore standard al file \\
+\hline
+\texttt{>>} & Dirige l'output di un comando a un file, aggiungendolo alla fine \\
+\hline
+\end{tabular}
+\caption{Metacaratteri di redirezione dei file}
+\end{table}
+
+\subsubsection{Esempi di Redirezione}
+
+\begin{lstlisting}[language=bash]
+# Inviare il contenuto di un file via mail
+$ mail root < ~/.bashrc
+
+# Salvare l'output in un file
+$ man chmod | col -b > /tmp/chmod
+
+# Aggiungere testo a un file
+$ echo "Ho finito il progetto il $(date)" >> ~/progetti
+\end{lstlisting}
+
+\subsection{Espansione delle Parentesi Graffe}
+
+\begin{lstlisting}[language=bash]
+# Creare file multipli
+$ touch memo{1,2,3,4,5}
+$ ls
+memo1 memo2 memo3 memo4 memo5
+
+# Combinazioni multiple
+$ touch {John,Bill,Sally}-{Breakfast,Lunch,Dinner}
+$ ls
+Bill-Breakfast  Bill-Dinner   John-Breakfast  John-Dinner
+Bill-Lunch      John-Lunch    Sally-Breakfast Sally-Dinner
+                              Sally-Lunch
+
+# Utilizzo di intervalli
+$ touch {a..f}{1..5}
+$ ls
+a1 a2 a3 a4 a5 b1 b2 b3 b4 b5 c1 c2 c3 c4 c5
+d1 d2 d3 d4 d5 e1 e2 e3 e4 e5 f1 f2 f3 f4 f5
+\end{lstlisting}
+
+\section{Elencare File e Directory}
+
+\subsection{Il Comando ls}
+
+Il comando \texttt{ls} è il comando più comune per elencare informazioni su file e directory.
+
+\begin{lstlisting}[language=bash]
+# Elenco base
+$ ls
+
+# Elenco lungo con dettagli
+$ ls -l
+
+# Mostrare tutti i file inclusi quelli nascosti
+$ ls -a
+
+# Ordinare per tempo di modifica
+$ ls -t
+
+# Aggiungere indicatori di tipo file
+$ ls -F
+apple  banana  docs/  grape  grapefruit  script.sh*  watermelon
+\end{lstlisting}
+
+\subsection{Interpretazione dell'Output di ls -l}
+
+\begin{lstlisting}[language=bash]
+$ ls -l
+total 4
+-rw-rw-r--. 1 joe joe    0 Dec 18 13:38 apple
+lrwxrwxrwx. 1 joe joe    5 Dec 18 13:46 pointer_to_apple -> apple
+-rwxr-xr-x. 1 joe joe    0 Dec 18 13:37 scriptx.sh
+drwxrwxr-x. 2 joe joe 4096 Dec 18 13:38 Stuff
+\end{lstlisting}
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[node distance=0.5cm]
+\node[draw, rectangle, minimum width=2cm] (col1) {\texttt{-rw-rw-r--}};
+\node[draw, rectangle, right=of col1] (col2) {\texttt{1}};
+\node[draw, rectangle, right=of col2] (col3) {\texttt{joe}};
+\node[draw, rectangle, right=of col3] (col4) {\texttt{joe}};
+\node[draw, rectangle, right=of col4] (col5) {\texttt{0}};
+\node[draw, rectangle, right=of col5] (col6) {\texttt{Dec 18}};
+\node[draw, rectangle, right=of col6] (col7) {\texttt{apple}};
+
+\node[below=0.3cm of col1] {Permessi};
+\node[below=0.3cm of col2] {Link};
+\node[below=0.3cm of col3] {Proprietario};
+\node[below=0.3cm of col4] {Gruppo};
+\node[below=0.3cm of col5] {Dimensione};
+\node[below=0.3cm of col6] {Data};
+\node[below=0.3cm of col7] {Nome};
+\end{tikzpicture}
+\caption{Componenti dell'output di ls -l}
+\end{figure}
+
+\subsection{Tipi di File}
+
+\begin{itemize}
+    \item \texttt{-} = File regolare
+    \item \texttt{d} = Directory
+    \item \texttt{l} = Link simbolico
+    \item \texttt{b} = Dispositivo a blocchi
+    \item \texttt{c} = Dispositivo a caratteri
+    \item \texttt{s} = Socket
+    \item \texttt{p} = Named pipe
+\end{itemize}
+
+\section{Comprensione dei Permessi e della Proprietà}
+
+\subsection{Struttura dei Permessi}
+
+I permessi in Linux sono rappresentati da nove bit che definiscono chi può leggere, scrivere o eseguire un file.
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}
+\node[draw, rectangle, minimum width=2.5cm, minimum height=1cm] (owner) at (0,0) {rwx};
+\node[below=0.1cm of owner] {Proprietario};
+
+\node[draw, rectangle, minimum width=2.5cm, minimum height=1cm] (group) at (3,0) {rwx};
+\node[below=0.1cm of group] {Gruppo};
+
+\node[draw, rectangle, minimum width=2.5cm, minimum height=1cm] (others) at (6,0) {rwx};
+\node[below=0.1cm of others] {Altri};
+
+\draw[<->, thick] (-1.5,-1.5) -- (7.5,-1.5) node[midway, below] {9 bit di permessi};
+\end{tikzpicture}
+\caption{Struttura dei permessi dei file}
+\end{figure}
+
+\subsection{Significato dei Permessi}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|p{6cm}|p{6cm}|}
+\hline
+\textbf{Permesso} & \textbf{File} & \textbf{Directory} \\
+\hline
+\textbf{Read (r)} & Visualizzare il contenuto del file & Vedere quali file e sottodirectory contiene \\
+\hline
+\textbf{Write (w)} & Modificare il contenuto del file, rinominarlo o eliminarlo & Aggiungere o rimuovere file o sottodirectory \\
+\hline
+\textbf{Execute (x)} & Eseguire il file come programma & Cambiare nella directory come directory corrente, cercare attraverso la directory o eseguire un programma dalla directory \\
+\hline
+\end{tabular}
+\caption{Significato dei permessi per file e directory}
+\end{table}
+
+\subsection{Modifica dei Permessi con chmod (numeri)}
+
+Ogni permesso è assegnato a un numero: r=4, w=2, x=1. Il numero totale di ciascun set stabilisce i permessi.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|c|c|c|c|}
+\hline
+\textbf{Numero} & \textbf{Binario} & \textbf{Permessi} & \textbf{Descrizione} \\
+\hline
+0 & 000 & --- & Nessun permesso \\
+\hline
+1 & 001 & --x & Solo esecuzione \\
+\hline
+2 & 010 & -w- & Solo scrittura \\
+\hline
+3 & 011 & -wx & Scrittura ed esecuzione \\
+\hline
+4 & 100 & r-- & Solo lettura \\
+\hline
+5 & 101 & r-x & Lettura ed esecuzione \\
+\hline
+6 & 110 & rw- & Lettura e scrittura \\
+\hline
+7 & 111 & rwx & Tutti i permessi \\
+\hline
+\end{tabular}
+\caption{Valori numerici dei permessi}
+\end{table}
+
+\subsubsection{Esempi con chmod Numerici}
+
+\begin{lstlisting}[language=bash]
+# Permessi completi per tutti: rwxrwxrwx
+$ chmod 777 file
+
+# Proprietario completo, altri solo lettura ed esecuzione: rwxr-xr-x
+$ chmod 755 file
+
+# Proprietario lettura/scrittura, altri solo lettura: rw-r--r--
+$ chmod 644 file
+
+# Nessun permesso: ---------
+$ chmod 000 file
+
+# Applicare ricorsivamente
+$ chmod -R 755 $HOME/myapps
+\end{lstlisting}
+
+\subsection{Modifica dei Permessi con chmod (lettere)}
+
+È possibile attivare e disattivare i permessi usando i segni più (+) e meno (-) insieme a lettere.
+
+\begin{itemize}
+    \item \texttt{u} = user (proprietario)
+    \item \texttt{g} = group (gruppo)
+    \item \texttt{o} = others (altri)
+    \item \texttt{a} = all (tutti)
+    \item \texttt{r} = read (lettura)
+    \item \texttt{w} = write (scrittura)
+    \item \texttt{x} = execute (esecuzione)
+\end{itemize}
+
+\subsubsection{Esempi con chmod Letterali}
+
+\begin{lstlisting}[language=bash]
+# Rimuovere scrittura per tutti: r-xr-xr-x
+$ chmod a-w file
+
+# Rimuovere esecuzione per altri: rwxrwxrw-
+$ chmod o-x file
+
+# Rimuovere tutti i permessi per gruppo e altri: rwx------
+$ chmod go-rwx file
+
+# Aggiungere lettura/scrittura per proprietario: rw-------
+$ chmod u+rw file
+
+# Aggiungere esecuzione per tutti: --x--x--x
+$ chmod a+x file
+
+# Aggiungere lettura ed esecuzione per proprietario e gruppo: r-xr-x---
+$ chmod ug+rx file
+
+# Rimuovere scrittura per altri ricorsivamente
+$ chmod -R o-w $HOME/myapps
+\end{lstlisting}
+
+\subsection{Impostare i Permessi di Default con umask}
+
+Il comando \texttt{umask} determina i permessi predefiniti per nuovi file e directory.
+
+\begin{lstlisting}[language=bash]
+# Visualizzare il valore umask corrente
+$ umask
+0002
+
+# Esempi di diversi valori umask
+$ umask 777 ; touch file01 ; mkdir dir01 ; ls -ld file01 dir01
+d---------. 2 joe joe 6 Dec 19 11:03 dir01
+----------. 1 joe joe 0 Dec 19 11:02 file01
+
+$ umask 000 ; touch file02 ; mkdir dir02 ; ls -ld file02 dir02
+drwxrwxrwx. 2 joe joe 6 Dec 19 11:00 dir02/
+-rw-rw-rw-. 1 joe joe 0 Dec 19 10:59 file02
+
+$ umask 022 ; touch file03 ; mkdir dir03 ; ls -ld file03 dir03
+drwxr-xr-x. 2 joe joe 6 Dec 19 11:07 dir03
+-rw-r--r--. 1 joe joe 0 Dec 19 11:07 file03
+\end{lstlisting}
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[node distance=2cm]
+\node[draw, circle] (dir) {Directory: 777};
+\node[draw, circle, below left=of dir] (umask) {umask: 022};
+\node[draw, circle, below right=of dir] (result) {Risultato: 755};
+\draw[->] (dir) -- (umask);
+\draw[->] (umask) -- (result);
+\node[below=0.5cm of result] {drwxr-xr-x};
+\end{tikzpicture}
+\caption{Calcolo dei permessi con umask}
+\end{figure}
+
+\subsection{Cambiare la Proprietà dei File}
+
+Come utente root, è possibile cambiare la proprietà di file e directory.
+
+\begin{lstlisting}[language=bash]
+# Cambiare solo il proprietario
+$ chown joe /home/joe/memo.txt
+
+# Cambiare proprietario e gruppo
+$ chown joe:joe /home/joe/memo.txt
+
+# Applicare ricorsivamente
+$ chown -R joe:joe /media/myusb
+\end{lstlisting}
+
+\section{Spostare, Copiare e Rimuovere File}
+
+\subsection{Il Comando mv (Move)}
+
+\begin{lstlisting}[language=bash]
+# Rinominare un file
+$ mv abc def
+
+# Spostare un file nella home directory
+$ mv abc ~
+
+# Spostare una directory
+$ mv /home/joe/mymemos/ /home/joe/Documents/
+
+
+$ alias mv
+alias mv='mv -i'
+\end{lstlisting}
+
+\subsection{Il Comando cp (Copy)}
+
+\begin{lstlisting}[language=bash]
+# Copiare un file
+$ cp abc def
+
+# Copiare nella home directory
+$ cp abc ~
+
+# Copiare ricorsivamente una directory
+$ cp -r /usr/share/doc/bash-completion* /tmp/a/
+
+# Copiare preservando attributi (archive)
+$ cp -ra /usr/share/doc/bash-completion* /tmp/b/
+\end{lstlisting}
+
+\subsection{Il Comando rm (Remove)}
+
+\begin{lstlisting}[language=bash]
+# Rimuovere un file
+$ rm abc
+
+# Rimuovere tutti i file nella directory corrente
+$ rm *
+
+# Rimuovere una directory vuota
+$ rmdir /home/joe/nothing/
+
+# Rimuovere ricorsivamente con prompt
+$ rm -r /home/joe/bigdir/
+
+# Rimuovere forzatamente senza prompt
+$ rm -rf /home/joe/hugedir/
+\end{lstlisting}
+
+\section{Permessi Speciali}
+
+\subsection{Set UID e Set GID}
+
+Quando un file eseguibile ha il bit Set UID o Set GID attivato, viene eseguito con i permessi del proprietario o del gruppo del file, non dell'utente che lo esegue.
+
+\begin{lstlisting}[language=bash]
+# Esempio di file con Set UID
+$ ls -l /usr/bin/passwd
+-rwsr-xr-x. 1 root root 27856 Apr  1 2020 /usr/bin/passwd
+
+# Impostare Set UID
+$ chmod u+s file
+$ chmod 4755 file
+
+# Impostare Set GID
+$ chmod g+s file
+$ chmod 2755 file
+\end{lstlisting}
+
+\subsection{Sticky Bit}
+
+Lo sticky bit su una directory impedisce agli utenti di eliminare i file di altri utenti in quella directory.
+
+\begin{lstlisting}[language=bash]
+# Directory con sticky bit
+$ ls -ld /tmp
+drwxrwxrwt. 15 root root 4096 Dec 19 14:23 /tmp
+
+# Impostare sticky bit
+$ chmod +t directory
+$ chmod 1755 directory
+\end{lstlisting}
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[node distance=3cm]
+\node[draw, rectangle, text width=3cm, align=center] (normal) {File Normale\\-rwxr-xr-x};
+\node[draw, rectangle, text width=3cm, align=center, right=of normal] (setuid) {Set UID\\-rwsr-xr-x};
+\node[draw, rectangle, text width=3cm, align=center, below=1.5cm of normal] (setgid) {Set GID\\-rwxr-sr-x};
+\node[draw, rectangle, text width=3cm, align=center, below=1.5cm of setuid] (sticky) {Sticky Bit\\drwxrwxrwt};
+
+\draw[->] (normal) -- (setuid) node[midway, above] {\small s al posto di x};
+\draw[->] (normal) -- (setgid) node[midway, left] {\small s al posto di x};
+\draw[->] (setuid) -- (sticky) node[midway, right] {\small t al posto di x};
+\end{tikzpicture}
+\caption{Permessi speciali in Linux}
+\end{figure}
+
+\section{Comandi Avanzati di Elenco}
+
+\subsection{Opzioni Utili di ls}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|p{10cm}|}
+\hline
+\textbf{Opzione} & \textbf{Descrizione} \\
+\hline
+\texttt{-a} & Mostra tutti i file, inclusi quelli nascosti (che iniziano con .) \\
+\hline
+\texttt{-l} & Mostra formato lungo con permessi, proprietà, dimensione \\
+\hline
+\texttt{-h} & Mostra dimensioni in formato leggibile (KB, MB, GB) \\
+\hline
+\texttt{-t} & Ordina per tempo di modifica \\
+\hline
+\texttt{-r} & Inverte l'ordine di ordinamento \\
+\hline
+\texttt{-R} & Elenca ricorsivamente sottodirectory \\
+\hline
+\texttt{-S} & Ordina per dimensione file \\
+\hline
+\texttt{-d} & Elenca directory stesse, non il loro contenuto \\
+\hline
+\texttt{-F} & Aggiunge indicatori di tipo (/ per directory, * per eseguibili) \\
+\hline
+\texttt{--color} & Colora l'output per tipo di file \\
+\hline
+\end{tabular}
+\caption{Opzioni comuni del comando ls}
+\end{table}
+
+\subsection{Esempi Combinati}
+
+\begin{lstlisting}[language=bash]
+# Elenco lungo con file nascosti e dimensioni leggibili
+$ ls -lah
+
+# Ordinare per dimensione in ordine inverso
+$ ls -lSr
+
+# Elenco ricorsivo colorato
+$ ls -R --color=auto
+
+# Nascondere file che iniziano con 'g'
+$ ls --hide=g*
+
+# Mostrare solo info sulla directory
+$ ls -ld $HOME/test/
+\end{lstlisting}
+
+\section{Conclusioni}
+
+La gestione efficace del filesystem Linux richiede la comprensione di diversi concetti fondamentali:
+
+\begin{enumerate}
+    \item \textbf{Struttura gerarchica:} Tutto parte dalla radice (/) e si organizza in un albero di directory
+    \item \textbf{Permessi:} Controllano chi può accedere e modificare file e directory
+    \item \textbf{Proprietà:} Ogni file appartiene a un utente e a un gruppo
+    \item \textbf{Metacaratteri:} Facilitano il lavoro con gruppi di file
+    \item \textbf{Comandi di base:} cd, ls, mkdir, chmod, chown, mv, cp, rm sono essenziali
+\end{enumerate}
+
+La padronanza di questi strumenti e concetti è fondamentale per lavorare efficacemente in un ambiente Linux, sia come utente che come amministratore di sistema.
+
+\subsection{Best Practices}
+
+\begin{itemize}
+    \item Utilizzare sempre l'opzione \texttt{-i} (interattiva) con comandi potenzialmente distruttivi come rm, mv, cp
+    \item Prestare attenzione ai permessi quando si condividono file
+    \item Usare umask appropriati per impostare permessi predefiniti sicuri
+    \item Verificare sempre i permessi prima di eseguire script o programmi
+    \item Utilizzare i permessi più restrittivi possibili per motivi di sicurezza
+    \item Documentare le modifiche ai permessi e alla proprietà dei file di sistema
+\end{itemize}
+
+\section{Riferimenti Utili}
+
+Per approfondire gli argomenti trattati in questo documento:
+
+\begin{itemize}
+    \item Man pages: \texttt{man ls}, \texttt{man chmod}, \texttt{man chown}
+    \item Filesystem Hierarchy Standard (FHS): documentazione ufficiale sulla struttura delle directory
+    \item Linux Documentation Project: guide complete su tutti gli aspetti di Linux
+    \item Bash manual: per approfondire i metacaratteri e le funzionalità della shell
+\end{itemize}
+
+\end{document}

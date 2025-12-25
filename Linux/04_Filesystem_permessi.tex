@@ -1,0 +1,339 @@
+\documentclass[aspectratio=169,10pt]{beamer}
+
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{adjustbox}
+\usepackage{multirow}
+\usepackage{booktabs}
+\usepackage{amssymb}
+\usepackage{fontawesome} % per \faLock
+\usepackage{makecell}
+
+\usetikzlibrary{
+	shapes,
+	arrows,
+	positioning,
+	trees,
+	shadows,
+	fit,
+	backgrounds,
+	decorations.pathreplacing, % necessario per brace
+	calc
+}
+
+% Tema e colori
+\usetheme{Madrid}
+\usecolortheme{default}
+
+% Definizione colori personalizzati
+\definecolor{darkblue}{RGB}{0,51,102}
+\definecolor{lightblue}{RGB}{102,178,255}
+\definecolor{codecolor}{RGB}{40,40,40}
+\definecolor{commentcolor}{RGB}{0,128,0}
+\definecolor{stringcolor}{RGB}{163,21,21}
+\definecolor{terminalgreen}{RGB}{0,200,0}
+
+% Configurazione colori tema
+\setbeamercolor{palette primary}{bg=darkblue,fg=white}
+\setbeamercolor{palette secondary}{bg=lightblue,fg=white}
+\setbeamercolor{palette tertiary}{bg=darkblue,fg=white}
+\setbeamercolor{structure}{fg=darkblue}
+\setbeamercolor{frametitle}{bg=darkblue,fg=white}
+\setbeamercolor{block title}{bg=lightblue,fg=white}
+\setbeamercolor{block body}{bg=lightblue!10}
+
+% Configurazione listing per codice
+\lstset{
+	basicstyle=\ttfamily\small,
+	keywordstyle=\color{blue}\bfseries,
+	commentstyle=\color{commentcolor}\itshape,
+	stringstyle=\color{stringcolor},
+	showstringspaces=false,
+	breaklines=true,
+	frame=single,
+	backgroundcolor=\color{codecolor!5},
+	numbers=none,
+	xleftmargin=10pt,
+	xrightmargin=10pt,
+	framexleftmargin=5pt,
+	framexrightmargin=5pt,
+	language=bash
+}
+
+% Informazioni titolo
+\title[Filesystem e Permessi Linux]{Il Filesystem Linux e la Gestione dei Permessi}
+\subtitle{Struttura, Organizzazione e Sicurezza}
+\author{IIS Fermi Sacconi Ceci}
+\institute{Corso di Informatica - Sistemi Operativi}
+\date{\today}
+
+\begin{document}
+	
+	% Slide 1: Titolo
+	\begin{frame}
+		\titlepage
+	\end{frame}
+	
+	% Slide 2: Indice
+	\begin{frame}{Indice}
+		\tableofcontents
+	\end{frame}
+	
+	% SEZIONE 1: INTRODUZIONE AL FILESYSTEM
+	\section{Introduzione al Filesystem Linux}
+	
+	% Slide 3: Cos'è un Filesystem
+	\begin{frame}{Cos'è un Filesystem?}
+		\begin{columns}
+			\column{0.5\textwidth}
+			\begin{block}{Definizione}
+				Un \textbf{filesystem} è il metodo con cui un sistema operativo organizza e gestisce i file su un dispositivo di memorizzazione.
+			\end{block}
+			
+			\vspace{0.3cm}
+			\textbf{Funzioni principali:}
+			\begin{itemize}
+				\item Organizzazione gerarchica dei dati
+				\item Gestione dello spazio su disco
+				\item Controllo degli accessi
+				\item Metadati dei file
+			\end{itemize}
+			
+			\column{0.5\textwidth}
+			\begin{center}
+				\begin{tikzpicture}[scale=0.8]
+					\node[draw, rectangle, fill=lightblue!30, minimum width=4cm, minimum height=1cm] (disk) at (0,0) {\textbf{Dispositivo di Storage}};
+					\node[draw, rectangle, fill=yellow!30, minimum width=3.5cm, minimum height=0.8cm] (fs) at (0,1.5) {\textbf{Filesystem}};
+					\node[draw, rectangle, fill=green!30, minimum width=3cm, minimum height=0.7cm] (files) at (0,3) {\textbf{File e Directory}};
+					\draw[->,thick] (disk) -- (fs);
+					\draw[->,thick] (fs) -- (files);
+				\end{tikzpicture}
+			\end{center}
+		\end{columns}
+	\end{frame}
+	
+	% Slide 4: Struttura gerarchica
+	\begin{frame}{Struttura Gerarchica del Filesystem Linux}
+		\begin{columns}
+			\column{0.45\textwidth}
+			\textbf{Caratteristiche:}
+			\begin{itemize}
+				\item \textbf{Root directory} (/) alla base
+				\item Struttura ad \textbf{albero invertito}
+				\item Tutti i dispositivi integrati nella gerarchia
+				\item Nessuna lettera di unità (C:, D:, ecc.)
+			\end{itemize}
+			
+			\vspace{0.3cm}
+			\begin{alertblock}{Importante}
+				A differenza di Windows, Linux usa \texttt{/} (forward slash) come separatore di directory, non \texttt{\textbackslash} (backslash).
+			\end{alertblock}
+			
+			\column{0.55\textwidth}
+			\begin{center}
+				\begin{tikzpicture}[
+					level distance=1.2cm,
+					level 1/.style={sibling distance=2.5cm},
+					level 2/.style={sibling distance=1.5cm},
+					every node/.style={draw,rectangle,rounded corners,fill=lightblue!20,minimum width=1.2cm,font=\small}
+					]
+					\node {\textbf{/}}
+					child {node {bin}}
+					child {node {etc}}
+					child {node {home}
+						child {node {joe}}
+						child {node {mary}}
+					}
+					child {node {usr}}
+					child {node {var}};
+				\end{tikzpicture}
+			\end{center}
+		\end{columns}
+	\end{frame}
+	
+	% Slide 5-7: Directory principali
+	\begin{frame}[fragile]{Directory Principali del Sistema (1/3)}
+		\begin{table}
+			\footnotesize
+			\begin{tabular}{@{}p{1.5cm}p{9cm}@{}}
+				\toprule
+				\textbf{Directory} & \textbf{Descrizione} \\
+				\midrule
+				\texttt{\textbf{/}} & \textbf{Root} - Directory radice del sistema, punto di partenza della gerarchia \\[0.2cm]
+				\texttt{/bin} & Comandi binari essenziali del sistema (\texttt{ls}, \texttt{cp}, \texttt{mv}, \texttt{cat}, ecc.) \\[0.2cm]
+				\texttt{/boot} & File di avvio del sistema: kernel Linux, RAM disk iniziale, bootloader (GRUB) \\[0.2cm]
+				\texttt{/dev} & File di dispositivo (device files): hard disk (\texttt{sda}, \texttt{sdb}), terminali (\texttt{tty}), CD-ROM \\[0.2cm]
+				\texttt{/etc} & File di configurazione del sistema (file testuali editabili) \\
+				\bottomrule
+			\end{tabular}
+		\end{table}
+		
+		\vspace{0.3cm}
+		\begin{exampleblock}{Esempio}
+			\texttt{/etc/passwd} contiene informazioni sugli utenti del sistema
+		\end{exampleblock}
+	\end{frame}
+	
+	\begin{frame}[fragile]{Directory Principali del Sistema (2/3)}
+		\begin{table}
+			\footnotesize
+			\begin{tabular}{@{}p{1.5cm}p{9cm}@{}}
+				\toprule
+				\textbf{Directory} & \textbf{Descrizione} \\
+				\midrule
+				\texttt{/home} & Directory home degli utenti normali (\texttt{/home/joe}, \texttt{/home/mary}) \\[0.2cm]
+				\texttt{/lib} & Librerie condivise necessarie per l'avvio del sistema \\[0.2cm]
+				\texttt{/media} & Punto di mount per dispositivi removibili (USB, CD-ROM) con automount \\[0.2cm]
+				\texttt{/mnt} & Punto di mount temporaneo per filesystem montati manualmente \\[0.2cm]
+				\texttt{/opt} & Pacchetti software opzionali e applicazioni di terze parti \\
+				\bottomrule
+			\end{tabular}
+		\end{table}
+		
+		\vspace{0.3cm}
+		\begin{exampleblock}{Esempio di montaggio}
+			USB drive con nome \texttt{myusb} viene montato su \texttt{/media/myusb}
+		\end{exampleblock}
+	\end{frame}
+	
+	\begin{frame}[fragile]{Directory Principali del Sistema (3/3)}
+		\begin{table}
+			\footnotesize
+			\begin{tabular}{@{}p{1.5cm}p{9cm}@{}}
+				\toprule
+				\textbf{Directory} & \textbf{Descrizione} \\
+				\midrule
+				\texttt{/proc} & Filesystem virtuale con informazioni sui processi e risorse di sistema \\[0.2cm]
+				\texttt{/root} & Directory home dell'utente \textbf{root} (amministratore) - separata per sicurezza \\[0.2cm]
+				\texttt{/sbin} & Comandi di sistema per l'amministrazione (usati da root) \\[0.2cm]
+				\texttt{/tmp} & File temporanei (eliminati al riavvio) \\[0.2cm]
+				\texttt{/usr} & Programmi e dati utente (applicazioni, documentazione, librerie) \\[0.2cm]
+				\texttt{/var} & Dati variabili: log di sistema, spool di stampa, cache, database \\
+				\bottomrule
+			\end{tabular}
+		\end{table}
+	\end{frame}
+	
+	% Slide 8: Differenze Linux vs Windows
+	\begin{frame}{Filesystem Linux vs Windows}
+		\begin{columns}
+			\column{0.5\textwidth}
+			\textbf{\color{darkblue}Linux}
+			\begin{itemize}
+				\item[$\checkmark$] Unica gerarchia partendo da \texttt{/}
+				\item[$\checkmark$] Usa \texttt{/} (forward slash)
+				\item[$\checkmark$] Case-sensitive: \texttt{File.txt} $\neq$ \texttt{file.txt}
+				\item[$\checkmark$] Estensioni facoltative
+				\item[$\checkmark$] Permessi integrati nel filesystem
+				\item[$\checkmark$] Dispositivi integrati nella gerarchia
+			\end{itemize}
+			
+			\column{0.5\textwidth}
+			\textbf{\color{darkblue}Windows}
+			\begin{itemize}
+				\item[$\times$] Lettere di unità separate (C:, D:)
+				\item[$\times$] Usa \texttt{\textbackslash} (backslash)
+				\item[$\times$] Case-insensitive
+				\item[$\times$] Estensioni obbligatorie (.exe, .bat)
+				\item[$\times$] Permessi aggiunti successivamente
+				\item[$\times$] Dispositivi con lettere separate
+			\end{itemize}
+		\end{columns}
+		
+		\vspace{0.4cm}
+		\begin{block}{Esempio di path}
+			\textbf{Linux:} \texttt{/home/joe/documenti/relazione.txt}\\
+			\textbf{Windows:} \texttt{C:\textbackslash Users\textbackslash joe\textbackslash Documents\textbackslash relazione.txt}
+		\end{block}
+	\end{frame}
+	
+	% SEZIONE 2: NAVIGAZIONE
+	\section{Navigazione nel Filesystem}
+	
+	% ... (le slide successive rimangono quasi identiche, con piccoli aggiustamenti minori)
+	
+	% Esempio di correzione importante: Slide 15 (lock icon)
+	\begin{frame}{Sistema dei Permessi Linux}
+		\begin{columns}
+			\column{0.5\textwidth}
+			\begin{block}{Perché i permessi?}
+				\begin{itemize}
+					\item \textbf{Sicurezza}: protezione dei file
+					\item \textbf{Privacy}: isolamento tra utenti
+					\item \textbf{Integrità}: protezione file di sistema
+					\item \textbf{Multiutenza}: sistema condiviso
+				\end{itemize}
+			\end{block}
+			
+			\vspace{0.3cm}
+			\begin{alertblock}{Importante}
+				Ogni file e directory ha:
+				\begin{enumerate}
+					\item Proprietario (owner)
+					\item Gruppo (group)
+					\item Permessi di accesso
+				\end{enumerate}
+			\end{alertblock}
+			
+			\column{0.5\textwidth}
+			\begin{center}
+				\begin{tikzpicture}[scale=0.9]
+					\node[draw, rectangle, fill=yellow!20, minimum width=4cm, minimum height=2.5cm] (file) at (0,0) {};
+					\node[font=\small\bfseries] at (0,0.8) {File / Directory};
+					\node[font=\small, text width=3.5cm, align=left] at (0,0.1) {
+						\textbf{Owner:} joe\\
+						\textbf{Group:} developers\\
+						\textbf{Permessi:} rwxr-xr--
+					};
+					\node[font=\Huge] at (0,-0.7) {\faLock};
+				\end{tikzpicture}
+			\end{center}
+		\end{columns}
+	\end{frame}
+	
+	% Slide 16: Struttura permessi con brace corretti
+	\begin{frame}[fragile]{Struttura dei 9 Bit di Permesso}
+		\begin{center}
+			\begin{tikzpicture}[scale=1.1]
+				\foreach \x/\letter/\color in {0/r/red!30, 1/w/green!30, 2/x/blue!30, 3/r/red!20, 4/w/green!20, 5/x/blue!20, 6/r/red!10, 7/w/green!10, 8/x/blue!10} {
+					\node[draw, rectangle, minimum width=0.8cm, minimum height=0.8cm, fill=\color] at (\x*0.9,0) {\texttt{\letter}};
+				}
+				
+				\draw[decorate,decoration={brace,amplitude=5pt,mirror}] (-0.2,-0.8) -- (2.3,-0.8) node[midway,below,yshift=-0.3cm] {\small Owner};
+				\draw[decorate,decoration={brace,amplitude=5pt,mirror}] (2.6,-0.8) -- (5.0,-0.8) node[midway,below,yshift=-0.3cm] {\small Group};
+				\draw[decorate,decoration={brace,amplitude=5pt,mirror}] (5.3,-0.8) -- (7.7,-0.8) node[midway,below,yshift=-0.3cm] {\small Others};
+				
+				\node[above=0.4cm of {$(0*0.9,0)$}] {\small read};
+				\node[above=0.4cm of {$(1*0.9,0)$}] {\small write};
+				\node[above=0.4cm of {$(2*0.9,0)$}] {\small execute};
+			\end{tikzpicture}
+		\end{center}
+		
+		% ... resto del contenuto identico
+	\end{frame}
+	
+	% Slide finale corretta
+	\begin{frame}[plain]
+		\begin{center}
+			{\huge \textbf{Grazie per l'attenzione!}}
+			
+			\vspace{1cm}
+			{\large Domande?}
+			
+			\vspace{1.5cm}
+			\begin{tikzpicture}
+				\node[draw, rectangle, rounded corners, fill=darkblue, text=white, minimum width=8cm, minimum height=1.5cm, font=\large] {
+					\textbf{IIS Fermi Sacconi Ceci}
+				};
+			\end{tikzpicture}
+			
+			\vspace{0.5cm}
+			{\small Corso di Informatica - Sistemi Operativi Linux}
+		\end{center}
+	\end{frame}
+	
+\end{document}

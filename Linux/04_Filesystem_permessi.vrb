@@ -1,0 +1,18 @@
+\frametitle{Struttura dei 9 Bit di Permesso}
+\begin{center}
+			\begin{tikzpicture}[scale=1.1]
+				\foreach \x/\letter/\color in {0/r/red!30, 1/w/green!30, 2/x/blue!30, 3/r/red!20, 4/w/green!20, 5/x/blue!20, 6/r/red!10, 7/w/green!10, 8/x/blue!10} {
+					\node[draw, rectangle, minimum width=0.8cm, minimum height=0.8cm, fill=\color] at (\x*0.9,0) {\texttt{\letter}};
+				}
+				
+				\draw[decorate,decoration={brace,amplitude=5pt,mirror}] (-0.2,-0.8) -- (2.3,-0.8) node[midway,below,yshift=-0.3cm] {\small Owner};
+				\draw[decorate,decoration={brace,amplitude=5pt,mirror}] (2.6,-0.8) -- (5.0,-0.8) node[midway,below,yshift=-0.3cm] {\small Group};
+				\draw[decorate,decoration={brace,amplitude=5pt,mirror}] (5.3,-0.8) -- (7.7,-0.8) node[midway,below,yshift=-0.3cm] {\small Others};
+				
+				\node[above=0.4cm of {$(0*0.9,0)$}] {\small read};
+				\node[above=0.4cm of {$(1*0.9,0)$}] {\small write};
+				\node[above=0.4cm of {$(2*0.9,0)$}] {\small execute};
+			\end{tikzpicture}
+		\end{center}
+		
+		% ... resto del contenuto identico
