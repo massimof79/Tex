@@ -1,0 +1,20 @@
+\frametitle{find: Ricerca Avanzata}
+\begin{lstlisting}
+# File > 100MB
+find / -xdev -size +100M -ls
+
+# File utente specifico, ordinati
+find / -xdev -user john | xargs ls -lhS > /tmp/john.txt
+
+# Modificati ultimi 7 giorni > 50MB
+find /var/log -mtime -7 -size +50M
+
+# Non acceduti da 1 anno
+find /home -atime +365 -size +10M
+
+# Pulizia file temporanei vecchi
+find /tmp -type f -mtime +30 -delete
+
+# Top 20 directory
+find / -xdev -type d -exec du -sh {} \; | sort -hr | head -20
+\end{lstlisting}

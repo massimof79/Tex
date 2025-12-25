@@ -1,0 +1,1228 @@
+\documentclass[aspectratio=169]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{colortbl}
+
+% Tema Beamer
+\usetheme{Madrid}
+\usecolortheme{default}
+
+% Colori personalizzati
+\definecolor{primaryblue}{RGB}{0,102,204}
+\definecolor{secondaryblue}{RGB}{51,153,255}
+\definecolor{accentorange}{RGB}{255,102,0}
+\definecolor{darkgray}{RGB}{64,64,64}
+\definecolor{codebackground}{RGB}{245,245,245}
+
+\setbeamercolor{structure}{fg=primaryblue}
+\setbeamercolor{frametitle}{bg=primaryblue,fg=white}
+\setbeamercolor{block title}{bg=secondaryblue,fg=white}
+\setbeamercolor{block body}{bg=secondaryblue!10}
+\setbeamercolor{block title alerted}{bg=accentorange,fg=white}
+\setbeamercolor{block body alerted}{bg=accentorange!10}
+
+% Configurazione listings
+\lstset{
+    basicstyle=\ttfamily\footnotesize,
+    keywordstyle=\color{primaryblue}\bfseries,
+    commentstyle=\color{green!60!black}\itshape,
+    stringstyle=\color{red!80!black},
+    backgroundcolor=\color{codebackground},
+    showstringspaces=false,
+    breaklines=true,
+    frame=single,
+    rulecolor=\color{black!30},
+    numbers=none,
+    xleftmargin=5pt,
+    xrightmargin=5pt,
+    language=bash
+}
+
+% Informazioni del documento
+\title{Amministrazione Server Linux}
+\subtitle{Network e Condivisione Risorse}
+\author{Prof. Fedeli Massimo}
+\institute{Tutti i diritti riservati}
+\date{\today}
+
+% Logo nell'angolo
+\logo{\includegraphics[height=0.6cm]{example-image}}
+
+\begin{document}
+
+% Slide titolo
+\begin{frame}
+\titlepage
+\end{frame}
+
+% Indice
+\begin{frame}{Sommario}
+\tableofcontents
+\end{frame}
+
+%=============================================================================
+\section{Introduzione}
+%=============================================================================
+
+\begin{frame}{Amministrazione Server Linux}
+\begin{block}{Definizione}
+Un \textbf{server Linux} è un sistema operativo configurato per fornire servizi specifici ad altri computer attraverso una rete, operando 24/7/365.
+\end{block}
+
+\vspace{0.5cm}
+
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{Caratteristiche principali:}
+\begin{itemize}
+    \item Disponibilità continua
+    \item Gestione remota
+    \item Sicurezza rafforzata
+    \item Monitoraggio automatico
+    \item Scalabilità
+\end{itemize}
+
+\column{0.5\textwidth}
+\begin{center}
+\begin{tikzpicture}[scale=0.8]
+    % Server centrale
+    \draw[fill=primaryblue!30] (0,0) rectangle (2,1.5);
+    \node at (1,0.75) {\small Server};
+    
+    % Clients
+    \foreach \x/\y in {-2/2, 2/2, -2/-1, 2/-1} {
+        \draw[fill=secondaryblue!30] (\x,\y) circle (0.3);
+        \draw[->,thick] (\x,\y) -- (1,0.75);
+    }
+\end{tikzpicture}
+\end{center}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Porte e Servizi Standard}
+\begin{table}
+\centering
+\begin{tabular}{lcc}
+\toprule
+\textbf{Servizio} & \textbf{Porta} & \textbf{Protocollo} \\
+\midrule
+SSH & 22 & TCP \\
+HTTP & 80 & TCP \\
+HTTPS & 443 & TCP \\
+FTP & 21 & TCP \\
+DNS & 53 & TCP/UDP \\
+SMTP & 25 & TCP \\
+MySQL & 3306 & TCP \\
+PostgreSQL & 5432 & TCP \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{alertblock}{Importante}
+La gestione corretta delle porte è cruciale per sicurezza e funzionalità!
+\end{alertblock}
+\end{frame}
+
+%=============================================================================
+\section{Procedura di Setup}
+%=============================================================================
+
+\begin{frame}{Le 5 Fasi di Setup}
+\begin{center}
+\begin{tikzpicture}[
+    box/.style={rectangle, draw, fill=primaryblue!20, minimum width=3cm, minimum height=1cm, text centered},
+    arrow/.style={->, thick}
+]
+    \node[box] (install) at (0,4) {\textbf{1. Installazione}};
+    \node[box] (config) at (0,3) {\textbf{2. Configurazione}};
+    \node[box] (start) at (0,2) {\textbf{3. Avvio}};
+    \node[box] (secure) at (0,1) {\textbf{4. Sicurezza}};
+    \node[box] (monitor) at (0,0) {\textbf{5. Monitoraggio}};
+    
+    \draw[arrow] (install) -- (config);
+    \draw[arrow] (config) -- (start);
+    \draw[arrow] (start) -- (secure);
+    \draw[arrow] (secure) -- (monitor);
+    \draw[arrow, bend right=45] (monitor.west) to node[left] {\tiny Continuo} (install.west);
+\end{tikzpicture}
+\end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Fase 1: Installazione - Distribuzioni}
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{Enterprise:}
+\begin{itemize}
+    \item Red Hat Enterprise Linux (RHEL)
+    \item Ubuntu Server
+    \item SUSE Linux Enterprise
+\end{itemize}
+
+\vspace{0.3cm}
+\textbf{Community:}
+\begin{itemize}
+    \item Fedora
+    \item Debian
+    \item Rocky Linux / AlmaLinux
+\end{itemize}
+
+\column{0.5\textwidth}
+\begin{block}{Installazione Pacchetti}
+\begin{lstlisting}
+# dnf grouplist
+# dnf groupinstall "Web Server"
+# dnf install httpd mod_ssl
+\end{lstlisting}
+\end{block}
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Principali Tipi di Server}
+\begin{columns}[t]
+\column{0.33\textwidth}
+\textbf{Web \& File}
+\begin{itemize}
+    \item Apache/Nginx
+    \item Samba (SMB/CIFS)
+    \item NFS
+    \item FTP (vsftpd)
+\end{itemize}
+
+\column{0.33\textwidth}
+\textbf{Database \& Mail}
+\begin{itemize}
+    \item MariaDB/MySQL
+    \item PostgreSQL
+    \item Postfix
+    \item Dovecot
+\end{itemize}
+
+\column{0.33\textwidth}
+\textbf{Infrastruttura}
+\begin{itemize}
+    \item DNS (BIND)
+    \item DHCP
+    \item LDAP
+    \item NTP (chrony)
+\end{itemize}
+\end{columns}
+
+\vspace{0.5cm}
+
+\begin{exampleblock}{Esempio: Installazione Apache}
+\begin{lstlisting}
+# dnf install httpd mod_ssl
+# systemctl enable httpd
+# systemctl start httpd
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Fase 2: File di Configurazione}
+\textbf{Struttura tipica in /etc:}
+
+\begin{lstlisting}
+/etc/httpd/
+├── conf/
+│   └── httpd.conf          # Config principale
+├── conf.d/
+│   ├── ssl.conf            # Moduli aggiuntivi
+│   └── php.conf
+└── conf.modules.d/
+\end{lstlisting}
+
+\begin{block}{Best Practice}
+\begin{itemize}
+    \item Usa \texttt{vim} invece di \texttt{vi} (syntax highlighting)
+    \item Backup prima di modificare: \texttt{cp file file.bak}
+    \item Test configurazione prima di riavviare servizio
+    \item Documenta le modifiche
+\end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{Fase 3: Gestione Servizi con systemd}
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{Comandi Base:}
+\begin{lstlisting}
+# Stato servizio
+systemctl status httpd
+
+# Start/Stop
+systemctl start httpd
+systemctl stop httpd
+systemctl restart httpd
+
+# Ricarica config
+systemctl reload httpd
+\end{lstlisting}
+
+\column{0.5\textwidth}
+\textbf{Avvio Automatico:}
+\begin{lstlisting}
+# Abilita all'avvio
+systemctl enable httpd
+
+# Disabilita
+systemctl disable httpd
+
+# Verifica
+systemctl is-enabled httpd
+\end{lstlisting}
+\end{columns}
+
+\vspace{0.3cm}
+
+\begin{alertblock}{Attenzione}
+Verificare sempre lo stato dopo modifiche con \texttt{systemctl status}!
+\end{alertblock}
+\end{frame}
+
+%=============================================================================
+\section{Sicurezza}
+%=============================================================================
+
+\begin{frame}{Livelli di Sicurezza}
+\begin{center}
+\begin{tikzpicture}[scale=0.9]
+    % Layer architecture
+    \draw[fill=red!20] (0,0) rectangle (10,1);
+    \node at (5,0.5) {\textbf{Password \& Autenticazione}};
+    
+    \draw[fill=orange!20] (0,1) rectangle (10,2);
+    \node at (5,1.5) {\textbf{Firewall (iptables/firewalld)}};
+    
+    \draw[fill=yellow!20] (0,2) rectangle (10,3);
+    \node at (5,2.5) {\textbf{SELinux}};
+    
+    \draw[fill=green!20] (0,3) rectangle (10,4);
+    \node at (5,3.5) {\textbf{Configurazioni Specifiche Servizi}};
+    
+    \draw[fill=blue!20] (0,4) rectangle (10,5);
+    \node at (5,4.5) {\textbf{Monitoraggio e Logging}};
+\end{tikzpicture}
+\end{center}
+
+\textbf{Principio:} Difesa in profondità (Defense in Depth)
+\end{frame}
+
+\begin{frame}[fragile]{Autenticazione: Password vs Chiavi SSH}
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{Password}
+\begin{itemize}
+    \item[$-$] Vulnerabile a brute force
+    \item[$-$] Può essere intercettata
+    \item[$-$] Deve essere ricordata
+    \item[$+$] Semplice da configurare
+\end{itemize}
+
+\vspace{0.3cm}
+
+\begin{lstlisting}
+# Disabilita login root
+# /etc/ssh/sshd_config
+PermitRootLogin no
+\end{lstlisting}
+
+\column{0.5\textwidth}
+\textbf{Chiavi SSH}
+\begin{itemize}
+    \item[$+$] Impossibile brute force
+    \item[$+$] Crittograficamente sicura
+    \item[$+$] Automazione possibile
+    \item[$+$] No password da ricordare
+\end{itemize}
+
+\vspace{0.3cm}
+
+\begin{lstlisting}
+# Genera chiave
+ssh-keygen -t rsa -b 4096
+
+# Copia su server
+ssh-copy-id user@server
+\end{lstlisting}
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Firewall: firewalld}
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{Concetti Base:}
+\begin{itemize}
+    \item \textbf{Zone}: Livelli di fiducia
+    \item \textbf{Servizi}: Porte predefinite
+    \item \textbf{Runtime}: Temporaneo
+    \item \textbf{Permanent}: Persistente
+\end{itemize}
+
+\column{0.5\textwidth}
+\begin{lstlisting}
+# Stato firewall
+firewall-cmd --state
+
+# Zone attive
+firewall-cmd --get-active-zones
+
+# Permetti HTTP
+firewall-cmd --permanent \
+  --add-service=http
+firewall-cmd --reload
+\end{lstlisting}
+\end{columns}
+
+\vspace{0.3cm}
+
+\begin{exampleblock}{Esempio: Apertura Porta Custom}
+\begin{lstlisting}
+firewall-cmd --permanent --add-port=8080/tcp
+firewall-cmd --reload
+firewall-cmd --list-ports
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}{SELinux: Security Enhanced Linux}
+\begin{block}{Modalità Operative}
+\begin{description}
+    \item[Enforcing] Blocca azioni non autorizzate (PRODUZIONE)
+    \item[Permissive] Registra violazioni ma non blocca (DEBUG)
+    \item[Disabled] SELinux disattivato (NON RACCOMANDATO)
+\end{description}
+\end{block}
+
+\vspace{0.3cm}
+
+\begin{columns}[t]
+\column{0.33\textwidth}
+\textbf{Context}
+\begin{itemize}
+    \item User
+    \item Role
+    \item Type
+    \item Level
+\end{itemize}
+
+\column{0.33\textwidth}
+\textbf{Boolean}
+\begin{itemize}
+    \item On/Off switches
+    \item Modifica policy
+    \item Runtime/Permanent
+\end{itemize}
+
+\column{0.33\textwidth}
+\textbf{Porte}
+\begin{itemize}
+    \item Port types
+    \item Servizi associati
+    \item Permessi custom
+\end{itemize}
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{SELinux: Comandi Essenziali}
+\begin{lstlisting}
+# Verifica stato
+getenforce
+sestatus
+
+# Cambia modalità (temporaneo)
+setenforce 0  # Permissive
+setenforce 1  # Enforcing
+
+# Context file
+ls -Z /var/www/html/
+restorecon -Rv /var/www/html/
+
+# Boolean
+getsebool httpd_can_network_connect
+setsebool -P httpd_can_network_connect on
+
+# Porte
+semanage port -l | grep http
+semanage port -a -t http_port_t -p tcp 8080
+
+# Troubleshooting
+sealert -a /var/log/audit/audit.log
+\end{lstlisting}
+\end{frame}
+
+%=============================================================================
+\section{Monitoraggio}
+%=============================================================================
+
+\begin{frame}{Sistema di Logging: rsyslog}
+\begin{block}{Architettura}
+\textbf{Facility.Priority} $\rightarrow$ \textbf{Destination}
+\end{block}
+
+\begin{columns}[t]
+\column{0.45\textwidth}
+\textbf{Facility:}
+\begin{itemize}
+    \item \texttt{kern} - Kernel
+    \item \texttt{mail} - Email
+    \item \texttt{authpriv} - Auth
+    \item \texttt{cron} - Scheduler
+    \item \texttt{daemon} - Servizi
+\end{itemize}
+
+\column{0.55\textwidth}
+\textbf{Priority (crescente):}
+\begin{itemize}
+    \item \texttt{debug} $<$ \texttt{info} $<$ \texttt{notice}
+    \item \texttt{warning} $<$ \texttt{err} $<$ \texttt{crit}
+    \item \texttt{alert} $<$ \texttt{emerg}
+\end{itemize}
+\end{columns}
+
+\vspace{0.5cm}
+
+\begin{exampleblock}{File: /var/log/}
+messages, secure, maillog, cron, httpd/, audit/
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Logging Centralizzato}
+\begin{center}
+\begin{tikzpicture}[scale=0.8]
+    % Loghost
+    \node[draw, rectangle, fill=green!20, minimum width=2cm, minimum height=1.5cm] (loghost) at (0,0) {Loghost};
+    \node[below=0.1cm of loghost] {\tiny :514 UDP/TCP};
+    
+    % Servers
+    \foreach \x/\name in {-4/Web, -2/DB, 2/Mail, 4/DNS} {
+        \node[draw, circle, fill=blue!20] (s\x) at (\x,3) {\name};
+        \draw[->, thick] (s\x) -- (loghost);
+    }
+    
+    \node[above=1cm of loghost] {\textbf{Logging Centralizzato}};
+\end{tikzpicture}
+\end{center}
+
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{Client:}
+\begin{lstlisting}[basicstyle=\ttfamily\tiny]
+# /etc/rsyslog.conf
+*.* @loghost  # UDP
+*.* @@loghost # TCP
+\end{lstlisting}
+
+\column{0.5\textwidth}
+\textbf{Server:}
+\begin{lstlisting}[basicstyle=\ttfamily\tiny]
+module(load="imudp")
+input(type="imudp" port="514")
+\end{lstlisting}
+\end{columns}
+\end{frame}
+
+\begin{frame}{System Activity Reporter (sar)}
+\begin{block}{Cosa Monitora?}
+\begin{itemize}
+    \item \textbf{CPU}: Utilizzo, idle, I/O wait
+    \item \textbf{Memoria}: RAM, swap, paging
+    \item \textbf{Disco}: Throughput, latenza, IOPS
+    \item \textbf{Rete}: Pacchetti, bandwidth, errori
+\end{itemize}
+\end{block}
+
+\vspace{0.3cm}
+
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{Raccolta Dati:}
+\begin{itemize}
+    \item Ogni 10 minuti
+    \item Stored in /var/log/sa/
+    \item 1 mese di history
+\end{itemize}
+
+\column{0.5\textwidth}
+\textbf{Visualizzazione:}
+\begin{itemize}
+    \item Report storici
+    \item Live monitoring
+    \item Export per analisi
+\end{itemize}
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{sar: Esempi Pratici}
+\begin{lstlisting}
+# CPU usage da mezzanotte
+sar -u
+
+# Disco I/O
+sar -d
+
+# Network traffic
+sar -n DEV
+
+# Memoria
+sar -r
+
+# Live: campiona ogni 2 sec, 10 volte
+sar -u 2 10
+
+# Dati giorno specifico
+sar -u -f /var/log/sa/sa15
+\end{lstlisting}
+
+\begin{alertblock}{Pro Tip}
+Combina con \texttt{grep}, \texttt{awk} per analisi mirate!
+\end{alertblock}
+\end{frame}
+
+\begin{frame}{Cockpit: Monitoring Web-Based}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{example-image}
+\end{center}
+
+\textbf{Funzionalità:}
+\begin{columns}[t]
+\column{0.5\textwidth}
+\begin{itemize}
+    \item Grafici real-time
+    \item Gestione servizi
+    \item Log viewer
+    \item Storage management
+\end{itemize}
+
+\column{0.5\textwidth}
+\begin{itemize}
+    \item Network config
+    \item User accounts
+    \item Terminal integrato
+    \item Updates management
+\end{itemize}
+\end{columns}
+
+\vspace{0.3cm}
+\textbf{Accesso:} \texttt{https://server:9090}
+\end{frame}
+
+%=============================================================================
+\section{SSH}
+%=============================================================================
+
+\begin{frame}{Secure Shell (SSH)}
+\begin{block}{Perché SSH?}
+Sostituisce protocolli insicuri (telnet, rlogin, rsh, rcp) con comunicazione \textbf{crittografata end-to-end}.
+\end{block}
+
+\vspace{0.3cm}
+
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{Client Tools:}
+\begin{itemize}
+    \item \texttt{ssh} - Remote login
+    \item \texttt{scp} - Secure copy
+    \item \texttt{sftp} - Secure FTP
+    \item \texttt{rsync} - Sync incrementale
+\end{itemize}
+
+\column{0.5\textwidth}
+\textbf{Funzionalità:}
+\begin{itemize}
+    \item Login remoto
+    \item Esecuzione comandi
+    \item Trasferimento file
+    \item Port forwarding
+    \item X11 forwarding
+    \item Tunnel VPN
+\end{itemize}
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{SSH: Configurazione Server}
+\begin{lstlisting}
+# /etc/ssh/sshd_config
+
+Port 22                          # Porta (considera 2222)
+PermitRootLogin no              # NO LOGIN ROOT!
+PasswordAuthentication yes      # Si/No password
+PubkeyAuthentication yes        # Chiavi SSH
+X11Forwarding yes               # GUI remoto
+ClientAliveInterval 300         # Keep-alive
+AllowUsers user1 user2          # Whitelist utenti
+DenyUsers baduser               # Blacklist utenti
+\end{lstlisting}
+
+\begin{alertblock}{Sicurezza Critica}
+\texttt{PermitRootLogin no} è \textbf{OBBLIGATORIO} in produzione!
+\end{alertblock}
+\end{frame}
+
+\begin{frame}[fragile]{SSH: Autenticazione con Chiavi}
+\textbf{Setup (una volta):}
+
+\begin{lstlisting}
+# 1. Genera chiave (client)
+ssh-keygen -t rsa -b 4096 -C "mio-laptop"
+
+# 2. Copia su server
+ssh-copy-id user@server.com
+
+# 3. Test
+ssh user@server.com  # No password!
+\end{lstlisting}
+
+\vspace{0.3cm}
+
+\begin{block}{Vantaggi}
+\begin{itemize}
+    \item[$+$] Sicurezza massima
+    \item[$+$] Automazione (script, backup)
+    \item[$+$] Una chiave, N server
+    \item[$+$] Revoca facile (rimuovi chiave pubblica)
+\end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{Trasferimento File}
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{scp - Copia Singola}
+\begin{lstlisting}[basicstyle=\ttfamily\tiny]
+# Locale -> Remoto
+scp file.txt user@host:/path/
+
+# Remoto -> Locale
+scp user@host:/file.txt ./
+
+# Ricorsivo
+scp -r dir/ user@host:/path/
+\end{lstlisting}
+
+\column{0.5\textwidth}
+\textbf{rsync - Sincronizzazione}
+\begin{lstlisting}[basicstyle=\ttfamily\tiny]
+# Sync con delete
+rsync -avz --delete \
+  /local/ user@host:/remote/
+
+# Bandwidth limit
+rsync -avz --bwlimit=1000 \
+  /src/ user@host:/dst/
+\end{lstlisting}
+\end{columns}
+
+\vspace{0.5cm}
+
+\begin{exampleblock}{rsync vs scp}
+rsync trasferisce solo \textbf{differenze} = molto più efficiente!
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{sftp: FTP Sicuro}
+\begin{lstlisting}
+$ sftp user@server
+sftp> ls              # Lista remota
+sftp> lls             # Lista locale
+sftp> get file.txt    # Download
+sftp> put file.txt    # Upload
+sftp> get -r dir/     # Download ricorsivo
+sftp> put -r dir/     # Upload ricorsivo
+sftp> mget *.log      # Download multipli
+sftp> mkdir newdir    # Crea directory
+sftp> rm file.txt     # Elimina file
+sftp> bye             # Esci
+\end{lstlisting}
+
+\begin{block}{Quando usare sftp?}
+Sessioni \textbf{interattive} di esplorazione e trasferimento file.
+\end{block}
+\end{frame}
+
+%=============================================================================
+\section{Gestione Disco}
+%=============================================================================
+
+\begin{frame}[fragile]{Monitoraggio Spazio: df e du}
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{df - Filesystem}
+\begin{lstlisting}[basicstyle=\ttfamily\tiny]
+# Human-readable
+df -h
+
+# Exclude tmpfs
+df -h -x tmpfs -x devtmpfs
+
+# Inodes
+df -i
+
+# Tipo specifico
+df -t xfs
+\end{lstlisting}
+
+\column{0.5\textwidth}
+\textbf{du - Directory}
+\begin{lstlisting}[basicstyle=\ttfamily\tiny]
+# Directory usage
+du -h /var
+
+# Solo totale
+du -sh /var
+
+# Top 10 largest
+du -h /var | sort -hr | head
+
+# Max depth
+du -h --max-depth=2 /var
+\end{lstlisting}
+\end{columns}
+
+\vspace{0.3cm}
+
+\begin{exampleblock}{Pro Tip}
+\texttt{df} per filesystem totali, \texttt{du} per drill-down dettagliato
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{find: Ricerca Avanzata}
+\begin{lstlisting}
+# File > 100MB
+find / -xdev -size +100M -ls
+
+# File utente specifico, ordinati
+find / -xdev -user john | xargs ls -lhS > /tmp/john.txt
+
+# Modificati ultimi 7 giorni > 50MB
+find /var/log -mtime -7 -size +50M
+
+# Non acceduti da 1 anno
+find /home -atime +365 -size +10M
+
+# Pulizia file temporanei vecchi
+find /tmp -type f -mtime +30 -delete
+
+# Top 20 directory
+find / -xdev -type d -exec du -sh {} \; | sort -hr | head -20
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}{logrotate: Rotazione Automatica}
+\begin{block}{Configurazione}
+File principale: \texttt{/etc/logrotate.conf}\\
+Configs servizi: \texttt{/etc/logrotate.d/*}
+\end{block}
+
+\begin{columns}[t]
+\column{0.5\textwidth}
+\textbf{Opzioni Comuni:}
+\begin{itemize}
+    \item \texttt{daily/weekly/monthly}
+    \item \texttt{rotate N} - Copie
+    \item \texttt{compress} - Gzip
+    \item \texttt{delaycompress}
+    \item \texttt{missingok}
+    \item \texttt{notifempty}
+\end{itemize}
+
+\column{0.5\textwidth}
+\textbf{Scripts:}
+\begin{itemize}
+    \item \texttt{prerotate}
+    \item \texttt{postrotate}
+    \item \texttt{sharedscripts}
+\end{itemize}
+
+\vspace{0.3cm}
+
+\textbf{Esecuzione:}\\
+Via cron: \texttt{/etc/cron.daily/}
+\end{columns}
+\end{frame}
+
+%=============================================================================
+\section{Enterprise}
+%=============================================================================
+
+\begin{frame}{Gestione Server Enterprise}
+\begin{center}
+\textbf{Da Gestione Manuale ad Automazione Scalabile}
+\end{center}
+
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{Tradizionale (NON scalabile):}
+\begin{itemize}
+    \item[$\times$] Installazione manuale
+    \item[$\times$] Configurazione host-by-host
+    \item[$\times$] SSH ad ogni server
+    \item[$\times$] Updates individuali
+    \item[$\times$] Inconsistenze
+\end{itemize}
+
+\column{0.5\textwidth}
+\textbf{Enterprise (Scalabile):}
+\begin{itemize}
+    \item[$\checkmark$] PXE boot
+    \item[$\checkmark$] Config management
+    \item[$\checkmark$] Orchestrazione
+    \item[$\checkmark$] Automazione
+    \item[$\checkmark$] Consistenza
+\end{itemize}
+\end{columns}
+
+\vspace{0.5cm}
+
+\begin{alertblock}{Regola d'oro}
+Se devi fare la stessa cosa su $>3$ server $\rightarrow$ \textbf{AUTOMATIZZA}!
+\end{alertblock}
+\end{frame}
+
+\begin{frame}{PXE Boot: Installazione di Massa}
+\begin{center}
+\begin{tikzpicture}[scale=0.7]
+    % PXE Server
+    \node[draw, rectangle, fill=green!30, minimum width=2.5cm, minimum height=1.5cm] (pxe) at (0,3) {PXE Server};
+    \node[below=0.1cm of pxe] {\tiny DHCP+TFTP};
+    
+    % Clients
+    \foreach \x in {-3, 0, 3} {
+        \node[draw, rectangle, fill=blue!20] (c\x) at (\x,0) {Client};
+        \draw[->, thick] (c\x) -- (pxe);
+    }
+    
+    % Steps
+    \node[right=0.5cm of pxe, text width=3cm, font=\tiny] {
+        1. DHCP Request\\
+        2. Get IP + Boot file\\
+        3. TFTP download\\
+        4. Boot \& Install\\
+        5. Reboot to disk
+    };
+\end{tikzpicture}
+\end{center}
+
+\textbf{Vantaggi:}
+\begin{itemize}
+    \item Installa 100 server simultaneamente
+    \item Configurazione standardizzata
+    \item Zero intervento umano
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Configuration Management}
+\begin{block}{Tool Popolari}
+Ansible, Puppet, Chef, Salt
+\end{block}
+
+\textbf{Principi:}
+\begin{enumerate}
+    \item \textbf{Infrastructure as Code} (IaC)
+    \item \textbf{Idempotenza}: Esecuzione multipla = stesso risultato
+    \item \textbf{Declarativo}: "Cosa" non "Come"
+    \item \textbf{Versionamento}: Git per tracking
+\end{enumerate}
+
+\vspace{0.3cm}
+
+\begin{exampleblock}{Esempio: 1 comando, 100 server}
+\texttt{ansible webservers -m yum -a "name=httpd state=latest"}
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}{Architettura Management/Worker}
+\begin{center}
+\begin{tikzpicture}[scale=0.8]
+    % Management Plane
+    \node[draw, rectangle, fill=red!20, minimum width=4cm, minimum height=1.2cm] (mgmt) at (0,3) {Management Nodes};
+    \node[below=0.05cm of mgmt, font=\tiny] {API, Scheduler, Database};
+    
+    % Worker Plane
+    \foreach \x in {-3, -1, 1, 3} {
+        \node[draw, rectangle, fill=green!20, minimum width=1.5cm] (w\x) at (\x,0) {Worker};
+    }
+    
+    % Connections
+    \foreach \x in {-3, -1, 1, 3} {
+        \draw[->, thick] (mgmt) -- (w\x);
+    }
+    
+    \node[above=0.3cm of mgmt] {\textbf{Control Plane}};
+    \node[below=0.3cm of w1] {\textbf{Data Plane}};
+\end{tikzpicture}
+\end{center}
+
+\textbf{Esempi:} Kubernetes, OpenShift, OpenStack
+\end{frame}
+
+%=============================================================================
+\section{Best Practices}
+%=============================================================================
+
+\begin{frame}{Best Practices: Sicurezza}
+\begin{enumerate}
+    \item \textbf{Principio del Minimo Privilegio}
+    \begin{itemize}
+        \item Utenti: solo permessi necessari
+        \item Servizi: utenti dedicati non-root
+        \item sudo: comandi specifici
+    \end{itemize}
+    
+    \item \textbf{Difesa in Profondità}
+    \begin{itemize}
+        \item Firewall + SELinux + App security
+        \item Multi-factor authentication
+        \item Encryption (data at rest \& in transit)
+    \end{itemize}
+    
+    \item \textbf{Updates \& Patching}
+    \begin{itemize}
+        \item Security patches ASAP
+        \item Test in staging first
+        \item Finestre manutenzione pianificate
+    \end{itemize}
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{Best Practices: Monitoraggio}
+\begin{block}{Metriche Essenziali (Golden Signals)}
+\begin{itemize}
+    \item \textbf{Latency}: Response time
+    \item \textbf{Traffic}: Request rate
+    \item \textbf{Errors}: Error rate
+    \item \textbf{Saturation}: Resource utilization
+\end{itemize}
+\end{block}
+
+\textbf{Alert Intelligenti:}
+\begin{itemize}
+    \item Threshold basati su baseline
+    \item Escalation policy chiara
+    \item Evita alert fatigue (troppi falsi positivi)
+    \item Runbook documentati
+\end{itemize}
+
+\textbf{Proattività:}
+\begin{itemize}
+    \item Trend analysis
+    \item Capacity planning
+    \item Predictive maintenance
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Best Practices: Backup}
+\begin{block}{Strategia 3-2-1}
+\begin{itemize}
+    \item \textbf{3} copie dei dati
+    \item Su \textbf{2} media diversi (disco + tape/cloud)
+    \item \textbf{1} copia off-site (disaster recovery)
+\end{itemize}
+\end{block}
+
+\vspace{0.3cm}
+
+\textbf{Testing Regolare:}
+\begin{itemize}
+    \item Restore test mensili
+    \item DR drill trimestrali
+    \item Documenta RTO/RPO (Recovery Time/Point Objective)
+\end{itemize}
+
+\vspace{0.3cm}
+
+\begin{alertblock}{Remember}
+Backup non testato = Backup non esistente!
+\end{alertblock}
+\end{frame}
+
+\begin{frame}{Best Practices: Documentazione}
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{Architecture Docs:}
+\begin{itemize}
+    \item Network diagrams
+    \item Data flow
+    \item Dependencies map
+    \item Infrastructure inventory
+\end{itemize}
+
+\vspace{0.3cm}
+
+\textbf{Operational Docs:}
+\begin{itemize}
+    \item Runbooks
+    \item Troubleshooting guides
+    \item Emergency procedures
+    \item On-call playbooks
+\end{itemize}
+
+\column{0.5\textwidth}
+\textbf{Change Docs:}
+\begin{itemize}
+    \item Change log
+    \item Approval workflow
+    \item Rollback plans
+    \item Post-mortem reports
+\end{itemize}
+
+\vspace{0.3cm}
+
+\textbf{Tools:}
+\begin{itemize}
+    \item Wiki (Confluence)
+    \item Git (docs as code)
+    \item Diagrams (draw.io)
+    \item CMDB
+\end{itemize}
+\end{columns}
+
+\vspace{0.3cm}
+
+\begin{center}
+\textit{"Documentazione obsoleta > Nessuna documentazione"}
+\end{center}
+\end{frame}
+
+%=============================================================================
+\section{Conclusioni}
+%=============================================================================
+
+\begin{frame}{Riepilogo: 5 Pilastri}
+\begin{enumerate}
+    \item \textbf{Setup Sistematico}
+    \begin{itemize}
+        \item Installazione $\rightarrow$ Config $\rightarrow$ Start $\rightarrow$ Secure $\rightarrow$ Monitor
+    \end{itemize}
+    
+    \item \textbf{Sicurezza Multi-Layer}
+    \begin{itemize}
+        \item Password/Keys + Firewall + SELinux + App Config
+    \end{itemize}
+    
+    \item \textbf{Monitoraggio Continuo}
+    \begin{itemize}
+        \item rsyslog + sar + Cockpit + logwatch
+    \end{itemize}
+    
+    \item \textbf{Gestione Remota SSH}
+    \begin{itemize}
+        \item ssh + scp + rsync + sftp
+    \end{itemize}
+    
+    \item \textbf{Automazione Enterprise}
+    \begin{itemize}
+        \item PXE + Config Management + Orchestration
+    \end{itemize}
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{Roadmap di Apprendimento}
+\begin{center}
+\begin{tikzpicture}[
+    level/.style={rectangle, draw, fill=blue!20, minimum width=2.5cm, minimum height=0.8cm, text centered},
+    arrow/.style={->, thick}
+]
+    \node[level, fill=green!30] (base) at (0,4) {Base: Linux CLI};
+    \node[level] (admin) at (0,3) {Sys Admin};
+    \node[level] (security) at (0,2) {Security};
+    \node[level] (auto) at (0,1) {Automation};
+    \node[level, fill=orange!30] (expert) at (0,0) {Expert: DevOps};
+    
+    \draw[arrow] (base) -- (admin);
+    \draw[arrow] (admin) -- (security);
+    \draw[arrow] (security) -- (auto);
+    \draw[arrow] (auto) -- (expert);
+    
+    \node[right=0.5cm of base, text width=3cm, font=\tiny] {Comandi, filesystem, shell};
+    \node[right=0.5cm of admin, text width=3cm, font=\tiny] {Setup, config, servizi};
+    \node[right=0.5cm of security, text width=3cm, font=\tiny] {Firewall, SELinux, SSH};
+    \node[right=0.5cm of auto, text width=3cm, font=\tiny] {Ansible, scripting};
+    \node[right=0.5cm of expert, text width=3cm, font=\tiny] {K8s, CI/CD, IaC};
+\end{tikzpicture}
+\end{center}
+\end{frame}
+
+\begin{frame}{Risorse per Approfondire}
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{Documentazione:}
+\begin{itemize}
+    \item Man pages: \texttt{man comando}
+    \item RHEL Docs
+    \item Arch Wiki
+    \item Gentoo Handbook
+\end{itemize}
+
+\vspace{0.3cm}
+
+\textbf{Certificazioni:}
+\begin{itemize}
+    \item RHCSA
+    \item RHCE
+    \item LFCS
+    \item CompTIA Linux+
+\end{itemize}
+
+\column{0.5\textwidth}
+\textbf{Community:}
+\begin{itemize}
+    \item Stack Overflow
+    \item Reddit: r/linux, r/linuxadmin
+    \item IRC/Discord channels
+    \item Local LUG
+\end{itemize}
+
+\vspace{0.3cm}
+
+\textbf{Libri:}
+\begin{itemize}
+    \item UNIX \& Linux Sys Admin Handbook
+    \item Linux Command Line (Shotts)
+    \item How Linux Works (Ward)
+\end{itemize}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Takeaway Messages}
+\begin{alertblock}{3 Principi Fondamentali}
+\begin{enumerate}
+    \item \textbf{Automazione}: Se ripeti $>2$ volte, scrivi script
+    \item \textbf{Sicurezza}: Defense in depth, mai singolo punto di fallimento
+    \item \textbf{Documentazione}: Future-you ti ringrazierà
+\end{enumerate}
+\end{alertblock}
+
+\vspace{0.5cm}
+
+\begin{block}{L'Admin Ideale}
+\begin{itemize}
+    \item \textbf{Lazy}: Automatizza tutto il possibile
+    \item \textbf{Paranoico}: Assume sempre il peggio (security)
+    \item \textbf{Curioso}: Continua ad imparare
+    \item \textbf{Metodico}: Processo > Improvvisazione
+\end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}[standout]
+\Huge Grazie per l'Attenzione!
+
+\vspace{1cm}
+
+\Large Domande?
+
+\vspace{1cm}
+
+\normalsize
+Prof. Fedeli Massimo\\
+Tutti i diritti riservati
+\end{frame}
+
+\end{document}
