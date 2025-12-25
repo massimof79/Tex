@@ -1,0 +1,2164 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{tcolorbox}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{parskip}
+
+\geometry{
+    a4paper,
+    left=2.5cm,
+    right=2.5cm,
+    top=3cm,
+    bottom=3cm
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\leftmark}
+\fancyhead[R]{Amministrazione Server Linux}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\definecolor{codebackground}{RGB}{245,245,245}
+\definecolor{codekeyword}{RGB}{0,102,204}
+\definecolor{codecomment}{RGB}{0,128,0}
+\definecolor{codestring}{RGB}{163,21,21}
+
+\lstset{
+    backgroundcolor=\color{codebackground},
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{codekeyword}\bfseries,
+    commentstyle=\color{codecomment}\itshape,
+    stringstyle=\color{codestring},
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    stepnumber=1,
+    numbersep=8pt,
+    showstringspaces=false,
+    breaklines=true,
+    frame=single,
+    rulecolor=\color{black!30},
+    tabsize=4,
+    captionpos=b
+}
+
+\newtcolorbox{notabox}[1][]{
+    colback=blue!5!white,
+    colframe=blue!75!black,
+    fonttitle=\bfseries,
+    title=#1
+}
+
+\newtcolorbox{suggerimentobox}[1][]{
+    colback=green!5!white,
+    colframe=green!75!black,
+    fonttitle=\bfseries,
+    title=#1
+}
+
+\newtcolorbox{avvisobox}[1][]{
+    colback=orange!5!white,
+    colframe=orange!75!black,
+    fonttitle=\bfseries,
+    title=#1
+}
+
+\titleformat{\section}
+{\normalfont\Large\bfseries\color{blue!80!black}}
+{\thesection}{1em}{}
+
+\titleformat{\subsection}
+{\normalfont\large\bfseries\color{blue!60!black}}
+{\thesubsection}{1em}{}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    pdftitle={Amministrazione Server Linux},
+    pdfauthor={Corso di Formazione},
+    pdfsubject={Network e Condivisione},
+    pdfkeywords={Linux, Server, Amministrazione, SSH, Networking}
+}
+
+\title{
+    \Huge\textbf{Amministrazione Server Linux}\\
+    \vspace{0.5cm}
+    \Large Network e Condivisione Risorse
+}
+\author{Prof. Fedeli Massimo - Tutti i diritti riservati}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+
+\newpage
+\tableofcontents
+\newpage
+
+\section{Introduzione all'Amministrazione dei Server}
+
+L'amministrazione dei server Linux rappresenta una competenza fondamentale per chiunque lavori nel campo dell'informatica moderna. Con la crescente diffusione di servizi cloud, data center e infrastrutture distribuite, la capacità di configurare, gestire e monitorare server Linux è diventata essenziale.
+
+\subsection{Panoramica}
+
+Un server Linux è fondamentalmente un sistema operativo configurato per fornire servizi specifici ad altri computer o utenti attraverso una rete. A differenza dei sistemi desktop, i server sono progettati per funzionare continuamente, 24 ore su 24, 7 giorni su 7, richiedendo elevata affidabilità, sicurezza e prestazioni ottimali.
+
+\subsection{Caratteristiche Fondamentali dei Server}
+
+Le caratteristiche che distinguono un server da un normale sistema desktop includono:
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Disponibilità continua}: I server devono rimanere operativi senza interruzioni, garantendo l'accesso costante ai servizi forniti.
+    
+    \item \textbf{Gestione remota}: La maggior parte dell'amministrazione viene effettuata remotamente, senza accesso fisico alla macchina.
+    
+    \item \textbf{Sicurezza rafforzata}: I server esposti alla rete richiedono misure di sicurezza avanzate per proteggere dati e servizi.
+    
+    \item \textbf{Monitoraggio automatico}: Sistemi di logging e reporting automatici consentono di individuare e risolvere problemi rapidamente.
+    
+    \item \textbf{Scalabilità}: I server devono poter gestire carichi di lavoro crescenti senza degradazione delle prestazioni.
+\end{itemize}
+
+\subsection{Gestione delle Porte e dei Servizi}
+
+Ogni servizio di rete su un sistema Linux comunica attraverso porte specifiche. Le porte sono numeri che identificano punti di accesso logici attraverso i quali i dati vengono scambiati. Comprendere la gestione delle porte è cruciale per:
+
+\begin{enumerate}
+    \item Configurare i firewall in modo appropriato
+    \item Identificare i servizi in esecuzione
+    \item Diagnosticare problemi di connettività
+    \item Implementare politiche di sicurezza efficaci
+\end{enumerate}
+
+\begin{notabox}[Porte Standard]
+Alcuni servizi utilizzano porte standard ben note:
+\begin{itemize}
+    \item SSH: porta 22
+    \item HTTP: porta 80
+    \item HTTPS: porta 443
+    \item FTP: porta 21
+    \item DNS: porta 53
+    \item SMTP: porta 25
+\end{itemize}
+\end{notabox}
+
+\subsection{Monitoraggio Continuo}
+
+A differenza dei sistemi desktop che vengono spenti quando non utilizzati, i server operano continuamente. Questo richiede:
+
+\begin{itemize}
+    \item Sistemi di logging centralizzati
+    \item Alert automatici per condizioni anomale
+    \item Report periodici sullo stato del sistema
+    \item Strumenti di analisi delle prestazioni
+    \item Backup automatici e pianificati
+\end{itemize}
+
+Il monitoraggio continuo permette agli amministratori di identificare problemi potenziali prima che diventino critici, garantendo la massima uptime e qualità del servizio.
+
+\newpage
+\section{Procedura Standard di Installazione e Configurazione}
+
+L'installazione e la configurazione di un server Linux seguono generalmente un processo standardizzato in cinque fasi principali. Questo approccio metodico garantisce che tutti gli aspetti critici vengano considerati e implementati correttamente.
+
+\subsection{Fase 1: Installazione del Server}
+
+La fase di installazione costituisce il primo passo nella creazione di un server funzionante. In questa fase è importante:
+
+\subsubsection{Scelta della Distribuzione}
+
+Le distribuzioni Linux più comuni per server includono:
+
+\begin{itemize}
+    \item \textbf{Red Hat Enterprise Linux (RHEL)}: Distribuzione commerciale con supporto enterprise
+    \item \textbf{Fedora}: Versione community che anticipa le funzionalità di RHEL
+    \item \textbf{Ubuntu Server}: Popolare per la facilità d'uso e l'ampia documentazione
+    \item \textbf{CentOS/Rocky Linux}: Alternative gratuite compatibili con RHEL
+    \item \textbf{Debian}: Stabile e affidabile, base per molte altre distribuzioni
+\end{itemize}
+
+\subsubsection{Installazione dei Pacchetti}
+
+In sistemi basati su RPM (come Fedora e RHEL), l'installazione avviene tramite gestori di pacchetti come \texttt{yum} o \texttt{dnf}. I pacchetti sono spesso organizzati in gruppi funzionali per facilitare l'installazione di servizi completi.
+
+\begin{lstlisting}[language=bash,caption={Esempio di installazione di un gruppo di pacchetti}]
+# dnf grouplist
+# dnf groupinstall "Web Server"
+# dnf install httpd mod_ssl
+\end{lstlisting}
+
+\subsubsection{Principali Categorie di Server}
+
+\textbf{Server di Logging (rsyslog)}
+
+Il servizio rsyslog è fondamentale per raccogliere messaggi di log da vari componenti del sistema. Può funzionare sia localmente che come server di logging remoto centralizzato.
+
+\begin{lstlisting}[language=bash,caption={Installazione e avvio di rsyslog}]
+# dnf install rsyslog
+# systemctl enable rsyslog
+# systemctl start rsyslog
+\end{lstlisting}
+
+\textbf{Server di Stampa (CUPS)}
+
+Il Common UNIX Printing Service fornisce funzionalità di server di stampa, permettendo la condivisione di stampanti in rete.
+
+\begin{lstlisting}[language=bash,caption={Installazione CUPS}]
+# dnf install cups system-config-printer
+# systemctl enable cups
+# systemctl start cups
+\end{lstlisting}
+
+\textbf{Server Web (Apache/Nginx)}
+
+Il server web Apache (pacchetto httpd) è il più diffuso per servire contenuti HTTP. Include moduli per vari linguaggi di programmazione e funzionalità avanzate.
+
+\begin{lstlisting}[language=bash,caption={Installazione Apache con moduli}]
+# dnf install httpd mod_ssl mod_perl php
+# systemctl enable httpd
+# systemctl start httpd
+\end{lstlisting}
+
+\textbf{Server FTP (vsftpd)}
+
+Il Very Secure FTP daemon è il server FTP predefinito in molte distribuzioni, scelto per le sue caratteristiche di sicurezza.
+
+\begin{lstlisting}[language=bash,caption={Installazione vsftpd}]
+# dnf install vsftpd
+# systemctl enable vsftpd
+# systemctl start vsftpd
+\end{lstlisting}
+
+\textbf{Server di File Windows (Samba)}
+
+Samba permette ai sistemi Linux di condividere file e stampanti con client Windows utilizzando il protocollo SMB/CIFS.
+
+\begin{lstlisting}[language=bash,caption={Installazione Samba}]
+# dnf install samba samba-client
+# systemctl enable smb nmb
+# systemctl start smb nmb
+\end{lstlisting}
+
+\textbf{Server NFS}
+
+Network File System è lo standard Linux/UNIX per condividere directory tra sistemi sulla rete.
+
+\begin{lstlisting}[language=bash,caption={Installazione NFS}]
+# dnf install nfs-utils
+# systemctl enable nfs-server
+# systemctl start nfs-server
+\end{lstlisting}
+
+\textbf{Server di Posta (Postfix/Sendmail)}
+
+I server di posta elettronica, o Mail Transport Agent (MTA), gestiscono l'invio e la ricezione di email.
+
+\begin{lstlisting}[language=bash,caption={Installazione Postfix}]
+# dnf install postfix dovecot
+# systemctl enable postfix dovecot
+# systemctl start postfix dovecot
+\end{lstlisting}
+
+\textbf{Server di Directory (LDAP)}
+
+I servizi di directory forniscono autenticazione e autorizzazione centralizzate.
+
+\begin{lstlisting}[language=bash,caption={Installazione OpenLDAP}]
+# dnf install openldap-servers openldap-clients
+# systemctl enable slapd
+# systemctl start slapd
+\end{lstlisting}
+
+\textbf{Server DNS (BIND)}
+
+Berkeley Internet Name Domain fornisce servizi di risoluzione nomi DNS.
+
+\begin{lstlisting}[language=bash,caption={Installazione BIND}]
+# dnf install bind bind-utils
+# systemctl enable named
+# systemctl start named
+\end{lstlisting}
+
+\textbf{Server NTP (chrony)}
+
+Network Time Protocol sincronizza l'orologio di sistema con server di tempo pubblici o privati.
+
+\begin{lstlisting}[language=bash,caption={Installazione chrony}]
+# dnf install chrony
+# systemctl enable chronyd
+# systemctl start chronyd
+\end{lstlisting}
+
+\textbf{Server Database (PostgreSQL/MySQL/MariaDB)}
+
+I database relazionali sono fondamentali per molte applicazioni web e aziendali.
+
+\begin{lstlisting}[language=bash,caption={Installazione MariaDB}]
+# dnf install mariadb-server
+# systemctl enable mariadb
+# systemctl start mariadb
+# mysql_secure_installation
+\end{lstlisting}
+
+\subsection{Fase 2: Configurazione del Server}
+
+Dopo l'installazione, i pacchetti server richiedono configurazione specifica per funzionare correttamente e in modo sicuro.
+
+\subsubsection{File di Configurazione}
+
+La maggior parte dei servizi Linux utilizza file di configurazione in formato testo semplice, tipicamente ubicati nella directory \texttt{/etc} o sue sottodirectory.
+
+\begin{suggerimentobox}[Utilizzo di vim per l'Editing]
+Si raccomanda l'uso di \texttt{vim} invece di \texttt{vi} per modificare i file di configurazione. Vim fornisce evidenziazione della sintassi che aiuta a identificare errori:
+
+\begin{lstlisting}[language=bash]
+# vim /etc/httpd/conf/httpd.conf
+\end{lstlisting}
+
+Vim cambia il colore del testo quando rileva errori di sintassi o opzioni non valide.
+\end{suggerimentobox}
+
+\subsubsection{Struttura dei File di Configurazione}
+
+Molti servizi moderni utilizzano una struttura modulare:
+
+\begin{itemize}
+    \item File di configurazione principale (es. \texttt{/etc/httpd/conf/httpd.conf})
+    \item Directory per configurazioni aggiuntive (es. \texttt{/etc/httpd/conf.d/})
+    \item File \texttt{.conf} nella directory vengono inclusi automaticamente
+\end{itemize}
+
+Questo approccio permette ai pacchetti aggiuntivi di inserire le proprie configurazioni senza modificare il file principale.
+
+\begin{lstlisting}[language=bash,caption={Esempio di struttura Apache}]
+/etc/httpd/
+conf/
+   --- httpd.conf          # Configurazione principale
+---conf.d/
+   --- ssl.conf            # Configurazione SSL
+   --- php.conf            # Configurazione PHP
+     ---welcome.conf        # Pagina di benvenuto
+---- conf.modules.d/         # Moduli Apache
+\end{lstlisting}
+
+\subsubsection{Configurazione Predefinita di Sicurezza}
+
+I pacchetti server in RHEL e Fedora sono installati con configurazioni conservative che privilegiano la sicurezza rispetto alla funzionalità completa immediata.
+
+\begin{avvisobox}[Servizi Limitati di Default]
+Alcuni servizi come mail server (postfix/sendmail) e DNS (bind) sono configurati per default ad ascoltare solo su localhost. Questo significa che:
+
+\begin{itemize}
+    \item Il servizio è operativo ma non accessibile dall'esterno
+    \item È necessaria configurazione manuale per renderlo pubblico
+    \item Questa impostazione previene accessi non autorizzati accidentali
+\end{itemize}
+\end{avvisobox}
+
+\subsection{Fase 3: Avvio del Server}
+
+I servizi Linux possono essere gestiti attraverso sistemi di init diversi a seconda della distribuzione.
+
+\subsubsection{Sistemi di Gestione dei Servizi}
+
+\textbf{systemd (Moderno)}
+
+Utilizzato in RHEL 7+, Fedora, Ubuntu 16.04+:
+
+\begin{lstlisting}[language=bash,caption={Comandi systemd}]
+# Verifica stato servizio
+systemctl status httpd
+
+# Avvia servizio
+systemctl start httpd
+
+# Ferma servizio
+systemctl stop httpd
+
+# Riavvia servizio
+systemctl restart httpd
+
+# Ricarica configurazione senza riavvio
+systemctl reload httpd
+
+# Abilita avvio automatico
+systemctl enable httpd
+
+# Disabilita avvio automatico
+systemctl disable httpd
+
+# Verifica se abilitato
+systemctl is-enabled httpd
+\end{lstlisting}
+
+\textbf{SysVinit (Legacy)}
+
+Utilizzato in RHEL 6 e sistemi più vecchi:
+
+\begin{lstlisting}[language=bash,caption={Comandi SysVinit}]
+# Verifica stato
+service httpd status
+
+# Avvia servizio
+service httpd start
+
+# Ferma servizio
+service httpd stop
+
+# Configura avvio automatico
+chkconfig httpd on
+
+# Verifica configurazione avvio
+chkconfig --list httpd
+\end{lstlisting}
+
+\subsubsection{Processi Daemon}
+
+La maggior parte dei servizi è implementata come processi daemon con caratteristiche specifiche:
+
+\textbf{Permessi Utente e Gruppo}
+
+I daemon spesso vengono eseguiti con utenti dedicati non-root per limitare i danni in caso di compromissione:
+
+\begin{lstlisting}[language=bash,caption={Esempi di utenti daemon}]
+# Apache gira come utente apache
+ps aux | grep httpd
+apache   1234  ... /usr/sbin/httpd
+
+# NTP gira come utente ntp
+ps aux | grep ntpd
+ntp      5678  ... /usr/sbin/ntpd
+\end{lstlisting}
+
+\textbf{File di Configurazione Daemon}
+
+Molti servizi hanno file in \texttt{/etc/sysconfig/} per passare argomenti al daemon:
+
+\begin{lstlisting}[language=bash,caption={Esempio /etc/sysconfig/rsyslog}]
+# File: /etc/sysconfig/rsyslog
+# Opzioni da passare a rsyslogd
+SYSLOGD_OPTIONS="-m 0 -r"
+# -m 0  : disabilita timestamp marks
+# -r    : accetta log remoti
+\end{lstlisting}
+
+\textbf{Numeri di Porta}
+
+I servizi di rete utilizzano porte specifiche per comunicare. Le porte standard sono definite in \texttt{/etc/services}:
+
+\begin{lstlisting}[language=bash,caption={Visualizzazione porte in uso}]
+# Mostra porte TCP/UDP in ascolto
+netstat -tulpn
+
+# Alternativa moderna
+ss -tulpn
+
+# Output esempio:
+# tcp   0  0 0.0.0.0:22    0.0.0.0:*  LISTEN  1234/sshd
+# tcp   0  0 0.0.0.0:80    0.0.0.0:*  LISTEN  5678/httpd
+\end{lstlisting}
+
+\begin{notabox}[Sicurezza delle Porte]
+Quando si cambia la porta di un servizio:
+\begin{itemize}
+    \item Aggiornare le regole del firewall
+    \item Verificare le policy SELinux
+    \item Documentare la modifica
+    \item Comunicare il cambio agli utenti
+\end{itemize}
+\end{notabox}
+
+\subsubsection{Servizi Non-Daemon}
+
+Non tutti i servizi vengono eseguiti come daemon:
+
+\textbf{Servizi on-demand}
+
+Alcuni servizi vengono avviati solo quando necessario tramite socket systemd o xinetd (legacy).
+
+\textbf{Servizi one-shot}
+
+Alcuni servizi vengono eseguiti una sola volta all'avvio e poi terminano.
+
+\textbf{Task schedulati}
+
+Servizi gestiti da cron vengono eseguiti a intervalli predefiniti.
+
+\newpage
+\section{Sicurezza del Server}
+
+La sicurezza è un aspetto fondamentale dell'amministrazione server che richiede un approccio multi-livello e continuo.
+
+\subsection{Protezione tramite Password}
+
+Le password rappresentano la prima linea di difesa nella sicurezza di un sistema Linux.
+
+\subsubsection{Best Practices per le Password}
+
+\begin{enumerate}
+    \item \textbf{Complessità}: Le password devono essere sufficientemente complesse
+    \begin{itemize}
+        \item Lunghezza minima di 12-14 caratteri
+        \item Combinazione di maiuscole, minuscole, numeri e simboli
+        \item Evitare parole del dizionario e informazioni personali
+    \end{itemize}
+    
+    \item \textbf{Rotazione}: Cambiare le password regolarmente
+    
+    \item \textbf{Unicità}: Non riutilizzare password su sistemi diversi
+    
+    \item \textbf{Storage sicuro}: Utilizzare password manager
+\end{enumerate}
+
+\subsubsection{Disabilitazione Login Root Diretto}
+
+Una best practice fondamentale è impedire il login diretto come root:
+
+\begin{lstlisting}[language=bash,caption={Configurazione accesso root}]
+# File: /etc/ssh/sshd_config
+PermitRootLogin no
+
+# Riavvia SSH per applicare
+systemctl restart sshd
+\end{lstlisting}
+
+Dopo questa modifica, gli utenti devono:
+\begin{enumerate}
+    \item Effettuare login con account utente normale
+    \item Utilizzare \texttt{su} o \texttt{sudo} per ottenere privilegi root
+\end{enumerate}
+
+\subsubsection{PAM (Pluggable Authentication Module)}
+
+PAM fornisce un framework flessibile per l'autenticazione:
+
+\begin{lstlisting}[language=bash,caption={Esempio configurazione PAM}]
+# File: /etc/pam.d/password-auth
+auth        required      pam_faillock.so preauth
+auth        sufficient    pam_unix.so try_first_pass
+auth        required      pam_faillock.so authfail
+
+# Blocca account dopo 5 tentativi falliti
+account     required      pam_faillock.so
+\end{lstlisting}
+
+Funzionalità PAM includono:
+\begin{itemize}
+    \item Limitazione tentativi di login
+    \item Requisiti di complessità password
+    \item Autenticazione a due fattori
+    \item Logging degli accessi
+\end{itemize}
+
+\subsubsection{Autenticazione tramite Chiave Pubblica}
+
+L'autenticazione basata su chiavi è più sicura delle password:
+
+\begin{lstlisting}[language=bash,caption={Generazione coppia di chiavi}]
+# Sul client, genera chiavi SSH
+ssh-keygen -t rsa -b 4096
+
+# Copia chiave pubblica sul server
+ssh-copy-id user@server.example.com
+
+# Ora puoi connetterti senza password
+ssh user@server.example.com
+\end{lstlisting}
+
+Vantaggi:
+\begin{itemize}
+    \item Impossibile indovinare la chiave con brute force
+    \item Può essere utilizzata senza password (con passphrase opzionale)
+    \item Una chiave può autenticare su multipli server
+    \item Facilita l'automazione (backup, script)
+\end{itemize}
+
+\subsection{Firewall}
+
+I firewall sono essenziali per controllare il traffico di rete in ingresso e uscita.
+
+\subsubsection{iptables}
+
+iptables è il sistema di firewalling del kernel Linux:
+
+\begin{lstlisting}[language=bash,caption={Comandi iptables base}]
+# Visualizza regole correnti
+iptables -L -v -n
+
+# Permetti SSH (porta 22)
+iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+
+# Permetti HTTP/HTTPS
+iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+iptables -A INPUT -p tcp --dport 443 -j ACCEPT
+
+# Blocca tutto il resto
+iptables -P INPUT DROP
+
+# Salva regole
+iptables-save > /etc/sysconfig/iptables
+\end{lstlisting}
+
+\subsubsection{firewalld}
+
+firewalld fornisce un'interfaccia dinamica per gestire iptables:
+
+\begin{lstlisting}[language=bash,caption={Comandi firewalld}]
+# Verifica stato
+firewall-cmd --state
+
+# Mostra zone attive
+firewall-cmd --get-active-zones
+
+# Permetti servizio HTTP
+firewall-cmd --permanent --add-service=http
+firewall-cmd --permanent --add-service=https
+
+# Permetti porta specifica
+firewall-cmd --permanent --add-port=8080/tcp
+
+# Ricarica configurazione
+firewall-cmd --reload
+
+# Lista servizi permessi
+firewall-cmd --list-services
+\end{lstlisting}
+
+Concetti chiave firewalld:
+\begin{itemize}
+    \item \textbf{Zone}: Livelli di fiducia (public, trusted, dmz, etc.)
+    \item \textbf{Servizi}: Gruppi predefiniti di porte
+    \item \textbf{Permanent}: Cambiamenti persistono al riavvio
+    \item \textbf{Runtime}: Cambiamenti temporanei
+\end{itemize}
+
+\subsection{SELinux (Security-Enhanced Linux)}
+
+SELinux fornisce controllo di accesso obbligatorio (MAC) per proteggere il sistema.
+
+\subsubsection{Modalità SELinux}
+
+\begin{lstlisting}[language=bash,caption={Gestione SELinux}]
+# Verifica stato corrente
+getenforce
+
+# Visualizza configurazione
+sestatus
+# Cambia modalita temporaneamente
+setenforce 0  # Permissive
+setenforce 1  # Enforcing
+
+# Configurazione permanente
+# File: /etc/selinux/config
+SELINUX=enforcing  # o permissive, disabled
+\end{lstlisting}
+
+Modalità operative:
+\begin{itemize}
+    \item \textbf{Enforcing}: SELinux blocca azioni non autorizzate
+    \item \textbf{Permissive}: SELinux registra violazioni ma non blocca
+    \item \textbf{Disabled}: SELinux disattivato
+\end{itemize}
+
+\subsubsection{Context e Policy}
+
+SELinux utilizza context per determinare l'accesso:
+
+\begin{lstlisting}[language=bash,caption={Gestione context SELinux}]
+# Visualizza context di file
+ls -Z /var/www/html/
+-rw-r--r--. root root unconfined_u:object_r:httpd_sys_content_t:s0 index.html
+
+# Ripristina context corretti
+restorecon -Rv /var/www/html/
+
+# Cambia context manualmente
+chcon -t httpd_sys_content_t /path/to/file
+
+# Modifica permanente
+semanage fcontext -a -t httpd_sys_content_t "/custom/web/path(/.*)?"
+\end{lstlisting}
+
+\subsubsection{Boolean SELinux}
+
+I boolean permettono di modificare il comportamento di SELinux:
+
+\begin{lstlisting}[language=bash,caption={Gestione boolean}]
+# Lista tutti i boolean
+getsebool -a
+
+# Verifica boolean specifico
+getsebool httpd_can_network_connect
+
+# Abilita boolean temporaneamente
+setsebool httpd_can_network_connect on
+
+# Abilita boolean permanentemente
+setsebool -P httpd_can_network_connect on
+
+# Boolean comuni per httpd
+getsebool -a | grep httpd
+\end{lstlisting}
+
+\subsubsection{Porte SELinux}
+
+SELinux controlla anche le porte utilizzabili dai servizi:
+
+\begin{lstlisting}[language=bash,caption={Gestione porte SELinux}]
+# Mostra porte associate a httpd
+semanage port -l | grep http
+
+# Permetti httpd su porta non-standard
+semanage port -a -t http_port_t -p tcp 8080
+
+# Rimuovi permesso porta
+semanage port -d -t http_port_t -p tcp 8080
+\end{lstlisting}
+
+\subsubsection{Troubleshooting SELinux}
+
+\begin{lstlisting}[language=bash,caption={Debug problemi SELinux}]
+# Installa strumenti di troubleshooting
+dnf install setroubleshoot-server
+
+# Analizza log SELinux
+sealert -a /var/log/audit/audit.log
+
+# Mostra messaggi recenti
+sealert -l "*"
+
+# Log audit in tempo reale
+tail -f /var/log/audit/audit.log | grep denied
+\end{lstlisting}
+
+\begin{suggerimentobox}[Approccio Sistematico a SELinux]
+Quando si riscontrano problemi con SELinux:
+\begin{enumerate}
+    \item Verificare i log con sealert
+    \item Controllare file contexts con ls -Z
+    \item Verificare boolean rilevanti
+    \item Controllare permessi porte se necessario
+    \item Non disabilitare SELinux senza prima capire il problema
+\end{enumerate}
+\end{suggerimentobox}
+
+\subsection{TCP Wrappers}
+
+TCP Wrappers fornisce un livello addizionale di controllo accessi:
+
+\begin{lstlisting}[language=bash,caption={Configurazione TCP Wrappers}]
+# File: /etc/hosts.allow
+# Permetti SSH solo da rete locale
+sshd: 192.168.1.0/255.255.255.0
+
+# File: /etc/hosts.deny
+# Blocca tutto il resto
+sshd: ALL
+
+# Formato generale
+# servizio: client [: opzione : opzione ...]
+\end{lstlisting}
+
+\begin{avvisobox}[Limitazioni TCP Wrappers]
+TCP Wrappers non è più considerato molto sicuro e il suo uso sta diminuendo. È preferibile utilizzare:
+\begin{itemize}
+    \item firewalld o iptables per filtraggio rete
+    \item SELinux per controllo accessi
+    \item Configurazioni specifiche del servizio
+\end{itemize}
+\end{avvisobox}
+
+\subsection{Configurazioni di Sicurezza Specifiche}
+
+Molti servizi hanno opzioni di sicurezza nei propri file di configurazione:
+
+\begin{lstlisting}[language=bash,caption={Esempio sicurezza Apache}]
+# File: /etc/httpd/conf/httpd.conf
+
+# Limita accesso per directory
+<Directory "/var/www/html/private">
+    Require ip 192.168.1.0/24
+    Require user john jane
+</Directory>
+
+# Disabilita directory listing
+Options -Indexes
+
+# Previeni accesso a .htaccess
+<FilesMatch "^\.ht">
+    Require all denied
+</FilesMatch>
+\end{lstlisting}
+
+\newpage
+\section{Monitoraggio del Server}
+
+Il monitoraggio continuo è essenziale per mantenere i server operativi e sicuri.
+
+\subsection{Logging di Sistema con rsyslog}
+
+rsyslog è il sistema di logging standard su Linux moderno.
+
+\subsubsection{Architettura rsyslog}
+
+\begin{lstlisting}[language=bash,caption={File di configurazione rsyslog}]
+# File: /etc/rsyslog.conf
+
+#### MODULI ####
+# Supporto log locali
+module(load="imuxsock")
+
+# Accesso al journal systemd
+module(load="imjournal" StateFile="imjournal.state")
+
+# Log kernel
+#module(load="imklog")
+
+# Ricezione log remoti UDP
+#module(load="imudp")
+#input(type="imudp" port="514")
+
+# Ricezione log remoti TCP
+#module(load="imtcp")
+#input(type="imtcp" port="514")
+\end{lstlisting}
+
+\subsubsection{Regole di Logging}
+
+\begin{lstlisting}[language=bash,caption={Regole rsyslog}]
+#### RULES ####
+
+# Log kernel alla console
+#kern.*                      /dev/console
+
+# Info e superiori (esclusi mail, authpriv, cron)
+*.info;mail.none;authpriv.none;cron.none    /var/log/messages
+
+# Log autenticazione
+authpriv.*                   /var/log/secure
+
+# Log email
+mail.*                       -/var/log/maillog
+
+# Log cron
+cron.*                       /var/log/cron
+
+# Log emergenze a tutti gli utenti
+*.emerg                      :omusrmsg:*
+\end{lstlisting}
+
+Formato regole: \texttt{facility.priority destination}
+
+Facility comuni:
+\begin{itemize}
+    \item \texttt{kern}: Kernel
+    \item \texttt{mail}: Sistema mail
+    \item \texttt{authpriv}: Autenticazione
+    \item \texttt{cron}: Scheduler
+    \item \texttt{daemon}: Daemon di sistema
+    \item \texttt{*}: Tutte le facility
+\end{itemize}
+
+Priority (in ordine crescente):
+\begin{itemize}
+    \item \texttt{debug}: Informazioni di debug
+    \item \texttt{info}: Informazioni generali
+    \item \texttt{notice}: Condizioni normali ma significative
+    \item \texttt{warning/warn}: Condizioni di attenzione
+    \item \texttt{err/error}: Errori
+    \item \texttt{crit}: Condizioni critiche
+    \item \texttt{alert}: Azione immediata richiesta
+    \item \texttt{emerg/panic}: Sistema inutilizzabile
+\end{itemize}
+
+\subsubsection{Analisi File di Log}
+
+\begin{lstlisting}[caption={Formato messaggi log}]
+# Formato tipico:
+# DATA ORA HOST SERVIZIO[PID]: MESSAGGIO
+
+Feb 25 11:04:32 server01 network: Bringing up interface eth0: succeeded
+Feb 25 13:01:14 server01 vsftpd(pam_unix)[10565]: authentication failure; user=chris
+Feb 25 14:44:24 server01 su(pam_unix)[11439]: session opened for user root by chris(uid=500)
+\end{lstlisting}
+
+\subsubsection{Logging Remoto Centralizzato}
+
+\textbf{Configurazione Client}
+
+\begin{lstlisting}[language=bash,caption={Invio log a server remoto}]
+# File: /etc/rsyslog.conf (sul client)
+
+# Invia tutti i log al loghost
+*.* @loghost.example.com        # UDP
+# oppure
+*.* @@loghost.example.com       # TCP
+
+# Invia solo log specifici
+*.info;mail.none;authpriv.none;cron.none @loghost.example.com
+authpriv.* @loghost.example.com
+mail.* @loghost.example.com
+\end{lstlisting}
+
+\textbf{Configurazione Server (Loghost)}
+
+\begin{lstlisting}[language=bash,caption={Configurazione loghost}]
+# File: /etc/rsyslog.conf (sul loghost)
+
+# Abilita ricezione UDP
+module(load="imudp")
+input(type="imudp" port="514")
+
+# Abilita ricezione TCP
+module(load="imtcp")
+input(type="imtcp" port="514")
+
+# Riavvia servizio
+systemctl restart rsyslog
+\end{lstlisting}
+
+\begin{lstlisting}[language=bash,caption={Apertura firewall per logging remoto}]
+# Permetti porta 514 UDP/TCP
+firewall-cmd --permanent --add-port=514/udp
+firewall-cmd --permanent --add-port=514/tcp
+firewall-cmd --reload
+
+# Verifica porte in ascolto
+netstat -tulpn | grep 514
+\end{lstlisting}
+
+\begin{notabox}[Vantaggi Logging Centralizzato]
+\begin{itemize}
+    \item Un unico punto per revisionare log di multipli server
+    \item Log preservati anche se un server viene compromesso
+    \item Facilita correlazione eventi tra server
+    \item Semplifica compliance e audit
+\end{itemize}
+
+Considerazioni di sicurezza:
+\begin{itemize}
+    \item Log trasferiti in chiaro (può essere criptato con TLS)
+    \item Loghost diventa target critico da proteggere
+    \item Considerare utilizzo di loghost dedicato
+\end{itemize}
+\end{notabox}
+
+\subsection{logwatch}
+
+logwatch analizza automaticamente i log e invia report via email:
+
+\begin{lstlisting}[language=bash,caption={Installazione e configurazione logwatch}]
+# Installazione
+dnf install logwatch
+
+# Il servizio parte automaticamente da cron
+# File: /etc/cron.daily/0logwatch
+
+# Configurazione locale
+# File: /etc/logwatch/conf/logwatch.conf
+MailTo = admin@example.com
+Detail = High
+Range = yesterday
+Service = All
+\end{lstlisting}
+
+Configurazioni importanti:
+\begin{itemize}
+    \item \texttt{MailTo}: Destinatario report
+    \item \texttt{Detail}: Livello dettaglio (Low/Med/High)
+    \item \texttt{Range}: Periodo analisi (Yesterday/Today/All)
+    \item \texttt{Service}: Servizi da analizzare
+\end{itemize}
+
+\begin{lstlisting}[language=bash,caption={Visualizzazione report logwatch}]
+# Leggi mail come root
+mail
+
+# Mostra messaggio
+& 1
+
+# Esci
+& x
+\end{lstlisting}
+
+\subsection{System Activity Reporter (sar)}
+
+sar raccoglie e visualizza statistiche di sistema nel tempo.
+
+\subsubsection{Installazione e Attivazione}
+
+\begin{lstlisting}[language=bash,caption={Setup sar}]
+# Installazione
+dnf install sysstat
+
+# Abilitazione servizio
+systemctl enable sysstat
+systemctl start sysstat
+
+# Il servizio raccoglie dati ogni 10 minuti
+# File dati in /var/log/sa/
+\end{lstlisting}
+
+\subsubsection{Utilizzo CPU}
+
+\begin{lstlisting}[language=bash,caption={Analisi CPU con sar}]
+# Mostra utilizzo CPU da mezzanotte
+sar -u
+
+# Output:
+# Linux 5.3.8-200.fc30.x86_64 (server01) 11/28/2019 _x86_64_ (4 CPU)
+# 
+# 11:30:05 PM CPU  %user  %nice  %system  %iowait  %steal  %idle
+# 11:40:06 PM all   0.90   0.00     1.81     1.44    0.28   95.57
+# ...
+
+# Mostra dati specifici giorno
+sar -u -f /var/log/sa/sa15
+
+# Report live: campiona ogni 2 sec, 5 volte
+sar -u 2 5
+\end{lstlisting}
+
+Metriche CPU:
+\begin{itemize}
+    \item \texttt{\%user}: Tempo in modalità utente
+    \item \texttt{\%system}: Tempo in modalità kernel
+    \item \texttt{\%iowait}: Attesa I/O disco
+    \item \texttt{\%idle}: CPU inattiva
+    \item \texttt{\%steal}: Tempo rubato (virtualizzazione)
+\end{itemize}
+
+\subsubsection{Attività Disco}
+
+\begin{lstlisting}[language=bash,caption={Analisi disco con sar}]
+# Statistiche disco
+sar -d
+
+# Output mostra:
+# DEV       tps  rkB/s  wkB/s  areq-sz  aqu-sz  await
+# dev8-0  49.31 5663.94  50.38   115.89    0.03   1.00
+\end{lstlisting}
+
+Metriche disco:
+\begin{itemize}
+    \item \texttt{tps}: Trasferimenti per secondo
+    \item \texttt{rkB/s}: KB letti per secondo
+    \item \texttt{wkB/s}: KB scritti per secondo
+    \item \texttt{await}: Tempo medio attesa (ms)
+\end{itemize}
+
+\subsubsection{Attività Rete}
+
+\begin{lstlisting}[language=bash,caption={Analisi rete con sar}]
+# Statistiche interfacce rete
+sar -n DEV
+
+# Live: ogni 5 sec, 2 volte
+sar -n DEV 5 2
+
+# Output:
+# IFACE   rxpck/s  txpck/s  rxkB/s  txkB/s  rxcmp/s  txcmp/s
+# eth0      125.3    98.7    256.4   189.2      0.0      0.0
+# lo         45.2    45.2     12.3    12.3      0.0      0.0
+\end{lstlisting}
+
+\subsubsection{Memoria}
+
+\begin{lstlisting}[language=bash,caption={Analisi memoria con sar}]
+# Utilizzo memoria
+sar -r
+
+# Swap
+sar -S
+
+# Paging
+sar -B
+\end{lstlisting}
+
+\subsection{Monitoraggio con Cockpit}
+
+Cockpit fornisce interfaccia web per monitoraggio real-time:
+
+\begin{lstlisting}[language=bash,caption={Installazione Cockpit}]
+# Installazione
+dnf install cockpit
+
+# Avvio servizio
+systemctl enable --now cockpit.socket
+
+# Apri firewall
+firewall-cmd --permanent --add-service=cockpit
+firewall-cmd --reload
+
+# Accesso via browser
+# https://localhost:9090
+# https://server-ip:9090
+\end{lstlisting}
+
+Funzionalità Cockpit:
+\begin{itemize}
+    \item Grafici real-time CPU, memoria, disco, rete
+    \item Gestione servizi systemd
+    \item Aggiornamenti sistema
+    \item Log e journal
+    \item Gestione storage
+    \item Configurazione rete
+    \item Account utente
+    \item Terminal integrato
+\end{itemize}
+
+\newpage
+\section{Gestione Spazio su Disco}
+
+Il monitoraggio e la gestione dello spazio su disco sono cruciali per prevenire interruzioni del servizio.
+
+\subsection{Comando df}
+
+df mostra lo spazio disponibile sui filesystem montati:
+
+\begin{lstlisting}[language=bash,caption={Utilizzo df}]
+# Formato standard (blocchi 1K)
+df
+
+# Output:
+# Filesystem     1K-blocks    Used Available Use% Mounted on
+# /dev/sda3       30645460 2958356  26130408  11% /
+# /dev/sda2          46668    8340     35919  19% /boot
+
+# Formato leggibile
+df -h
+
+# Output:
+# Filesystem      Size  Used Avail Use% Mounted on
+# /dev/sda3        29G  2.9G   24G  11% /
+# /dev/sda2        46M  8.2M   25M  19% /boot
+
+# Solo filesystem reali (escludi tmpfs, devtmpfs)
+df -h -x tmpfs -x devtmpfs
+
+# Mostra inodes invece di spazio
+df -i
+
+# Tipo filesystem specifico
+df -t ext4
+df -t xfs
+\end{lstlisting}
+
+\subsection{Comando du}
+
+du calcola l'utilizzo disco per directory e file:
+
+\begin{lstlisting}[language=bash,caption={Utilizzo du}]
+# Spazio utilizzato da directory
+du /home/user
+
+# Formato leggibile
+du -h /home/user
+
+# Output:
+# 114K    /home/user/httpd/stuff
+# 234K    /home/user/httpd
+# 137K    /home/user/uucp/data
+# 701K    /home/user/uucp
+# 1.0M    /home/user
+
+# Solo totale
+du -sh /home/user
+# 1.0M    /home/user
+
+# Top 10 directory per dimensione
+du -h /var | sort -hr | head -10
+
+# Limita profondita ricerca
+du -h --max-depth=2 /var
+
+# Escludi directory
+du -h --exclude="*.tmp" /var
+\end{lstlisting}
+
+\subsection{Comando find per Consumo Disco}
+
+find può identificare file che consumano spazio secondo vari criteri:
+
+\begin{lstlisting}[language=bash,caption={Ricerca file per dimensione}]
+# File di un utente specifico ordinati per dimensione
+find / -xdev -user john -print | xargs ls -ldS > /tmp/john-files.txt
+
+# File piu grandi di 100MB
+find / -xdev -size +100M | xargs ls -ldS > /tmp/large-files.txt
+
+# File piu grandi di 1GB
+find / -xdev -size +1G -ls
+
+# File modificati negli ultimi 7 giorni piu grandi di 50MB
+find /var/log -mtime -7 -size +50M -ls
+
+# File non acceduti da piu di 365 giorni
+find /home -atime +365 -size +10M -ls
+
+# Directory piu grandi
+find / -xdev -type d -exec du -sh {} \; | sort -hr | head -20
+
+# File temporanei vecchi
+find /tmp -type f -mtime +30 -delete
+
+# Cache vecchie
+find ~/.cache -type f -mtime +90 -delete
+\end{lstlisting}
+
+Opzioni find utili:
+\begin{itemize}
+    \item \texttt{-xdev}: Non attraversa filesystem diversi
+    \item \texttt{-size +100M}: File > 100 megabyte
+    \item \texttt{-mtime -7}: Modificati negli ultimi 7 giorni
+    \item \texttt{-atime +365}: Non acceduti da oltre 365 giorni
+    \item \texttt{-user name}: Proprietà utente specifico
+    \item \texttt{-type f}: Solo file
+    \item \texttt{-type d}: Solo directory
+\end{itemize}
+
+\begin{suggerimentobox}[Pulizia Spazio Disco]
+Aree comuni dove recuperare spazio:
+\begin{itemize}
+    \item \texttt{/var/log}: Log vecchi
+    \item \texttt{/tmp}: File temporanei
+    \item \texttt{/var/tmp}: File temporanei persistenti
+    \item \texttt{/home/*/.cache}: Cache utenti
+    \item \texttt{/var/cache/yum}: Cache package manager
+    \item Vecchi kernel in /boot
+    \item Core dumps
+    \item Backup non necessari
+\end{itemize}
+\end{suggerimentobox}
+
+\subsection{Rotazione Log con logrotate}
+
+logrotate gestisce automaticamente la rotazione dei file di log:
+
+\begin{lstlisting}[language=bash,caption={Configurazione logrotate}]
+# File principale: /etc/logrotate.conf
+# Configurazioni per servizi: /etc/logrotate.d/
+
+# Esempio: /etc/logrotate.d/httpd
+/var/log/httpd/*log {
+    daily
+    rotate 52
+    missingok
+    notifempty
+    sharedscripts
+    compress
+    delaycompress
+    postrotate
+        /bin/systemctl reload httpd.service > /dev/null 2>/dev/null || true
+    endscript
+}
+\end{lstlisting}
+
+Opzioni logrotate:
+\begin{itemize}
+    \item \texttt{daily/weekly/monthly}: Frequenza rotazione
+    \item \texttt{rotate N}: Mantieni N copie
+    \item \texttt{compress}: Comprimi log vecchi
+    \item \texttt{delaycompress}: Non comprimere log più recente
+    \item \texttt{missingok}: Non errore se log mancante
+    \item \texttt{notifempty}: Non ruotare se vuoto
+    \item \texttt{sharedscripts}: Esegui script una volta
+    \item \texttt{postrotate}: Script dopo rotazione
+\end{itemize}
+
+\newpage
+\section{Gestione Remota con SSH}
+
+Secure Shell (SSH) è lo standard de facto per l'accesso remoto sicuro ai sistemi Linux.
+
+\subsection{Architettura SSH}
+
+\subsubsection{Componenti SSH}
+
+\textbf{Server SSH}
+\begin{lstlisting}[language=bash,caption={Pacchetti SSH}]
+# RHEL/Fedora
+dnf install openssh openssh-server openssh-clients
+
+# Ubuntu
+apt-get install openssh-server openssh-client
+
+# Verifica installazione
+rpm -qa | grep openssh
+# o
+dpkg -l | grep openssh
+\end{lstlisting}
+
+\subsection{Configurazione Server SSH}
+
+\subsubsection{Gestione Servizio sshd}
+
+\begin{lstlisting}[language=bash,caption={Gestione servizio sshd}]
+# RHEL/Fedora
+systemctl status sshd
+systemctl start sshd
+systemctl enable sshd
+
+# Ubuntu
+systemctl status ssh
+systemctl start ssh
+systemctl enable ssh
+
+# Riavvio dopo modifiche configurazione
+systemctl restart sshd
+\end{lstlisting}
+
+\subsubsection{File di Configurazione}
+
+\begin{lstlisting}[language=bash,caption={Configurazione sshd}]
+# File: /etc/ssh/sshd_config
+
+# Porta di ascolto
+Port 22
+
+# Indirizzo di ascolto
+#ListenAddress 0.0.0.0
+#ListenAddress ::
+
+# Versione protocollo
+Protocol 2
+
+# Login root
+PermitRootLogin no
+
+# Autenticazione password
+PasswordAuthentication yes
+
+# Autenticazione chiave pubblica
+PubkeyAuthentication yes
+
+# File authorized_keys
+AuthorizedKeysFile .ssh/authorized_keys
+
+# X11 forwarding
+X11Forwarding yes
+
+# Timeout
+ClientAliveInterval 300
+ClientAliveCountMax 2
+
+# Limita utenti
+AllowUsers user1 user2
+#DenyUsers user3
+
+# Limita gruppi
+AllowGroups sshusers
+#DenyGroups noremote
+
+# Banner pre-login
+#Banner /etc/ssh/banner
+
+# Subsystem SFTP
+Subsystem sftp /usr/libexec/openssh/sftp-server
+\end{lstlisting}
+
+\begin{avvisobox}[Sicurezza Configurazione SSH]
+Best practices:
+\begin{itemize}
+    \item \texttt{PermitRootLogin no}: Sempre disabilitare
+    \item Cambiare porta di default se esposto a internet
+    \item Usare chiavi invece di password quando possibile
+    \item Limitare utenti/gruppi con Allow/Deny
+    \item Abilitare logging dettagliato
+    \item Configurare timeout appropriati
+    \item Disabilitare protocollo SSH-1 (solo SSH-2)
+\end{itemize}
+\end{avvisobox}
+
+\subsection{Client SSH}
+
+\subsubsection{Login Remoto}
+
+\begin{lstlisting}[language=bash,caption={Connessione SSH}]
+# Login base
+ssh user@hostname
+ssh user@192.168.1.100
+
+# Porta non-standard
+ssh -p 2222 user@hostname
+
+# Verbose (debugging)
+ssh -v user@hostname
+ssh -vv user@hostname  # Piu dettagli
+
+# Prima connessione - verifica host key
+ssh user@newhost
+# The authenticity of host 'newhost (192.168.1.50)' can't be established.
+# RSA key fingerprint is SHA256:abc123...
+# Are you sure you want to continue connecting (yes/no)? yes
+# Warning: Permanently added 'newhost' (RSA) to the list of known hosts.
+
+# File known_hosts
+cat ~/.ssh/known_hosts
+\end{lstlisting}
+
+\subsubsection{Esecuzione Remota}
+
+\begin{lstlisting}[language=bash,caption={Comandi remoti via SSH}]
+# Esegui comando singolo
+ssh user@host hostname
+ssh user@host "df -h"
+
+# Comando con pipe (quote necessarie)
+ssh user@host "ps aux | grep httpd"
+
+# Comando multipli
+ssh user@host "cd /var/log && tail -20 messages"
+
+# Variabili locali in comandi remoti
+LOCAL_VAR="test"
+ssh user@host "echo $LOCAL_VAR"  # Espanso localmente
+ssh user@host 'echo $LOCAL_VAR'  # Espanso remotamente
+\end{lstlisting}
+
+\subsubsection{X11 Forwarding}
+
+\begin{lstlisting}[language=bash,caption={Applicazioni grafiche via SSH}]
+# Abilita X11 forwarding
+ssh -X user@host
+
+# Avvia applicazione grafica
+ssh -X user@host gedit
+
+# Applicazione in background
+ssh -X user@host "gedit &"
+
+# Multipli programmi grafici
+ssh -X user@host
+[remote]$ firefox &
+[remote]$ gimp &
+[remote]$ system-config-printer &
+\end{lstlisting}
+
+Requisiti X11 forwarding:
+\begin{itemize}
+    \item Server X in esecuzione localmente
+    \item \texttt{X11Forwarding yes} in sshd\_config
+    \item Variabile \$DISPLAY settata
+    \item xauth installato
+\end{itemize}
+
+\subsection{Trasferimento File SSH}
+
+\subsubsection{scp - Secure Copy}
+
+\begin{lstlisting}[language=bash,caption={Copia file con scp}]
+# File locale -> remoto
+scp file.txt user@host:/path/to/destination/
+
+# File remoto -> locale
+scp user@host:/path/to/file.txt /local/path/
+
+# Directory ricorsiva
+scp -r directory/ user@host:/path/
+
+# Preserva attributi
+scp -p file.txt user@host:/path/
+
+# Porta non-standard
+scp -P 2222 file.txt user@host:/path/
+
+# Limita bandwidth (KB/s)
+scp -l 1000 large-file.iso user@host:/path/
+
+# Copia tra due host remoti
+scp user1@host1:/file.txt user2@host2:/path/
+
+# Multipli file
+scp file1.txt file2.txt user@host:/path/
+
+# Wildcard
+scp *.log user@host:/var/log/backup/
+\end{lstlisting}
+
+\subsubsection{rsync su SSH}
+
+rsync è superiore a scp per backup e sincronizzazione:
+
+\begin{lstlisting}[language=bash,caption={Sincronizzazione con rsync}]
+# Sincronizzazione base
+rsync -avz /local/dir/ user@host:/remote/dir/
+
+# Opzioni comuni
+# -a: archive (ricorsivo, preserva tutto)
+# -v: verbose
+# -z: compressione
+# -P: progress + partial
+# -h: human-readable
+
+# Dry-run (simulazione)
+rsync -avzn /local/ user@host:/remote/
+
+# Delete: sincronizzazione esatta
+rsync -avz --delete /local/ user@host:/remote/
+
+# Esclusioni
+rsync -avz --exclude '*.tmp' --exclude '.git' /local/ user@host:/remote/
+
+# Bandwidth limit
+rsync -avz --bwlimit=1000 /local/ user@host:/remote/
+
+# Backup incrementale
+rsync -avz --backup --backup-dir=/backup/$(date +%Y%m%d) \
+      /source/ user@host:/dest/
+
+# Solo differenze
+rsync -avzc /local/ user@host:/remote/
+# -c: checksum invece di timestamp
+
+# Progress dettagliato
+rsync -avzh --progress /large-file.iso user@host:/path/
+\end{lstlisting}
+
+Vantaggi rsync vs scp:
+\begin{itemize}
+    \item Trasferisce solo differenze
+    \item Riprende trasferimenti interrotti
+    \item Preserva attributi file e link simbolici
+    \item Supporta delete per mirror esatto
+    \item Più efficiente per directory grandi
+\end{itemize}
+
+\subsubsection{sftp - Secure FTP}
+
+\begin{lstlisting}[language=bash,caption={Sessione interattiva sftp}]
+# Connessione
+sftp user@host
+
+# Comandi sftp
+sftp> ls                    # Lista directory remota
+sftp> lls                   # Lista directory locale
+sftp> pwd                   # Directory remota corrente
+sftp> lpwd                  # Directory locale corrente
+sftp> cd /path              # Cambia dir remota
+sftp> lcd /path             # Cambia dir locale
+
+# Download
+sftp> get file.txt          # Scarica file
+sftp> get -r directory/     # Scarica directory ricorsiva
+sftp> mget *.log            # Download multipli
+
+# Upload
+sftp> put file.txt          # Carica file
+sftp> put -r directory/     # Carica directory
+sftp> mput *.pdf            # Upload multipli
+
+# Gestione file
+sftp> mkdir newdir          # Crea directory remota
+sftp> rmdir olddir          # Rimuovi directory remota
+sftp> rm file.txt           # Elimina file remoto
+sftp> rename old.txt new.txt # Rinomina file remoto
+
+# Permessi
+sftp> chmod 644 file.txt    # Cambia permessi
+sftp> chown user file.txt   # Cambia proprietario
+
+# Informazioni
+sftp> df -h                 # Spazio disco remoto
+sftp> !                     # Shell locale
+sftp> !ls                   # Comando shell locale
+
+# Uscita
+sftp> exit
+sftp> quit
+sftp> bye
+\end{lstlisting}
+
+\subsection{Autenticazione Basata su Chiavi}
+
+L'autenticazione con chiavi SSH elimina la necessità di password.
+
+\subsubsection{Generazione Chiavi}
+
+\begin{lstlisting}[language=bash,caption={Creazione coppia chiavi SSH}]
+# Genera chiave RSA (4096 bit)
+ssh-keygen -t rsa -b 4096
+
+# Genera chiave (piu moderna)
+ssh-keygen -t ed25519
+
+# Con commento personalizzato
+ssh-keygen -t rsa -b 4096 -C "work-laptop"
+
+# Processo interattivo
+# Generating public/private rsa key pair.
+# Enter file in which to save the key (/home/user/.ssh/id_rsa): [ENTER]
+# Enter passphrase (empty for no passphrase): [PASSWORD or ENTER]
+# Enter same passphrase again: [PASSWORD or ENTER]
+# Your identification has been saved in /home/user/.ssh/id_rsa
+# Your public key has been saved in /home/user/.ssh/id_rsa.pub
+
+# File generati
+ls -l ~/.ssh/
+# -rw-------  1 user user 3243 Nov 28 10:00 id_rsa          # Privata
+# -rw-r--r--  1 user user  743 Nov 28 10:00 id_rsa.pub      # Pubblica
+\end{lstlisting}
+
+\subsubsection{Distribuzione Chiave Pubblica}
+
+\begin{lstlisting}[language=bash,caption={Copia chiave su server}]
+# Metodo automatico (preferito)
+ssh-copy-id user@host
+
+# Con chiave specifica
+ssh-copy-id -i ~/.ssh/id_ed25519.pub user@host
+
+# Porta non-standard
+ssh-copy-id -p 2222 user@host
+
+# Metodo manuale
+cat ~/.ssh/id_rsa.pub | ssh user@host "mkdir -p ~/.ssh && \
+    cat >> ~/.ssh/authorized_keys && \
+    chmod 700 ~/.ssh && \
+    chmod 600 ~/.ssh/authorized_keys"
+
+# Verifica permessi sul server
+ssh user@host "ls -la ~/.ssh/"
+# drwx------  2 user user 4096 Nov 28 10:05 .ssh
+# -rw-------  1 user user  743 Nov 28 10:05 authorized_keys
+\end{lstlisting}
+
+\begin{avvisobox}[Permessi Critici]
+I permessi devono essere esatti per funzionare:
+\begin{itemize}
+    \item \texttt{\textasciitilde/.ssh}: 700 (drwx------)
+    \item \texttt{\textasciitilde/.ssh/authorized\_keys}: 600 (-rw-------)
+    \item \texttt{\textasciitilde/.ssh/id\_rsa}: 600 (-rw-------)
+    \item \texttt{\textasciitilde/.ssh/id\_rsa.pub}: 644 (-rw-r--r--)
+\end{itemize}
+
+Se i permessi sono sbagliati, l'autenticazione fallisce silenziosamente.
+\end{avvisobox}
+
+\subsubsection{Utilizzo Chiavi}
+
+\begin{lstlisting}[language=bash,caption={Login con chiavi}]
+# Login automatico (se chiave senza passphrase)
+ssh user@host
+# Nessuna password richiesta!
+
+# Con chiave specifica
+ssh -i ~/.ssh/id_work user@host
+
+# Multiple chiavi per host diversi
+# File: ~/.ssh/config
+Host server1
+    HostName 192.168.1.100
+    User admin
+    IdentityFile ~/.ssh/id_server1
+    
+Host server2
+    HostName 192.168.1.200
+    User root
+    IdentityFile ~/.ssh/id_server2
+    Port 2222
+
+# Uso configurazione
+ssh server1  # Usa automaticamente le impostazioni
+\end{lstlisting}
+
+\subsubsection{Agent SSH}
+
+ssh-agent gestisce chiavi con passphrase:
+
+\begin{lstlisting}[language=bash,caption={Uso ssh-agent}]
+# Avvia agent
+eval $(ssh-agent)
+
+# Aggiungi chiave
+ssh-add ~/.ssh/id_rsa
+# Enter passphrase: [inserisci una volta]
+
+# Lista chiavi caricate
+ssh-add -l
+
+# Rimuovi tutte le chiavi
+ssh-add -D
+
+# Timeout automatico (secondi)
+ssh-add -t 3600 ~/.ssh/id_rsa  # Valida per 1 ora
+
+# Agent automatico in .bashrc
+if [ -z "$SSH_AUTH_SOCK" ]; then
+    eval $(ssh-agent)
+    ssh-add ~/.ssh/id_rsa
+fi
+\end{lstlisting}
+
+\subsubsection{Disabilitazione Password}
+
+\begin{lstlisting}[language=bash,caption={Forzare solo autenticazione chiave}]
+# File: /etc/ssh/sshd_config
+PasswordAuthentication no
+ChallengeResponseAuthentication no
+PubkeyAuthentication yes
+
+# Riavvia sshd
+systemctl restart sshd
+
+# Ora solo chiavi funzionano
+ssh user@host
+# Permission denied (publickey,gssapi-keyex,gssapi-with-mic)
+\end{lstlisting}
+
+\subsection{Configurazione Client SSH}
+
+\begin{lstlisting}[language=bash,caption={File di configurazione client}]
+# File: ~/.ssh/config
+
+# Configurazione globale
+Host *
+    ServerAliveInterval 60
+    ServerAliveCountMax 3
+    Compression yes
+    
+# Server specifico
+Host prod
+    HostName production.example.com
+    User deploy
+    Port 2222
+    IdentityFile ~/.ssh/id_production
+    ForwardAgent yes
+    LocalForward 8080 localhost:80
+    
+# Jump host (bastion)
+Host internal-server
+    HostName 10.0.1.100
+    User admin
+    ProxyJump bastion.example.com
+    
+# Wildcard
+Host *.dev.local
+    User developer
+    IdentityFile ~/.ssh/id_dev
+    StrictHostKeyChecking no
+\end{lstlisting}
+
+Opzioni utili:
+\begin{itemize}
+    \item \texttt{ServerAliveInterval}: Keep-alive
+    \item \texttt{Compression}: Comprimi traffico
+    \item \texttt{ForwardAgent}: Inoltra agent SSH
+    \item \texttt{LocalForward}: Port forwarding locale
+    \item \texttt{RemoteForward}: Port forwarding remoto
+    \item \texttt{ProxyJump}: SSH attraverso bastion
+    \item \texttt{StrictHostKeyChecking}: Controllo host key
+\end{itemize}
+
+\newpage
+\section{Gestione Server in Enterprise}
+
+In ambienti enterprise con numerosi server, l'amministrazione manuale diventa impraticabile. Sono necessari approcci automatizzati e scalabili.
+
+\subsection{Deployment Automatizzato}
+
+\subsubsection{PXE Boot}
+
+PXE (Preboot Execution Environment) permette l'installazione di sistemi via rete:
+
+\begin{enumerate}
+    \item Client si avvia via rete (boot PXE)
+    \item Riceve indirizzo IP via DHCP
+    \item Download bootloader da server TFTP
+    \item Caricamento kernel e initrd
+    \item Avvio installazione automatica
+\end{enumerate}
+
+Vantaggi:
+\begin{itemize}
+    \item Installazioni senza intervento umano
+    \item Installazioni multiple simultanee
+    \item Configurazione standardizzata
+    \item Risparmio tempo e riduzione errori
+\end{itemize}
+
+\subsubsection{Kickstart (RHEL/Fedora)}
+
+File kickstart definisce installazione automatizzata:
+
+\begin{lstlisting}[caption={Esempio kickstart}]
+# File: ks.cfg
+
+# Installazione automatica
+install
+text
+
+# Lingua e tastiera
+lang it_IT.UTF-8
+keyboard it
+
+# Timezone
+timezone Europe/Rome
+
+# Root password
+rootpw --iscrypted $6$encrypted_password
+
+# Partizioni
+clearpart --all --initlabel
+part /boot --fstype=xfs --size=500
+part pv.01 --size=1 --grow
+volgroup vg00 pv.01
+logvol / --fstype=xfs --name=root --vgname=vg00 --size=10240
+logvol /home --fstype=xfs --name=home --vgname=vg00 --size=5120
+logvol swap --name=swap --vgname=vg00 --size=2048
+
+# Rete
+network --bootproto=dhcp --device=eth0 --onboot=yes
+
+# Firewall
+firewall --enabled --service=ssh
+
+# SELinux
+selinux --enforcing
+
+# Pacchetti
+%packages
+@core
+@base
+openssh-server
+vim
+%end
+
+# Post-installazione
+%post
+# Aggiorna sistema
+yum -y update
+
+# Configura SSH
+sed -i 's/#PermitRootLogin yes/PermitRootLogin no/' /etc/ssh/sshd_config
+
+# Aggiungi utente
+useradd -m -G wheel admin
+echo 'admin:password' | chpasswd
+%end
+\end{lstlisting}
+
+\subsection{Sistemi Generici}
+
+\subsubsection{Approccio Immutabile}
+
+Host system generici e immutabili semplificano gestione:
+
+\begin{itemize}
+    \item Sistema base minimale identico
+    \item Applicazioni containerizzate
+    \item Configurazione via cloud-init
+    \item Aggiornamenti atomici
+    \item Rollback facile
+\end{itemize}
+
+\subsubsection{Containerizzazione}
+
+\begin{lstlisting}[language=bash,caption={Applicazioni in container}]
+# Esegui applicazione con dipendenze
+podman run -d --name webapp \
+    -p 8080:80 \
+    -v /data:/var/www/html \
+    webapp-image:latest
+
+# Container porta tutto il necessario
+# Host rimane pulito
+# Rimozione semplice
+podman rm -f webapp
+\end{lstlisting}
+
+Vantaggi:
+\begin{itemize}
+    \item Isolamento applicazioni
+    \item Dipendenze self-contained
+    \item Portabilità
+    \item Versioning semplice
+    \item Deployment rapido
+\end{itemize}
+
+\subsection{Separazione Management/Worker}
+
+\subsubsection{Architettura}
+
+\textbf{Nodi Management (Control Plane)}
+\begin{itemize}
+    \item Gestiscono cluster
+    \item Schedulano workload
+    \item Monitorano stato
+    \item API endpoints
+    \item Storage metadata
+\end{itemize}
+
+\textbf{Nodi Worker}
+\begin{itemize}
+    \item Eseguono workload
+    \item Report a management
+    \item Intercambiabili
+    \item Scalabili orizzontalmente
+\end{itemize}
+
+\subsubsection{Platform Examples}
+
+\textbf{OpenStack}
+\begin{itemize}
+    \item Controller nodes: API, database, message queue
+    \item Compute nodes: Macchine virtuali
+    \item Storage nodes: Block/object storage
+    \item Network nodes: SDN, routing
+\end{itemize}
+
+\textbf{Kubernetes/OpenShift}
+\begin{itemize}
+    \item Master nodes: API server, scheduler, controller
+    \item Worker nodes: Container runtime, kubelet
+    \item etcd nodes: Distributed config store
+\end{itemize}
+
+\subsection{Configuration Management}
+
+\subsubsection{Ansible}
+
+\begin{lstlisting}[caption={Playbook Ansible esempio}]
+# File: webserver.yml
+---
+- name: Configura web server
+  hosts: webservers
+  become: yes
+  
+  tasks:
+    - name: Installa Apache
+      yum:
+        name: httpd
+        state: present
+    
+    - name: Copia configurazione
+      template:
+        src: httpd.conf.j2
+        dest: /etc/httpd/conf/httpd.conf
+      notify: restart httpd
+    
+    - name: Assicura servizio attivo
+      service:
+        name: httpd
+        state: started
+        enabled: yes
+    
+    - name: Apri firewall
+      firewalld:
+        service: http
+        permanent: yes
+        state: enabled
+        immediate: yes
+  
+  handlers:
+    - name: restart httpd
+      service:
+        name: httpd
+        state: restarted
+\end{lstlisting}
+
+\subsubsection{Benefici Automazione}
+
+\begin{itemize}
+    \item \textbf{Consistenza}: Configurazione identica su tutti i nodi
+    \item \textbf{Velocità}: Deploy simultaneo su centinaia di server
+    \item \textbf{Documentazione}: Codice come documentazione
+    \item \textbf{Versionamento}: Git per tracking modifiche
+    \item \textbf{Testing}: Validazione prima del deploy
+    \item \textbf{Rollback}: Ritorno a configurazione precedente
+\end{itemize}
+
+\newpage
+\section{Best Practices e Raccomandazioni}
+
+\subsection{Sicurezza}
+
+\begin{enumerate}
+    \item \textbf{Principio del minimo privilegio}
+    \begin{itemize}
+        \item Utenti con solo permessi necessari
+        \item Servizi con utenti dedicati non-root
+        \item sudo configurato per specifici comandi
+    \end{itemize}
+    
+    \item \textbf{Difesa in profondità}
+    \begin{itemize}
+        \item Firewall configurato
+        \item SELinux in enforcing
+        \item Autenticazione multi-fattore
+        \item Encryption dati sensibili
+    \end{itemize}
+    
+    \item \textbf{Aggiornamenti regolari}
+    \begin{itemize}
+        \item Patch di sicurezza tempestive
+        \item Testing in ambiente non-production
+        \item Finestre di manutenzione pianificate
+    \end{itemize}
+    
+    \item \textbf{Audit e compliance}
+    \begin{itemize}
+        \item Log centralizzati
+        \item Review regolari
+        \item Retention policy
+        \item Alert su eventi critici
+    \end{itemize}
+\end{enumerate}
+
+\subsection{Monitoraggio}
+
+\begin{enumerate}
+    \item \textbf{Metriche essenziali}
+    \begin{itemize}
+        \item CPU, memoria, disco, rete
+        \item Latenza servizi
+        \item Error rates
+        \item Disponibilità
+    \end{itemize}
+    
+    \item \textbf{Alert intelligenti}
+    \begin{itemize}
+        \item Threshold appropriati
+        \item Escalation policy
+        \item Evitare alert fatigue
+        \item Documentare run books
+    \end{itemize}
+    
+    \item \textbf{Analisi proattiva}
+    \begin{itemize}
+        \item Trend analysis
+        \item Capacity planning
+        \item Performance baselines
+        \item Predictive maintenance
+    \end{itemize}
+\end{enumerate}
+
+\subsection{Backup e Disaster Recovery}
+
+\begin{enumerate}
+    \item \textbf{Strategia 3-2-1}
+    \begin{itemize}
+        \item 3 copie dati
+        \item 2 media diversi
+        \item 1 copia off-site
+    \end{itemize}
+    
+    \item \textbf{Testing regolare}
+    \begin{itemize}
+        \item Restore test mensili
+        \item DR drill trimestrali
+        \item Documentazione procedure
+        \item RTO/RPO definiti
+    \end{itemize}
+    
+    \item \textbf{Automazione}
+    \begin{itemize}
+        \item Backup schedulati
+        \item Verification automatica
+        \item Alert su failure
+        \item Retention policy
+    \end{itemize}
+\end{enumerate}
+
+\subsection{Documentazione}
+
+\begin{enumerate}
+    \item \textbf{Architecture diagrams}
+    \begin{itemize}
+        \item Topologia rete
+        \item Flow dati
+        \item Dipendenze servizi
+    \end{itemize}
+    
+    \item \textbf{Runbooks}
+    \begin{itemize}
+        \item Procedure operative
+        \item Troubleshooting guides
+        \item Emergency procedures
+    \end{itemize}
+    
+    \item \textbf{Change management}
+    \begin{itemize}
+        \item Log modifiche
+        \item Approval process
+        \item Rollback plans
+    \end{itemize}
+\end{enumerate}
+
+\newpage
+\section{Conclusioni}
+
+L'amministrazione di server Linux richiede una combinazione di competenze tecniche, metodologie consolidate e attenzione continua ai dettagli. I principi fondamentali coperti in questo documento costituiscono la base per una gestione efficace e sicura dell'infrastruttura IT.
+
+\subsection{Punti Chiave}
+
+\begin{itemize}
+    \item \textbf{Processo Sistematico}: Installazione, configurazione, avvio, sicurezza e monitoraggio formano un ciclo continuo
+    
+    \item \textbf{Sicurezza Prioritaria}: Implementare difese multiple e mantenere vigilanza costante
+    
+    \item \textbf{Automazione Essenziale}: Scalare l'amministrazione attraverso strumenti e pratiche automatizzate
+    
+    \item \textbf{Monitoraggio Continuo}: Osservabilità del sistema per prevenire e risolvere problemi
+    
+    \item \textbf{Documentazione Vitale}: Mantenere documentazione accurata facilita troubleshooting e knowledge transfer
+\end{itemize}
+
+\subsection{Evoluzione Continua}
+
+Il panorama IT è in costante evoluzione. Gli amministratori di sistema devono:
+
+\begin{itemize}
+    \item Mantenersi aggiornati su nuove tecnologie
+    \item Adottare best practices emergenti
+    \item Bilanciare stabilità e innovazione
+    \item Investire in formazione continua
+    \item Partecipare a comunità professionali
+\end{itemize}
+
+\subsection{Fondamenti Duraturi}
+
+Nonostante l'evoluzione tecnologica, alcuni principi rimangono costanti:
+
+\begin{itemize}
+    \item Comprensione profonda dei sistemi
+    \item Metodologia rigorosa nel problem-solving
+    \item Attenzione alla sicurezza
+    \item Commitment alla reliability
+    \item Comunicazione efficace
+\end{itemize}
+
+Il successo nell'amministrazione di server Linux deriva dall'applicazione consistente di questi principi, adattati al contesto specifico e alle esigenze dell'organizzazione.
+
+\subsection{Risorse Aggiuntive}
+
+Per approfondire gli argomenti trattati:
+
+\begin{itemize}
+    \item Documentazione ufficiale delle distribuzioni Linux
+    \item Man pages (\texttt{man comando})
+    \item Community forums e mailing lists
+    \item Certificazioni professionali (RHCSA, RHCE, LFCS)
+    \item Libri di riferimento su amministrazione sistemistica
+    \item Blog e conferenze tecniche
+\end{itemize}
+
+\vspace{1cm}
+
+L'amministrazione server è tanto un'arte quanto una scienza, richiedendo esperienza pratica combinata con solide basi teoriche. Questo documento fornisce le fondamenta su cui costruire expertise attraverso pratica continua e apprendimento costante.
+
+\end{document}
