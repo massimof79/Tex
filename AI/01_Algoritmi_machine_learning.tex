@@ -1,0 +1,1162 @@
+\documentclass[a4paper,12pt]{article}
+
+% Pacchetti necessari
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{geometry}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{float}
+
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{shapes,arrows,positioning,calc}
+
+\geometry{margin=2.5cm}
+
+% Configurazione header e footer
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{Algoritmi di Machine Learning}
+\fancyhead[R]{\thepage}
+\fancyfoot[C]{IIS Fermi Sacconi Ceci - Ascoli Piceno}
+
+% Configurazione codice
+\lstset{
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue},
+    commentstyle=\color{gray},
+    stringstyle=\color{red},
+    numbers=left,
+    numberstyle=\tiny,
+    frame=single,
+    breaklines=true
+}
+
+\title{\textbf{Algoritmi Fondamentali del Machine Learning}\\
+\large Un'analisi dettagliata dei principali approcci computazionali}
+
+\author{Prof. Massimo\\Tutti i diritti riservati}
+
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+\section{Introduzione al Machine Learning}
+
+Il \textbf{Machine Learning} (ML) è una branca dell'intelligenza artificiale che consente ai computer di apprendere dai dati senza essere esplicitamente programmati per ogni situazione specifica. Gli algoritmi di ML identificano pattern nei dati e utilizzano questi pattern per fare previsioni o prendere decisioni.
+
+\subsection{Categorie principali}
+
+Il Machine Learning si suddivide tradizionalmente in tre categorie:
+
+\begin{itemize}
+    \item \textbf{Apprendimento Supervisionato}: l'algoritmo apprende da dati etichettati
+    \item \textbf{Apprendimento Non Supervisionato}: l'algoritmo scopre pattern in dati non etichettati
+    \item \textbf{Apprendimento per Rinforzo}: l'algoritmo apprende attraverso interazioni e ricompense
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=2cm]
+    \node[draw, rectangle, fill=blue!20, minimum width=4cm, minimum height=1cm] (ml) {Machine Learning};
+    
+    \node[draw, rectangle, fill=green!20, below left=of ml, xshift=-2cm] (sup) {Supervisionato};
+    \node[draw, rectangle, fill=yellow!20, below=of ml] (unsup) {Non Supervisionato};
+    \node[draw, rectangle, fill=red!20, below right=of ml, xshift=2cm] (rl) {Rinforzo};
+    
+    \draw[->, thick] (ml) -- (sup);
+    \draw[->, thick] (ml) -- (unsup);
+    \draw[->, thick] (ml) -- (rl);
+\end{tikzpicture}
+\caption{Categorie del Machine Learning}
+\end{figure}
+
+\newpage
+
+\section{Regressione Lineare}
+
+\subsection{Descrizione}
+
+La \textbf{regressione lineare} è uno degli algoritmi più fondamentali nel machine learning supervisionato. L'obiettivo è trovare una relazione lineare tra variabili indipendenti (features) e una variabile dipendente continua (target).
+
+\subsection{Formulazione matematica}
+
+Il modello di regressione lineare semplice è espresso come:
+
+\begin{equation}
+y = \beta_0 + \beta_1 x + \epsilon
+\end{equation}
+
+dove:
+\begin{itemize}
+    \item $y$ è la variabile dipendente
+    \item $x$ è la variabile indipendente
+    \item $\beta_0$ è l'intercetta
+    \item $\beta_1$ è il coefficiente angolare
+    \item $\epsilon$ è l'errore
+\end{itemize}
+
+Per la regressione lineare multipla:
+
+\begin{equation}
+y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + ... + \beta_n x_n + \epsilon
+\end{equation}
+
+\subsection{Funzione di costo}
+
+L'obiettivo è minimizzare l'errore quadratico medio (MSE):
+
+\begin{equation}
+MSE = \frac{1}{n}\sum_{i=1}^{n}(y_i - \hat{y}_i)^2
+\end{equation}
+
+\subsection{Visualizzazione}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    xlabel={$x$},
+    ylabel={$y$},
+    grid=major,
+    width=12cm,
+    height=8cm,
+    legend pos=north west
+]
+\addplot[only marks, mark=*, blue] coordinates {
+    (1,2.1) (2,3.9) (3,6.2) (4,7.8) (5,10.1) (6,12.3) (7,13.9) (8,16.2)
+};
+\addplot[thick, red, domain=0:9] {2*x + 0.5};
+\legend{Dati, Retta di regressione}
+\end{axis}
+\end{tikzpicture}
+\caption{Esempio di regressione lineare}
+\end{figure}
+
+\subsection{Algoritmo di ottimizzazione: Gradient Descent}
+
+\begin{algorithm}[H]
+\caption{Gradient Descent per Regressione Lineare}
+\begin{algorithmic}
+\STATE Inizializza $\beta_0, \beta_1$ casualmente
+\STATE Scegli learning rate $\alpha$
+\REPEAT
+    \STATE $\beta_0 := \beta_0 - \alpha \frac{\partial}{\partial \beta_0} MSE$
+    \STATE $\beta_1 := \beta_1 - \alpha \frac{\partial}{\partial \beta_1} MSE$
+\UNTIL{convergenza}
+\end{algorithmic}
+\end{algorithm}
+
+\newpage
+
+\section{Regressione Logistica}
+
+\subsection{Descrizione}
+
+La \textbf{regressione logistica} è utilizzata per problemi di classificazione binaria. Nonostante il nome, è un algoritmo di classificazione che predice la probabilità che un'istanza appartenga a una classe specifica.
+
+\subsection{Funzione Sigmoide}
+
+La regressione logistica utilizza la funzione sigmoide per mappare valori nell'intervallo [0,1]:
+
+\begin{equation}
+\sigma(z) = \frac{1}{1 + e^{-z}}
+\end{equation}
+
+dove $z = \beta_0 + \beta_1 x_1 + ... + \beta_n x_n$
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    xlabel={$z$},
+    ylabel={$\sigma(z)$},
+    grid=major,
+    width=12cm,
+    height=7cm,
+    domain=-6:6,
+    samples=100,
+    ymin=0, ymax=1
+]
+\addplot[thick, blue] {1/(1+exp(-x))};
+\draw[dashed, red] (axis cs:-6,0.5) -- (axis cs:6,0.5);
+\end{axis}
+\end{tikzpicture}
+\caption{Funzione Sigmoide}
+\end{figure}
+
+\subsection{Funzione di costo: Log-Loss}
+
+\begin{equation}
+J(\beta) = -\frac{1}{n}\sum_{i=1}^{n}[y_i \log(\hat{y}_i) + (1-y_i)\log(1-\hat{y}_i)]
+\end{equation}
+
+\subsection{Applicazioni}
+
+\begin{itemize}
+    \item Diagnosi medica (malattia presente/assente)
+    \item Rilevamento spam
+    \item Approvazione crediti
+    \item Classificazione binaria di immagini
+\end{itemize}
+
+\newpage
+
+\section{K-Nearest Neighbors (KNN)}
+
+\subsection{Descrizione}
+
+L'\textbf{algoritmo K-Nearest Neighbors} è un metodo di apprendimento supervisionato non parametrico utilizzato sia per classificazione che per regressione. L'idea base è che istanze simili tendono ad avere etichette simili.
+
+\subsection{Principio di funzionamento}
+
+Per classificare un nuovo punto:
+\begin{enumerate}
+    \item Calcola la distanza tra il nuovo punto e tutti i punti nel training set
+    \item Seleziona i K punti più vicini
+    \item Assegna la classe più frequente tra i K vicini (classificazione) o la media dei valori (regressione)
+\end{enumerate}
+
+\subsection{Metriche di distanza}
+
+\textbf{Distanza Euclidea:}
+\begin{equation}
+d(p,q) = \sqrt{\sum_{i=1}^{n}(p_i - q_i)^2}
+\end{equation}
+
+\textbf{Distanza di Manhattan:}
+\begin{equation}
+d(p,q) = \sum_{i=1}^{n}|p_i - q_i|
+\end{equation}
+
+\subsection{Visualizzazione}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[scale=1.2]
+    % Classe A (blu)
+    \foreach \x/\y in {1/1, 1.5/2, 2/1.5, 1.2/2.5, 2.3/2.2} {
+        \fill[blue] (\x,\y) circle (3pt);
+    }
+    % Classe B (rosso)
+    \foreach \x/\y in {4/4, 4.5/3.5, 5/4.2, 4.2/4.8, 5.2/4.5} {
+        \fill[red] (\x,\y) circle (3pt);
+    }
+    % Punto da classificare
+    \fill[green] (3,3) circle (4pt);
+    \node[above] at (3,3) {Nuovo punto};
+    
+    % Cerchio K=3
+    \draw[dashed, thick] (3,3) circle (1.5);
+    \node at (3,1.2) {K=3};
+    
+    % Legenda
+    \fill[blue] (0.5,5) circle (3pt);
+    \node[right] at (0.6,5) {Classe A};
+    \fill[red] (0.5,4.5) circle (3pt);
+    \node[right] at (0.6,4.5) {Classe B};
+\end{tikzpicture}
+\caption{Classificazione KNN con K=3}
+\end{figure}
+
+\subsection{Scelta del parametro K}
+
+\begin{itemize}
+    \item \textbf{K piccolo}: maggiore sensibilità al rumore, possibile overfitting
+    \item \textbf{K grande}: decisioni più stabili ma possibile underfitting
+    \item Tipicamente si usa cross-validation per determinare K ottimale
+\end{itemize}
+
+\newpage
+
+\section{Decision Trees (Alberi Decisionali)}
+
+\subsection{Descrizione}
+
+Gli \textbf{alberi decisionali} sono modelli predittivi che utilizzano una struttura ad albero per rappresentare decisioni e le loro possibili conseguenze. Ogni nodo interno rappresenta un test su un attributo, ogni ramo rappresenta l'esito del test, e ogni foglia rappresenta una classe o un valore.
+
+\subsection{Struttura}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    level distance=1.5cm,
+    level 1/.style={sibling distance=4cm},
+    level 2/.style={sibling distance=2cm},
+    every node/.style={rectangle, draw, align=center, minimum width=2cm}
+]
+\node {Età < 30?}
+    child {node {Stipendio\\< 30k?}
+        child {node[fill=red!30] {NO}}
+        child {node[fill=green!30] {SÌ}}
+    }
+    child {node {Credito\\buono?}
+        child {node[fill=red!30] {NO}}
+        child {node[fill=green!30] {SÌ}}
+    };
+\end{tikzpicture}
+\caption{Esempio di albero decisionale per approvazione prestito}
+\end{figure}
+
+\subsection{Misure di impurità}
+
+\textbf{Entropia di Shannon:}
+\begin{equation}
+H(S) = -\sum_{i=1}^{c}p_i \log_2(p_i)
+\end{equation}
+
+\textbf{Gini Impurity:}
+\begin{equation}
+Gini(S) = 1 - \sum_{i=1}^{c}p_i^2
+\end{equation}
+
+dove $p_i$ è la proporzione di esempi della classe $i$ nel set $S$.
+
+\subsection{Information Gain}
+
+Per decidere quale attributo usare per lo split:
+
+\begin{equation}
+IG(S,A) = H(S) - \sum_{v \in Values(A)}\frac{|S_v|}{|S|}H(S_v)
+\end{equation}
+
+\subsection{Algoritmo di costruzione}
+
+\begin{algorithm}[H]
+\caption{Costruzione Albero Decisionale (ID3)}
+\begin{algorithmic}
+\STATE \textbf{Input:} Dataset $D$, Attributi $A$
+\IF{tutti gli esempi hanno la stessa classe}
+    \RETURN foglia con quella classe
+\ELSIF{$A$ è vuoto}
+    \RETURN foglia con classe più frequente
+\ELSE
+    \STATE Seleziona attributo $a \in A$ con massimo Information Gain
+    \STATE Crea nodo decisionale per $a$
+    \FOR{ogni valore $v$ di $a$}
+        \STATE $D_v$ = sottoinsieme di $D$ dove $a=v$
+        \STATE Aggiungi sottoalbero costruito ricorsivamente su $D_v$ e $A \setminus \{a\}$
+    \ENDFOR
+\ENDIF
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Vantaggi e svantaggi}
+
+\textbf{Vantaggi:}
+\begin{itemize}
+    \item Facili da interpretare e visualizzare
+    \item Richiedono poca preparazione dei dati
+    \item Gestiscono dati numerici e categorici
+\end{itemize}
+
+\textbf{Svantaggi:}
+\begin{itemize}
+    \item Tendenza all'overfitting
+    \item Instabilità (piccole variazioni nei dati possono creare alberi molto diversi)
+    \item Bias verso attributi con molti valori
+\end{itemize}
+
+\newpage
+
+\section{Support Vector Machines (SVM)}
+
+\subsection{Descrizione}
+
+Le \textbf{Support Vector Machines} sono algoritmi supervisionati utilizzati per classificazione e regressione. L'idea principale è trovare l'iperpiano ottimale che separa al meglio le classi, massimizzando il margine tra esse.
+
+\subsection{Concetto di margine}
+
+Il margine è la distanza tra l'iperpiano di separazione e i punti più vicini di ciascuna classe (support vectors).
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[scale=1.2]
+    % Classe negativa
+    \foreach \x/\y in {1/1, 1.5/1.8, 0.8/2.2, 1.2/2.8, 0.5/1.5} {
+        \fill[blue] (\x,\y) circle (3pt);
+    }
+    % Classe positiva
+    \foreach \x/\y in {4/3, 4.5/3.5, 5/2.8, 4.2/4, 5.2/3.2} {
+        \fill[red] (\x,\y) circle (3pt);
+    }
+    
+    % Iperpiano di separazione
+    \draw[thick] (0,0) -- (6,4);
+    
+    % Margini
+    \draw[dashed] (-0.5,-0.5) -- (5.5,3.5);
+    \draw[dashed] (0.5,0.5) -- (6.5,4.5);
+    
+    % Support vectors
+    \draw[green, thick] (1.5,1.8) circle (5pt);
+    \draw[green, thick] (4,3) circle (5pt);
+    
+    % Margine
+    \draw[<->, thick] (2,1) -- (3,2);
+    \node at (2.5,2) [right] {Margine};
+    
+    % Legenda
+    \fill[blue] (0.5,4.5) circle (3pt);
+    \node[right] at (0.6,4.5) {Classe -1};
+    \fill[red] (0.5,4) circle (3pt);
+    \node[right] at (0.6,4) {Classe +1};
+    \draw[green, thick] (0.5,3.5) circle (5pt);
+    \node[right] at (0.7,3.5) {Support Vectors};
+\end{tikzpicture}
+\caption{SVM lineare con margine massimo}
+\end{figure}
+
+\subsection{Formulazione matematica}
+
+L'iperpiano è definito da:
+\begin{equation}
+\mathbf{w}^T\mathbf{x} + b = 0
+\end{equation}
+
+L'obiettivo è:
+\begin{equation}
+\min_{\mathbf{w},b} \frac{1}{2}\|\mathbf{w}\|^2
+\end{equation}
+
+soggetto a:
+\begin{equation}
+y_i(\mathbf{w}^T\mathbf{x}_i + b) \geq 1, \quad \forall i
+\end{equation}
+
+\subsection{Kernel Trick}
+
+Per problemi non linearmente separabili, SVM utilizza funzioni kernel per mappare i dati in spazi di dimensioni superiori.
+
+\textbf{Kernel comuni:}
+
+\begin{itemize}
+    \item \textbf{Lineare}: $K(\mathbf{x}_i, \mathbf{x}_j) = \mathbf{x}_i^T\mathbf{x}_j$
+    \item \textbf{Polinomiale}: $K(\mathbf{x}_i, \mathbf{x}_j) = (\mathbf{x}_i^T\mathbf{x}_j + c)^d$
+    \item \textbf{RBF (Gaussian)}: $K(\mathbf{x}_i, \mathbf{x}_j) = \exp(-\gamma\|\mathbf{x}_i - \mathbf{x}_j\|^2)$
+\end{itemize}
+
+\subsection{SVM per casi non separabili}
+
+Introduce variabili slack $\xi_i$ per permettere errori di classificazione:
+
+\begin{equation}
+\min_{\mathbf{w},b,\xi} \frac{1}{2}\|\mathbf{w}\|^2 + C\sum_{i=1}^{n}\xi_i
+\end{equation}
+
+dove $C$ è il parametro di regolarizzazione che bilancia margine e errori.
+
+\newpage
+
+\section{K-Means Clustering}
+
+\subsection{Descrizione}
+
+\textbf{K-Means} è un algoritmo di apprendimento non supervisionato utilizzato per raggruppare dati in K cluster. L'obiettivo è minimizzare la varianza intra-cluster e massimizzare la separazione tra cluster.
+
+\subsection{Algoritmo}
+
+\begin{algorithm}[H]
+\caption{K-Means Clustering}
+\begin{algorithmic}
+\STATE Scegli K centroidi iniziali casualmente
+\REPEAT
+    \STATE \textbf{Assignment step:} Assegna ogni punto al centroide più vicino
+    \STATE \textbf{Update step:} Ricalcola i centroidi come media dei punti assegnati
+\UNTIL{i centroidi non cambiano significativamente}
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Funzione obiettivo}
+
+\begin{equation}
+J = \sum_{i=1}^{K}\sum_{x \in C_i}\|\mathbf{x} - \boldsymbol{\mu}_i\|^2
+\end{equation}
+
+dove $C_i$ è il cluster $i$ e $\boldsymbol{\mu}_i$ è il centroide del cluster $i$.
+
+\subsection{Visualizzazione del processo}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[scale=0.8]
+    \begin{scope}[xshift=0cm]
+        \node at (2.5,4) {Inizializzazione};
+        \foreach \x/\y in {1/1, 1.5/1.2, 0.8/1.5, 3/3, 3.5/2.8, 3.2/3.5, 1/3, 0.8/3.2} {
+            \fill[black] (\x,\y) circle (2pt);
+        }
+        \fill[red] (1.5,1.5) circle (4pt);
+        \fill[blue] (3,3) circle (4pt);
+    \end{scope}
+    
+    \begin{scope}[xshift=6cm]
+        \node at (2.5,4) {Iterazione 1};
+        \foreach \x/\y in {1/1, 1.5/1.2, 0.8/1.5, 1/3, 0.8/3.2} {
+            \fill[red!50] (\x,\y) circle (2pt);
+        }
+        \foreach \x/\y in {3/3, 3.5/2.8, 3.2/3.5} {
+            \fill[blue!50] (\x,\y) circle (2pt);
+        }
+        \fill[red] (1.1,1.8) circle (4pt);
+        \fill[blue] (3.2,3.1) circle (4pt);
+    \end{scope}
+    
+    \begin{scope}[xshift=12cm]
+        \node at (2.5,4) {Convergenza};
+        \foreach \x/\y in {1/1, 1.5/1.2, 0.8/1.5, 1/3, 0.8/3.2} {
+            \fill[red!70] (\x,\y) circle (2pt);
+        }
+        \foreach \x/\y in {3/3, 3.5/2.8, 3.2/3.5} {
+            \fill[blue!70] (\x,\y) circle (2pt);
+        }
+        \fill[red] (1.06,1.78) circle (4pt);
+        \fill[blue] (3.23,3.1) circle (4pt);
+    \end{scope}
+\end{tikzpicture}
+\caption{Processo iterativo di K-Means}
+\end{figure}
+
+\subsection{Metodo del gomito (Elbow Method)}
+
+Per scegliere K ottimale, si grafica la varianza intra-cluster in funzione di K:
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    xlabel={Numero di cluster K},
+    ylabel={Inerzia},
+    grid=major,
+    width=10cm,
+    height=7cm,
+    xtick={1,2,3,4,5,6,7,8},
+    legend pos=north east
+]
+\addplot[thick, blue, mark=*] coordinates {
+    (1,280) (2,150) (3,80) (4,45) (5,35) (6,30) (7,28) (8,27)
+};
+\draw[red, thick, dashed] (axis cs:3,0) -- (axis cs:3,100);
+\node[red] at (axis cs:3.5,90) {Gomito};
+\end{axis}
+\end{tikzpicture}
+\caption{Metodo del gomito per selezione K}
+\end{figure}
+
+\newpage
+
+\section{Reti Neurali Artificiali}
+
+\subsection{Descrizione}
+
+Le \textbf{reti neurali artificiali} (ANN) sono modelli computazionali ispirati al funzionamento del cervello biologico. Sono composte da neuroni artificiali organizzati in layer che elaborano informazioni attraverso connessioni pesate.
+
+\subsection{Struttura di un neurone artificiale}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    neuron/.style={circle, draw, minimum size=1cm},
+    input/.style={circle, fill=blue!20, draw, minimum size=0.8cm},
+    weight/.style={->, thick}
+]
+    % Input
+    \node[input] (x1) at (0,2) {$x_1$};
+    \node[input] (x2) at (0,1) {$x_2$};
+    \node[input] (x3) at (0,0) {$x_3$};
+    
+    % Neurone
+    \node[neuron, fill=green!20] (n) at (3,1) {$\sum$};
+    
+    % Funzione di attivazione
+    \node[neuron, fill=yellow!20] (a) at (5,1) {$\sigma$};
+    
+    % Output
+    \node (y) at (7,1) {$y$};
+    
+    % Connessioni
+    \draw[weight] (x1) -- node[above] {$w_1$} (n);
+    \draw[weight] (x2) -- node[above] {$w_2$} (n);
+    \draw[weight] (x3) -- node[above] {$w_3$} (n);
+    \draw[weight] (n) -- node[above] {$z$} (a);
+    \draw[weight] (a) -- (y);
+    
+    % Bias
+    \node[input] (b) at (3,-1) {$b$};
+    \draw[weight] (b) -- (n);
+\end{tikzpicture}
+\caption{Struttura di un neurone artificiale}
+\end{figure}
+
+\subsection{Funzioni di attivazione}
+
+\textbf{Sigmoid:}
+\begin{equation}
+\sigma(z) = \frac{1}{1 + e^{-z}}
+\end{equation}
+
+\textbf{Tanh:}
+\begin{equation}
+\tanh(z) = \frac{e^z - e^{-z}}{e^z + e^{-z}}
+\end{equation}
+
+\textbf{ReLU (Rectified Linear Unit):}
+\begin{equation}
+ReLU(z) = \max(0, z)
+\end{equation}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    xlabel={$z$},
+    ylabel={Attivazione},
+    grid=major,
+    width=12cm,
+    height=7cm,
+    domain=-3:3,
+    samples=100,
+    legend pos=north west
+]
+\addplot[thick, blue] {1/(1+exp(-x))};
+\addplot[thick, red] {tanh(x)};
+\addplot[thick, green] {max(0,x)};
+\legend{Sigmoid, Tanh, ReLU}
+\end{axis}
+\end{tikzpicture}
+\caption{Funzioni di attivazione comuni}
+\end{figure}
+
+\subsection{Architettura Multi-Layer Perceptron}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    neuron/.style={circle, draw, fill=blue!20, minimum size=0.7cm},
+    layer/.style={rectangle, draw=none}
+]
+    % Input layer
+    \foreach \y in {1,2,3,4}
+        \node[neuron] (I\y) at (0,\y) {};
+    \node[layer] at (0,0) {Input Layer};
+    
+    % Hidden layer 1
+    \foreach \y in {1,2,3,4,5}
+        \node[neuron, fill=green!20] (H1\y) at (3,\y-0.5) {};
+    \node[layer] at (3,-0.5) {Hidden Layer 1};
+    
+    % Hidden layer 2
+    \foreach \y in {1,2,3,4}
+        \node[neuron, fill=yellow!20] (H2\y) at (6,\y) {};
+    \node[layer] at (6,0) {Hidden Layer 2};
+    
+    % Output layer
+    \foreach \y in {2,3}
+        \node[neuron, fill=red!20] (O\y) at (9,\y) {};
+    \node[layer] at (9,0.5) {Output Layer};
+    
+    % Connections (sample)
+    \foreach \i in {1,2,3,4}
+        \foreach \j in {1,2,3,4,5}
+            \draw[->, very thin, gray] (I\i) -- (H1\j);
+    
+    \foreach \i in {1,2,3,4,5}
+        \foreach \j in {1,2,3,4}
+            \draw[->, very thin, gray] (H1\i) -- (H2\j);
+    
+    \foreach \i in {1,2,3,4}
+        \foreach \j in {2,3}
+            \draw[->, very thin, gray] (H2\i) -- (O\j);
+\end{tikzpicture}
+\caption{Architettura Multi-Layer Perceptron}
+\end{figure}
+
+\subsection{Backpropagation}
+
+L'algoritmo di \textbf{backpropagation} aggiorna i pesi della rete propagando l'errore all'indietro:
+
+\begin{enumerate}
+    \item \textbf{Forward pass}: calcola l'output per un input dato
+    \item \textbf{Calcola errore}: confronta output con target
+    \item \textbf{Backward pass}: propaga errore verso i layer precedenti
+    \item \textbf{Aggiorna pesi}: usando gradient descent
+\end{enumerate}
+
+\begin{equation}
+w_{ij}^{(new)} = w_{ij}^{(old)} - \eta \frac{\partial E}{\partial w_{ij}}
+\end{equation}
+
+dove $\eta$ è il learning rate ed $E$ è la funzione di errore.
+
+\newpage
+
+\section{Random Forest}
+
+\subsection{Descrizione}
+
+\textbf{Random Forest} è un algoritmo ensemble che costruisce multipli alberi decisionali durante il training e produce come output la classe che è la moda delle classi (classificazione) o la media delle predizioni (regressione) dei singoli alberi.
+
+\subsection{Principio di funzionamento}
+
+\begin{enumerate}
+    \item \textbf{Bootstrap Aggregating (Bagging)}: crea N campioni casuali con reinserimento dal dataset originale
+    \item \textbf{Feature Randomness}: per ogni split, considera solo un sottoinsieme casuale di features
+    \item \textbf{Costruzione alberi}: costruisce un albero decisionale completo per ogni campione
+    \item \textbf{Aggregazione}: combina le predizioni di tutti gli alberi
+\end{enumerate}
+
+\subsection{Visualizzazione}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[scale=0.85]
+    % Dataset originale
+    \node[draw, rectangle, minimum width=2cm, minimum height=1.5cm] (data) at (0,4) {Dataset};
+    
+    % Bootstrap samples
+    \node[draw, rectangle, fill=blue!20, minimum width=1.5cm] (bs1) at (-4,2) {Sample 1};
+    \node[draw, rectangle, fill=blue!20, minimum width=1.5cm] (bs2) at (-1.5,2) {Sample 2};
+    \node[draw, rectangle, fill=blue!20, minimum width=1.5cm] (bs3) at (1,2) {Sample 3};
+    \node (dots) at (3,2) {...};
+    \node[draw, rectangle, fill=blue!20, minimum width=1.5cm] (bsn) at (4.5,2) {Sample N};
+    
+    % Alberi
+    \node[draw, circle, fill=green!20] (t1) at (-4,0) {Tree 1};
+    \node[draw, circle, fill=green!20] (t2) at (-1.5,0) {Tree 2};
+    \node[draw, circle, fill=green!20] (t3) at (1,0) {Tree 3};
+    \node (dots2) at (3,0) {...};
+    \node[draw, circle, fill=green!20] (tn) at (4.5,0) {Tree N};
+    
+    % Aggregazione
+    \node[draw, rectangle, fill=red!20, minimum width=2cm, align=center] (agg) at (0,-2) {Aggregazione\\(Voting/Media)};
+    
+    % Predizione finale
+    \node[draw, rectangle, fill=yellow!20, minimum width=2cm, align=center] (pred) at (0,-4) {Predizione\\Finale};
+    
+    % Connessioni
+    \draw[->, thick] (data) -- (bs1);
+    \draw[->, thick] (data) -- (bs2);
+    \draw[->, thick] (data) -- (bs3);
+    \draw[->, thick] (data) -- (bsn);
+    
+    \draw[->, thick] (bs1) -- (t1);
+    \draw[->, thick] (bs2) -- (t2);
+    \draw[->, thick] (bs3) -- (t3);
+    \draw[->, thick] (bsn) -- (tn);
+    
+    \draw[->, thick] (t1) -- (agg);
+    \draw[->, thick] (t2) -- (agg);
+    \draw[->, thick] (t3) -- (agg);
+    \draw[->, thick] (tn) -- (agg);
+    
+    \draw[->, thick] (agg) -- (pred);
+\end{tikzpicture}
+\caption{Architettura Random Forest}
+\end{figure}
+
+\subsection{Parametri principali}
+
+\begin{itemize}
+    \item \textbf{n\_estimators}: numero di alberi nella foresta
+    \item \textbf{max\_features}: numero massimo di features considerate per ogni split
+    \item \textbf{max\_depth}: profondità massima degli alberi
+    \item \textbf{min\_samples\_split}: numero minimo di campioni richiesti per uno split
+\end{itemize}
+
+\subsection{Vantaggi}
+
+\begin{itemize}
+    \item Riduce overfitting rispetto a singoli alberi decisionali
+    \item Robusto al rumore e agli outliers
+    \item Fornisce stime di feature importance
+    \item Gestisce bene grandi dataset con molte features
+    \item Non richiede normalizzazione dei dati
+\end{itemize}
+
+\subsection{Feature Importance}
+
+Random Forest può calcolare l'importanza delle features basandosi sulla riduzione media dell'impurità:
+
+\begin{equation}
+Importance(f) = \frac{1}{N}\sum_{t=1}^{N}\sum_{n \in splits(t,f)} \Delta impurity(n)
+\end{equation}
+
+\newpage
+
+\section{Gradient Boosting}
+
+\subsection{Descrizione}
+
+\textbf{Gradient Boosting} è una tecnica ensemble che costruisce modelli in modo sequenziale, dove ogni nuovo modello cerca di correggere gli errori dei modelli precedenti. È particolarmente efficace per problemi di classificazione e regressione.
+
+\subsection{Principio di funzionamento}
+
+\begin{algorithm}[H]
+\caption{Gradient Boosting}
+\begin{algorithmic}
+\STATE Inizializza modello $F_0(x)$ con una costante
+\FOR{$m = 1$ to $M$}
+    \STATE Calcola i residui: $r_i = y_i - F_{m-1}(x_i)$
+    \STATE Addestra un modello $h_m$ sui residui
+    \STATE Aggiorna: $F_m(x) = F_{m-1}(x) + \nu \cdot h_m(x)$
+\ENDFOR
+\STATE \textbf{return} $F_M(x)$
+\end{algorithmic}
+\end{algorithm}
+
+dove $\nu$ è il learning rate.
+
+\subsection{Visualizzazione del processo}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[scale=0.9]
+    % Iterazione 1
+    \begin{scope}[xshift=0cm]
+        \node at (2,4) {Modello 1};
+        \draw[->] (0,0) -- (4,0) node[right] {$x$};
+        \draw[->] (0,0) -- (0,3) node[above] {$y$};
+        \draw[thick, blue] (0.5,0.5) -- (3.5,2.5);
+        \foreach \x/\y in {1/1.5, 2/1.8, 3/2.3} {
+            \fill[red] (\x,\y) circle (2pt);
+        }
+    \end{scope}
+    
+    % Iterazione 2
+    \begin{scope}[xshift=5cm]
+        \node at (2,4) {Modello 2 (residui)};
+        \draw[->] (0,0) -- (4,0) node[right] {$x$};
+        \draw[->] (0,-1) -- (0,2) node[above] {$r$};
+        \draw[thick, green] (0.5,0.3) -- (3.5,-0.3);
+        \foreach \x/\y in {1/0.2, 2/0, 3/-0.1} {
+            \fill[red] (\x,\y) circle (2pt);
+        }
+    \end{scope}
+    
+    % Risultato finale
+    \begin{scope}[xshift=10cm]
+        \node at (2,4) {Combinazione};
+        \draw[->] (0,0) -- (4,0) node[right] {$x$};
+        \draw[->] (0,0) -- (0,3) node[above] {$y$};
+        \draw[thick, red, dashed] (0.5,0.5) -- (3.5,2.5);
+        \draw[thick, green, dashed] (0.5,0.8) -- (3.5,2.2);
+        \draw[thick, purple] (0.5,0.7) .. controls (2,1.5) .. (3.5,2.3);
+        \foreach \x/\y in {1/1.5, 2/1.8, 3/2.3} {
+            \fill[black] (\x,\y) circle (2pt);
+        }
+        \node[right] at (4,2.5) {\small Mod. 1};
+        \node[right] at (4,2.2) {\small Mod. 2};
+        \node[right] at (4,1.9) {\small Finale};
+    \end{scope}
+\end{tikzpicture}
+\caption{Processo iterativo di Gradient Boosting}
+\end{figure}
+
+\subsection{Varianti popolari}
+
+\begin{itemize}
+    \item \textbf{XGBoost}: ottimizzazione e regolarizzazione avanzate
+    \item \textbf{LightGBM}: efficiente per grandi dataset
+    \item \textbf{CatBoost}: gestione nativa di variabili categoriche
+\end{itemize}
+
+\subsection{Parametri di regolarizzazione}
+
+\begin{itemize}
+    \item \textbf{Learning rate} ($\nu$): controlla il contributo di ogni albero
+    \item \textbf{Number of estimators}: numero di alberi da costruire
+    \item \textbf{Max depth}: profondità massima di ogni albero
+    \item \textbf{Subsample}: frazione di campioni usati per ogni albero
+\end{itemize}
+
+\newpage
+
+\section{Naive Bayes}
+
+\subsection{Descrizione}
+
+\textbf{Naive Bayes} è un classificatore probabilistico basato sul teorema di Bayes con l'assunzione "naive" (ingenua) che le features siano indipendenti tra loro dato la classe.
+
+\subsection{Teorema di Bayes}
+
+\begin{equation}
+P(C|X) = \frac{P(X|C)P(C)}{P(X)}
+\end{equation}
+
+dove:
+\begin{itemize}
+    \item $P(C|X)$ è la probabilità a posteriori della classe $C$ dato $X$
+    \item $P(X|C)$ è la likelihood
+    \item $P(C)$ è la probabilità a priori della classe
+    \item $P(X)$ è la probabilità a priori dei dati
+\end{itemize}
+
+\subsection{Assunzione di indipendenza}
+
+Con l'assunzione naive:
+
+\begin{equation}
+P(X|C) = P(x_1|C) \cdot P(x_2|C) \cdot ... \cdot P(x_n|C) = \prod_{i=1}^{n}P(x_i|C)
+\end{equation}
+
+\subsection{Classificazione}
+
+La classe predetta è:
+
+\begin{equation}
+\hat{y} = \arg\max_c P(C=c) \prod_{i=1}^{n}P(x_i|C=c)
+\end{equation}
+
+\subsection{Esempio: Classificazione Spam}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Parola} & \textbf{P(parola|spam)} & \textbf{P(parola|non spam)} \\
+\hline
+"gratis" & 0.8 & 0.1 \\
+"offerta" & 0.7 & 0.2 \\
+"urgente" & 0.6 & 0.15 \\
+"ciao" & 0.2 & 0.7 \\
+\hline
+\end{tabular}
+\caption{Probabilità condizionate per classificazione spam}
+\end{table}
+
+Per classificare "Offerta gratis urgente":
+
+\begin{align*}
+P(\text{spam}|\text{messaggio}) &\propto P(\text{spam}) \cdot P(\text{offerta}|\text{spam}) \\
+&\quad \cdot P(\text{gratis}|\text{spam}) \cdot P(\text{urgente}|\text{spam})
+\end{align*}
+
+\subsection{Varianti}
+
+\begin{itemize}
+    \item \textbf{Gaussian Naive Bayes}: assume distribuzione gaussiana per features continue
+    \item \textbf{Multinomial Naive Bayes}: per features discrete (es. conteggio parole)
+    \item \textbf{Bernoulli Naive Bayes}: per features binarie
+\end{itemize}
+
+\subsection{Vantaggi e limitazioni}
+
+\textbf{Vantaggi:}
+\begin{itemize}
+    \item Semplice e veloce
+    \item Funziona bene con pochi dati di training
+    \item Efficace per classificazione di testo
+\end{itemize}
+
+\textbf{Limitazioni:}
+\begin{itemize}
+    \item Assunzione di indipendenza raramente vera in pratica
+    \item Sensibile a features irrilevanti
+    \item Problemi con combinazioni di features mai viste nel training
+\end{itemize}
+
+\newpage
+
+\section{Principal Component Analysis (PCA)}
+
+\subsection{Descrizione}
+
+\textbf{PCA} è una tecnica di riduzione della dimensionalità non supervisionata che trasforma i dati in un nuovo sistema di coordinate dove le direzioni di massima varianza diventano i nuovi assi (componenti principali).
+
+\subsection{Obiettivi}
+
+\begin{itemize}
+    \item Ridurre la dimensionalità mantenendo la massima informazione
+    \item Eliminare correlazioni tra features
+    \item Visualizzare dati ad alta dimensionalità
+    \item Ridurre overfitting e complessità computazionale
+\end{itemize}
+
+\subsection{Algoritmo}
+
+\begin{algorithm}[H]
+\caption{Principal Component Analysis}
+\begin{algorithmic}
+\STATE \textbf{Input:} Matrice dati $X$ di dimensione $n \times d$
+\STATE Standardizza i dati: $X_{std} = \frac{X - \mu}{\sigma}$
+\STATE Calcola matrice di covarianza: $C = \frac{1}{n}X_{std}^T X_{std}$
+\STATE Calcola autovalori $\lambda_i$ e autovettori $v_i$ di $C$
+\STATE Ordina autovettori per autovalori decrescenti
+\STATE Seleziona i primi $k$ autovettori: $W = [v_1, v_2, ..., v_k]$
+\STATE Proietta i dati: $X_{pca} = X_{std} \cdot W$
+\STATE \textbf{return} $X_{pca}$
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Visualizzazione geometrica}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[scale=1.2]
+    % Punti originali
+    \foreach \x/\y in {1/2, 2/2.5, 1.5/1.8, 2.5/3, 1.8/2.3, 2.2/2.7, 1.3/1.9} {
+        \fill[blue] (\x,\y) circle (2pt);
+    }
+    
+    % Assi originali
+    \draw[->, thick] (0,0) -- (3.5,0) node[right] {$x_1$};
+    \draw[->, thick] (0,0) -- (0,3.5) node[above] {$x_2$};
+    
+    % Prima componente principale
+    \draw[->, very thick, red] (0,0) -- (3,3.3) node[right] {PC1};
+    
+    % Seconda componente principale
+    \draw[->, very thick, green] (0,0) -- (-1.5,1.36) node[left] {PC2};
+    
+    % Griglia di riferimento
+    \draw[dashed, gray] (0,0) grid (3,3);
+\end{tikzpicture}
+\caption{Identificazione delle componenti principali}
+\end{figure}
+
+\subsection{Varianza spiegata}
+
+La varianza spiegata dalla componente $i$-esima:
+
+\begin{equation}
+\text{Varianza spiegata}_i = \frac{\lambda_i}{\sum_{j=1}^{d}\lambda_j}
+\end{equation}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    xlabel={Componente Principale},
+    ylabel={Varianza Spiegata (\%)},
+    ybar,
+    bar width=15pt,
+    width=12cm,
+    height=7cm,
+    xtick={1,2,3,4,5,6},
+    ymin=0,
+    ymax=50
+]
+\addplot[fill=blue!60] coordinates {
+    (1,45) (2,25) (3,15) (4,8) (5,5) (6,2)
+};
+\end{axis}
+\end{tikzpicture}
+\caption{Varianza spiegata per componente}
+\end{figure}
+
+\subsection{Scelta del numero di componenti}
+
+Criteri comuni:
+\begin{itemize}
+    \item \textbf{Soglia di varianza}: mantenere componenti che spiegano almeno l'80-95\% della varianza totale
+    \item \textbf{Criterio di Kaiser}: mantenere componenti con $\lambda_i > 1$
+    \item \textbf{Scree plot}: cercare il "gomito" nel grafico degli autovalori
+\end{itemize}
+
+\subsection{Applicazioni}
+
+\begin{itemize}
+    \item Preprocessing per altri algoritmi ML
+    \item Compressione di immagini
+    \item Visualizzazione di dati multidimensionali
+    \item Rilevamento di anomalie
+    \item Analisi di dati genomici
+\end{itemize}
+
+\newpage
+
+\section{Conclusioni e Confronto}
+
+\subsection{Riepilogo degli algoritmi}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{|p{3cm}|p{2.5cm}|p{3cm}|p{3.5cm}|}
+\hline
+\textbf{Algoritmo} & \textbf{Tipo} & \textbf{Complessità} & \textbf{Casi d'uso} \\
+\hline
+Regressione Lineare & Supervisionato & Bassa & Predizione valori continui \\
+\hline
+Regressione Logistica & Supervisionato & Bassa & Classificazione binaria \\
+\hline
+KNN & Supervisionato & Alta (predizione) & Classificazione, raccomandazioni \\
+\hline
+Decision Trees & Supervisionato & Media & Classificazione interpretabile \\
+\hline
+SVM & Supervisionato & Alta & Classificazione complessa \\
+\hline
+K-Means & Non supervisionato & Media & Segmentazione clienti \\
+\hline
+Neural Networks & Supervisionato & Molto alta & Visione, NLP, complessi \\
+\hline
+Random Forest & Supervisionato & Alta & Classificazione robusta \\
+\hline
+Gradient Boosting & Supervisionato & Alta & Competizioni, alta accuratezza \\
+\hline
+Naive Bayes & Supervisionato & Bassa & Classificazione testo \\
+\hline
+PCA & Non supervisionato & Media & Riduzione dimensionalità \\
+\hline
+\end{tabular}
+\caption{Confronto degli algoritmi di Machine Learning}
+\end{table}
+
+\subsection{Criteri di scelta}
+
+\begin{itemize}
+    \item \textbf{Dimensione del dataset}: algoritmi semplici per dataset piccoli, ensemble o deep learning per grandi dataset
+    \item \textbf{Interpretabilità}: alberi decisionali e regressione lineare sono più interpretabili
+    \item \textbf{Accuratezza richiesta}: ensemble e reti neurali per massima accuratezza
+    \item \textbf{Velocità}: KNN e Naive Bayes sono veloci in training ma potrebbero essere lenti in predizione
+    \item \textbf{Tipo di problema}: classificazione, regressione, clustering, o riduzione dimensionalità
+\end{itemize}
+
+\subsection{Tendenze future}
+
+\begin{itemize}
+    \item \textbf{Deep Learning}: reti sempre più profonde e specializzate
+    \item \textbf{AutoML}: automazione della selezione e ottimizzazione di modelli
+    \item \textbf{Federated Learning}: apprendimento distribuito preservando la privacy
+    \item \textbf{Explainable AI}: maggiore focus sull'interpretabilità dei modelli
+    \item \textbf{Transfer Learning}: riutilizzo di modelli pre-addestrati
+\end{itemize}
+
+\subsection{Considerazioni pratiche}
+
+Per un progetto di ML efficace:
+
+\begin{enumerate}
+    \item \textbf{Comprendere il problema}: definire obiettivi chiari
+    \item \textbf{Esplorare i dati}: analisi esplorativa approfondita
+    \item \textbf{Feature engineering}: creare features significative
+    \item \textbf{Selezione modello}: provare diversi algoritmi
+    \item \textbf{Validazione}: usare cross-validation
+    \item \textbf{Tuning}: ottimizzare iperparametri
+    \item \textbf{Valutazione}: metriche appropriate al contesto
+    \item \textbf{Deployment}: monitorare performance in produzione
+\end{enumerate}
+
+\section*{Bibliografia e Risorse}
+
+\begin{itemize}
+    \item Bishop, C.M. (2006). \textit{Pattern Recognition and Machine Learning}. Springer.
+    \item Hastie, T., Tibshirani, R., Friedman, J. (2009). \textit{The Elements of Statistical Learning}. Springer.
+    \item Goodfellow, I., Bengio, Y., Courville, A. (2016). \textit{Deep Learning}. MIT Press.
+    \item Murphy, K.P. (2012). \textit{Machine Learning: A Probabilistic Perspective}. MIT Press.
+    \item Scikit-learn Documentation: \url{https://scikit-learn.org}
+\end{itemize}
+
+\end{document}
