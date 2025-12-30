@@ -8,7 +8,7 @@ Descrizione: Modello di machine learning per prevedere i consumi energetici
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import seaborn as sns
+import os
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import StandardScaler
@@ -16,7 +16,12 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 
 # Configurazione grafica
 plt.style.use('seaborn-v0_8-darkgrid')
-sns.set_palette("husl")
+
+# Creazione cartella output se non esiste
+OUTPUT_DIR = 'grafici_output'
+if not os.path.exists(OUTPUT_DIR):
+    os.makedirs(OUTPUT_DIR)
+    print(f"✓ Cartella '{OUTPUT_DIR}' creata per salvare i grafici\n")
 
 print("=" * 80)
 print("PREVISIONE CONSUMI ENERGETICI - REGRESSIONE LINEARE")
@@ -47,56 +52,11 @@ print("\n\nVerifica valori mancanti:")
 print(df.isnull().sum())
 
 # ============================================================================
-# 2. VISUALIZZAZIONE E CORRELAZIONE
+# 2. PREPARAZIONE DEI DATI
 # ============================================================================
 
 print("\n" + "=" * 80)
-print("2. ANALISI DELLE CORRELAZIONI")
-print("-" * 80)
-
-# Matrice di correlazione
-correlation_matrix = df.drop('mese', axis=1).corr()
-print("\nMatrice di correlazione:")
-print(correlation_matrix)
-
-print(f"\nCorrelazione con il consumo energetico:")
-print(correlation_matrix['consumo_kwh'].sort_values(ascending=False))
-
-# Visualizzazione matrice di correlazione
-plt.figure(figsize=(10, 8))
-sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', center=0,
-            square=True, linewidths=1, cbar_kws={"shrink": 0.8})
-plt.title('Matrice di Correlazione - Consumi Energetici', fontsize=14, fontweight='bold')
-plt.tight_layout()
-plt.savefig('/mnt/user-data/outputs/correlazione_matrix.png', dpi=300, bbox_inches='tight')
-plt.close()
-
-# Visualizzazione relazioni tra variabili
-fig, axes = plt.subplots(2, 2, figsize=(14, 10))
-features = ['temperatura_media', 'giorni_lezione', 'studenti_presenti', 'ore_laboratori']
-colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A']
-
-for idx, (feature, color) in enumerate(zip(features, colors)):
-    row = idx // 2
-    col = idx % 2
-    axes[row, col].scatter(df[feature], df['consumo_kwh'], alpha=0.6, 
-                          color=color, s=80, edgecolors='black', linewidth=0.5)
-    axes[row, col].set_xlabel(feature.replace('_', ' ').title(), fontsize=11, fontweight='bold')
-    axes[row, col].set_ylabel('Consumo (kWh)', fontsize=11, fontweight='bold')
-    axes[row, col].set_title(f'Consumo vs {feature.replace("_", " ").title()}', 
-                            fontsize=12, fontweight='bold')
-    axes[row, col].grid(True, alpha=0.3)
-
-plt.tight_layout()
-plt.savefig('/mnt/user-data/outputs/scatter_plots.png', dpi=300, bbox_inches='tight')
-plt.close()
-
-# ============================================================================
-# 3. PREPARAZIONE DEI DATI
-# ============================================================================
-
-print("\n" + "=" * 80)
-print("3. PREPARAZIONE DEI DATI")
+print("2. PREPARAZIONE DEI DATI")
 print("-" * 80)
 
 # Separazione features e target
@@ -120,11 +80,11 @@ X_test_scaled = scaler.transform(X_test)
 print("\nDati normalizzati con StandardScaler")
 
 # ============================================================================
-# 4. ADDESTRAMENTO DEL MODELLO
+# 3. ADDESTRAMENTO DEL MODELLO
 # ============================================================================
 
 print("\n" + "=" * 80)
-print("4. ADDESTRAMENTO MODELLO DI REGRESSIONE LINEARE")
+print("3. ADDESTRAMENTO MODELLO DI REGRESSIONE LINEARE")
 print("-" * 80)
 
 # Creazione e addestramento del modello
@@ -159,15 +119,15 @@ plt.title('Importanza delle Features nel Modello', fontsize=14, fontweight='bold
 plt.axvline(x=0, color='black', linestyle='--', linewidth=0.8)
 plt.grid(True, alpha=0.3, axis='x')
 plt.tight_layout()
-plt.savefig('/mnt/user-data/outputs/coefficienti_modello.png', dpi=300, bbox_inches='tight')
+plt.savefig(f'{OUTPUT_DIR}/coefficienti_modello.png', dpi=300, bbox_inches='tight')
 plt.close()
 
 # ============================================================================
-# 5. PREVISIONI E VALUTAZIONE
+# 4. PREVISIONI E VALUTAZIONE
 # ============================================================================
 
 print("\n" + "=" * 80)
-print("5. VALUTAZIONE DELLE PRESTAZIONI")
+print("4. VALUTAZIONE DELLE PRESTAZIONI")
 print("-" * 80)
 
 # Previsioni
@@ -228,7 +188,7 @@ axes[1].legend()
 axes[1].grid(True, alpha=0.3)
 
 plt.tight_layout()
-plt.savefig('/mnt/user-data/outputs/previsioni_vs_reali.png', dpi=300, bbox_inches='tight')
+plt.savefig(f'{OUTPUT_DIR}/previsioni_vs_reali.png', dpi=300, bbox_inches='tight')
 plt.close()
 
 # Residui (errori di previsione)
@@ -256,15 +216,15 @@ axes[1].set_title('Residui vs Previsioni - Test Set', fontsize=12, fontweight='b
 axes[1].grid(True, alpha=0.3)
 
 plt.tight_layout()
-plt.savefig('/mnt/user-data/outputs/analisi_residui.png', dpi=300, bbox_inches='tight')
+plt.savefig(f'{OUTPUT_DIR}/analisi_residui.png', dpi=300, bbox_inches='tight')
 plt.close()
 
 # ============================================================================
-# 6. PREVISIONI FUTURE
+# 5. PREVISIONI FUTURE
 # ============================================================================
 
 print("\n" + "=" * 80)
-print("6. PREVISIONI PER I PROSSIMI MESI")
+print("5. PREVISIONI PER I PROSSIMI MESI")
 print("-" * 80)
 
 # Dati stimati per i prossimi 3 mesi
@@ -291,11 +251,11 @@ print(f"\n✓ Consumo totale previsto: {previsioni_future.sum():,.0f} kWh")
 print(f"✓ Consumo medio previsto: {previsioni_future.mean():,.0f} kWh/mese")
 
 # ============================================================================
-# 7. RIEPILOGO E CONCLUSIONI
+# 6. RIEPILOGO E CONCLUSIONI
 # ============================================================================
 
 print("\n" + "=" * 80)
-print("7. RIEPILOGO E CONCLUSIONI")
+print("6. RIEPILOGO E CONCLUSIONI")
 print("=" * 80)
 
 print("\n📊 RISULTATI PRINCIPALI:")
@@ -325,5 +285,5 @@ elif test_r2 > 0.70:
 else:
     print(f"  • Il modello potrebbe beneficiare di miglioramenti (R² < 0.70)")
 
-print("\n✅ TUTTI I GRAFICI SONO STATI SALVATI IN /mnt/user-data/outputs/")
+print(f"\n✅ TUTTI I GRAFICI SONO STATI SALVATI NELLA CARTELLA '{OUTPUT_DIR}/'")
 print("\n" + "=" * 80)

@@ -1,0 +1,38 @@
+\frametitle{Testing Automatizzato}
+\textbf{PHPUnit - Test per UserModel:}
+\begin{lstlisting}[style=phpstyle, basicstyle=\ttfamily\tiny]
+<?php
+use PHPUnit\Framework\TestCase;
+
+class UserModelTest extends TestCase
+{
+    private $userModel;
+
+    protected function setUp(): void
+    {
+        $this->userModel = new UserModel();
+    }
+
+    public function testGetUsersReturnsArray()
+    {
+        $users = $this->userModel->getUsers(10);
+        $this->assertIsArray($users);
+    }
+
+    public function testGetUsersRespectsLimit()
+    {
+        $limit = 5;
+        $users = $this->userModel->getUsers($limit);
+        $this->assertLessThanOrEqual($limit, count($users));
+    }
+
+    public function testUserStructure()
+    {
+        $users = $this->userModel->getUsers(1);
+        $this->assertArrayHasKey('user_id', $users[0]);
+        $this->assertArrayHasKey('username', $users[0]);
+        $this->assertArrayHasKey('user_email', $users[0]);
+        $this->assertArrayHasKey('user_status', $users[0]);
+    }
+}
+\end{lstlisting}
