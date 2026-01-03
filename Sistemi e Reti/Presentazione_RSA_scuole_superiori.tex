@@ -1,0 +1,479 @@
+\documentclass[aspectratio=169]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tikz}
+
+% Theme
+\usetheme{Madrid}
+\usecolortheme{default}
+
+% Title page information
+\title{Il Criptosistema RSA}
+\subtitle{Come Funziona la Crittografia Moderna}
+\author{Prof. Fedeli Massimo}
+\institute{IIS Fermi Sacconi Cpia\\Ascoli Piceno}
+\date{\today}
+
+\begin{document}
+
+% Slide 1: Title
+\frame{\titlepage}
+
+% Slide 2: Introduzione - Perché la Crittografia?
+\begin{frame}{Perché Abbiamo Bisogno della Crittografia?}
+
+\textbf{Ogni giorno usiamo la crittografia:}
+\begin{itemize}
+\item Quando compriamo online (carta di credito)
+\item Quando chattiamo su WhatsApp
+\item Quando facciamo home banking
+\item Quando inviamo email
+\end{itemize}
+
+\vspace{0.5cm}
+
+\begin{alertblock}{Obiettivo}
+Proteggere i nostri messaggi da occhi indiscreti!
+\end{alertblock}
+\end{frame}
+
+% Slide 3: Il Cifrario di Cesare
+\begin{frame}{Il Cifrario di Cesare: Un Esempio Semplice}
+\textbf{Giulio Cesare} usava un metodo semplicissimo per cifrare i suoi messaggi:
+
+\vspace{0.5cm}
+
+\textbf{Regola:} Spostare ogni lettera di un certo numero di posizioni in avanti  (es. 3)
+
+\vspace{0.3cm}
+
+\begin{center}
+\begin{tikzpicture}
+\node[draw, rectangle, fill=blue!20] at (0,0) {A};
+\node at (1,0) {$\rightarrow$};
+\node[draw, rectangle, fill=green!20] at (2,0) {D};
+
+\node[draw, rectangle, fill=blue!20] at (3.5,0) {B};
+\node at (4.5,0) {$\rightarrow$};
+\node[draw, rectangle, fill=green!20] at (5.5,0) {E};
+
+\node[draw, rectangle, fill=blue!20] at (7,0) {C};
+\node at (8,0) {$\rightarrow$};
+\node[draw, rectangle, fill=green!20] at (9,0) {F};
+\end{tikzpicture}
+\end{center}
+
+\vspace{0.5cm}
+
+\textbf{Esempio:}
+\begin{itemize}
+\item Messaggio originale: \alert{CIAO}
+\item Messaggio cifrato: \alert{FLDR}
+\end{itemize}
+
+\vspace{0.3cm}
+
+\textbf{Problema:} Se scopro la chiave (3), posso decifrare tutto!
+\end{frame}
+
+% Slide 4: Il Problema della Chiave Segreta
+\begin{frame}{Il Grande Problema delle Chiavi Segrete}
+\textbf{Con il Cifrario di Cesare:}
+
+\begin{center}
+\begin{tikzpicture}[scale=0.8]
+% Alice
+\node[circle, draw, fill=pink!30, minimum size=1.5cm] at (0,0) {Alice};
+% Bob
+\node[circle, draw, fill=blue!30, minimum size=1.5cm] at (8,0) {Bob};
+% Freccia
+\draw[->, very thick, red] (1.2,0.3) -- (6.8,0.3) node[midway, above] {Chiave segreta (3)};
+\draw[->, very thick, green] (1.2,-0.3) -- (6.8,-0.3) node[midway, below] {Messaggio cifrato};
+\end{tikzpicture}
+\end{center}
+
+\vspace{0.5cm}
+
+\begin{block}{Problemi}
+\begin{enumerate}
+\item Come faccio a dare la chiave a Bob in modo sicuro?
+\item Se qualcuno intercetta la chiave, può leggere tutto!
+\item Chi sa cifrare, sa anche decifrare
+\end{enumerate}
+\end{block}
+
+\vspace{0.3cm}
+
+\textbf{Oggi:} Vogliamo comunicare con milioni di persone su Internet. Impossibile scambiare chiavi segrete con tutti!
+\end{frame}
+
+% Slide 5: La Grande Idea: Due Chiavi!
+\begin{frame}{La Rivoluzione: Crittografia a Chiave Pubblica}
+\begin{center}
+\textbf{L'idea geniale (1977):}
+\end{center}
+
+Invece di una chiave, usiamo \alert{DUE chiavi diverse}:
+
+\vspace{0.5cm}
+
+\begin{columns}
+\column{0.5\textwidth}
+\begin{block}{Chiave Pubblica}
+\begin{itemize}
+\item La do a TUTTI
+\item Serve per CIFRARE
+\end{itemize}
+\end{block}
+
+\column{0.5\textwidth}
+\begin{block}{Chiave Privata}
+\begin{itemize}
+\item La tengo SOLO IO
+\item Serve per DECIFRARE
+\end{itemize}
+\end{block}
+\end{columns}
+
+\vspace{0.5cm}
+
+\begin{alertblock}{Magia della Matematica!}
+Cifrare è facile per tutti, decifrare è facile SOLO per me!
+\end{alertblock}
+\end{frame}
+
+% Slide 6: Come Funziona in Pratica
+\begin{frame}{Come Funziona nella Vita Reale?}
+\textbf{Esempio: Alice vuole ricevere messaggi segreti}
+
+\vspace{0.3cm}
+
+\begin{enumerate}
+\item Alice crea due chiavi:
+\begin{itemize}
+\item Chiave pubblica: la pubblica su Internet
+\item Chiave privata: la tiene nel suo computer
+\end{itemize}
+
+\vspace{0.3cm}
+
+\item Bob vuole scrivere ad Alice:
+\begin{itemize}
+\item Prende la chiave pubblica di Alice
+\item Cifra il messaggio
+\item Invia il messaggio cifrato
+\end{itemize}
+
+\vspace{0.3cm}
+
+\item Alice riceve il messaggio cifrato:
+\begin{itemize}
+\item Usa la sua chiave privata
+\item Decifra il messaggio
+\item Legge il contenuto
+\end{itemize}
+\end{enumerate}
+
+\vspace{0.3cm}
+
+\textbf{Anche se un hacker intercetta il messaggio, non può decifrarlo!}
+\end{frame}
+
+% Slide 7: RSA - I Numeri Primi
+\begin{frame}{RSA: La Base Matematica}
+\textbf{RSA usa i numeri primi!}
+
+\vspace{0.5cm}
+
+\begin{block}{Cos'è un numero primo?}
+Un numero divisibile solo per 1 e per se stesso.
+\end{block}
+
+\vspace{0.3cm}
+
+\textbf{Esempi di numeri primi:}
+\begin{center}
+2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47...
+\end{center}
+
+\vspace{0.5cm}
+
+\begin{alertblock}{Il Trucco di RSA}
+\begin{itemize}
+\item \textbf{Facile:} Moltiplicare due numeri primi grandi
+\item \textbf{Difficilissimo:} Fattorizzare il risultato (trovare i due numeri originali)
+\end{itemize}
+\end{alertblock}
+
+
+\end{frame}
+
+
+\begin{frame}
+	\vspace{0.3cm}
+	
+	\textbf{Esempio semplice:}
+	\begin{itemize}
+		\item Facile: $13 \times 17 = 221$
+		\item Più difficile: $221 = ? \times ?$ (devi provare vari numeri)
+	\end{itemize}
+\end{frame}
+
+
+% Slide 8: Un Esempio Semplificato
+\begin{frame}{RSA: Un Esempio con Numeri Piccoli}
+\textbf{Alice vuole creare le sue chiavi:}
+
+\vspace{0.3cm}
+
+\textbf{Passo 1:} Sceglie due numeri primi piccoli
+\begin{itemize}
+\item $p_1 = 3$ e $p_2 = 11$
+\item Calcola: $q = 3 \times 11 = 33$
+\end{itemize}
+
+\vspace{0.3cm}
+
+\textbf{Passo 2:} Sceglie due numeri speciali $s$ e $t$
+\begin{itemize}
+\item Sceglie $s = 3$ (chiave pubblica)
+\item Calcola $t = 7$ (chiave privata)
+\end{itemize}
+
+\vspace{0.3cm}
+
+\textbf{Risultato:}
+\begin{itemize}
+\item \alert{Chiave pubblica di Alice:} $(q=33, s=3)$ → pubblicata online
+\item \alert{Chiave privata di Alice:} $t=7$ → segreta!
+\end{itemize}
+
+\vspace{0.3cm}
+
+\textbf{Nota:} Nella realtà si usano numeri ENORMI (centinaia di cifre)!
+\end{frame}
+
+% Slide 9: Cifrare un Messaggio
+\begin{frame}{Come Bob Cifra un Messaggio}
+\textbf{Bob vuole inviare ad Alice il numero 4}
+
+\vspace{0.5cm}
+
+Bob usa la chiave pubblica di Alice: $(q=33, s=3)$
+
+\vspace{0.3cm}
+
+\textbf{Formula di cifratura:}
+\[
+\text{messaggio cifrato} = 4^3 \mod 33
+\]
+
+\vspace{0.3cm}
+
+\textbf{Calcolo:}
+\begin{align*}
+4^3 &= 64 \\
+64 \div 33 &= 1 \text{ resto } 31 \\
+\text{Quindi: } 64 \mod 33 &= 31
+\end{align*}
+
+\vspace{0.5cm}
+
+\begin{block}{Risultato}
+Bob invia ad Alice il numero \alert{31}
+\end{block}
+\end{frame}
+
+% Slide 10: Decifrare il Messaggio
+\begin{frame}{Come Alice Decifra il Messaggio}
+\textbf{Alice riceve il numero cifrato: 31}
+
+\vspace{0.5cm}
+
+Alice usa la sua chiave privata: $t=7$
+
+\vspace{0.3cm}
+
+\textbf{Formula di decifratura:}
+\[
+\text{messaggio originale} = 31^7 \mod 33
+\]
+
+\vspace{0.3cm}
+
+\textbf{Calcolo (semplificato):}
+\begin{align*}
+31^7 \mod 33 &= \text{(calcolo complesso)} \\
+&= 4
+\end{align*}
+
+\vspace{0.5cm}
+
+\begin{block}{Magia!}
+Alice recupera il messaggio originale: \alert{4}
+\end{block}
+
+\vspace{0.3cm}
+
+\textbf{Perché funziona?} Grazie a proprietà matematiche speciali dei numeri primi!
+\end{frame}
+
+% Slide 11: Perché è Sicuro?
+\begin{frame}{Perché RSA è Sicuro?}
+\textbf{Un hacker intercetta:}
+\begin{itemize}
+\item Il messaggio cifrato: 31
+\item La chiave pubblica: $(q=33, s=3)$
+\end{itemize}
+
+\vspace{0.5cm}
+
+\textbf{Per decifrare, l'hacker deve:}
+\begin{enumerate}
+\item Fattorizzare 33 per trovare $3 \times 11$
+\item Calcolare la chiave privata $t=7$
+\end{enumerate}
+
+\vspace{0.3cm}
+
+\begin{alertblock}{Con numeri piccoli (33) è facile!}
+Ma RSA usa numeri con centinaia di cifre...
+\end{alertblock}
+
+\vspace{0.5cm}
+
+\textbf{Esempio reale:}
+\begin{itemize}
+\item $q$ ha circa 600 cifre (2048 bit)
+\item Fattorizzarlo richiederebbe miliardi di anni anche ai supercomputer più potenti!
+\end{itemize}
+\end{frame}
+
+% Slide 12: RSA nella Vita Reale
+\begin{frame}{RSA nella Vita Quotidiana}
+\textbf{Dove usi RSA senza saperlo?}
+
+\vspace{0.5cm}
+
+\begin{columns}
+\column{0.5\textwidth}
+\begin{block}{Browser Web (HTTPS)}
+\begin{itemize}
+\item Quando vedi il lucchetto 🔒
+\item Protegge password e dati
+\end{itemize}
+\end{block}
+
+\begin{block}{Email Sicure}
+\begin{itemize}
+\item PGP, S/MIME
+\item Firma digitale
+\end{itemize}
+\end{block}
+
+\column{0.5\textwidth}
+\begin{block}{Messaggistica}
+\begin{itemize}
+\item WhatsApp, Signal
+\item Crittografia end-to-end
+\end{itemize}
+\end{block}
+
+\begin{block}{Bitcoin \& Crypto}
+\begin{itemize}
+\item Portafogli digitali
+\item Transazioni sicure
+\end{itemize}
+\end{block}
+\end{columns}
+
+\vspace{0.5cm}
+
+\begin{center}
+\textbf{RSA protegge miliardi di transazioni ogni giorno!}
+\end{center}
+\end{frame}
+
+% Slide 13: Punti di Forza e Limitazioni
+\begin{frame}{Punti di Forza e Limitazioni di RSA}
+\begin{columns}
+\column{0.5\textwidth}
+\begin{block}{✓ Punti di Forza}
+\begin{itemize}
+\item Molto sicuro (se ben implementato)
+\item Non serve scambio di chiavi segrete
+\item Permette firma digitale
+\item Standard mondiale
+\end{itemize}
+\end{block}
+
+\column{0.5\textwidth}
+\begin{block}{⚠ Limitazioni}
+\begin{itemize}
+\item Più lento della crittografia simmetrica
+\item Richiede chiavi lunghe (2048+ bit)
+\item Vulnerabile ai computer quantistici (futuro)
+\end{itemize}
+\end{block}
+\end{columns}
+
+\vspace{0.5cm}
+
+\begin{alertblock}{Nella Pratica}
+Si usa spesso RSA + crittografia simmetrica insieme:
+\begin{itemize}
+\item RSA per scambiare una chiave segreta
+\item Crittografia simmetrica (AES) per i dati veri e propri
+\end{itemize}
+\end{alertblock}
+\end{frame}
+
+% Slide 14: Conclusioni
+\begin{frame}{Conclusioni}
+\begin{block}{Cosa Abbiamo Imparato}
+\begin{itemize}
+\item La crittografia moderna usa \alert{due chiavi}: pubblica e privata
+\item RSA si basa sulla difficoltà di \alert{fattorizzare numeri grandi}
+\item Cifrare è facile, decifrare senza la chiave è quasi impossibile
+\item RSA protegge la nostra vita digitale quotidiana
+\end{itemize}
+\end{block}
+
+\vspace{0.5cm}
+
+\begin{center}
+\textbf{Chi ha inventato RSA?}
+
+\vspace{0.3cm}
+
+\textbf{Rivest, Shamir, Adleman (1977)}
+
+\vspace{0.3cm}
+
+Il nome RSA viene dalle iniziali dei tre inventori!
+\end{center}
+
+\begin{alertblock}{Messaggio Finale}
+La matematica che studiate non è solo teoria: protegge il mondo digitale!
+\end{alertblock}
+\end{frame}
+
+% Slide 15: Domande?
+\begin{frame}
+\begin{center}
+{\Huge Domande?}
+
+
+
+\vspace{1cm}
+
+\texttt{fedeli.massimo@iisfermisacconiceciap.edu.it}
+\end{center}
+\end{frame}
+
+\end{document}

@@ -1,0 +1,428 @@
+\documentclass[aspectratio=169]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tikz}
+
+% Theme
+\usetheme{Madrid}
+\usecolortheme{default}
+
+% Title page information
+\title{Il Criptosistema RSA}
+\subtitle{Crittografia a Chiave Pubblica}
+\author{Prof. Fedeli Massimo}
+\institute{IIS Fermi Sacconi Cpia\\Ascoli Piceno}
+\date{\today}
+
+\begin{document}
+	
+	% Slide 1: Title
+	\frame{\titlepage}
+	
+	% Slide 2: Introduzione alla Crittografia
+	\begin{frame}{Introduzione alla Crittografia}
+		\begin{block}{Obiettivo della Crittografia}
+			Escogitare metodi per cifrare e decifrare messaggi riservati, garantendo sicurezza da occhi indiscreti.
+		\end{block}
+		
+		\vspace{0.5cm}
+		
+		\textbf{Esempio storico: Cifrario di Cesare}
+		\begin{itemize}
+			\item Scambio lettere dell'alfabeto secondo una permutazione prefissata
+			\item Esempio: spostamento di 3 posizioni ($A \to D$, $B \to E$, $Z \to C$)
+			\item Metodo semplice ma facilmente violabile
+		\end{itemize}
+	\end{frame}
+	
+	% Slide 3: Limiti del Cifrario di Cesare
+	\begin{frame}{Limiti della Crittografia Classica}
+		\textbf{Problemi del Cifrario di Cesare:}
+		\begin{enumerate}
+			\item Chi sa cifrare sa anche decifrare (stessa difficoltà computazionale)
+			\item Necessario scambio preventivo della chiave segreta
+			\item Limitato a ordini di battaglia (nascondere dalle spie)
+			\item Interlocutori fidati (Labieno, Marco Antonio)
+		\end{enumerate}
+		
+		\vspace{0.5cm}
+		
+		\begin{alertblock}{Esigenze della Crittografia Moderna}
+			Oggi la rete permette comunicazioni tra chiunque: serve evitare che l'ampia diffusione del sistema ne pregiudichi la segretezza.
+		\end{alertblock}
+	\end{frame}
+	
+	% Slide 4: Crittografia a Chiave Pubblica
+	\begin{frame}{Principi della Crittografia a Chiave Pubblica}
+		\textbf{Requisiti fondamentali:}
+		\begin{enumerate}
+			\item Ogni utente dispone di \alert{due chiavi}:
+			\begin{itemize}
+				\item \textbf{Chiave pubblica}: per cifrare messaggi destinati all'utente
+				\item \textbf{Chiave privata}: per decifrare (riservata al solo proprietario)
+			\end{itemize}
+			\item Cifrare è lecito a chiunque, ma solo il destinatario può decifrare
+			\item Le operazioni di cifrare e decifrare \alert{NON devono essere computazionalmente equivalenti}
+		\end{enumerate}
+		
+		\vspace{0.3cm}
+		
+		\begin{block}{Crittografia a Chiave Pubblica}
+			Sistema crittografico che utilizza coppie di chiavi asimmetriche per garantire sicurezza nelle comunicazioni.
+		\end{block}
+	\end{frame}
+	
+	% Slide 5: Il Sistema RSA
+	\begin{frame}{Il Sistema RSA (1977)}
+		\textbf{Proposto da:} Rivest, Shamir, Adleman nel 1977
+		
+		\vspace{0.5cm}
+		
+		\textbf{Base matematica:}
+		\begin{itemize}
+			\item Preliminari di Aritmetica
+			\item \alert{Teorema di Eulero} è il principio fondamentale
+			\item Semplice da implementare
+		\end{itemize}
+		
+		\vspace{0.5cm}
+		
+		\begin{block}{Caratteristiche}
+			RSA è il metodo più noto nell'ambito della crittografia a chiave pubblica e si basa su proprietà dei numeri primi e dell'aritmetica modulare.
+		\end{block}
+	\end{frame}
+	
+	% Slide 6: Rappresentazione dell'Alfabeto
+	\begin{frame}{Rappresentazione dell'Alfabeto}
+		\textbf{Codifica lettere $\to$ numeri (0-26):}
+		
+		\vspace{0.3cm}
+		
+		\begin{center}
+			\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+				\hline
+				- & A & B & C & D & E & F & G & H & I & J & K & L \\
+				\hline
+				0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 \\
+				\hline
+			\end{tabular}
+		\end{center}
+		
+		\vspace{0.3cm}
+		
+		\begin{center}
+			\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+				\hline
+				M & N & O & P & Q & R & S & T & U & V & W & X & Y & Z \\
+				\hline
+				13 & 14 & 15 & 16 & 17 & 18 & 19 & 20 & 21 & 22 & 23 & 24 & 25 & 26 \\
+				\hline
+			\end{tabular}
+		\end{center}
+		
+		\vspace{0.3cm}
+		
+		\textbf{Esempio:} "$CIAO$" diviene $3\,9\,1\,15$
+		
+		\vspace{0.3cm}
+		
+		(- indica lo spazio vuoto tra due parole)
+	\end{frame}
+	
+	% Slide 7: Funzione φ di Eulero
+	\begin{frame}{La Funzione φ di Eulero}
+		\begin{block}{Definizione}
+			Per ogni numero naturale $n \geq 1$, la \alert{funzione φ di Eulero} $\varphi(n)$ conta quanti numeri interi tra 1 e $n$ sono \textbf{coprimi} con $n$ (cioè hanno MCD con $n$ uguale a 1).
+		\end{block}
+		
+		\vspace{0.5cm}
+		
+		\textbf{Esempi:}
+		\begin{itemize}
+			\item $\varphi(6) = 2$ perché solo 1 e 5 sono coprimi con 6
+			\item $\varphi(10) = 4$ perché 1, 3, 7, 9 sono coprimi con 10
+			\item $\varphi(12) = 4$ perché 1, 5, 7, 11 sono coprimi con 12
+		\end{itemize}
+		
+		\vspace{0.3cm}
+		
+		\begin{alertblock}{Caso speciale: numeri primi}
+			Se $p$ è un numero primo, allora $\varphi(p) = p - 1$ \\
+			perché tutti i numeri da 1 a $p-1$ sono coprimi con $p$.
+		\end{alertblock}
+	\end{frame}
+	
+	% Slide 8: Proprietà della Funzione φ
+	\begin{frame}{Proprietà della Funzione φ di Eulero}
+		\textbf{Proprietà fondamentali:}
+		
+		\begin{enumerate}
+			\item \textbf{Per numeri primi:} Se $p$ è primo
+			\[
+			\varphi(p) = p - 1
+			\]
+			
+			\item \textbf{Per potenze di primi:} Se $p$ è primo e $k \geq 1$
+			\[
+			\varphi(p^k) = p^k - p^{k-1} = p^{k-1}(p-1)
+			\]
+			
+			Non ci chiediamo perché :-)
+			
+			\item \textbf{Funzione moltiplicativa:} Se $\gcd(m,n) = 1$
+			\[
+			\varphi(m \cdot n) = \varphi(m) \cdot \varphi(n)
+			\]
+		\end{enumerate}
+		
+		\vspace{0.3cm}
+		
+		\textbf{Applicazione importante per RSA:}
+		Se $q = p_1 \cdot p_2$ con $p_1, p_2$ primi distinti:
+		\[
+		\varphi(q) = \varphi(p_1) \cdot \varphi(p_2) = (p_1-1)(p_2-1)
+		\]
+	\end{frame}
+	
+	% Slide 9: Il Teorema di Eulero
+	\begin{frame}{Il Teorema di Eulero}
+		\begin{block}{Teorema di Eulero}
+			Se $a$ e $n$ sono interi coprimi (cioè $\gcd(a,n) = 1$), allora:
+			\[
+			a^{\varphi(n)} \equiv 1 \pmod{n}
+			\]
+		\end{block}
+		
+		\vspace{0.5cm}
+		
+		\textbf{Esempi:}
+		\begin{itemize}
+			\item $n = 10$: $\varphi(10) = 4$, quindi per $a = 3$ (coprimo con 10):
+			\[
+			3^4 = 81 \equiv 1 \pmod{10}
+			\]
+			
+			\item $n = 7$ (primo): $\varphi(7) = 6$, quindi per $a = 2$:
+			\[
+			2^6 = 64 \equiv 1 \pmod{7}
+			\]
+		\end{itemize}
+		
+		
+		\begin{alertblock}{Caso speciale: Piccolo Teorema di Fermat}
+			Se $p$ è primo e $\gcd(a,p) = 1$: \quad $a^{p-1} \equiv 1 \pmod{p}$
+		\end{alertblock}
+	\end{frame}
+	
+	% Slide 10: Applicazione del Teorema di Eulero a RSA
+	\begin{frame}{Come il Teorema di Eulero Rende Possibile RSA}
+		\textbf{L'idea chiave:}
+		
+		Se $s \cdot t \equiv 1 \pmod{\varphi(q)}$, allora esiste un intero $k$ tale che:
+		\[
+		s \cdot t = 1 + k \cdot \varphi(q)
+		\]
+		
+		\vspace{0.3cm}
+		
+		\textbf{Per un messaggio $a$ coprimo con $q$:}
+		\begin{align*}
+			(a^s)^t &= a^{s \cdot t} \\
+			&= a^{1 + k \cdot \varphi(q)} \\
+			&= a \cdot (a^{\varphi(q)})^k \\
+			&\equiv a \cdot 1^k \pmod{q} \quad \text{(per il Teorema di Eulero)} \\
+			&\equiv a \pmod{q}
+		\end{align*}
+		
+		\vspace{0.3cm}
+		
+		\begin{block}{Conclusione}
+			Cifrando con $s$ e decifrando con $t$, recuperiamo esattamente il messaggio originale $a$!
+		\end{block}
+	\end{frame}
+	
+	% Slide 11: Cifrario di Cesare Moderno
+	\begin{frame}{Cifrario di Cesare: Formulazione Matematica}
+		\textbf{Operazione di codifica} (modulo 27):
+		\begin{itemize}
+			\item Lettere corrispondono a classi di congruenza modulo 27
+			\item Cifrare con spostamento di 3 posizioni
+		\end{itemize}
+		
+		\vspace{0.3cm}
+		
+		\begin{block}{Funzioni di Cifratura e Decifratura}
+			\textbf{Cifrare:} $a \mapsto b \cdot a + c \pmod{27}$ per ogni $a$
+			
+			\textbf{Decifrare:} $a \mapsto b^{-1} \cdot (a-c) \pmod{27}$
+			
+			dove $b^{-1}$ è l'inverso di $b$ modulo 27
+		\end{block}
+		
+		\vspace{0.3cm}
+		
+		\textbf{Nota:} Molti analoghi procedimenti di codifica e decodifica sono identici su questa base: basta fissare due interi $b, c$ modulo 27 con $b$ invertibile modulo 27.
+	\end{frame}
+	
+	% Slide 12: Funzionamento RSA - Setup
+	\begin{frame}{Funzionamento RSA: Generazione delle Chiavi}
+		\textbf{L'utente A costruisce le sue chiavi:}
+		
+		\begin{enumerate}
+			\item Sceglie un numero naturale $q$ sufficientemente grande
+			\item Sceglie un numero primo con tutti i numeri $a$ con $1 \leq a \leq 26$
+			\item Per il Teorema di Eulero, per ogni intero $a$ compreso tra 1 e 26:
+			\[
+			a^{\varphi(q)} \equiv 1 \pmod{q}
+			\]
+			\item Sceglie due naturali $s, t$ inversi modulo $\varphi(q)$:
+			\[
+			s \cdot t \equiv 1 \pmod{\varphi(q)}
+			\]
+		\end{enumerate}
+		
+		\vspace{0.3cm}
+		
+		\textbf{Quindi:}
+		\begin{itemize}
+			\item \alert{$q, s$} costituiscono la \textbf{chiave pubblica} di A
+			\item \alert{$t$} è la sua \textbf{chiave segreta}
+		\end{itemize}
+	\end{frame}
+	
+	% Slide 13: Funzionamento RSA - Cifratura e Decifratura
+	\begin{frame}{Funzionamento RSA: Cifratura e Decifratura}
+		\textbf{B vuole cifrare una corrispondenza rivolta ad A:}
+		
+		\begin{enumerate}
+			\item B eleva ogni lettera $a$ del messaggio alla $s$ modulo $q$ e trasmette ad A:
+			\[
+			a^s \pmod{q}
+			\]
+			
+			\item A decifra elevando quanto ricevuto (cioè $a^s$) alla chiave segreta $t$ modulo $q$ e sfruttando:
+			\[
+			(a^s)^t \equiv a \pmod{q}
+			\]
+		\end{enumerate}
+		
+		\vspace{0.5cm}
+		
+		\begin{block}{Validità}
+			Si noti che anche $a = 0$ soddisfa banalmente:
+			\[
+			(a^s)^t \equiv a \pmod{q}
+			\]
+		\end{block}
+	\end{frame}
+	
+	% Slide 14: Esempio Pratico
+	\begin{frame}{Esempio Pratico con RSA}
+		\textbf{Dati:} $q = 101$ (primo), dunque $\varphi(101) = 100$
+		
+		\vspace{0.3cm}
+		
+		Si ha: $3 \cdot 67 \equiv 201 \equiv 1 \pmod{100}$
+		
+		\vspace{0.3cm}
+		
+		\textbf{Scelta:} $s = 3, t = 67$
+		
+		\vspace{0.3cm}
+		
+		\textbf{A rende pubblici} $q = 101$ e $s = 3$, mantiene segreto $t = 67$
+		
+		\vspace{0.5cm}
+		
+		\textbf{B vuole scrivere "$CIAO$" (cioè 3 9 1 15) ad A:}
+		
+		Eleva i numeri alla 3 modulo 101:
+		\begin{align*}
+			3^3 &\equiv 27 \pmod{101} \\
+			9^3 &\equiv 47 \pmod{101} \\
+			1^3 &\equiv 1 \pmod{101} \\
+			15^3 &\equiv 42 \pmod{101}
+		\end{align*}
+		
+		Scrive: \alert{27 47 1 42}
+	\end{frame}
+	
+	% Slide 15: Decifratura dell'Esempio
+	\begin{frame}{Decifratura dell'Esempio}
+		\textbf{A decifra elevando alla 67:}
+		
+		\begin{align*}
+			27^{67} &\equiv 3 \pmod{101} \\
+			47^{67} &\equiv 9 \pmod{101} \\
+			1^{67} &\equiv 1 \pmod{101} \\
+			42^{67} &\equiv 15 \pmod{101}
+		\end{align*}
+		
+		\vspace{0.5cm}
+		
+		\textbf{Recupera:} \alert{3 9 1 15}
+		
+		\vspace{0.3cm}
+		
+		cioè "$CIAO$"
+		
+		\vspace{0.5cm}
+		
+		\begin{alertblock}{Nota}
+			Il calcolo di potenze modulo $q$ può essere svolto tramite metodi ragionevolmente rapidi, ma la sicurezza di RSA rispetto ad eventuali attacchi di un pirata C dipende dalla scelta di $q = 101$, che va bene solo per gli esempi sui libri!
+		\end{alertblock}
+	\end{frame}
+	
+	% Slide 16: Sicurezza RSA
+	\begin{frame}{Sicurezza del Sistema RSA}
+		\textbf{Per garantire la sicurezza:}
+		
+		\begin{itemize}
+			\item Utilizzare primi $p_1 \neq p_2$ "\textbf{titanici}" (enormemente grandi)
+			\item Porre $q = p_1 \cdot p_2$
+		\end{itemize}
+		
+		\vspace{0.3cm}
+		
+		\begin{block}{Fattorizzazione}
+			Il pirata C conosce $q$ e $s$, ma deve comunque recuperare $t$ per infrangere il sistema. Per questo ha verosimilmente bisogno di sapere $\varphi(q) = (p_1-1) \cdot (p_2-1)$.
+		\end{block}
+		
+		\vspace{0.3cm}
+		
+		\textbf{Problema computazionale:}
+		\begin{itemize}
+			\item Decomporre $q$ nei suoi fattori primi $p_1, p_2$
+			\item All'attuale stato della conoscenza, anche usando i migliori algoritmi ed i più potenti calcolatori, tempi proibitivamente lunghi
+			\item Addirittura superiori a quanto trascorso dalla nascita dell'universo fino ad oggi!
+		\end{itemize}
+		
+		\vspace{0.3cm}
+		
+		\alert{La sicurezza di RSA è garantita proprio dalla difficoltà di decomporre $q$ e recuperare i suoi fattori primi $p_1, p_2$.}
+	\end{frame}
+	
+	% Slide 17: Conclusioni
+	\begin{frame}{Conclusioni}
+		\begin{block}{Vantaggi del Sistema RSA}
+			\begin{itemize}
+				\item Nessuno (se non A e chi conosce $t$) può facilmente decifrare
+				\item $q, s$ possono facilmente cifrare conoscendo solo la chiave pubblica
+				\item Tutti possono facilmente cifrare
+				\item La sicurezza si basa su un problema matematico complesso
+			\end{itemize}
+		\end{block}
+		
+		\vspace{0.5cm}
+		
+		\begin{alertblock}{Citazione (H. Lenstra, 1986)}
+			\textit{"Supponiamo di avere due primi $p_1 \neq p_2$ di almeno 100 cifre. Supponiamo che $p_1, p_2$ finiscano in un pagliaio e che ci resti solo $q = p_1 \cdot p_2$. Deve essere avvertito come una sconfitta della scienza l'ammettere che il metodo più sensato che possiamo oggi seguire per trovare $p_1$ e $p_2$ è quello di cercare nel pagliaio".}
+		\end{alertblock}
+	\end{frame}
+	
+\end{document}
