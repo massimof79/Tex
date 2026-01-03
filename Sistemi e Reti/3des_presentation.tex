@@ -1,0 +1,575 @@
+\documentclass[aspectratio=169]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{tikz}
+\usepackage{amsmath}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\usetikzlibrary{shapes.geometric, arrows, positioning, calc}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+
+\title{Triple DES (3-DES)}
+\subtitle{Cifratura a Blocchi e Sicurezza delle Informazioni}
+\author{Prof. Fedeli Massimo - Tutti i diritti riservati}
+\institute{IIS Fermi Sacconi Cpia - Ascoli Piceno}
+\date{\today}
+
+% Definizione stili TikZ
+\tikzstyle{block} = [rectangle, draw, fill=blue!20, text width=6em, text centered, rounded corners, minimum height=3em]
+\tikzstyle{arrow} = [thick,->,>=stealth]
+\tikzstyle{key} = [rectangle, draw, fill=red!20, text width=4em, text centered, rounded corners, minimum height=2em]
+
+\begin{document}
+
+% Slide 1: Titolo
+\frame{\titlepage}
+
+% Slide 2: Indice
+\begin{frame}{Indice}
+\tableofcontents
+\end{frame}
+
+% Sezione 1: Introduzione
+\section{Introduzione alla Crittografia}
+
+\begin{frame}{Cos'è la Crittografia?}
+\begin{block}{Definizione}
+La \textbf{crittografia} è la scienza che protegge le informazioni trasformandole in modo che solo chi possiede la "chiave" corretta possa leggerle.
+\end{block}
+
+\vspace{0.5cm}
+
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{Testo in chiaro:}
+\begin{center}
+\Large CIAO MONDO
+\end{center}
+
+\column{0.5\textwidth}
+\textbf{Testo cifrato:}
+\begin{center}
+\Large X9K2 QW8RT5
+\end{center}
+\end{columns}
+
+\vspace{0.5cm}
+\begin{alertblock}{Perché è importante?}
+\begin{itemize}
+\item Protezione dei dati personali
+\item Sicurezza nelle transazioni online
+\item Protezione della privacy
+\end{itemize}
+\end{alertblock}
+\end{frame}
+
+\begin{frame}{Cifratura Simmetrica vs Asimmetrica}
+\begin{columns}
+\column{0.5\textwidth}
+\begin{block}{Cifratura Simmetrica}
+\begin{itemize}
+\item \textbf{Una sola chiave} per cifrare e decifrare
+\item Più veloce
+\item Chiave segreta condivisa
+\item Es: DES, AES, 3-DES
+\end{itemize}
+\end{block}
+
+\column{0.5\textwidth}
+\begin{block}{Cifratura Asimmetrica}
+\begin{itemize}
+\item \textbf{Due chiavi}: pubblica e privata
+\item Più lenta
+\item Chiave pubblica distribuita
+\item Es: RSA, ECC
+\end{itemize}
+\end{block}
+\end{columns}
+
+\vspace{0.5cm}
+\begin{center}
+\textbf{3-DES è un algoritmo di cifratura SIMMETRICA}
+\end{center}
+\end{frame}
+
+% Sezione 2: Storia di DES
+\section{Da DES a 3-DES}
+
+\begin{frame}{La Storia di DES}
+\begin{block}{Data Encryption Standard (DES)}
+\begin{itemize}
+\item Sviluppato da IBM negli anni '70
+\item Adottato come standard dal governo USA nel 1977
+\item Chiave di \textbf{56 bit} (effettivi, 64 bit totali con parità)
+\item Blocchi di \textbf{64 bit}
+\end{itemize}
+\end{block}
+
+\vspace{0.3cm}
+
+\begin{alertblock}{Il Problema di DES}
+Con l'aumento della potenza di calcolo dei computer, la chiave a 56 bit è diventata troppo \textbf{corta} e vulnerabile agli attacchi \textit{brute force}.
+\end{alertblock}
+
+\vspace{0.3cm}
+
+\begin{exampleblock}{Soluzione}
+Nel 1998 è stato dimostrato che DES poteva essere violato in meno di 3 giorni! \\
+\textbf{Necessaria una soluzione più sicura} $\rightarrow$ 3-DES
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}{Perché Triple DES?}
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{Problema:}
+\begin{itemize}
+\item DES troppo debole (56 bit)
+\item Moltissimi sistemi già usavano DES
+\item Costoso cambiare tutto l'hardware
+\end{itemize}
+
+\vspace{0.5cm}
+
+\textbf{Soluzione Intelligente:}
+\begin{itemize}
+\item Applicare DES \textbf{tre volte}
+\item Usare chiavi diverse
+\item Compatibilità con hardware esistente
+\end{itemize}
+
+\column{0.5\textwidth}
+\begin{center}
+\begin{tikzpicture}[scale=0.8]
+\node[block] (des1) at (0,0) {DES};
+\node[block] (des2) at (0,-2) {DES};
+\node[block] (des3) at (0,-4) {DES};
+
+\node[key] (k1) at (-2.5,-0) {K1};
+\node[key] (k2) at (-2.5,-2) {K2};
+\node[key] (k3) at (-2.5,-4) {K3};
+
+\draw[arrow] (0,1) -- node[right] {Testo chiaro} (des1);
+\draw[arrow] (des1) -- (des2);
+\draw[arrow] (des2) -- (des3);
+\draw[arrow] (des3) -- node[right] {Cifrato} (0,-5);
+
+\draw[arrow] (k1) -- (des1);
+\draw[arrow] (k2) -- (des2);
+\draw[arrow] (k3) -- (des3);
+\end{tikzpicture}
+\end{center}
+\end{columns}
+\end{frame}
+
+% Sezione 3: Come Funziona 3-DES
+\section{Funzionamento di 3-DES}
+
+\begin{frame}{Schema EDE: Encrypt-Decrypt-Encrypt}
+\begin{block}{Il Metodo Standard di 3-DES}
+3-DES utilizza lo schema \textbf{EDE} (Encrypt-Decrypt-Encrypt):
+\begin{enumerate}
+\item \textbf{Encrypt} con chiave K1
+\item \textbf{Decrypt} con chiave K2
+\item \textbf{Encrypt} con chiave K3
+\end{enumerate}
+\end{block}
+
+\vspace{0.3cm}
+
+\begin{center}
+\begin{tikzpicture}[node distance=2.5cm]
+\node[block] (input) {Testo in Chiaro};
+\node[block, right of=input] (e1) {Cifratura DES};
+\node[block, right of=e1] (d2) {Decifratura DES};
+\node[block, right of=d2] (e3) {Cifratura DES};
+\node[block, right of=e3] (output) {Testo Cifrato};
+
+\draw[arrow] (input) -- (e1);
+\draw[arrow] (e1) -- (d2);
+\draw[arrow] (d2) -- (e3);
+\draw[arrow] (e3) -- (output);
+
+\node[key, above of=e1, node distance=1.2cm] (k1) {K1};
+\node[key, above of=d2, node distance=1.2cm] (k2) {K2};
+\node[key, above of=e3, node distance=1.2cm] (k3) {K3};
+
+\draw[arrow] (k1) -- (e1);
+\draw[arrow] (k2) -- (d2);
+\draw[arrow] (k3) -- (e3);
+\end{tikzpicture}
+\end{center}
+
+\vspace{0.3cm}
+\begin{alertblock}{Perché Decrypt al centro?}
+Permette la \textbf{retrocompatibilità} con DES: se K1 = K2 = K3, otteniamo il DES originale!
+\end{alertblock}
+\end{frame}
+
+\begin{frame}{Le Tre Opzioni di Chiavi}
+3-DES può essere configurato in tre modi diversi:
+
+\vspace{0.5cm}
+
+\begin{block}{Opzione 1: Tre chiavi distinte (3TDES - Keying Option 1)}
+\textbf{K1 $\neq$ K2 $\neq$ K3} \\
+Sicurezza: 168 bit (3 × 56) \\
+\textcolor{green!60!black}{\textbf{Più sicuro}} ma meno usato
+\end{block}
+
+\begin{block}{Opzione 2: Due chiavi distinte (3TDES - Keying Option 2)}
+\textbf{K1 = K3 $\neq$ K2} \\
+Sicurezza: 112 bit (2 × 56) \\
+\textcolor{blue}{\textbf{Più comune}} - buon compromesso sicurezza/efficienza
+\end{block}
+
+\begin{block}{Opzione 3: Una chiave (retrocompatibilità)}
+\textbf{K1 = K2 = K3} \\
+Sicurezza: 56 bit \\
+\textcolor{red}{\textbf{Equivalente a DES}} - solo per compatibilità legacy
+\end{block}
+\end{frame}
+
+\begin{frame}{Esempio Pratico: Opzione 2}
+\begin{exampleblock}{Scenario Reale (Opzione 2: K1 = K3)}
+\begin{enumerate}
+\item \textbf{Chiavi:}
+\begin{itemize}
+\item K1 = K3 = \texttt{0x133457799BBCDFF1}
+\item K2 = \texttt{0x0E329232EA6D0D73}
+\end{itemize}
+
+\vspace{0.3cm}
+
+\item \textbf{Testo in chiaro:}
+\begin{center}
+\texttt{"HELLO\_\_\_"} (64 bit = 8 caratteri)
+\end{center}
+
+\vspace{0.3cm}
+
+\item \textbf{Processo:}
+\begin{itemize}
+\item Cifratura DES con K1 $\rightarrow$ \texttt{X1}
+\item Decifratura DES con K2 su X1 $\rightarrow$ \texttt{X2}
+\item Cifratura DES con K3 su X2 $\rightarrow$ \textbf{Testo Cifrato}
+\end{itemize}
+\end{enumerate}
+\end{exampleblock}
+
+\begin{center}
+\textit{Il processo inverso permette di recuperare il testo originale}
+\end{center}
+\end{frame}
+
+\begin{frame}{Decifratura con 3-DES}
+\begin{block}{Il Processo Inverso}
+Per decifrare, si inverte l'ordine e si scambiano cifratura con decifratura:
+\begin{enumerate}
+\item \textbf{Decrypt} con chiave K3
+\item \textbf{Encrypt} con chiave K2
+\item \textbf{Decrypt} con chiave K1
+\end{enumerate}
+\end{block}
+
+\vspace{0.3cm}
+
+\begin{center}
+\begin{tikzpicture}[node distance=2.5cm]
+\node[block] (input) {Testo Cifrato};
+\node[block, right of=input] (d3) {Decifratura DES};
+\node[block, right of=d3] (e2) {Cifratura DES};
+\node[block, right of=e2] (d1) {Decifratura DES};
+\node[block, right of=d1] (output) {Testo in Chiaro};
+
+\draw[arrow] (input) -- (d3);
+\draw[arrow] (d3) -- (e2);
+\draw[arrow] (e2) -- (d1);
+\draw[arrow] (d1) -- (output);
+
+\node[key, above of=d3, node distance=1.2cm] (k3) {K3};
+\node[key, above of=e2, node distance=1.2cm] (k2) {K2};
+\node[key, above of=d1, node distance=1.2cm] (k1) {K1};
+
+\draw[arrow] (k3) -- (d3);
+\draw[arrow] (k2) -- (e2);
+\draw[arrow] (k1) -- (d1);
+\end{tikzpicture}
+\end{center}
+\end{frame}
+
+% Sezione 4: Sicurezza
+\section{Sicurezza e Vulnerabilità}
+
+\begin{frame}{Quanto è Sicuro 3-DES?}
+\begin{columns}
+\column{0.5\textwidth}
+\begin{block}{Punti di Forza}
+\begin{itemize}
+\item Chiavi lunghe: fino a 168 bit
+\item Testato per decenni
+\item Nessun attacco pratico conosciuto
+\item Ampiamente certificato
+\end{itemize}
+\end{block}
+
+\begin{alertblock}{Attacco Meet-in-the-Middle}
+Riduce la sicurezza effettiva:
+\begin{itemize}
+\item 3 chiavi: da 168 a \textbf{112 bit}
+\item 2 chiavi: da 112 a \textbf{80 bit}
+\end{itemize}
+\end{alertblock}
+
+\column{0.5\textwidth}
+\begin{block}{Limitazioni}
+\begin{itemize}
+\item Più lento di AES (3x operazioni)
+\item Blocchi piccoli (64 bit)
+\item Birthday attack dopo $2^{32}$ blocchi
+\item Deprecato dal NIST (2023)
+\end{itemize}
+\end{block}
+
+\begin{exampleblock}{Tempo per Violazione}
+Con tecnologia attuale:
+\begin{itemize}
+\item 112 bit: \textbf{milioni di anni}
+\item 80 bit: ancora \textbf{impraticabile}
+\end{itemize}
+\end{exampleblock}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Confronto: 3-DES vs AES}
+\begin{table}
+\centering
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Caratteristica} & \textbf{3-DES} & \textbf{AES} \\
+\hline
+\hline
+Anno di sviluppo & 1978/1998 & 2001 \\
+\hline
+Dimensione chiave & 112-168 bit & 128/192/256 bit \\
+\hline
+Dimensione blocco & 64 bit & 128 bit \\
+\hline
+Velocità & Lenta (3× DES) & Veloce \\
+\hline
+Sicurezza & Buona ma limitata & Eccellente \\
+\hline
+Hardware richiesto & Maggiore & Minore \\
+\hline
+Status & \textcolor{red}{Deprecato (2023)} & \textcolor{green!60!black}{Standard attuale} \\
+\hline
+Uso consigliato & Solo legacy & \textcolor{green!60!black}{Raccomandato} \\
+\hline
+\end{tabular}
+\end{table}
+
+\vspace{0.5cm}
+\begin{alertblock}{Raccomandazione}
+Per nuovi sistemi: usare \textbf{AES}! \\
+3-DES solo per mantenere compatibilità con sistemi esistenti.
+\end{alertblock}
+\end{frame}
+
+% Sezione 5: Applicazioni
+\section{Applicazioni Pratiche}
+
+\begin{frame}{Dove si Usa 3-DES?}
+\begin{columns}
+\column{0.5\textwidth}
+\begin{block}{Sistemi Finanziari}
+\begin{itemize}
+\item \textbf{Carte di credito/debito}
+\item Bancomat (ATM)
+\item Transazioni POS
+\item Standard EMV (chip)
+\item Bonifici bancari
+\end{itemize}
+\end{block}
+
+\begin{block}{Telecomunicazioni}
+\begin{itemize}
+\item Protocolli VPN legacy
+\item Crittografia voce
+\item Reti private
+\end{itemize}
+\end{block}
+
+\column{0.5\textwidth}
+\begin{block}{Compatibilità Legacy}
+\begin{itemize}
+\item Sistemi governativi vecchi
+\item Hardware industriale
+\item Protocolli di sicurezza esistenti
+\item Database cifrati
+\end{itemize}
+\end{block}
+
+\begin{alertblock}{Transizione in Corso}
+Molti sistemi stanno migrando da 3-DES ad AES per:
+\begin{itemize}
+\item Maggiore velocità
+\item Migliore sicurezza
+\item Minor consumo energetico
+\end{itemize}
+\end{alertblock}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Esempio: Pagamento con Carta}
+\begin{exampleblock}{Il Processo di una Transazione}
+\begin{enumerate}
+\item Inserisci la carta nel POS
+\item Il chip genera un codice crittografico con \textbf{3-DES}
+\item Il codice viene inviato alla banca
+\item La banca verifica usando la stessa chiave
+\item Transazione autorizzata o rifiutata
+\end{enumerate}
+\end{exampleblock}
+
+\vspace{0.3cm}
+
+\begin{center}
+\begin{tikzpicture}[node distance=2cm]
+\node[block, fill=yellow!30] (carta) {Carta Chip};
+\node[block, fill=blue!30, right of=carta, node distance=3cm] (pos) {POS};
+\node[block, fill=green!30, right of=pos, node distance=3cm] (banca) {Banca};
+
+\draw[arrow] (carta) -- node[above] {Dati + 3-DES} (pos);
+\draw[arrow] (pos) -- node[above] {Cifrato} (banca);
+\draw[arrow] (banca) -- node[below] {OK/NO} (pos);
+
+\node[key, below of=carta] (k) {Chiave Segreta};
+\node[key, below of=banca] (k2) {Stessa Chiave};
+
+\draw[dashed] (k) -- (carta);
+\draw[dashed] (k2) -- (banca);
+\end{tikzpicture}
+\end{center}
+
+\vspace{0.3cm}
+\small{\textit{La chiave segreta non viaggia mai sulla rete!}}
+\end{frame}
+
+% Sezione 6: Il Futuro
+\section{Il Futuro della Crittografia}
+
+\begin{frame}{La Fine di 3-DES}
+\begin{block}{Deprecazione Ufficiale}
+\begin{itemize}
+\item \textbf{2017}: NIST annuncia la dismissione
+\item \textbf{2023}: Fine del supporto ufficiale
+\item \textbf{2024-2030}: Periodo di transizione
+\end{itemize}
+\end{block}
+
+\vspace{0.3cm}
+
+\begin{columns}
+\column{0.5\textwidth}
+\begin{alertblock}{Perché?}
+\begin{itemize}
+\item Blocchi troppo piccoli (64 bit)
+\item Vulnerabilità Sweet32
+\item Prestazioni inadeguate
+\item Alternative migliori (AES)
+\end{itemize}
+\end{alertblock}
+
+\column{0.5\textwidth}
+\begin{exampleblock}{Migrazione}
+\textbf{Passaggio ad AES:}
+\begin{itemize}
+\item AES-128: standard
+\item AES-256: alta sicurezza
+\item Hardware moderno
+\item Supporto software
+\end{itemize}
+\end{exampleblock}
+\end{columns}
+
+\vspace{0.3cm}
+\begin{center}
+\Large{\textbf{3-DES: 45 anni di servizio onorevole!}}
+\end{center}
+\end{frame}
+
+\begin{frame}{Conclusioni}
+\begin{block}{Cosa Abbiamo Imparato}
+\begin{itemize}
+\item 3-DES è una \textbf{evoluzione} di DES per aumentare la sicurezza
+\item Usa tre applicazioni di DES con chiavi diverse (schema EDE)
+\item Offre sicurezza tra 80 e 112 bit (effettivi)
+\item È stato fondamentale per la sicurezza delle transazioni finanziarie
+\item Oggi è in fase di dismissione a favore di AES
+\end{itemize}
+\end{block}
+
+\vspace{0.3cm}
+
+\begin{exampleblock}{Lezione Importante}
+La crittografia è un campo in \textbf{continua evoluzione}:
+\begin{itemize}
+\item Ciò che è sicuro oggi potrebbe non esserlo domani
+\item È necessario aggiornare costantemente i sistemi
+\item La sicurezza richiede attenzione e manutenzione
+\end{itemize}
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}{Domande per Riflettere}
+\begin{enumerate}
+\item Perché non si è semplicemente raddoppiata la lunghezza della chiave di DES invece di applicarlo tre volte?
+
+\vspace{0.5cm}
+
+\item Se 3-DES è più sicuro, perché si preferisce AES per i nuovi sistemi?
+
+\vspace{0.5cm}
+
+\item Cosa succederebbe se qualcuno scoprisse la tua chiave 3-DES?
+
+\vspace{0.5cm}
+
+\item Come pensi che la crittografia dovrà evolversi con l'arrivo dei computer quantistici?
+\end{enumerate}
+
+\vspace{0.5cm}
+\begin{center}
+\Large{\textbf{Grazie per l'attenzione!}}
+\end{center}
+\end{frame}
+
+% Bibliografia e Risorse
+\begin{frame}{Risorse per Approfondire}
+\begin{block}{Standard e Documentazione}
+\begin{itemize}
+\item NIST Special Publication 800-67: Recommendation for Triple DES
+\item ISO/IEC 18033-3: Encryption algorithms
+\end{itemize}
+\end{block}
+
+\begin{block}{Libri Consigliati}
+\begin{itemize}
+\item "Applied Cryptography" - Bruce Schneier
+\item "Cryptography and Network Security" - William Stallings
+\end{itemize}
+\end{block}
+
+\begin{block}{Risorse Online}
+\begin{itemize}
+\item Khan Academy - Cryptography Course
+\item Coursera - Cryptography (Stanford University)
+\item CryptoHack - Esercizi pratici interattivi
+\end{itemize}
+\end{block}
+\end{frame}
+
+\end{document}
