@@ -1,0 +1,1073 @@
+\documentclass[a4paper,12pt]{article}
+
+% Pacchetti necessari
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{geometry}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{float}
+\usepackage{tcolorbox}
+
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{shapes,arrows,positioning,calc}
+
+\geometry{margin=2.5cm}
+
+% Configurazione header e footer
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{Introduzione al Machine Learning}
+\fancyhead[R]{\thepage}
+\author{Prof. Fedeli Massimo - tutti i diritti riservati}
+\fancyfoot[C]{IIS Fermi Sacconi Cpia - Ascoli Piceno}
+
+% Configurazione codice
+\lstset{
+	basicstyle=\ttfamily\small,
+	keywordstyle=\color{blue},
+	commentstyle=\color{gray},
+	stringstyle=\color{red},
+	numbers=left,
+	numberstyle=\tiny,
+	frame=single,
+	breaklines=true
+}
+
+% Box colorati per esempi
+\newtcolorbox{esempio}{
+	colback=blue!5!white,
+	colframe=blue!75!black,
+	title=Esempio Pratico
+}
+
+\newtcolorbox{nota}{
+	colback=yellow!5!white,
+	colframe=yellow!75!black,
+	title=Nota Importante
+}
+
+\title{\textbf{Il Machine Learning Spiegato Semplice}\\
+	\large Come i computer imparano dai dati}
+
+\author{Prof. Massimo\\Tutti i diritti riservati}
+
+\date{\today}
+
+\begin{document}
+	
+	\maketitle
+	\tableofcontents
+	\newpage
+	
+	\section{Cos'è il Machine Learning?}
+	
+	\subsection{Una definizione semplice}
+	
+	Immagina di insegnare a un bambino a riconoscere i frutti. Gli mostri tante mele, arance e banane. Dopo un po', il bambino impara a riconoscerle da solo. Il \textbf{Machine Learning} (ML) funziona in modo simile: invece di programmare un computer per ogni singola situazione, gli mostriamo tanti esempi e lui impara da solo!
+	
+	\begin{nota}
+		Machine Learning significa "apprendimento automatico". È come dare al computer la capacità di imparare dall'esperienza, proprio come facciamo noi!
+	\end{nota}
+	
+	\subsection{Le tre famiglie del Machine Learning}
+	
+	Esistono tre modi principali in cui un computer può imparare:
+	
+	\begin{itemize}
+		\item \textbf{Apprendimento Supervisionato} (con un "maestro"): come quando studi con un libro di testo che ha tutte le risposte. Il computer impara da esempi già classificati.
+		
+		\item \textbf{Apprendimento Non Supervisionato} (da solo): come quando organizzi i tuoi vestiti per colore senza che nessuno ti dica come fare. Il computer trova pattern da solo.
+		
+		\item \textbf{Apprendimento per Rinforzo} (per tentativi): come quando impari un videogioco provando e riprovando. Il computer impara dalle conseguenze delle sue azioni.
+	\end{itemize}
+	
+	\begin{figure}[H]
+		\centering
+		\begin{tikzpicture}[node distance=2cm]
+			\node[draw, rectangle, fill=blue!20, minimum width=4cm, minimum height=1cm] (ml) {Machine Learning};
+			
+			\node[draw, rectangle, fill=green!20, below left=of ml, xshift=-2cm, text width=3cm, align=center] (sup) {Supervisionato\\(con maestro)};
+			\node[draw, rectangle, fill=yellow!20, below=of ml, text width=3cm, align=center] (unsup) {Non Supervisionato\\(da solo)};
+			\node[draw, rectangle, fill=red!20, below right=of ml, xshift=2cm, text width=3cm, align=center] (rl) {Rinforzo\\(per tentativi)};
+			
+			\draw[->, thick] (ml) -- (sup);
+			\draw[->, thick] (ml) -- (unsup);
+			\draw[->, thick] (ml) -- (rl);
+		\end{tikzpicture}
+		\caption{I tre modi di imparare del Machine Learning}
+	\end{figure}
+	
+	\newpage
+	
+	\section{Regressione Lineare: Prevedere il Futuro con una Retta}
+	
+	\subsection{L'idea di base}
+	
+	Hai mai notato che di solito più studi, più bei voti prendi? O che più ti alleni, più veloce corri? La \textbf{regressione lineare} trova proprio queste relazioni!
+	
+	\begin{esempio}
+		Immagina di voler prevedere il prezzo di una casa in base alla sua grandezza. Se raccogli dati di case vendute, noterai che case più grandi costano di più. La regressione lineare traccia una retta che rappresenta questa relazione!
+	\end{esempio}
+	
+	\subsection{Come funziona?}
+	
+	L'obiettivo è trovare la "retta migliore" che passa vicino a tutti i punti. Matematicamente si scrive così:
+	
+	\begin{equation}
+		\text{Prezzo} = a \times \text{Grandezza} + b
+	\end{equation}
+	
+	Dove:
+	\begin{itemize}
+		\item \textbf{a} indica quanto aumenta il prezzo per ogni metro quadro in più
+		\item \textbf{b} è il prezzo base (quando la casa ha zero metri quadri - ovviamente è teorico!)
+	\end{itemize}
+	
+	\subsection{Esempio visivo}
+	
+	\begin{figure}[H]
+		\centering
+		\begin{tikzpicture}
+			\begin{axis}[
+				xlabel={Metri quadri},
+				ylabel={Prezzo (migliaia €)},
+				grid=major,
+				width=12cm,
+				height=8cm,
+				legend pos=north west
+				]
+				\addplot[only marks, mark=*, blue] coordinates {
+					(50,100) (70,130) (90,170) (110,200) (130,240) (150,270) (170,310) (190,340)
+				};
+				\addplot[thick, red, domain=40:200] {1.8*x + 10};
+				\legend{Case vendute, Retta di previsione}
+			\end{axis}
+		\end{tikzpicture}
+		\caption{Previsione del prezzo delle case}
+	\end{figure}
+	
+	\begin{nota}
+		La regressione lineare è utile quando c'è una relazione "proporzionale": più di questo, più di quello!
+	\end{nota}
+	
+	\subsection{Quanto è precisa la previsione?}
+	
+	Per capire se la nostra retta è buona, calcoliamo quanto sbagliamo in media. Si chiama \textbf{errore quadratico medio}:
+	
+	\begin{equation}
+		\text{Errore Medio} = \frac{\text{Somma di tutti gli errori}^2}{\text{Numero di case}}
+	\end{equation}
+	
+	L'obiettivo è avere l'errore più piccolo possibile!
+	
+	\newpage
+	
+	\section{Regressione Logistica: Sì o No?}
+	
+	\subsection{Quando serve?}
+	
+	A volte non vogliamo un numero come risultato, ma una risposta tipo SÌ/NO:
+	\begin{itemize}
+		\item Questa email è spam? SÌ o NO
+		\item Il paziente ha la malattia? SÌ o NO
+		\item Lo studente passerà l'esame? SÌ o NO
+	\end{itemize}
+	
+	\begin{esempio}
+		Vogliamo capire se uno studente passerà l'esame in base alle ore di studio. Con 10 ore probabilmente sì, con 1 ora probabilmente no. Ma quanto è "probabile"? La regressione logistica ci dice la probabilità!
+	\end{esempio}
+	
+	\subsection{La curva a S}
+	
+	Invece di una retta, usiamo una curva a forma di S chiamata \textbf{sigmoide}. Questa curva va sempre da 0 (0\% di probabilità) a 1 (100\% di probabilità).
+	
+	\begin{figure}[H]
+		\centering
+		\begin{tikzpicture}
+			\begin{axis}[
+				xlabel={Ore di studio},
+				ylabel={Probabilità di passare},
+				grid=major,
+				width=12cm,
+				height=7cm,
+				domain=0:10,
+				samples=100,
+				ymin=0, ymax=1.1,
+				ytick={0,0.25,0.5,0.75,1},
+				yticklabels={0\%,25\%,50\%,75\%,100\%}
+				]
+				\addplot[thick, blue] {1/(1+exp(-1.5*(x-5)))};
+				\draw[dashed, red] (axis cs:0,0.5) -- (axis cs:10,0.5);
+				\node[right] at (axis cs:7,0.5) {Soglia 50\%};
+			\end{axis}
+		\end{tikzpicture}
+		\caption{Probabilità di passare l'esame in base alle ore di studio}
+	\end{figure}
+	
+	\subsection{Come si usa?}
+	
+	Se la probabilità è maggiore del 50\%, diciamo SÌ. Altrimenti diciamo NO. Semplice!
+	
+	\begin{nota}
+		La regressione logistica è perfetta per decisioni binarie: spam/non spam, malato/sano, passa/non passa!
+	\end{nota}
+	
+	\newpage
+	
+	\section{K-Nearest Neighbors: Chiedi ai Vicini!}
+	
+	\subsection{Il principio}
+	
+	Immagina di essere nuovo in città e vuoi sapere qual è il miglior ristorante. Cosa fai? Chiedi alle persone che abitano vicino a te! L'algoritmo \textbf{KNN} fa la stessa cosa con i dati.
+	
+	\begin{esempio}
+		Vogliamo classificare un frutto. Guardiamo i 3 frutti più simili (più "vicini") che già conosciamo. Se 2 su 3 sono mele, probabilmente anche il nostro frutto è una mela!
+	\end{esempio}
+	
+	\subsection{Come funziona in 3 passi}
+	
+	\begin{enumerate}
+		\item \textbf{Misura le distanze}: calcola quanto è lontano il nuovo punto da tutti gli altri
+		\item \textbf{Trova i K più vicini}: seleziona i K punti più vicini (K è un numero che scegliamo noi, tipo 3 o 5)
+		\item \textbf{Vota}: guarda che categoria è più frequente tra i vicini
+	\end{enumerate}
+	
+	\subsection{Esempio visivo}
+	
+	\begin{figure}[H]
+		\centering
+		\begin{tikzpicture}[scale=1.2]
+			% Classe A (mele - blu)
+			\foreach \x/\y in {1/1, 1.5/2, 2/1.5, 1.2/2.5, 2.3/2.2} {
+				\fill[blue] (\x,\y) circle (3pt);
+			}
+			% Classe B (arance - rosso)
+			\foreach \x/\y in {4/4, 4.5/3.5, 5/4.2, 4.2/4.8, 5.2/4.5} {
+				\fill[red] (\x,\y) circle (3pt);
+			}
+			% Frutto da classificare
+			\fill[green] (3,3) circle (5pt);
+			\node[above] at (3,3.2) {\textbf{?}};
+			
+			% Cerchio K=3
+			\draw[dashed, thick] (3,3) circle (1.5);
+			\node at (3,1.2) {I 3 più vicini};
+			
+			% Legenda
+			\fill[blue] (0.5,5.5) circle (3pt);
+			\node[right] at (0.7,5.5) {Mele};
+			\fill[red] (0.5,5) circle (3pt);
+			\node[right] at (0.7,5) {Arance};
+			\fill[green] (0.5,4.5) circle (5pt);
+			\node[right] at (0.7,4.5) {Frutto da classificare};
+		\end{tikzpicture}
+		\caption{Nel cerchio ci sono 2 mele e 1 arancia, quindi il frutto è probabilmente una mela!}
+	\end{figure}
+	
+	\subsection{Scegliere K}
+	
+	\begin{itemize}
+		\item \textbf{K piccolo (tipo 1 o 3)}: molto sensibile, può sbagliare se c'è un dato "strano"
+		\item \textbf{K grande (tipo 10 o 20)}: più stabile, ma potrebbe confondere i gruppi
+		\item \textbf{Il valore giusto}: si trova provando! Di solito K=5 funziona bene
+	\end{itemize}
+	
+	\begin{nota}
+		KNN è come chiedere consiglio: se chiedi a una sola persona (K=1) potresti essere sfortunato, ma se chiedi a troppe persone (K grande) rischi di avere pareri troppo diversi!
+	\end{nota}
+	
+	\newpage
+	
+	\section{Alberi Decisionali: Un Gioco di Domande}
+	
+	\subsection{Come funziona?}
+	
+	Hai mai giocato a "20 domande"? Fai domande SÌ/NO per indovinare cosa pensa l'altro. Gli \textbf{alberi decisionali} funzionano esattamente così!
+	
+	\begin{esempio}
+		Immagina di dover decidere se portare l'ombrello:
+		\begin{itemize}
+			\item Piove? $\rightarrow$ SÌ $\rightarrow$ PORTA L'OMBRELLO
+			\item Piove? $\rightarrow$ NO $\rightarrow$ È nuvoloso? $\rightarrow$ SÌ $\rightarrow$ PORTA L'OMBRELLO
+			\item Piove? $\rightarrow$ NO $\rightarrow$ È nuvoloso? $\rightarrow$ NO $\rightarrow$ NON SERVE
+		\end{itemize}
+	\end{esempio}
+	
+	\subsection{Visualizzazione}
+	
+	\begin{figure}[H]
+		\centering
+		\begin{tikzpicture}[
+			level distance=1.8cm,
+			level 1/.style={sibling distance=5cm},
+			level 2/.style={sibling distance=2.5cm},
+			every node/.style={rectangle, draw, align=center, minimum width=2.5cm, minimum height=0.8cm}
+			]
+			\node {Piove?}
+			child {node {È nuvoloso?}
+				child {node[fill=green!30] {NO\\ombrello}}
+				child {node[fill=yellow!30] {SÌ\\ombrello}}
+				edge from parent node[left] {NO}
+			}
+			child {node[fill=red!30] {SÌ\\OMBRELLO}
+				edge from parent node[right] {SÌ}
+			};
+		\end{tikzpicture}
+		\caption{Albero decisionale per decidere se portare l'ombrello}
+	\end{figure}
+	
+	\subsection{Quando usare gli alberi?}
+	
+	Gli alberi decisionali sono perfetti quando:
+	\begin{itemize}
+		\item Vuoi capire PERCHÉ il computer ha fatto quella scelta
+		\item Hai dati con categorie (tipo: piove/non piove, grande/piccolo)
+		\item Vuoi spiegare la decisione ad altri
+	\end{itemize}
+	
+	\subsection{Vantaggi e svantaggi}
+	
+	\textbf{Vantaggi:}
+	\begin{itemize}
+		\item Facili da capire (anche tua nonna capirebbe!)
+		\item Si possono disegnare
+		\item Funzionano con qualsiasi tipo di dato
+	\end{itemize}
+	
+	\textbf{Svantaggi:}
+	\begin{itemize}
+		\item Possono diventare troppo complicati
+		\item Se cambiano un po' i dati, l'albero può cambiare molto
+	\end{itemize}
+	
+	\newpage
+	
+	\section{Support Vector Machine: Trova il Confine Migliore}
+	
+	\subsection{L'idea principale}
+	
+	Immagina di avere caramelle rosse e blu sparse su un tavolo. Vuoi dividere il tavolo con un nastro in modo che da una parte ci siano solo le rosse e dall'altra solo le blu. La \textbf{SVM} trova il nastro "migliore"!
+	
+	\begin{esempio}
+		In una scuola, gli studenti del primo anno stanno da una parte del cortile e quelli del quinto dall'altra. SVM trova la linea che li divide meglio, lasciando il massimo spazio possibile tra i due gruppi.
+	\end{esempio}
+	
+	\subsection{Cosa vuol dire "migliore"?}
+	
+	Il confine migliore è quello che:
+	\begin{itemize}
+		\item Separa perfettamente i due gruppi
+		\item È il più lontano possibile da entrambi i gruppi (massimo margine)
+	\end{itemize}
+	
+	\begin{figure}[H]
+		\centering
+		\begin{tikzpicture}[scale=1.2]
+			% Gruppo rosso
+			\foreach \x/\y in {1/1, 1.5/1.8, 0.8/2.2, 1.2/2.8, 0.5/1.5} {
+				\fill[blue] (\x,\y) circle (4pt);
+			}
+			% Gruppo blu
+			\foreach \x/\y in {4/3, 4.5/3.5, 5/2.8, 4.2/4, 5.2/3.2} {
+				\fill[red] (\x,\y) circle (4pt);
+			}
+			
+			% Linea di separazione
+			\draw[very thick, green!60!black] (0,0) -- (6,4);
+			
+			% Margini
+			\draw[dashed, orange, thick] (-0.5,-0.5) -- (5.5,3.5);
+			\draw[dashed, orange, thick] (0.5,0.5) -- (6.5,4.5);
+			
+			% Frecce margine
+			\draw[<->, ultra thick, purple] (2,1) -- (3,2);
+			\node[purple] at (2.5,2.2) {\textbf{Margine}};
+			
+			% Legenda
+			\fill[blue] (0.3,5) circle (4pt);
+			\node[right] at (0.5,5) {Gruppo Blu};
+			\fill[red] (0.3,4.5) circle (4pt);
+			\node[right] at (0.5,4.5) {Gruppo Rosso};
+			\draw[green!60!black, very thick] (0.3,4) -- (1,4);
+			\node[right] at (1.1,4) {Confine ottimale};
+		\end{tikzpicture}
+		\caption{SVM trova il confine con il margine più grande}
+	\end{figure}
+	
+	\subsection{Quando serve?}
+	
+	SVM è ottimo per:
+	\begin{itemize}
+		\item Riconoscere volti nelle foto
+		\item Classificare testi
+		\item Diagnosticare malattie
+		\item Qualsiasi problema con due categorie ben separate
+	\end{itemize}
+	
+	\begin{nota}
+		Pensa a SVM come a un arbitro che vuole stare il più lontano possibile da entrambe le squadre per essere imparziale!
+	\end{nota}
+	
+	\newpage
+	
+	\section{K-Means: Fare Gruppi}
+	
+	\subsection{Il problema}
+	
+	Immagina di avere 100 studenti e vuoi dividerli in 5 gruppi per attività, in modo che ogni gruppo abbia studenti con interessi simili. Come fai? Usa \textbf{K-Means}!
+	
+	\begin{esempio}
+		Un negozio online vuole raggruppare i clienti:
+		\begin{itemize}
+			\item Gruppo 1: giovani che comprano vestiti
+			\item Gruppo 2: adulti che comprano per la casa
+			\item Gruppo 3: anziani che comprano libri
+		\end{itemize}
+		K-Means trova questi gruppi automaticamente!
+	\end{esempio}
+	
+	\subsection{Come funziona?}
+	
+	È come un gioco in 3 mosse, che si ripete finché i gruppi non cambiano più:
+	
+	\begin{enumerate}
+		\item \textbf{Scegli K centri} a caso (K è il numero di gruppi che vuoi)
+		\item \textbf{Assegna ogni persona} al centro più vicino
+		\item \textbf{Ricalcola i centri} come punto medio di ogni gruppo
+		\item \textbf{Ripeti} i passi 2 e 3 fino a quando i centri non si spostano più
+	\end{enumerate}
+	
+	\subsection{Esempio passo-passo}
+	
+	\begin{figure}[H]
+		\centering
+		\begin{tikzpicture}[scale=0.7]
+			\begin{scope}[xshift=0cm]
+				\node[font=\small] at (2.5,4.5) {\textbf{1. Inizio}};
+				\node[font=\footnotesize] at (2.5,4) {Punti sparsi};
+				\foreach \x/\y in {1/1, 1.5/1.2, 0.8/1.5, 3/3, 3.5/2.8, 3.2/3.5, 1/3, 0.8/3.2} {
+					\fill[black] (\x,\y) circle (3pt);
+				}
+				\fill[red, draw=black] (1.5,1.5) circle (6pt);
+				\fill[blue, draw=black] (3,3) circle (6pt);
+				\node[font=\tiny] at (1.5,0.8) {Centro 1};
+				\node[font=\tiny] at (3,3.8) {Centro 2};
+			\end{scope}
+			
+			\begin{scope}[xshift=6cm]
+				\node[font=\small] at (2.5,4.5) {\textbf{2. Assegnazione}};
+				\node[font=\footnotesize] at (2.5,4) {Ogni punto va al centro più vicino};
+				\foreach \x/\y in {1/1, 1.5/1.2, 0.8/1.5, 1/3, 0.8/3.2} {
+					\fill[red!70] (\x,\y) circle (3pt);
+				}
+				\foreach \x/\y in {3/3, 3.5/2.8, 3.2/3.5} {
+					\fill[blue!70] (\x,\y) circle (3pt);
+				}
+				\fill[red, draw=black] (1.1,1.8) circle (6pt);
+				\fill[blue, draw=black] (3.2,3.1) circle (6pt);
+			\end{scope}
+			
+			\begin{scope}[xshift=12cm]
+				\node[font=\small] at (2.5,4.5) {\textbf{3. Fine}};
+				\node[font=\footnotesize] at (2.5,4) {Gruppi stabili!};
+				\foreach \x/\y in {1/1, 1.5/1.2, 0.8/1.5, 1/3, 0.8/3.2} {
+					\fill[red!70] (\x,\y) circle (3pt);
+				}
+				\foreach \x/\y in {3/3, 3.5/2.8, 3.2/3.5} {
+					\fill[blue!70] (\x,\y) circle (3pt);
+				}
+				\fill[red, draw=black, star, star points=5] (1.06,1.78) circle (6pt);
+				\fill[blue, draw=black, star, star points=5] (3.23,3.1) circle (6pt);
+			\end{scope}
+		\end{tikzpicture}
+		\caption{Il processo di K-Means in 3 passi}
+	\end{figure}
+	
+	\subsection{Quanti gruppi?}
+	
+	Come scegliere K (il numero di gruppi)? Usa il \textbf{metodo del gomito}:
+	
+	\begin{itemize}
+		\item Prova con K = 1, 2, 3, 4, 5...
+		\item Per ogni K, misura quanto sono "compatti" i gruppi
+		\item Scegli il K dove migliora poco aumentare ancora
+	\end{itemize}
+	
+	\begin{figure}[H]
+		\centering
+		\begin{tikzpicture}
+			\begin{axis}[
+				xlabel={Numero di gruppi (K)},
+				ylabel={Quanto sono sparsi i punti},
+				grid=major,
+				width=10cm,
+				height=6cm,
+				xtick={1,2,3,4,5,6,7,8}
+				]
+				\addplot[thick, blue, mark=*] coordinates {
+					(1,280) (2,150) (3,80) (4,45) (5,35) (6,30) (7,28) (8,27)
+				};
+				\draw[red, thick, dashed] (axis cs:3,0) -- (axis cs:3,90);
+				\node[red, font=\small] at (axis cs:3.8,70) {Gomito: K=3 è buono!};
+			\end{axis}
+		\end{tikzpicture}
+		\caption{Dopo K=3, migliorare diventa difficile}
+	\end{figure}
+	
+	\begin{nota}
+		K-Means è come organizzare i tuoi amici in gruppi per interessi: all'inizio sono sparsi, ma poi trovi i gruppi naturali!
+	\end{nota}
+	
+	\newpage
+	
+	\section{Reti Neurali: Il Cervello del Computer}
+	
+	\subsection{Cos'è una rete neurale?}
+	
+	Le \textbf{reti neurali} sono ispirate al nostro cervello! Come i neuroni nel cervello si passano segnali elettrici, i neuroni artificiali si passano numeri.
+	
+	\begin{esempio}
+		Riconoscere un gatto in una foto:
+		\begin{itemize}
+			\item \textbf{Input}: i pixel della foto
+			\item \textbf{Neuroni nascosti}: cercano orecchie, baffi, occhi
+			\item \textbf{Output}: "È un gatto!" oppure "Non è un gatto!"
+		\end{itemize}
+	\end{esempio}
+	
+	\subsection{Un neurone artificiale}
+	
+	\begin{figure}[H]
+		\centering
+		\begin{tikzpicture}[
+			neuron/.style={circle, draw, minimum size=1.2cm},
+			input/.style={circle, fill=blue!20, draw, minimum size=1cm}
+			]
+			% Input
+			\node[input, font=\small] (x1) at (0,2.5) {Orecchie};
+			\node[input, font=\small] (x2) at (0,1.5) {Baffi};
+			\node[input, font=\small] (x3) at (0,0.5) {Occhi};
+			
+			% Neurone
+			\node[neuron, fill=green!20] (n) at (4,1.5) {$\Sigma$};
+			\node[font=\tiny] at (4,0.8) {Somma};
+			
+			% Decisione
+			\node[neuron, fill=yellow!20, font=\small] (a) at (7,1.5) {?};
+			\node[font=\tiny] at (7,0.8) {Decide};
+			
+			% Output
+			\node[font=\small] (y) at (9.5,1.5) {È un gatto?};
+			
+			% Connessioni con pesi
+			\draw[->, thick] (x1) -- node[above, font=\tiny] {importante} (n);
+			\draw[->, thick] (x2) -- node[above, font=\tiny] {molto importante} (n);
+			\draw[->, thick] (x3) -- node[above, font=\tiny] {importante} (n);
+			\draw[->, thick] (n) -- (a);
+			\draw[->, thick] (a) -- (y);
+		\end{tikzpicture}
+		\caption{Un neurone che decide se c'è un gatto}
+	\end{figure}
+	
+	\subsection{Come impara?}
+	
+	La rete neurale impara per tentativi:
+	\begin{enumerate}
+		\item \textbf{Prova}: fa una previsione
+		\item \textbf{Sbaglia}: confronta con la risposta giusta
+		\item \textbf{Corregge}: modifica i pesi per sbagliare meno
+		\item \textbf{Ripete}: migliaia di volte!
+	\end{enumerate}
+	
+	\begin{nota}
+		È come imparare ad andare in bici: all'inizio cadi, ma dopo tanti tentativi diventi bravissimo!
+	\end{nota}
+	
+	\subsection{Reti a più livelli}
+	
+	Le reti vere hanno tanti livelli (layer):
+	
+	\begin{figure}[H]
+		\centering
+		\begin{tikzpicture}[
+			neuron/.style={circle, draw, fill=blue!20, minimum size=0.6cm},
+			layer/.style={font=\small}
+			]
+			% Input layer
+			\foreach \y in {1,2,3,4}
+			\node[neuron] (I\y) at (0,\y*0.8) {};
+			\node[layer] at (0,-0.3) {Input};
+			\node[layer, font=\tiny] at (0,-0.8) {(pixel foto)};
+			
+			% Hidden layer 1
+			\foreach \y in {1,2,3,4,5}
+			\node[neuron, fill=green!20] (H1\y) at (3,\y*0.6) {};
+			\node[layer] at (3,-0.3) {Livello 1};
+			\node[layer, font=\tiny] at (3,-0.8) {(cerca forme)};
+			
+			% Hidden layer 2
+			\foreach \y in {1,2,3,4}
+			\node[neuron, fill=yellow!20] (H2\y) at (6,\y*0.8) {};
+			\node[layer] at (6,-0.3) {Livello 2};
+			\node[layer, font=\tiny] at (6,-0.8) {(cerca parti)};
+			
+			% Output layer
+			\node[neuron, fill=red!20] (O1) at (9,1.6) {};
+			\node[layer] at (9,-0.3) {Output};
+			\node[layer, font=\tiny] at (9,-0.8) {(gatto/non gatto)};
+			
+			% Sample connections
+			\foreach \i in {1,2,3,4}
+			\foreach \j in {1,2,3}
+			\draw[->, very thin, gray] (I\i) -- (H1\j);
+			
+			\foreach \i in {1,2,3}
+			\foreach \j in {1,2,3}
+			\draw[->, very thin, gray] (H1\i) -- (H2\j);
+			
+			\foreach \i in {1,2,3}
+			\draw[->, very thin, gray] (H2\i) -- (O1);
+		\end{tikzpicture}
+		\caption{Una rete neurale con più livelli}
+	\end{figure}
+	
+	\begin{itemize}
+		\item \textbf{Livello 1}: cerca linee e curve semplici
+		\item \textbf{Livello 2}: combina linee per trovare orecchie, occhi
+		\item \textbf{Output}: decide se è un gatto!
+	\end{itemize}
+	
+	\subsection{Dove si usano?}
+	
+	Le reti neurali sono ovunque:
+	\begin{itemize}
+		\item Riconoscimento vocale (Siri, Alexa)
+		\item Traduzione automatica
+		\item Riconoscimento facciale
+		\item Guida autonoma
+		\item Filtri Instagram
+	\end{itemize}
+	
+	\newpage
+	
+	\section{Random Forest: La Saggezza della Folla}
+	
+	\subsection{Il principio}
+	
+	Se devi prendere una decisione importante, cosa fai? Chiedi il parere di tanti amici e poi scegli quello più votato! \textbf{Random Forest} fa esattamente questo con tanti alberi decisionali.
+	
+	\begin{esempio}
+		Vuoi sapere se domani pioverà. Chiedi a 100 esperti meteo (100 alberi decisionali). Se 70 dicono SÌ e 30 dicono NO, probabilmente pioverà!
+	\end{esempio}
+	
+	\subsection{Come funziona?}
+	
+	\begin{enumerate}
+		\item \textbf{Crea tanti dataset}: prendi campioni casuali dai dati originali
+		\item \textbf{Costruisci tanti alberi}: uno per ogni dataset (tipo 100 alberi)
+		\item \textbf{Chiedi a tutti}: ogni albero dà la sua risposta
+		\item \textbf{Vota}: la risposta più frequente vince!
+	\end{enumerate}
+	
+	\begin{figure}[H]
+		\centering
+		\begin{tikzpicture}[scale=0.8]
+			% Dataset
+			\node[draw, rectangle, fill=purple!20, minimum width=2.5cm, minimum height=1cm, font=\small] (data) at (0,5) {Dati Originali};
+			
+			% Samples
+			\node[draw, rectangle, fill=blue!20, minimum width=1.8cm, font=\footnotesize] (s1) at (-5,3) {Campione 1};
+			\node[draw, rectangle, fill=blue!20, minimum width=1.8cm, font=\footnotesize] (s2) at (-2,3) {Campione 2};
+			\node[draw, rectangle, fill=blue!20, minimum width=1.8cm, font=\footnotesize] (s3) at (1,3) {Campione 3};
+			\node[font=\large] (dots1) at (3.5,3) {...};
+			\node[draw, rectangle, fill=blue!20, minimum width=1.8cm, font=\footnotesize] (sn) at (5.5,3) {Campione N};
+			
+			% Trees
+			\node[draw, circle, fill=green!20, minimum size=1cm, font=\footnotesize] (t1) at (-5,1) {Albero 1};
+			\node[draw, circle, fill=green!20, minimum size=1cm, font=\footnotesize] (t2) at (-2,1) {Albero 2};
+			\node[draw, circle, fill=green!20, minimum size=1cm, font=\footnotesize] (t3) at (1,1) {Albero 3};
+			\node[font=\large] (dots2) at (3.5,1) {...};
+			\node[draw, circle, fill=green!20, minimum size=1cm, font=\footnotesize] (tn) at (5.5,1) {Albero N};
+			
+			% Predictions
+			\node[font=\small] at (-5,0) {SÌ};
+			\node[font=\small] at (-2,0) {SÌ};
+			\node[font=\small] at (1,0) {NO};
+			\node[font=\small] at (5.5,0) {SÌ};
+			
+			% Vote
+			\node[draw, rectangle, fill=yellow!20, minimum width=2.5cm, font=\small] (vote) at (0,-1.5) {VOTO: SÌ vince!};
+			
+			% Result
+			\node[draw, rectangle, fill=red!20, minimum width=2.5cm, font=\small] (result) at (0,-3) {Risposta Finale: SÌ};
+			
+			% Arrows
+			\draw[->, thick] (data) -- (s1);
+			\draw[->, thick] (data) -- (s2);
+			\draw[->, thick] (data) -- (s3);
+			\draw[->, thick] (data) -- (sn);
+			
+			\draw[->, thick] (s1) -- (t1);
+			\draw[->, thick] (s2) -- (t2);
+			\draw[->, thick] (s3) -- (t3);
+			\draw[->, thick] (sn) -- (tn);
+			
+			\draw[->, thick] (t1) -- (vote);
+			\draw[->, thick] (t2) -- (vote);
+			\draw[->, thick] (t3) -- (vote);
+			\draw[->, thick] (tn) -- (vote);
+			
+			\draw[->, very thick] (vote) -- (result);
+		\end{tikzpicture}
+		\caption{Random Forest: tanti alberi votano insieme}
+	\end{figure}
+	
+	\subsection{Perché è meglio di un solo albero?}
+	
+	Un solo albero può:
+	\begin{itemize}
+		\item Essere troppo sicuro di sé e sbagliare
+		\item Imparare troppo bene i dati di training (overfitting)
+		\item Essere influenzato da dati strani
+	\end{itemize}
+	
+	Con tanti alberi:
+	\begin{itemize}
+		\item Gli errori si compensano
+		\item La decisione è più affidabile
+		\item Funziona meglio su nuovi dati
+	\end{itemize}
+	
+	\begin{nota}
+		È come un consiglio di classe: meglio decidere insieme che da soli!
+	\end{nota}
+	
+	\newpage
+	
+	\section{Confronto e Scelta dell'Algoritmo}
+	
+	\subsection{Quale algoritmo usare?}
+	
+	\begin{table}[H]
+		\centering
+		\small
+		\begin{tabular}{|p{3.5cm}|p{4cm}|p{5cm}|}
+			\hline
+			\textbf{Algoritmo} & \textbf{Quando usarlo} & \textbf{Esempi pratici} \\
+			\hline
+			Regressione Lineare & Prevedere numeri con relazioni lineari & Prezzo case, vendite future, temperature \\
+			\hline
+			Regressione Logistica & Rispondere SÌ/NO & Email spam, diagnosi malattie, pass/fail esami \\
+			\hline
+			KNN & Classificare cose simili & Raccomandare film, riconoscere scrittura \\
+			\hline
+			Alberi Decisionali & Decisioni spiegabili & Approvare prestiti, diagnostica medica \\
+			\hline
+			SVM & Separare gruppi netti & Riconoscere volti, classificare immagini \\
+			\hline
+			K-Means & Trovare gruppi naturali & Segmentare clienti, organizzare foto \\
+			\hline
+			Reti Neurali & Problemi complessi & Riconoscimento vocale, traduzione, immagini \\
+			\hline
+			Random Forest & Previsioni affidabili & Prevedere crediti, diagnosi complesse \\
+			\hline
+		\end{tabular}
+		\caption{Guida rapida alla scelta dell'algoritmo}
+	\end{table}
+	
+	\subsection{Domande per scegliere}
+	
+	Poniti queste domande:
+	
+	\begin{enumerate}
+		\item \textbf{Che risposta voglio?}
+		\begin{itemize}
+			\item Un numero? $\rightarrow$ Regressione Lineare
+			\item SÌ o NO? $\rightarrow$ Regressione Logistica, Alberi, SVM
+			\item Trovare gruppi? $\rightarrow$ K-Means
+		\end{itemize}
+		
+		\item \textbf{Ho bisogno di spiegare perché?}
+		\begin{itemize}
+			\item Sì $\rightarrow$ Alberi Decisionali, Regressione Lineare
+			\item No $\rightarrow$ Reti Neurali, SVM
+		\end{itemize}
+		
+		\item \textbf{Quanti dati ho?}
+		\begin{itemize}
+			\item Pochi (centinaia) $\rightarrow$ KNN, Alberi semplici
+			\item Tanti (migliaia) $\rightarrow$ Random Forest, Reti Neurali
+		\end{itemize}
+		
+		\item \textbf{Il problema è complesso?}
+		\begin{itemize}
+			\item Semplice $\rightarrow$ Regressione, KNN
+			\item Complesso $\rightarrow$ Reti Neurali, Random Forest
+		\end{itemize}
+	\end{enumerate}
+	
+	\subsection{Schema decisionale}
+	
+	\begin{figure}[H]
+		\centering
+		\begin{tikzpicture}[
+			node distance=1.5cm,
+			decision/.style={rectangle, draw, fill=yellow!20, text width=3cm, align=center, minimum height=1cm},
+			result/.style={rectangle, draw, fill=green!20, text width=2.5cm, align=center}
+			]
+			
+			\node[decision] (start) {Hai le risposte giuste?};
+			
+			\node[decision, below left=of start, xshift=-1cm] (sup) {Vuoi un numero o SÌ/NO?};
+			\node[decision, below right=of start, xshift=1cm] (unsup) {Vuoi trovare gruppi?};
+			
+			\node[result, below left=of sup] (num) {Regressione Lineare};
+			\node[result, below right=of sup] (class) {Logistica, Alberi, SVM};
+			
+			\node[result, below=of unsup] (cluster) {K-Means};
+			
+			\draw[->, thick] (start) -- node[left, font=\tiny] {SÌ} (sup);
+			\draw[->, thick] (start) -- node[right, font=\tiny] {NO} (unsup);
+			\draw[->, thick] (sup) -- node[left, font=\tiny] {Numero} (num);
+			\draw[->, thick] (sup) -- node[right, font=\tiny] {SÌ/NO} (class);
+			\draw[->, thick] (unsup) -- (cluster);
+		\end{tikzpicture}
+		\caption{Come scegliere l'algoritmo giusto}
+	\end{figure}
+	
+	\newpage
+	
+	\section{Concetti Importanti}
+	
+	\subsection{Overfitting e Underfitting}
+	
+	\textbf{Overfitting} (impara troppo bene):
+	\begin{itemize}
+		\item È come studiare SOLO i compiti degli anni scorsi
+		\item Il modello funziona perfettamente sui dati di training
+		\item Ma sbaglia su dati nuovi!
+	\end{itemize}
+	
+	\textbf{Underfitting} (impara troppo poco):
+	\begin{itemize}
+		\item È come studiare troppo poco
+		\item Il modello non funziona nemmeno sui dati di training
+		\item Troppo semplice per il problema
+	\end{itemize}
+	
+	\begin{figure}[H]
+		\centering
+		\begin{tikzpicture}
+			% Underfitting
+			\begin{scope}[xshift=0cm]
+				\node[font=\small] at (2,4) {\textbf{Underfitting}};
+				\node[font=\tiny] at (2,3.6) {(troppo semplice)};
+				\draw[->] (0,0) -- (4,0);
+				\draw[->] (0,0) -- (0,3);
+				\foreach \x/\y in {0.5/0.5, 1/1.5, 1.5/1, 2/2, 2.5/1.8, 3/2.5, 3.5/2.2} {
+					\fill[blue] (\x,\y) circle (2pt);
+				}
+				\draw[thick, red] (0,1) -- (4,1.5);
+			\end{scope}
+			
+			% Just right
+			\begin{scope}[xshift=5.5cm]
+				\node[font=\small] at (2,4) {\textbf{Giusto!}};
+				\node[font=\tiny] at (2,3.6) {(bilanciato)};
+				\draw[->] (0,0) -- (4,0);
+				\draw[->] (0,0) -- (0,3);
+				\foreach \x/\y in {0.5/0.5, 1/1.5, 1.5/1, 2/2, 2.5/1.8, 3/2.5, 3.5/2.2} {
+					\fill[blue] (\x,\y) circle (2pt);
+				}
+				\draw[thick, green!60!black] plot[smooth] coordinates {(0.5,0.5) (1,1.5) (1.5,1) (2,2) (2.5,1.8) (3,2.5) (3.5,2.2)};
+			\end{scope}
+			
+			% Overfitting
+			\begin{scope}[xshift=11cm]
+				\node[font=\small] at (2,4) {\textbf{Overfitting}};
+				\node[font=\tiny] at (2,3.6) {(troppo complesso)};
+				\draw[->] (0,0) -- (4,0);
+				\draw[->] (0,0) -- (0,3);
+				\foreach \x/\y in {0.5/0.5, 1/1.5, 1.5/1, 2/2, 2.5/1.8, 3/2.5, 3.5/2.2} {
+					\fill[blue] (\x,\y) circle (2pt);
+				}
+				\draw[thick, orange] plot[smooth] coordinates {(0.5,0.5) (0.7,0.3) (1,1.5) (1.2,1.7) (1.5,1) (1.7,0.8) (2,2) (2.2,2.1) (2.5,1.8) (2.7,1.5) (3,2.5) (3.2,2.6) (3.5,2.2)};
+			\end{scope}
+		\end{tikzpicture}
+		\caption{I tre livelli di apprendimento}
+	\end{figure}
+	
+	\subsection{Training e Test}
+	
+	Per evitare overfitting, dividiamo i dati:
+	
+	\begin{itemize}
+		\item \textbf{Dati di Training (70-80\%)}: per imparare
+		\item \textbf{Dati di Test (20-30\%)}: per verificare se ha imparato davvero
+	\end{itemize}
+	
+	\begin{esempio}
+		È come preparare un esame:
+		\begin{itemize}
+			\item Training = studiare sui libri
+			\item Test = fare l'esame vero
+		\end{itemize}
+		Se riesci bene solo sui libri ma non all'esame, hai fatto overfitting!
+	\end{esempio}
+	
+	\subsection{Accuratezza}
+	
+	Come misuriamo se il modello è bravo?
+	
+	\begin{equation}
+		\text{Accuratezza} = \frac{\text{Previsioni corrette}}{\text{Totale previsioni}} \times 100\%
+	\end{equation}
+	
+	\begin{esempio}
+		Su 100 email:
+		\begin{itemize}
+			\item 90 classificate correttamente
+			\item 10 sbagliate
+			\item Accuratezza = 90\%
+		\end{itemize}
+	\end{esempio}
+	
+	\begin{nota}
+		100\% di accuratezza è quasi sempre sospetto - probabilmente c'è overfitting!
+	\end{nota}
+	
+	\newpage
+	
+	\section{Il Futuro del Machine Learning}
+	
+	\subsection{Dove stiamo andando?}
+	
+	Il Machine Learning sta cambiando il mondo! Ecco alcune direzioni:
+	
+	\begin{itemize}
+		\item \textbf{Auto che si guidano da sole}: usando reti neurali e sensori
+		\item \textbf{Diagnosi mediche}: aiutare i dottori a trovare malattie prima
+		\item \textbf{Assistenti vocali}: sempre più intelligenti (Siri, Alexa, Google)
+		\item \textbf{Arte e creatività}: IA che dipinge, compone musica, scrive
+		\item \textbf{Traduzione in tempo reale}: capire e parlare tutte le lingue
+		\item \textbf{Cambiamento climatico}: prevedere e combattere i problemi ambientali
+	\end{itemize}
+	
+	\subsection{Sfide e questioni etiche}
+	
+	Con grandi poteri vengono grandi responsabilità:
+	
+	\begin{itemize}
+		\item \textbf{Privacy}: come proteggere i dati personali?
+		\item \textbf{Bias}: l'IA può avere pregiudizi se i dati lo hanno
+		\item \textbf{Lavoro}: alcuni lavori potrebbero sparire, altri nascere
+		\item \textbf{Trasparenza}: capire PERCHÉ l'IA ha deciso qualcosa
+		\item \textbf{Sicurezza}: prevenire usi dannosi della tecnologia
+	\end{itemize}
+	
+	\subsection{Come prepararsi?}
+	
+	Se vuoi lavorare con il Machine Learning:
+	
+	\begin{enumerate}
+		\item \textbf{Matematica}: algebra, statistiche, probabilità
+		\item \textbf{Programmazione}: Python è il linguaggio più usato
+		\item \textbf{Curiosità}: sperimenta con progetti personali
+		\item \textbf{Etica}: pensa sempre all'impatto delle tue creazioni
+		\item \textbf{Continua a imparare}: il campo cambia rapidamente!
+	\end{enumerate}
+	
+	\begin{nota}
+		Il Machine Learning non è magia - è matematica, logica e tanto lavoro. Ma i risultati possono sembrare magici!
+	\end{nota}
+	
+	\section{Riepilogo Finale}
+	
+	\subsection{Cosa abbiamo imparato}
+	
+	\begin{tcolorbox}[colback=blue!5!white, colframe=blue!75!black, title=Punti Chiave]
+		\begin{enumerate}
+			\item Il Machine Learning permette ai computer di \textbf{imparare dai dati}
+			\item Esistono \textbf{diversi algoritmi} per problemi diversi
+			\item La \textbf{scelta dell'algoritmo} dipende dal tipo di problema
+			\item Bisogna evitare \textbf{overfitting} e \textbf{underfitting}
+			\item Il ML sta \textbf{cambiando il mondo} in tanti modi
+			\item Serve \textbf{responsabilità} nell'usare queste tecnologie
+		\end{enumerate}
+	\end{tcolorbox}
+	
+	\subsection{Tabella riassuntiva}
+	
+	\begin{table}[H]
+		\centering
+		\footnotesize
+		\begin{tabular}{|p{2.8cm}|p{2.2cm}|p{3.5cm}|p{3.5cm}|}
+			\hline
+			\textbf{Algoritmo} & \textbf{Difficoltà} & \textbf{Pro} & \textbf{Contro} \\
+			\hline
+			Regressione Lineare & * & Semplice, veloce & Solo per relazioni lineari \\
+			\hline
+			Regressione Logistica & * & Buono per SÌ/NO & Solo 2 classi \\
+			\hline
+			KNN & ** & Intuitivo & Lento con tanti dati \\
+			\hline
+			Alberi Decisionali & ** & Spiegabile & Tende all'overfitting \\
+			\hline
+			SVM & *** & Preciso & Difficile da capire \\
+			\hline
+			K-Means & ** & Trova gruppi & Serve scegliere K \\
+			\hline
+			Reti Neurali & *** & Potentissime & Serve tanti dati \\
+			\hline
+			Random Forest & ** & Robusto & Più lento \\
+			\hline
+		\end{tabular}
+		\caption{* = Bassa, ** = Media, *** = Alta difficoltà}
+	\end{table}
+	
+	\subsection{Prossimi passi}
+	
+	Se vuoi approfondire:
+	\begin{itemize}
+		\item Prova a programmare in Python con librerie come scikit-learn
+		\item Segui tutorial online (YouTube, Coursera, Khan Academy)
+		\item Partecipa a competizioni su Kaggle
+		\item Costruisci un tuo progetto personale
+		\item Resta curioso e continua a sperimentare!
+	\end{itemize}
+	
+	\vspace{1cm}
+	
+	\begin{center}
+		\large\textbf{Il Machine Learning è il futuro - e il futuro inizia adesso!}
+	\end{center}
+	
+	\section*{Risorse Utili}
+	
+	\textbf{Siti web e piattaforme:}
+	\begin{itemize}
+		\item Khan Academy - Matematica e Informatica
+		\item Coursera - Corsi gratuiti di ML
+		\item YouTube - 3Blue1Brown (ottime animazioni su ML)
+		\item Kaggle - Competizioni e dataset
+		\item Scikit-learn - Documentazione Python
+	\end{itemize}
+	
+	\textbf{Libri consigliati (per iniziare):}
+	\begin{itemize}
+		\item "Python Crash Course" - Eric Matthes
+		\item "Make Your Own Neural Network" - Tariq Rashid
+		\item "Machine Learning for Kids" - Dale Lane
+	\end{itemize}
+	
+\end{document}

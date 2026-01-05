@@ -1,0 +1,31 @@
+\frametitle{Esempio Pratico - Sistema di Login}
+\begin{lstlisting}[style=phpstyle, basicstyle=\ttfamily\tiny]
+<?php
+// login.php - Gestione login con cookie "Ricordami"
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+    $remember = isset($_POST['remember']);
+
+    // Verifica credenziali (esempio semplificato)
+    if ($username == 'admin' && $password == 'pass123') {
+
+        // Cookie di sessione standard
+        setcookie('logged_in', 'true', 0, '/', '', true, true);
+        setcookie('username', $username, 0, '/', '', true, true);
+
+        // Se "Ricordami" è selezionato, cookie persistente
+        if ($remember) {
+            $expire = time() + (86400 * 30); // 30 giorni
+            setcookie('remember_token',
+                     hash('sha256', $username . time()),
+                     $expire, '/', '', true, true);
+        }
+
+        header('Location: dashboard.php');
+        exit;
+    }
+}
+?>
+\end{lstlisting}

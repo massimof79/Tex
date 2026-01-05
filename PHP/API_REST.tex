@@ -167,6 +167,18 @@
 \end{columns}
 \end{frame}
 
+
+\begin{frame}
+	\begin{itemize}
+\item REST è uno stile architetturale per la progettazione di sistemi distribuiti, in particolare servizi web. Non è una tecnologia in senso stretto né un protocollo, ma un insieme di principi che guidano la costruzione di API semplici, scalabili e manutenibili. 
+\item REST non impone regole rigide, ma suggerisce buone pratiche.
+\item Oggi REST è lo standard dominante per le API web, soprattutto in contesti microservizi, applicazioni web e mobile. Framework come Spring Boot, Django REST Framework, FastAPI o Express lo supportano nativamente.
+
+	\end{itemize}
+ \end{frame}
+
+
+
 % ====================
 % SLIDE 4: Vantaggi REST
 % ====================
@@ -241,7 +253,7 @@
 \end{tabular}
 \end{center}
 
-\vspace{0.5cm}
+REST impone una semantica precisa ai metodi HTTP.
 
 \begin{block}{CRUD Operations}
 \begin{itemize}
@@ -290,7 +302,20 @@ Utilizzare sempre i codici di stato appropriati per comunicare chiaramente il ri
 \end{frame}
 
 % ====================
-% SECTION 2
+% SECTION 2	<?php
+// Controller/Api/BaseController.php
+
+class BaseController
+{
+	/**
+	* Magic method per gestire chiamate a metodi inesistenti
+	*/
+	public function __call($name, $arguments)
+	{
+		$this->sendOutput('', 
+		array('HTTP/1.1 404 Not Found'));
+	}
+	
 % ====================
 \section{Architettura del Progetto}
 
@@ -551,42 +576,51 @@ class Database
 % ====================
 % SLIDE 15: Classe Database - Metodi
 % ====================
-\begin{frame}[fragile]{Classe Database - Parte 2}
-\begin{lstlisting}[style=phpstyle, basicstyle=\ttfamily\scriptsize]
-    public function select($query = "", $params = [])
-    {
-        try {
-            $stmt = $this->executeStatement($query, $params);
-            $result = $stmt->get_result()
-                           ->fetch_all(MYSQLI_ASSOC);
-            $stmt->close();
-            return $result;
-        } catch (Exception $e) {
-            throw new Exception($e->getMessage());
-        }
-    }
 
-    private function executeStatement($query = "", $params = [])
-    {
-        try {
-            $stmt = $this->connection->prepare($query);
-            if ($stmt === false) {
-                throw new Exception(
-                    "Unable to prepare statement: " . $query
-                );
-            }
-            if ($params) {
-                $stmt->bind_param($params[0], $params[1]);
-            }
-            $stmt->execute();
-            return $stmt;
-        } catch (Exception $e) {
-            throw new Exception($e->getMessage());
-        }
-    }
-}
+\begin{frame}[fragile]{Classe Database - Parte 2}
+	\begin{lstlisting}[style=phpstyle, basicstyle=\ttfamily\scriptsize]
+		public function select($query = "", $params = [])
+		{
+			try {
+				$stmt = $this->executeStatement($query, $params);
+				$result = $stmt->get_result()
+				->fetch_all(MYSQLI_ASSOC);
+				$stmt->close();
+				return $result;
+			} catch (Exception $e) {
+				throw new Exception($e->getMessage());
+			}
+		}
+		
 \end{lstlisting}
 \end{frame}
+
+
+\begin{frame}[fragile]{Classe Database - Parte 2}
+	\begin{lstlisting}[style=phpstyle, basicstyle=\ttfamily\scriptsize]
+			
+		private function executeStatement($query = "", $params = [])
+		{
+			try {
+				$stmt = $this->connection->prepare($query);
+				if ($stmt === false) {
+					throw new Exception(
+					"Unable to prepare statement: " . $query
+					);
+				}
+				if ($params) {
+					$stmt->bind_param($params[0], $params[1]);
+				}
+				$stmt->execute();
+				return $stmt;
+			} catch (Exception $e) {
+				throw new Exception($e->getMessage());
+			}
+		}
+	}
+\end{lstlisting}
+\end{frame}
+
 
 % ====================
 % SLIDE 16: Caratteristiche Database Class
@@ -679,18 +713,26 @@ class BaseController
             array('HTTP/1.1 404 Not Found'));
     }
 
-    /**
-     * Estrae i segmenti dall'URI
-     */
-    protected function getUriSegments()
-    {
-        $uri = parse_url($_SERVER['REQUEST_URI'], 
-                         PHP_URL_PATH);
-        $uri = explode('/', $uri);
-        return $uri;
-    }
 \end{lstlisting}
 \end{frame}
+
+
+\begin{frame}[fragile]{Classe BaseController - Parte 1}
+	\begin{lstlisting}[style=phpstyle, basicstyle=\ttfamily\scriptsize]
+	
+			/**
+			* Estrae i segmenti dall'URI
+			*/
+			protected function getUriSegments()
+			{
+				$uri = parse_url($_SERVER['REQUEST_URI'], 
+				PHP_URL_PATH);
+				$uri = explode('/', $uri);
+				return $uri;
+			}
+		\end{lstlisting}
+	\end{frame}
+
 
 % ====================
 % SLIDE 19: BaseController - Parte 2

@@ -1,0 +1,1227 @@
+\documentclass[aspectratio=169]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{hyperref}
+\usepackage{array}
+\usepackage{booktabs}
+\usetikzlibrary{shapes,arrows,positioning,calc}
+
+% Tema e colori
+\usetheme{Madrid}
+\usecolortheme{default}
+\setbeamercolor{structure}{fg=blue!70!black}
+\setbeamercolor{alerted text}{fg=red!80!black}
+
+% Configurazione per il codice PHP
+\lstdefinestyle{phpstyle}{
+    language=PHP,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue}\bfseries,
+    commentstyle=\color{green!60!black}\itshape,
+    stringstyle=\color{red},
+    showstringspaces=false,
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    frame=single,
+    breaklines=true,
+    captionpos=b,
+    tabsize=4,
+    morekeywords={setcookie, time}
+}
+
+\lstdefinestyle{httpstyle}{
+    basicstyle=\ttfamily\footnotesize,
+    keywordstyle=\color{blue}\bfseries,
+    commentstyle=\color{green!60!black}\itshape,
+    stringstyle=\color{red},
+    showstringspaces=false,
+    frame=single,
+    breaklines=true,
+    backgroundcolor=\color{gray!10}
+}
+
+\title{Cookie in PHP}
+\subtitle{Gestione della Persistenza nelle Applicazioni Web}
+\author{Prof. Fedeli Massimo IIS E. Fermi Sacconi Cpia }
+\institute{Ascoli Piceno}
+\date{\today}
+
+\begin{document}
+
+% Slide 1: Titolo
+\begin{frame}
+\titlepage
+\end{frame}
+
+% Slide 2: Indice
+\begin{frame}{Indice}
+\tableofcontents
+\end{frame}
+
+\section{Il Protocollo HTTP}
+
+% Slide 3: Introduzione al Protocollo HTTP
+\begin{frame}{Il Protocollo HTTP}
+\begin{block}{Hyper Text Transfer Protocol}
+Il World Wide Web per il trasferimento di dati ipertestuali si basa sul protocollo applicativo \textbf{HTTP} che utilizza l'architettura client/server.
+\end{block}
+
+\vspace{0.3cm}
+
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{Caratteristiche principali:}
+\begin{itemize}
+    \item Protocollo di livello applicativo
+    \item Basato su TCP/IP
+    \item Scambio di messaggi testuali
+    \item RFC 1945 (HTTP/1.0)
+    \item RFC 2616 (HTTP/1.1)
+\end{itemize}
+
+\column{0.5\textwidth}
+\begin{center}
+\begin{tikzpicture}[scale=0.8]
+    \node[draw, rectangle, minimum width=2cm, minimum height=1cm, fill=blue!20] (client) at (0,0) {Client};
+    \node[draw, rectangle, minimum width=2cm, minimum height=1cm, fill=green!20] (server) at (5,0) {Server};
+    \draw[->,thick] (client.east) -- node[above] {Request} (server.west);
+    \draw[->,thick] (server.west) -- node[below] {Response} (client.east);
+\end{tikzpicture}
+\end{center}
+\end{columns}
+\end{frame}
+
+% Slide 4: Struttura dei Messaggi HTTP
+\begin{frame}{Struttura dei Messaggi HTTP}
+\begin{block}{Tipologie di Messaggi}
+I messaggi HTTP sono composti da caratteri ASCII quindi leggibili e terminati da CR+LF (Carriage Return + Line Feed) 
+\end{block}
+
+	\begin{itemize}
+	\item 	Una riga vuota (ovvero due CR+LF di fila) indica che l' intestazionè è finita e che sta per iniziare il "\textbf{corpo}" del messaggio (ad esempio il codice HTML della pagina o i dati di un modulo).
+	
+	\item 	Un esempio pratico:
+	\subitem Ecco come appare una richiesta per il sito esempio.it:
+	
+	\subitem GET /index.html HTTP/1.1\textbf{[CRLF]} Host: esempio.it[CRLF] Accept: text/html\textbf{[CRLF] [CRLF] }<-- Riga vuota (fine intestazioni)
+	
+	\item 	Senza quei segnali CR+LF, il server vedrebbe tutto come un unico blocco di testo confuso (GET /index.html HTTP/1.1Host: esempio.it...) e restituirebbe un errore.
+	
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Struttura dei Messaggi HTTP}
+	\begin{block}{Tipologie di Messaggi}
+		I messaggi HTTP  possono essere messaggi di richiesta o di risposta:
+	\end{block}
+		\vspace{0.5cm}
+	\begin{columns}
+		\column{0.5\textwidth}
+		\textbf{REQUEST (Richiesta)}
+		\begin{itemize}
+			\item Inviata dal client
+			\item Richiede una risorsa
+			\item Contiene metodi (GET, POST, ecc.)
+		\end{itemize}
+		\column{0.5\textwidth}
+		\textbf{RESPONSE (Risposta)}
+		\begin{itemize}
+			\item Inviata dal server
+			\item Fornisce la risorsa richiesta
+			\item Contiene codici di stato
+		\end{itemize}
+	\end{columns}
+	
+	\vspace{0.5cm}
+	\begin{alertblock}{Importante}
+		La comunicazione avviene mediante TCP/IP utilizzando gli indirizzi IP dei computer che ospitano client e server.
+	\end{alertblock}
+\end{frame}
+
+
+
+
+
+% Slide 5: Meccanismo di Comunicazione HTTP
+\begin{frame}{Meccanismo di Comunicazione HTTP}
+\begin{block}{Sequenza di Operazioni}
+\end{block}
+
+\begin{tikzpicture}[node distance=1cm, auto]
+    \tikzstyle{process} = [rectangle, rounded corners, minimum width=3cm, minimum height=0.8cm, text centered, draw=black, fill=blue!20]
+    \tikzstyle{arrow} = [thick,->,>=stealth]
+    
+    \node (step1) [process] {1. Apertura connessione TCP};
+    \node (step2) [process, below of=step1] {2. Browser richiede risorsa};
+    \node (step3) [process, below of=step2] {3. Server invia risposta};
+    \node (step4) [process, below of=step3] {4. Chiusura connessione};
+    
+    \draw [arrow] (step1) -- (step2);
+    \draw [arrow] (step2) -- (step3);
+    \draw [arrow] (step3) -- (step4);
+\end{tikzpicture}
+
+\begin{alertblock}{Nota}
+Ogni richiesta di pagina richiede una nuova connessione TCP indipendente.
+\end{alertblock}
+\end{frame}
+
+% Slide 6: Esempio di Connessione HTTP
+\begin{frame}[fragile]{Esempio di Connessione HTTP}
+\begin{block}{Fasi della Connessione}
+\end{block}
+
+\begin{enumerate}
+    \item \textbf{Analisi URL}: Il browser estrae il dominio dall'URL
+    \begin{lstlisting}[style=httpstyle]
+http://www.esempio.it/pagina.html
+    \end{lstlisting}
+    
+    \item \textbf{Connessione TCP}: Il client inizia una connessione verso il server sulla porta 80
+    
+    \item \textbf{Invio Richiesta}: Il client invia una richiesta GET attraverso il socket TCP
+    \begin{lstlisting}[style=httpstyle]
+GET /pagina.html HTTP/1.1
+Host: www.esempio.it
+    \end{lstlisting}
+    
+    \item \textbf{Risposta Server}: Il server incapsula la risorsa nella risposta HTTP e la invia al client.
+\end{enumerate}
+\end{frame}
+
+% Slide 7: Completamento della Connessione
+\begin{frame}{Completamento della Connessione HTTP}
+\begin{block}{Fasi Finali}
+\end{block}
+
+\begin{enumerate}
+    \setcounter{enumi}{4}
+    \item \textbf{Chiusura Connessione}: Il server richiede al TCP di chiudere la connessione dopo l'invio della risposta
+    
+    \item \textbf{Terminazione TCP}: La connessione si conclude dopo il riscontro del client
+    
+    \item \textbf{Parsing HTML}: Il client estrae il file HTML e identifica gli oggetti referenziati (immagini, CSS, JavaScript)
+    
+    \item \textbf{Richieste Multiple}: I passi precedenti vengono ripetuti per ogni risorsa referenziata (eventualmente aprendo connessioni in parallelo)
+\end{enumerate}
+
+\begin{alertblock}{Prestazioni}
+L'apertura di multiple connessioni parallele migliora le prestazioni nel caricamento delle pagine web moderne.
+\end{alertblock}
+\end{frame}
+
+\section{Formato dei Messaggi HTTP}
+
+% Slide 8: Struttura del Messaggio HTTP
+\begin{frame}[fragile]{Formato dei Messaggi HTTP}
+\begin{block}{Componenti Principali}
+\end{block}
+
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{Struttura:}
+\begin{enumerate}
+    \item \textbf{START-LINE}\\
+    Riga di richiesta/risposta
+    \item \textbf{HEADER}\\
+    Intestazione HTTP
+    \item \textbf{BODY}\\
+    Corpo HTTP (opzionale)
+\end{enumerate}
+
+\column{0.5\textwidth}
+\begin{lstlisting}[style=httpstyle]
+GET /index.html HTTP/1.1
+Host: www.example.com
+User-Agent: Mozilla/5.0
+Accept: text/html
+[riga vuota]
+[eventuale body]
+\end{lstlisting}
+\end{columns}
+
+\vspace{0.3cm}
+\begin{block}{Metodi HTTP Principali}
+\textbf{GET}, \textbf{POST}, HEAD, PUT, DELETE, TRACE, CONNECT, OPTIONS
+\end{block}
+\end{frame}
+
+% Slide 9: START-LINE della Richiesta
+\begin{frame}[fragile]{START-LINE - Riga di Richiesta}
+\begin{block}{Elementi della Prima Riga}
+La START-LINE della richiesta contiene tre elementi:
+\end{block}
+
+\begin{center}
+\begin{tikzpicture}
+    \node[draw, rectangle, fill=blue!20, minimum width=2.5cm, minimum height=1cm] (method) at (0,0) {METODO};
+    \node[draw, rectangle, fill=green!20, minimum width=2.5cm, minimum height=1cm] (path) at (3.5,0) {PERCORSO};
+    \node[draw, rectangle, fill=orange!20, minimum width=2.5cm, minimum height=1cm] (version) at (7,0) {VERSIONE};
+    
+    \node[below=0.3cm of method] {GET, POST, ...};
+    \node[below=0.3cm of path] {/index.html};
+    \node[below=0.3cm of version] {HTTP/1.1};
+\end{tikzpicture}
+\end{center}
+
+\vspace{0.3cm}
+\begin{exampleblock}{Esempio}
+\begin{lstlisting}[style=httpstyle]
+GET /sistemi/index.html HTTP/1.1
+POST /form/login.php HTTP/1.1
+\end{lstlisting}
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}{Formato dei Messaggi HTTP}
+	\begin{block}{} % <--- Aggiunto il titolo
+		\centering % <--- Centra l'immagine nel blocco
+		\includegraphics[width=0.8\textwidth]{header.png}
+	\end{block}
+		Nella sezione General, visibile tramite i webtools del browser troviamo tra le altre informazioni anche il contenuto della start line.
+\end{frame}
+
+% Slide 10: Header HTTP della Richiesta
+\begin{frame}[fragile]{Header HTTP - Intestazione}
+\begin{block}{Campi dell'Header}
+L'intestazione contiene informazioni aggiuntive sulla richiesta/risposta
+\end{block}
+
+
+
+
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{Informazioni nell'Header:}
+\begin{itemize}
+    \item Tipo di browser
+    \item Data e ora
+    \item Cookie
+    \item Codifica
+    \item Lingua preferita
+    \item Tipo di connessione
+\end{itemize}
+
+\column{0.5\textwidth}
+\begin{lstlisting}[style=httpstyle, basicstyle=\ttfamily\tiny]
+Host: www.example.com
+User-Agent: Mozilla/5.0
+Accept: text/html
+Accept-Language: it-IT
+Accept-Encoding: gzip
+Connection: keep-alive
+Cookie: session=abc123
+\end{lstlisting}
+\end{columns}
+
+\vspace{0.3cm}
+\begin{alertblock}{Body del Messaggio}
+Il corpo può essere omesso nella richiesta, mentre è sempre presente nella risposta con la pagina HTML.
+\end{alertblock}
+\end{frame}
+
+% Slide 11: Esempio Completo di Richiesta HTTP
+\begin{frame}[fragile]{Esempio Completo - Richiesta HTTP}
+\begin{lstlisting}[style=httpstyle, basicstyle=\ttfamily\scriptsize]
+GET /index.html HTTP/1.1
+Host: www.example.com
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64)
+Accept: text/html,application/xhtml+xml
+Accept-Language: it-IT,it;q=0.9,en;q=0.8
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Cache-Control: max-age=0
+Cookie: sessionID=xyz789; user=mario
+
+\end{lstlisting}
+
+\begin{itemize}
+    \item \textbf{Linea 1}: Metodo GET, risorsa richiesta, versione HTTP
+    \item \textbf{Linee 2-9}: Header con metadati della richiesta
+    \item \textbf{Linea 10}: Riga vuota che separa header da body
+    \item \textbf{Body}: Assente nelle richieste GET
+\end{itemize}
+\end{frame}
+
+% Slide 12: Esempio Completo di Risposta HTTP
+\begin{frame}[fragile]{Esempio Completo - Risposta HTTP}
+\begin{lstlisting}[style=httpstyle, basicstyle=\ttfamily\scriptsize]
+HTTP/1.1 200 OK
+Date: Mon, 15 Jan 2024 10:30:00 GMT
+Server: Apache/2.4.41
+Content-Type: text/html; charset=UTF-8
+Content-Length: 1234
+Connection: keep-alive
+Set-Cookie: sessionID=abc123; Path=/; HttpOnly
+
+<!DOCTYPE html>
+<html>
+<head><title>Pagina di Esempio</title></head>
+<body><h1>Benvenuto!</h1></body>
+</html>
+\end{lstlisting}
+
+\begin{itemize}
+    \item \textbf{Linea 1}: Versione HTTP e codice di stato
+    \item \textbf{Linee 2-7}: Header con metadati della risposta
+    \item \textbf{Linee 9-13}: Body con il contenuto HTML
+\end{itemize}
+\end{frame}
+
+% Slide 13: Metodo POST e Body
+\begin{frame}[fragile]{Metodo POST - Invio Dati}
+\begin{block}{Utilizzo del Body}
+Il corpo del messaggio contiene i dati di un form \textbf{SOLO} con il metodo POST
+\end{block}
+
+\begin{lstlisting}[style=httpstyle, basicstyle=\ttfamily\small]
+POST /login.php HTTP/1.1
+Host: www.example.com
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 35
+
+username=mario&password=secretpass
+\end{lstlisting}
+
+\vspace{0.3cm}
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{GET vs POST:}
+\begin{itemize}
+    \item GET: parametri nell'URL
+    \item POST: parametri nel body
+    \item POST: più sicuro e capiente
+\end{itemize}
+
+\column{0.5\textwidth}
+\begin{alertblock}{Sicurezza}
+Il metodo POST è preferibile per dati sensibili (password, dati personali)
+\end{alertblock}
+\end{columns}
+\end{frame}
+
+% Slide 1: Introduzione e Identificazione
+\begin{frame}{Significato dei campi dell'Header - 1. Identificazione e Controllo}
+	Gli header di identificazione definiscono l'origine e la destinazione della richiesta.
+	\begin{itemize}
+		\item \textbf{Host:} Dominio del server (es. \texttt{google.com}). Obbligatorio in HTTP/1.1.
+		\item \textbf{User-Agent:} Identifica browser e sistema operativo del client.
+		\item \textbf{Referer:} URL della pagina precedente che ha generato il link.
+		\item \textbf{Origin:} Indica la provenienza di una richiesta (fondamentale per la sicurezza CORS).
+	\end{itemize}
+\end{frame}
+
+% Slide 2: Negoziazione del Contenuto
+\begin{frame}{Significato dei campi dell'Header - 2. Negoziazione del Contenuto}
+	Permettono al client di comunicare al server i formati preferiti per la risposta.
+	\begin{block}{Campi "Accept"}
+		\begin{itemize}
+			\item \textbf{Accept:} Tipi MIME supportati (es. \texttt{text/html}, \texttt{application/json}).
+			\item \textbf{Accept-Encoding:} Algoritmi di compressione (es. \texttt{gzip}, \texttt{br}).
+			\item \textbf{Accept-Language:} Lingue preferite (es. \texttt{it-IT}, \texttt{en-US}).
+			\item \textbf{Accept-Charset:} Set di caratteri (es. \texttt{utf-8}).
+		\end{itemize}
+	\end{block}
+\end{frame}
+
+% Slide 3: Sicurezza e Stato (Cookies)
+\begin{frame}{Significato dei campi dell'Header -  3. Sicurezza e Gestione Sessione}
+	Gestiscono l'accesso alle risorse protette e il mantenimento dello stato.
+	\begin{description}
+		\item[Authorization] Credenziali per l'accesso (es. \texttt{Bearer token} o \texttt{Basic auth}).
+		\item[Cookie] Invia al server i token di sessione precedentemente memorizzati.
+		\item[Upgrade-Insecure-Requests] Segnala al server la preferenza per connessioni cifrate (HTTPS).
+		\item[DNT (Do Not Track)] Esprime la volontà dell'utente di non essere tracciato.
+	\end{description}
+\end{frame}
+
+% Slide 4: Ottimizzazione e Caching
+\begin{frame}{Significato dei campi dell'Header -  4. Header Condizionali e Caching}
+	Fondamentali per ridurre il traffico dati e migliorare le prestazioni.
+	\begin{itemize}
+		\item \textbf{Cache-Control:} Direttive per la cache (es. \texttt{no-cache}, \texttt{max-age}).
+		\item \textbf{If-None-Match / If-Modified-Since:} La risorsa viene inviata solo se è cambiata rispetto alla versione in cache (basato su ETag o data).
+		\item \textbf{Connection:} Gestione della persistenza TCP (es. \texttt{keep-alive}).
+	\end{itemize}
+\end{frame}
+
+% Slide 5: Header di Entità (Body) e Moderni
+\begin{frame}{5. Dati dell'Entità e Client Hints}
+	Usati quando il client invia dati (es. POST) e per la privacy moderna.
+	\begin{itemize}
+		\item \textbf{Content-Type:} Formato dei dati inviati (es. \texttt{multipart/form-data}).
+		\item \textbf{Content-Length:} Dimensione in byte del corpo della richiesta.
+		\item \textbf{Sec-CH-UA:} (Moderno) Versione sicura dello User-Agent per proteggere la privacy.
+	\end{itemize}
+	\vfill
+	\centering
+	\textbf{Nota:} Tutti gli header seguono la struttura \texttt{Chiave: Valore}.
+\end{frame}
+
+
+% Slide 14: Codici di Stato HTTP
+\begin{frame}{Codici di Stato HTTP}
+\begin{block}{Categorie dei Codici di Stato}
+Il server risponde con un codice numerico che indica l'esito della richiesta
+\end{block}
+
+\begin{table}
+\small
+\begin{tabular}{cl}
+\toprule
+\textbf{Codice} & \textbf{Significato} \\
+\midrule
+\textbf{1xx} & Informational - Richiesta ricevuta \\
+\textbf{2xx} & Success - Richiesta completata con successo \\
+& 200 OK - Richiesta riuscita \\
+\textbf{3xx} & Redirection - Ulteriori azioni necessarie \\
+& 301 Moved Permanently - Risorsa spostata \\
+\textbf{4xx} & Client Error - Errore nella richiesta \\
+& 404 Not Found - Risorsa non trovata \\
+\textbf{5xx} & Server Error - Errore del server \\
+& 500 Internal Server Error \\
+\bottomrule
+\end{tabular}
+\end{table}
+\end{frame}
+
+\section{Header HTTP e Cookie}
+
+% Slide 15: Elementi dell'Header HTTP
+\begin{frame}{Elementi dell'Header HTTP}
+\begin{block}{Meta-informazioni}
+Ogni volta che un utente visita una pagina web, browser e server si scambiano meta-informazioni mediante l'header HTTP
+\end{block}
+
+\vspace{0.3cm}
+\textbf{Campi dell'Header:}
+\begin{itemize}
+    \item Ogni riga è chiamata "\textbf{Campo dell'Header}"
+    \item Formato: \texttt{Nome: Valore}
+    \item Separatore: due punti (\texttt{:})
+    \item Circa 100 campi disponibili
+    \item 30 campi per la richiesta
+    \item 30 campi per la risposta
+    \item Altri campi non standardizzati
+\end{itemize}
+\end{frame}
+
+% Slide 16: Principali Campi dell'Header
+\begin{frame}[fragile]{Principali Campi dell'Header}
+\begin{block}{Significato dei Campi Comuni}
+\end{block}
+
+\begin{table}
+\scriptsize
+\begin{tabular}{p{3.5cm}p{7cm}}
+\toprule
+\textbf{Campo} & \textbf{Descrizione} \\
+\midrule
+\texttt{HTTP/1.1} & Versione del protocollo HTTP utilizzata \\
+\texttt{200 OK} & Codice di stato (ricezione e accettazione) \\
+\texttt{Content-Encoding} & Tipo di codifica del file \\
+\texttt{Content-Type} & Tipo MIME del contenuto \\
+\texttt{Age, Cache-Control} & Informazioni sul caching \\
+\texttt{Expires, Vary} & Gestione della cache \\
+\texttt{ETag} & Versione del file (per validazione cache) \\
+\texttt{Last-Modified} & Data ultima modifica \\
+\texttt{Server} & Software del web server \\
+\texttt{Content-Length} & Dimensione del file in byte \\
+\bottomrule
+\end{tabular}
+\end{table}
+\end{frame}
+
+% Slide 17: Scopo dell'Header HTTP
+\begin{frame}{Scopo dell'Header HTTP}
+\begin{block}{Funzioni Principali}
+Le informazioni dell'header servono per il coordinamento tra client e server
+\end{block}
+
+\vspace{0.3cm}
+\textbf{Obiettivi dello Scambio di Header:}
+\begin{itemize}
+    \item \textbf{Comprensione formato}: Assicurare che il client comprenda la forma del file ricevuto
+    \item \textbf{Validazione dimensione}: Verificare che la dimensione coincida con quella attesa
+    \item \textbf{Gestione cache}: Ottimizzare le prestazioni memorizzando risorse
+    \item \textbf{Negoziazione contenuto}: Selezionare la versione più adatta (lingua, formato)
+    \item \textbf{Gestione sessioni}: Mantenere lo stato attraverso cookie
+\end{itemize}
+
+\vspace{0.3cm}
+\begin{alertblock}{Estensibilità}
+Esistono quasi 100 campi header, di cui solo una parte è standardizzata
+\end{alertblock}
+\end{frame}
+
+% Slide 18: Campo Set-Cookie nell'Header
+\begin{frame}[fragile]{Campo Set-Cookie - Risposta del Server}
+\begin{block}{Creazione di Cookie}
+Il campo \texttt{Set-Cookie} nella risposta del server richiede la memorizzazione di informazioni in un cookie sul client
+\end{block}
+
+\begin{lstlisting}[style=httpstyle]
+HTTP/1.1 200 OK
+Date: Mon, 15 Jan 2024 10:30:00 GMT
+Server: Apache/2.4.41
+Content-Type: text/html; charset=UTF-8
+Set-Cookie: username=mario; Expires=Wed, 15-Jan-2025 10:30:00 GMT
+Set-Cookie: sessionID=xyz789; Path=/; HttpOnly; Secure
+
+<!DOCTYPE html>
+...
+\end{lstlisting}
+
+\begin{alertblock}{Importante}
+Il server può richiedere la creazione di multipli cookie nella stessa risposta
+\end{alertblock}
+\end{frame}
+
+% Slide 19: Campo Cookie nell'Header
+\begin{frame}[fragile]{Campo Cookie - Richiesta del Client}
+\begin{block}{Invio Cookie al Server}
+Il campo \texttt{Cookie} nella richiesta del client comunica il contenuto archiviato nei cookie
+\end{block}
+
+\begin{lstlisting}[style=httpstyle]
+GET /profilo.php HTTP/1.1
+Host: www.example.com
+User-Agent: Mozilla/5.0
+Cookie: username=mario; sessionID=xyz789
+Accept: text/html
+
+\end{lstlisting}
+
+\vspace{0.3cm}
+\begin{center}
+\begin{tikzpicture}[node distance=2cm]
+    \node[draw, circle, fill=blue!20] (client) {Client};
+    \node[draw, circle, fill=green!20, right=of client] (server) {Server};
+    \draw[->,thick, bend left=30] (server.north) to node[above] {\scriptsize Set-Cookie} (client.north);
+    \draw[->,thick, bend left=30] (client.south) to node[below] {\scriptsize Cookie} (server.south);
+\end{tikzpicture}
+\end{center}
+\end{frame}
+
+\section{Persistenza in PHP}
+
+% Slide 20: Problema della Persistenza
+\begin{frame}{La Persistenza in PHP}
+\begin{block}{Protocollo Stateless}
+Il protocollo HTTP non permette al server di "riconoscere" un utente che si era precedentemente collegato
+\end{block}
+
+\vspace{0.3cm}
+\textbf{Caratteristiche di HTTP:}
+\begin{itemize}
+    \item Ogni pagina richiede una connessione TCP \textbf{indipendente}
+    \item Nessuna informazione viene mantenuta tra richieste successive
+    \item Ogni coppia request/response è isolata dalle altre
+    \item \alert{HTTP è un protocollo STATELESS}
+\end{itemize}
+
+\vspace{0.3cm}
+\begin{exampleblock}{Conseguenza}
+Le richieste dei client non lasciano alcuno stato nel server. Ciascuna coppia request\_client/response\_server è indipendente dalle altre.
+\end{exampleblock}
+\end{frame}
+
+% Slide 21: Limiti del Protocollo HTTP
+\begin{frame}{Limiti del Protocollo Stateless}
+\begin{alertblock}{Problemi Applicativi}
+Sin dall'inizio dell'espansione del Web, questa caratteristica del protocollo HTTP ha mostrato tutti i suoi limiti
+\end{alertblock}
+
+\vspace{0.3cm}
+\textbf{Scenari Problematici:}
+\begin{itemize}
+    \item \textbf{Autenticazione}: Come mantenere l'utente loggato?
+    \item \textbf{Carrello e-commerce}: Come ricordare i prodotti selezionati?
+    \item \textbf{Preferenze}: Come salvare le impostazioni dell'utente?
+    \item \textbf{Tracking}: Come seguire il percorso di navigazione?
+\end{itemize}
+
+\vspace{0.3cm}
+\begin{block}{Soluzione}
+Esistono tecniche che simulano lo stato in una tipica connessione client/server
+\end{block}
+\end{frame}
+
+% Slide 22: Tecniche per la Persistenza
+\begin{frame}{Tecniche per la Persistenza della Connessione}
+\begin{block}{Il Problema}
+Dopo che una pagina web viene inviata dal server al client, per uno script PHP non è più possibile accedere ai dati relativi alla pagina stessa
+\end{block}
+
+\vspace{0.3cm}
+\textbf{Necessità degli Sviluppatori:}
+\begin{itemize}
+    \item Memorizzare informazioni persistenti per più pagine
+    \item Mantenere traccia degli utenti loggati
+    \item Conservare preferenze e impostazioni
+\end{itemize}
+
+\vspace{0.3cm}
+\begin{exampleblock}{Soluzioni in PHP}
+PHP mette a disposizione due metodi principali:
+\begin{enumerate}
+    \item \textbf{COOKIE} - Memorizzazione lato client
+    \item \textbf{SESSIONI} - Memorizzazione lato server
+\end{enumerate}
+\end{exampleblock}
+\end{frame}
+
+\section{I Cookie}
+
+% Slide 23: Cosa Sono i Cookie
+\begin{frame}{I Cookie - Definizione}
+\begin{block}{Definizione}
+I cookie sono \textbf{file di testo} memorizzati sul client su richiesta esplicita del server
+\end{block}
+
+\vspace{0.3cm}
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{Caratteristiche:}
+\begin{itemize}
+    \item File di piccole dimensioni
+    \item Memorizzati sul filesystem del client
+    \item Associati a un dominio specifico
+    \item Validità temporale configurabile
+    \item Inviati automaticamente nelle richieste
+\end{itemize}
+
+\column{0.5\textwidth}
+\textbf{Funzionamento:}
+\begin{enumerate}
+    \item Server richiede creazione via \texttt{Set-Cookie}
+    \item Browser salva il cookie
+    \item Nelle richieste successive il cookie viene inviato
+    \item Server legge i dati del cookie
+\end{enumerate}
+\end{columns}
+\end{frame}
+
+% Slide 24: Meccanismo dei Cookie
+\begin{frame}{Meccanismo dei Cookie}
+\begin{block}{Processo di Gestione}
+\end{block}
+
+\begin{center}
+\begin{tikzpicture}[node distance=1.2cm, scale=0.9, every node/.style={scale=0.9}]
+    \tikzstyle{box} = [rectangle, rounded corners, minimum width=3cm, minimum height=0.8cm, text centered, draw=black, fill=blue!20]
+    \tikzstyle{arrow} = [thick,->,>=stealth]
+    
+    \node (req1) [box] {1. Client richiede pagina};
+    \node (resp1) [box, below of=req1] {2. Server invia Set-Cookie};
+    \node (save) [box, below of=resp1] {3. Browser salva cookie};
+    \node (req2) [box, below of=save] {4. Nuova richiesta con Cookie};
+    \node (read) [box, below of=req2] {5. Server legge cookie};
+    
+    \draw [arrow] (req1) -- (resp1);
+    \draw [arrow] (resp1) -- (save);
+    \draw [arrow] (save) -- (req2);
+    \draw [arrow] (req2) -- (read);
+\end{tikzpicture}
+\end{center}
+\end{frame}
+
+% Slide 25: Componenti di un Cookie
+\begin{frame}{Componenti di un Cookie}
+\begin{block}{Elementi Fondamentali}
+I cookie sono caratterizzati da diversi parametri
+\end{block}
+
+\begin{table}
+\small
+\begin{tabular}{lp{7cm}}
+\toprule
+\textbf{Elemento} & \textbf{Descrizione} \\
+\midrule
+\textbf{Nome} & Identificatore univoco del cookie \\
+\textbf{Valore} & Dati memorizzati nel cookie \\
+\textbf{Scadenza} & Validità temporale (opzionale) \\
+\textbf{Path} & Percorso del sito per cui è valido \\
+\textbf{Domain} & Dominio per cui è valido \\
+\textbf{Secure} & Trasmissione solo su HTTPS \\
+\textbf{HttpOnly} & Non accessibile da JavaScript \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{alertblock}{Nota}
+Impostazioni di sicurezza adeguate proteggono i dati degli utenti
+\end{alertblock}
+\end{frame}
+
+% Slide 26: Array \$_COOKIE
+\begin{frame}[fragile]{Array Superglobale \$\_COOKIE}
+\begin{block}{Accesso ai Cookie in PHP}
+\texttt{\$\_COOKIE} è un array associativo che memorizza i valori dei cookie inviati dal client
+\end{block}
+
+\begin{lstlisting}[style=phpstyle]
+<?php
+// Lettura di un cookie
+if (isset($_COOKIE['username'])) {
+    $username = $_COOKIE['username'];
+    echo "Benvenuto, " . $username;
+} else {
+    echo "Cookie non trovato";
+}
+
+// Visualizzare tutti i cookie
+foreach ($_COOKIE as $nome => $valore) {
+    echo "$nome: $valore<br>";
+}
+?>
+\end{lstlisting}
+
+\begin{alertblock}{Importante}
+Ogni elemento dell'array è identificato da un'etichetta corrispondente al nome del cookie
+\end{alertblock}
+\end{frame}
+
+% Slide 27: Creazione Cookie - Esempio Base
+\begin{frame}[fragile]{Creazione di Cookie - Esempio Base}
+\begin{block}{Funzione setcookie()}
+\end{block}
+
+\begin{lstlisting}[style=phpstyle]
+<?php
+$dato = "Questa stringa viene memorizzata nel cookie";
+
+// Cookie senza scadenza (session cookie)
+setcookie("Alfa", $dato);
+
+// Cookie con scadenza di 30 giorni
+setcookie("Beta", $dato, time() + 60*60*24*30);
+?>
+\end{lstlisting}
+
+\vspace{0.3cm}
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{Cookie "Alfa":}
+\begin{itemize}
+    \item Senza scadenza
+    \item Valido per la sessione
+    \item Cancellato alla chiusura del browser
+\end{itemize}
+
+\column{0.5\textwidth}
+\textbf{Cookie "Beta":}
+\begin{itemize}
+    \item Scadenza: 30 giorni
+    \item Persistente
+    \item Rimane dopo chiusura browser
+\end{itemize}
+\end{columns}
+\end{frame}
+
+% Slide 28: Calcolo della Scadenza
+\begin{frame}[fragile]{Calcolo della Scadenza del Cookie}
+\begin{block}{Funzione time()}
+La funzione \texttt{time()} restituisce il timestamp Unix corrente (secondi dal 1 gennaio 1970)
+\end{block}
+
+\begin{lstlisting}[style=phpstyle]
+<?php
+// Cookie valido per 30 giorni
+setcookie("Beta", $dato, time() + 60*60*24*30);
+
+// Calcolo dettagliato:
+// 60 secondi  = 1 minuto
+// 60 minuti   = 1 ora      (60 * 60)
+// 24 ore      = 1 giorno   (60 * 60 * 24)
+// 30 giorni   = 1 mese     (60 * 60 * 24 * 30)
+
+// Altri esempi di scadenza:
+setcookie("temp", "valore", time() + 3600);      // 1 ora
+setcookie("week", "valore", time() + 604800);    // 1 settimana
+setcookie("year", "valore", time() + 31536000);  // 1 anno
+?>
+\end{lstlisting}
+\end{frame}
+
+% Slide 29: Funzione setcookie - Sintassi Completa
+\begin{frame}[fragile]{Funzione setcookie() - Sintassi Completa}
+\begin{block}{Prototipo Completo}
+\end{block}
+
+\begin{lstlisting}[style=phpstyle, basicstyle=\ttfamily\scriptsize]
+setcookie(
+    string $name,
+    string $value = "",
+    int $expires = 0,
+    string $path = "",
+    string $domain = "",
+    bool $secure = false,
+    bool $httponly = false
+): bool
+\end{lstlisting}
+
+\begin{table}
+\tiny
+\begin{tabular}{lp{6cm}}
+\toprule
+\textbf{Parametro} & \textbf{Descrizione} \\
+\midrule
+\texttt{name} & Nome del cookie (obbligatorio) \\
+\texttt{value} & Valore da memorizzare \\
+\texttt{expires} & Timestamp di scadenza (0 = session cookie) \\
+\texttt{path} & Percorso sul server (default: directory corrente) \\
+\texttt{domain} & Dominio per cui è valido \\
+\texttt{secure} & TRUE = solo HTTPS \\
+\texttt{httponly} & TRUE = non accessibile da JavaScript \\
+\bottomrule
+\end{tabular}
+\end{table}
+\end{frame}
+
+% Slide 30: Restrizioni di setcookie()
+\begin{frame}[fragile]{Restrizioni della Funzione setcookie()}
+\begin{alertblock}{IMPORTANTE}
+I cookie devono essere inviati \textbf{prima} di qualsiasi output dello script!
+\end{alertblock}
+
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{ERRATO:}
+\begin{lstlisting}[style=phpstyle, basicstyle=\ttfamily\tiny]
+<?php
+echo "Pagina Web";
+// ERRORE: header già inviati!
+setcookie("test", "valore");
+?>
+\end{lstlisting}
+
+\column{0.5\textwidth}
+\textbf{CORRETTO:}
+\begin{lstlisting}[style=phpstyle, basicstyle=\ttfamily\tiny]
+<?php
+// Prima setcookie
+setcookie("test", "valore");
+// Poi output
+echo "Pagina Web";
+?>
+\end{lstlisting}
+\end{columns}
+
+\vspace{0.3cm}
+\begin{block}{Spiegazione}
+Questa è una restrizione del protocollo HTTP: l'header (che contiene Set-Cookie) deve precedere il body
+\end{block}
+
+\begin{exampleblock}{Soluzione}
+Usare \texttt{ob\_start()} per il buffering dell'output se necessario
+\end{exampleblock}
+\end{frame}
+
+% Slide 31: Esempio Completo di Gestione Cookie
+\begin{frame}[fragile]{Esempio Completo - Gestione Cookie}
+\begin{lstlisting}[style=phpstyle, basicstyle=\ttfamily\scriptsize]
+<?php
+// Imposta un cookie con tutte le opzioni
+setcookie(
+    "user_prefs",                    // nome
+    "theme=dark&lang=it",            // valore
+    time() + 86400 * 30,             // scadenza: 30 giorni
+    "/",                             // path: tutto il sito
+    "example.com",                   // domain
+    true,                            // secure: solo HTTPS
+    true                             // httponly: protetto da XSS
+);
+
+// Lettura del cookie
+if (isset($_COOKIE['user_prefs'])) {
+    parse_str($_COOKIE['user_prefs'], $preferences);
+    echo "Tema: " . $preferences['theme'];
+    echo "Lingua: " . $preferences['lang'];
+}
+?>
+\end{lstlisting}
+\end{frame}
+
+% Slide 32: Eliminazione Cookie
+\begin{frame}[fragile]{Eliminazione di un Cookie}
+\begin{block}{Metodo}
+Un cookie può essere eliminato impostando una scadenza \textbf{precedente} all'orario corrente
+\end{block}
+
+\begin{lstlisting}[style=phpstyle]
+<?php
+// Eliminazione di un cookie
+setcookie("nome_cookie", "", time() - 3600);
+
+// Oppure con data esplicita nel passato
+setcookie("nome_cookie", "", 1);
+
+// Importante: usare gli stessi parametri di path e domain
+// utilizzati in fase di creazione
+setcookie("user_prefs", "", time() - 3600, "/", "example.com");
+
+// Verifica eliminazione
+if (!isset($_COOKIE['nome_cookie'])) {
+    echo "Cookie eliminato con successo";
+}
+?>
+\end{lstlisting}
+
+\begin{alertblock}{Attenzione}
+Il cookie viene eliminato nella prossima richiesta, non immediatamente
+\end{alertblock}
+\end{frame}
+
+% Slide 33: Vantaggi e Svantaggi dei Cookie
+\begin{frame}{Cookie - Vantaggi e Svantaggi}
+\begin{columns}
+\column{0.5\textwidth}
+\begin{block}{Vantaggi}
+\begin{itemize}
+    \item Semplici da implementare
+    \item Non caricano il server
+    \item Persistenti nel tempo
+    \item Supportati da tutti i browser
+    \item Permettono personalizzazione
+\end{itemize}
+\end{block}
+
+\column{0.5\textwidth}
+\begin{alertblock}{Svantaggi}
+\begin{itemize}
+    \item Memorizzati lato client
+    \item \alert{Modificabili dall'utente}
+    \item Limite di dimensione (4KB)
+    \item Privacy concerns
+    \item Possono essere disabilitati
+    \item Non sicuri per dati sensibili
+\end{itemize}
+\end{alertblock}
+\end{columns}
+
+\vspace{0.5cm}
+\begin{exampleblock}{Punto Debole Principale}
+Le informazioni di stato vengono salvate in un file sul filesystem del client e sono quindi \textbf{potenzialmente modificabili} dall'utente
+\end{exampleblock}
+\end{frame}
+
+\section{Normativa sui Cookie}
+
+% Slide 34: Cookie e Normativa
+\begin{frame}{Cookie in Base alla Normativa}
+\begin{block}{Riferimenti Normativi}
+\end{block}
+
+\begin{itemize}
+    \item \textbf{Provvedimento del Garante} per la Protezione dei Dati Personali (Gazzetta Ufficiale n. 126 del 3 giugno 2014)
+    
+    \item \textbf{Linee guida cookie e altri strumenti di tracciamento} – 10 giugno 2021 [9677876] (Gazzetta Ufficiale n. 163 del 9 luglio 2021)
+\end{itemize}
+
+\vspace{0.5cm}
+\begin{block}{Classificazione}
+La normativa distingue tra:
+\begin{enumerate}
+    \item \textbf{Cookie Tecnici}
+    \item \textbf{Cookie di Profilazione}
+\end{enumerate}
+\end{block}
+\end{frame}
+
+% Slide 35: Cookie Tecnici
+\begin{frame}{Cookie Tecnici}
+\begin{block}{Definizione}
+I cookie tecnici sono quelli che facilitano la navigazione permettendo al sito di offrire alcune funzionalità
+\end{block}
+
+\vspace{0.3cm}
+\textbf{Esempi di Cookie Tecnici:}
+\begin{itemize}
+    \item \textbf{Autenticazione}: Riconoscimento dell'utente loggato senza dover reinserire username e password
+    \item \textbf{Carrello}: Mantenimento dei prodotti aggiunti anche dopo giorni
+    \item \textbf{Preferenze lingua}: Memorizzazione della lingua scelta
+    \item \textbf{Impostazioni visualizzazione}: Font size, tema, layout
+\end{itemize}
+
+\vspace{0.3cm}
+\begin{exampleblock}{Caratteristica Importante}
+I cookie tecnici \textbf{non richiedono} il consenso esplicito dell'utente
+\end{exampleblock}
+\end{frame}
+
+% Slide 36: Categorie di Cookie Tecnici
+\begin{frame}{Categorie di Cookie Tecnici}
+\begin{block}{Tre Tipologie}
+\end{block}
+
+\begin{enumerate}
+    \item \textbf{Cookie di navigazione o di sessione}
+    \begin{itemize}
+        \item Garantiscono la normale navigazione e fruizione del sito web
+        \item Permettono acquisti e autenticazione ad aree riservate
+        \item Durata limitata alla sessione
+    \end{itemize}
+    
+    \item \textbf{Cookie analytics}
+    \begin{itemize}
+        \item Assimilati ai cookie tecnici se usati dal gestore del sito
+        \item Raccolgono informazioni aggregate sul numero di utenti
+        \item Analizzano come gli utenti visitano il sito
+    \end{itemize}
+    
+    \item \textbf{Cookie di funzionalità}
+    \begin{itemize}
+        \item Permettono navigazione personalizzata
+        \item Memorizzano criteri selezionati (lingua, prodotti)
+        \item Migliorano il servizio offerto all'utente
+    \end{itemize}
+\end{enumerate}
+\end{frame}
+
+% Slide 37: Cookie di Profilazione
+\begin{frame}{Cookie di Profilazione}
+\begin{block}{Definizione Normativa}
+"I Cookie di profilazione hanno come scopo la creazione di un profilo del navigatore"
+\end{block}
+
+\vspace{0.3cm}
+\textbf{Finalità:}
+\begin{itemize}
+    \item Comprendere il comportamento sul sito
+    \item Identificare interessi e orientamenti
+    \item Raccogliere e incrociare informazioni (proprie o di terze parti)
+    \item Capire chi è l'utente e cosa gli interessa
+\end{itemize}
+
+\vspace{0.3cm}
+\textbf{Utilizzo:}
+\begin{itemize}
+    \item Invio di messaggi pubblicitari personalizzati
+    \item Vendita di servizi o prodotti mirati
+    \item Personalizzazione navigazione oltre il minimo necessario
+\end{itemize}
+
+\vspace{0.3cm}
+\begin{alertblock}{IMPORTANTE}
+I cookie di profilazione \textbf{RICHIEDONO} il consenso esplicito dell'utente
+\end{alertblock}
+\end{frame}
+
+% Slide 38: Cookie Banner e Consenso
+\begin{frame}{Cookie Banner e Consenso}
+\begin{block}{Obbligo di Informativa}
+I siti web devono informare gli utenti sull'uso dei cookie e richiedere il consenso
+\end{block}
+
+\vspace{0.3cm}
+\textbf{Requisiti del Banner:}
+\begin{itemize}
+    \item \textbf{Chiaro e visibile} al primo accesso
+    \item \textbf{Informazioni complete} sui cookie utilizzati
+    \item \textbf{Scelta granulare} per diverse tipologie di cookie
+    \item \textbf{Possibilità di rifiuto} facilmente accessibile
+    \item Link alla \textbf{Cookie Policy} completa
+\end{itemize}
+
+\vspace{0.3cm}
+\begin{exampleblock}{Best Practice}
+\begin{itemize}
+    \item Cookie tecnici: attivati automaticamente
+    \item Cookie di profilazione: richiedono consenso esplicito
+    \item Permettere personalizzazione delle scelte
+    \item Garantire facile revoca del consenso
+\end{itemize}
+\end{exampleblock}
+\end{frame}
+
+% Slide 39: Conclusioni e Alternative
+\begin{frame}{Conclusioni e Alternative ai Cookie}
+\begin{block}{Recap Cookie}
+I cookie rappresentano una soluzione semplice ma con limitazioni di sicurezza
+\end{block}
+
+\vspace{0.3cm}
+\textbf{Quando Usare i Cookie:}
+\begin{itemize}
+    \item Dati non sensibili
+    \item Preferenze utente
+    \item Tracking analytics
+    \item Personalizzazione base
+\end{itemize}
+
+\vspace{0.3cm}
+\begin{alertblock}{Alternative più Sicure}
+\begin{itemize}
+    \item \textbf{SESSIONI PHP}: Dati memorizzati lato server
+    \item \textbf{Database}: Persistenza a lungo termine
+    \item \textbf{Local Storage}: HTML5, maggiore capacità
+    \item \textbf{Session Storage}: Dati temporanei nel browser
+    \item \textbf{Token JWT}: Autenticazione stateless sicura
+\end{itemize}
+\end{alertblock}
+\end{frame}
+
+% Slide 40: Esempio Pratico Completo
+\begin{frame}[fragile]{Esempio Pratico - Sistema di Login}
+\begin{lstlisting}[style=phpstyle, basicstyle=\ttfamily\tiny]
+<?php
+// login.php - Gestione login con cookie "Ricordami"
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+    $remember = isset($_POST['remember']);
+    
+    // Verifica credenziali (esempio semplificato)
+    if ($username == 'admin' && $password == 'pass123') {
+        
+        // Cookie di sessione standard
+        setcookie('logged_in', 'true', 0, '/', '', true, true);
+        setcookie('username', $username, 0, '/', '', true, true);
+        
+        // Se "Ricordami" è selezionato, cookie persistente
+        if ($remember) {
+            $expire = time() + (86400 * 30); // 30 giorni
+            setcookie('remember_token', 
+                     hash('sha256', $username . time()),
+                     $expire, '/', '', true, true);
+        }
+        
+        header('Location: dashboard.php');
+        exit;
+    }
+}
+?>
+\end{lstlisting}
+\end{frame}
+
+% Slide 41: Riepilogo Finale
+\begin{frame}{Riepilogo Finale}
+\begin{block}{Concetti Chiave}
+\end{block}
+
+\begin{enumerate}
+    \item \textbf{HTTP è Stateless}: Non mantiene stato tra richieste
+    \item \textbf{Cookie}: File di testo sul client per mantenere stato
+    \item \textbf{setcookie()}: Funzione PHP per creare cookie
+    \item \textbf{\$\_COOKIE}: Array per leggere cookie
+    \item \textbf{Scadenza}: Gestibile con timestamp Unix
+    \item \textbf{Sicurezza}: Usare Secure e HttpOnly
+    \item \textbf{Normativa}: Distinguere tecnici vs profilazione
+    \item \textbf{Limitazioni}: Modificabili dall'utente, 4KB max
+    \item \textbf{Alternative}: Sessioni PHP per dati sensibili
+\end{enumerate}
+
+\vspace{0.3cm}
+\begin{alertblock}{Ricorda}
+Usa i cookie per dati non sensibili e considera sempre la privacy degli utenti
+\end{alertblock}
+\end{frame}
+
+\end{document}
