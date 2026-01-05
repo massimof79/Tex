@@ -1,0 +1,1539 @@
+\documentclass[aspectratio=169]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{tikz}
+\usepackage{circuitikz}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{multirow}
+
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+
+\title{Circuiti Combinatori e Unità Aritmetico-Logiche}
+\subtitle{Decoder, Multiplexer, ALU e Circuiti Aritmetici}
+\author{Prof. Fedeli Massimo}
+\institute{IIS Fermi Sacconi Ceci - Ascoli Piceno}
+\date{\today}
+
+\begin{document}
+
+% Slide 1: Titolo
+\frame{\titlepage}
+
+% Slide 2: Indice
+\begin{frame}{Indice degli Argomenti}
+    \tableofcontents
+\end{frame}
+
+\section{Circuiti di Selezione e Distribuzione}
+
+% Slide 3: Decodificatore
+\begin{frame}{Decodificatore (Decoder)}
+    \begin{columns}
+        \column{0.5\textwidth}
+        \textbf{Definizione:}
+        \begin{itemize}
+            \item Circuito con $n$ ingressi e $2^n$ uscite
+            \item Attiva una sola uscita alla volta
+            \item L'uscita attivata corrisponde al valore binario dell'ingresso
+        \end{itemize}
+        
+        \vspace{0.3cm}
+        \textbf{Applicazioni:}
+        \begin{itemize}
+            \item Decodifica indirizzi di memoria
+            \item Selezione dispositivi
+            \item Conversione binario-decimale
+        \end{itemize}
+        
+        \column{0.5\textwidth}
+        \begin{center}
+            \begin{tikzpicture}[scale=0.8]
+                % Decoder 2-to-4
+                \node[draw, rectangle, minimum width=2cm, minimum height=3cm] (dec) at (0,0) {Decoder\\2-to-4};
+                
+                % Ingressi
+                \draw[<-] (dec.west) ++(-1,0.5) node[left] {$A_1$} -- (dec.west |- 0,0.5);
+                \draw[<-] (dec.west) ++(-1,-0.5) node[left] {$A_0$} -- (dec.west |- 0,-0.5);
+                
+                % Uscite
+                \draw[->] (dec.east |- 0,1) -- ++(1,0) node[right] {$Y_0$};
+                \draw[->] (dec.east |- 0,0.33) -- ++(1,0) node[right] {$Y_1$};
+                \draw[->] (dec.east |- 0,-0.33) -- ++(1,0) node[right] {$Y_2$};
+                \draw[->] (dec.east |- 0,-1) -- ++(1,0) node[right] {$Y_3$};
+            \end{tikzpicture}
+        \end{center}
+        
+        \textbf{Tavola di verità 2-to-4:}
+        \begin{center}
+            \small
+            \begin{tabular}{cc|cccc}
+                $A_1$ & $A_0$ & $Y_0$ & $Y_1$ & $Y_2$ & $Y_3$ \\
+                \hline
+                0 & 0 & 1 & 0 & 0 & 0 \\
+                0 & 1 & 0 & 1 & 0 & 0 \\
+                1 & 0 & 0 & 0 & 1 & 0 \\
+                1 & 1 & 0 & 0 & 0 & 1 \\
+            \end{tabular}
+        \end{center}
+    \end{columns}
+\end{frame}
+
+% Slide 4: Decodificatore con Enable
+\begin{frame}{Decodificatore con Enable}
+    \begin{columns}
+        \column{0.5\textwidth}
+        \textbf{Ingresso Enable (E):}
+        \begin{itemize}
+            \item Abilita/disabilita il decodificatore
+            \item Se E=0: tutte le uscite a 0
+            \item Se E=1: funzionamento normale
+        \end{itemize}
+        
+        \vspace{0.3cm}
+        \textbf{Equazioni logiche:}
+        \begin{align*}
+            Y_0 &= E \cdot \overline{A_1} \cdot \overline{A_0} \\
+            Y_1 &= E \cdot \overline{A_1} \cdot A_0 \\
+            Y_2 &= E \cdot A_1 \cdot \overline{A_0} \\
+            Y_3 &= E \cdot A_1 \cdot A_0
+        \end{align*}
+        
+        \column{0.5\textwidth}
+        \begin{center}
+            \begin{tikzpicture}[scale=0.75]
+                \node[draw, rectangle, minimum width=2.2cm, minimum height=3.5cm] (dec) at (0,0) {Decoder\\2-to-4\\con Enable};
+                
+                \draw[<-] (dec.north) -- ++(0,0.7) node[above] {E};
+                \draw[<-] (dec.west) ++(-1,0.5) node[left] {$A_1$} -- (dec.west |- 0,0.5);
+                \draw[<-] (dec.west) ++(-1,-0.5) node[left] {$A_0$} -- (dec.west |- 0,-0.5);
+                
+                \draw[->] (dec.east |- 0,1) -- ++(1,0) node[right] {$Y_0$};
+                \draw[->] (dec.east |- 0,0.33) -- ++(1,0) node[right] {$Y_1$};
+                \draw[->] (dec.east |- 0,-0.33) -- ++(1,0) node[right] {$Y_2$};
+                \draw[->] (dec.east |- 0,-1) -- ++(1,0) node[right] {$Y_3$};
+            \end{tikzpicture}
+        \end{center}
+        
+        \textbf{Esempio applicativo:}
+        \\Selezione banco di memoria:
+        \begin{itemize}
+            \item 4 banchi di memoria
+            \item Enable seleziona quale banco attivare
+            \item Gli ingressi indirizzano il banco specifico
+        \end{itemize}
+    \end{columns}
+\end{frame}
+
+% Slide 5: Demultiplatore
+\begin{frame}{Demultiplatore (DEMUX)}
+    \begin{columns}
+        \column{0.5\textwidth}
+        \textbf{Definizione:}
+        \begin{itemize}
+            \item Circuito con 1 ingresso dati
+            \item $n$ ingressi di selezione
+            \item $2^n$ uscite
+            \item Indirizza il dato verso una delle uscite
+        \end{itemize}
+        
+        \vspace{0.3cm}
+        \textbf{Funzionamento:}
+        \\Il valore di D viene trasferito sull'uscita $Y_i$ selezionata dagli ingressi di selezione, mentre tutte le altre uscite rimangono a 0.
+        
+        \vspace{0.3cm}
+        \textbf{Relazione con Decoder:}
+        \\Un DEMUX è equivalente a un Decoder dove l'Enable diventa l'ingresso dati.
+        
+        \column{0.5\textwidth}
+        \begin{center}
+            \begin{tikzpicture}[scale=0.8]
+                \node[draw, rectangle, minimum width=2cm, minimum height=3cm] (dmx) at (0,0) {DEMUX\\1-to-4};
+                
+                \draw[<-] (dmx.north) -- ++(0,0.7) node[above] {D};
+                \draw[<-] (dmx.west) ++(-1,0.3) node[left] {$S_1$} -- (dmx.west |- 0,0.3);
+                \draw[<-] (dmx.west) ++(-1,-0.3) node[left] {$S_0$} -- (dmx.west |- 0,-0.3);
+                
+                \draw[->] (dmx.east |- 0,1) -- ++(1,0) node[right] {$Y_0$};
+                \draw[->] (dmx.east |- 0,0.33) -- ++(1,0) node[right] {$Y_1$};
+                \draw[->] (dmx.east |- 0,-0.33) -- ++(1,0) node[right] {$Y_2$};
+                \draw[->] (dmx.east |- 0,-1) -- ++(1,0) node[right] {$Y_3$};
+            \end{tikzpicture}
+        \end{center}
+        
+        \textbf{Tavola di verità (D=1):}
+        \begin{center}
+            \small
+            \begin{tabular}{cc|cccc}
+                $S_1$ & $S_0$ & $Y_0$ & $Y_1$ & $Y_2$ & $Y_3$ \\
+                \hline
+                0 & 0 & 1 & 0 & 0 & 0 \\
+                0 & 1 & 0 & 1 & 0 & 0 \\
+                1 & 0 & 0 & 0 & 1 & 0 \\
+                1 & 1 & 0 & 0 & 0 & 1 \\
+            \end{tabular}
+        \end{center}
+    \end{columns}
+\end{frame}
+
+% Slide 6: Multiplatore
+\begin{frame}{Multiplatore (MUX)}
+    \begin{columns}
+        \column{0.5\textwidth}
+        \textbf{Definizione:}
+        \begin{itemize}
+            \item $2^n$ ingressi dati
+            \item $n$ ingressi di selezione
+            \item 1 uscita
+            \item Seleziona uno degli ingressi e lo trasferisce all'uscita
+        \end{itemize}
+        
+        \vspace{0.3cm}
+        \textbf{Applicazioni:}
+        \begin{itemize}
+            \item Selezione sorgenti dati
+            \item Implementazione funzioni logiche
+            \item Routing segnali
+            \item Multiplexing temporale
+        \end{itemize}
+        
+        \vspace{0.3cm}
+        \textbf{Equazione MUX 4-to-1:}
+        \begin{align*}
+            Y = &\overline{S_1}\,\overline{S_0}\,D_0 + \overline{S_1}\,S_0\,D_1 \\
+            &+ S_1\,\overline{S_0}\,D_2 + S_1\,S_0\,D_3
+        \end{align*}
+        
+        \column{0.5\textwidth}
+        \begin{center}
+            \begin{tikzpicture}[scale=0.8]
+                \node[draw, rectangle, minimum width=2cm, minimum height=3cm] (mux) at (0,0) {MUX\\4-to-1};
+                
+                \draw[<-] (mux.west) ++(-1,1) node[left] {$D_0$} -- (mux.west |- 0,1);
+                \draw[<-] (mux.west) ++(-1,0.33) node[left] {$D_1$} -- (mux.west |- 0,0.33);
+                \draw[<-] (mux.west) ++(-1,-0.33) node[left] {$D_2$} -- (mux.west |- 0,-0.33);
+                \draw[<-] (mux.west) ++(-1,-1) node[left] {$D_3$} -- (mux.west |- 0,-1);
+                
+                \draw[<-] (mux.south) ++(-0.3,-0.5) node[below] {$S_0$} -- (mux.south |- 0,-1.5);
+                \draw[<-] (mux.south) ++(0.3,-0.5) node[below] {$S_1$} -- (mux.south |- 0,-1.5);
+                
+                \draw[->] (mux.east) -- ++(1,0) node[right] {Y};
+            \end{tikzpicture}
+        \end{center}
+        
+        \textbf{Tavola di verità:}
+        \begin{center}
+            \small
+            \begin{tabular}{cc|c}
+                $S_1$ & $S_0$ & Y \\
+                \hline
+                0 & 0 & $D_0$ \\
+                0 & 1 & $D_1$ \\
+                1 & 0 & $D_2$ \\
+                1 & 1 & $D_3$ \\
+            \end{tabular}
+        \end{center}
+    \end{columns}
+\end{frame}
+
+% Slide 7: MUX e DEMUX in parallelo
+\begin{frame}{Demultiplatori e Multiplatori in Parallelo}
+    \textbf{Trasmissione dati multi-bit:}
+    
+    \begin{center}
+        \begin{tikzpicture}[scale=0.7]
+            % DEMUX
+            \node[draw, rectangle, minimum width=1.5cm, minimum height=2.5cm] (dmx) at (0,0) {DEMUX};
+            \draw[<-] (dmx.west) ++(-1.5,0.5) node[left] {Dati (4 bit)} -- (dmx.west |- 0,0.5);
+            \draw[<-] (dmx.south) -- ++(0,-0.7) node[below] {Sel};
+            
+            % Canali
+            \foreach \y in {0.8, 0.27, -0.27, -0.8} {
+                \draw[->] (dmx.east |- 0,\y) -- ++(5,0);
+            }
+            \node[above] at (3,1.2) {4 Canali};
+            
+            % MUX
+            \node[draw, rectangle, minimum width=1.5cm, minimum height=2.5cm] (mux) at (6,0) {MUX};
+            \draw[->] (mux.east) -- ++(1.5,0) node[right] {Dati (4 bit)};
+            \draw[<-] (mux.south) -- ++(0,-0.7) node[below] {Sel};
+        \end{tikzpicture}
+    \end{center}
+    
+    \vspace{0.3cm}
+    
+    \textbf{Caratteristiche:}
+    \begin{itemize}
+        \item Trasmissione simultanea di più bit
+        \item Stessi segnali di selezione per tutti i MUX/DEMUX
+        \item Utilizzato in bus dati e comunicazioni
+    \end{itemize}
+    
+    \vspace{0.3cm}
+    
+    \textbf{Esempio:} Bus dati a 8 bit
+    \begin{itemize}
+        \item 8 DEMUX in parallelo (lato trasmissione)
+        \item 8 MUX in parallelo (lato ricezione)
+        \item 3 bit di selezione per 8 canali
+        \item Trasmissione di 1 byte per volta su canale selezionato
+    \end{itemize}
+\end{frame}
+
+\section{Codificatori}
+
+% Slide 8: Codificatore Binario
+\begin{frame}{Codificatore Binario (Encoder)}
+    \begin{columns}
+        \column{0.5\textwidth}
+        \textbf{Definizione:}
+        \begin{itemize}
+            \item Funzione opposta al decoder
+            \item $2^n$ ingressi
+            \item $n$ uscite
+            \item Converte posizione attiva in codice binario
+        \end{itemize}
+        
+        \vspace{0.3cm}
+        \textbf{Limitazione:}
+        \\Può essere attivo un solo ingresso alla volta. Se più ingressi sono attivi, il risultato è imprevedibile.
+        
+        \vspace{0.3cm}
+        \textbf{Equazioni Encoder 4-to-2:}
+        \begin{align*}
+            A_1 &= I_2 + I_3 \\
+            A_0 &= I_1 + I_3
+        \end{align*}
+        
+        \column{0.5\textwidth}
+        \begin{center}
+            \begin{tikzpicture}[scale=0.8]
+                \node[draw, rectangle, minimum width=2cm, minimum height=3cm] (enc) at (0,0) {Encoder\\4-to-2};
+                
+                \draw[<-] (enc.west) ++(-1,1) node[left] {$I_0$} -- (enc.west |- 0,1);
+                \draw[<-] (enc.west) ++(-1,0.33) node[left] {$I_1$} -- (enc.west |- 0,0.33);
+                \draw[<-] (enc.west) ++(-1,-0.33) node[left] {$I_2$} -- (enc.west |- 0,-0.33);
+                \draw[<-] (enc.west) ++(-1,-1) node[left] {$I_3$} -- (enc.west |- 0,-1);
+                
+                \draw[->] (enc.east |- 0,0.3) -- ++(1,0) node[right] {$A_1$};
+                \draw[->] (enc.east |- 0,-0.3) -- ++(1,0) node[right] {$A_0$};
+            \end{tikzpicture}
+        \end{center}
+        
+        \textbf{Tavola di verità:}
+        \begin{center}
+            \small
+            \begin{tabular}{cccc|cc}
+                $I_3$ & $I_2$ & $I_1$ & $I_0$ & $A_1$ & $A_0$ \\
+                \hline
+                0 & 0 & 0 & 1 & 0 & 0 \\
+                0 & 0 & 1 & 0 & 0 & 1 \\
+                0 & 1 & 0 & 0 & 1 & 0 \\
+                1 & 0 & 0 & 0 & 1 & 1 \\
+            \end{tabular}
+        \end{center}
+        
+        \textbf{Applicazioni:}
+        \begin{itemize}
+            \item Codifica tastiere
+            \item Conversione decimale-binario
+        \end{itemize}
+    \end{columns}
+\end{frame}
+
+% Slide 9: Codificatore di Priorità
+\begin{frame}{Codificatore di Priorità (Priority Encoder)}
+    \begin{columns}
+        \column{0.5\textwidth}
+        \textbf{Problema risolto:}
+        \\Gestisce più ingressi attivi simultaneamente assegnando priorità.
+        
+        \vspace{0.3cm}
+        \textbf{Funzionamento:}
+        \begin{itemize}
+            \item Priorità all'ingresso con indice più alto
+            \item Se $I_3=1$, uscita = 11 (indipendentemente dagli altri)
+            \item Se $I_3=0$ e $I_2=1$, uscita = 10
+            \item E così via...
+        \end{itemize}
+        
+        \vspace{0.3cm}
+        \textbf{Uscite aggiuntive:}
+        \begin{itemize}
+            \item \textbf{GS} (Group Select): indica se almeno un ingresso è attivo
+            \item \textbf{EO} (Enable Output): valida l'uscita
+        \end{itemize}
+        
+        \column{0.5\textwidth}
+        \textbf{Tavola di verità 4-to-2:}
+        \begin{center}
+            \small
+            \begin{tabular}{cccc|cc|c}
+                $I_3$ & $I_2$ & $I_1$ & $I_0$ & $A_1$ & $A_0$ & GS \\
+                \hline
+                0 & 0 & 0 & 0 & X & X & 0 \\
+                0 & 0 & 0 & 1 & 0 & 0 & 1 \\
+                0 & 0 & 1 & X & 0 & 1 & 1 \\
+                0 & 1 & X & X & 1 & 0 & 1 \\
+                1 & X & X & X & 1 & 1 & 1 \\
+            \end{tabular}
+        \end{center}
+        
+        \vspace{0.3cm}
+        \textbf{Applicazioni critiche:}
+        \begin{itemize}
+            \item Gestione interrupt nei microprocessori
+            \item Arbitraggio bus
+            \item Sistemi con richieste multiple
+        \end{itemize}
+        
+        \vspace{0.3cm}
+        \textbf{Esempio:} Sistema con 4 periferiche
+        \\CPU priorità più alta → disco → tastiera → mouse
+    \end{columns}
+\end{frame}
+
+\section{Unità Logiche}
+
+% Slide 10: Unità Logiche
+\begin{frame}{Unità Logiche (Logic Unit)}
+    \begin{columns}
+        \column{0.5\textwidth}
+        \textbf{Definizione:}
+        \\Circuito che esegue operazioni logiche bit a bit su due operandi.
+        
+        \vspace{0.3cm}
+        \textbf{Operazioni principali:}
+        \begin{itemize}
+            \item AND ($A \land B$)
+            \item OR ($A \lor B$)
+            \item XOR ($A \oplus B$)
+            \item NOT ($\overline{A}$)
+            \item NAND, NOR, XNOR
+        \end{itemize}
+        
+        \vspace{0.3cm}
+        \textbf{Struttura:}
+        \begin{itemize}
+            \item Ingressi: due operandi (A, B)
+            \item Selezione operazione (S)
+            \item Uscita: risultato (Y)
+        \end{itemize}
+        
+        \column{0.5\textwidth}
+        \textbf{Implementazione con MUX:}
+        \begin{center}
+            \begin{tikzpicture}[scale=0.7]
+                \node[draw, rectangle, minimum width=2cm, minimum height=3.5cm] (lu) at (0,0) {Logic\\Unit};
+                
+                \draw[<-] (lu.west) ++(-1.2,0.8) node[left] {A[3:0]} -- (lu.west |- 0,0.8);
+                \draw[<-] (lu.west) ++(-1.2,0.2) node[left] {B[3:0]} -- (lu.west |- 0,0.2);
+                
+                \draw[<-] (lu.south) ++(-0.3,-0.5) node[below] {$S_0$} -- (lu.south |- 0,-1.75);
+                \draw[<-] (lu.south) ++(0.3,-0.5) node[below] {$S_1$} -- (lu.south |- 0,-1.75);
+                
+                \draw[->] (lu.east) -- ++(1.2,0) node[right] {Y[3:0]};
+            \end{tikzpicture}
+        \end{center}
+        
+        \textbf{Tavola operazioni (per bit):}
+        \begin{center}
+            \small
+            \begin{tabular}{cc|l}
+                $S_1$ & $S_0$ & Operazione \\
+                \hline
+                0 & 0 & $Y = A \land B$ \\
+                0 & 1 & $Y = A \lor B$ \\
+                1 & 0 & $Y = A \oplus B$ \\
+                1 & 1 & $Y = \overline{A}$ \\
+            \end{tabular}
+        \end{center}
+        
+        \textbf{Esempio:} A=1010, B=1100, S=00 (AND)
+        \\Risultato: Y=1000
+    \end{columns}
+\end{frame}
+
+% Slide 11: Scorrimento (Shift)
+\begin{frame}{Circuiti di Scorrimento (Shifter)}
+    \textbf{Tipi di scorrimento:}
+    
+    \begin{columns}
+        \column{0.5\textwidth}
+        \textbf{1. Scorrimento Logico:}
+        \begin{itemize}
+            \item \textbf{Sinistra (SHL):} inserisce 0 a destra
+            \item \textbf{Destra (SHR):} inserisce 0 a sinistra
+            \item Esempio: 1011 SHL → 0110
+            \item Esempio: 1011 SHR → 0101
+        \end{itemize}
+        
+        \vspace{0.3cm}
+        \textbf{2. Scorrimento Aritmetico:}
+        \begin{itemize}
+            \item \textbf{Sinistra (SAL):} = SHL
+            \item \textbf{Destra (SAR):} mantiene il bit di segno
+            \item Esempio: 1011 SAR → 1101
+            \item Usato per numeri con segno
+        \end{itemize}
+        
+        \column{0.5\textwidth}
+        \textbf{3. Rotazione (Rotate):}
+        \begin{itemize}
+            \item \textbf{ROL:} bit uscente entra a destra
+            \item \textbf{ROR:} bit uscente entra a sinistra
+            \item Esempio: 1011 ROL → 0111
+            \item Nessun bit perso
+        \end{itemize}
+        
+        \vspace{0.3cm}
+        \textbf{4. Rotazione con Carry:}
+        \begin{itemize}
+            \item \textbf{RCL:} coinvolge flag carry
+            \item \textbf{RCR:} per operazioni estese
+        \end{itemize}
+    \end{columns}
+    
+    \vspace{0.4cm}
+    
+    \textbf{Applicazioni matematiche:}
+    \begin{itemize}
+        \item SHL di 1 posizione = moltiplicazione per 2
+        \item SHR di 1 posizione = divisione per 2 (interi positivi)
+        \item Operazioni veloci rispetto a moltiplicazione/divisione
+    \end{itemize}
+\end{frame}
+
+% Slide 12: Implementazione Shifter
+\begin{frame}{Implementazione Barrel Shifter}
+    \textbf{Barrel Shifter:}
+    \\Circuito che esegue scorrimenti di $n$ posizioni in un solo ciclo.
+    
+    \begin{center}
+        \begin{tikzpicture}[scale=0.65]
+            % Input
+            \foreach \i in {0,1,2,3} {
+                \node at (-2, -\i*0.8) {$D_\i$};
+            }
+            
+            % Shifter block
+            \node[draw, rectangle, minimum width=3cm, minimum height=3.5cm] (bs) at (1,-1.2) {Barrel\\Shifter\\4-bit};
+            
+            % Control
+            \draw[<-] (bs.south) ++(-0.4,-0.5) node[below] {$S_0$} -- (bs.south |- 0,-3.2);
+            \draw[<-] (bs.south) ++(0.4,-0.5) node[below] {$S_1$} -- (bs.south |- 0,-3.2);
+            \node[below] at (1,-3.5) {Shift Amount};
+            
+            % Output
+            \foreach \i in {0,1,2,3} {
+                \draw[->] (bs.east |- 0,-\i*0.8) -- ++(1.5,0) node[right] {$Q_\i$};
+            }
+        \end{tikzpicture}
+    \end{center}
+    
+    \textbf{Esempio di funzionamento (4-bit):}
+    \begin{center}
+        \small
+        \begin{tabular}{cc|cccc|l}
+            $S_1$ & $S_0$ & $Q_3$ & $Q_2$ & $Q_1$ & $Q_0$ & Shift \\
+            \hline
+            0 & 0 & $D_3$ & $D_2$ & $D_1$ & $D_0$ & 0 posizioni \\
+            0 & 1 & $D_2$ & $D_1$ & $D_0$ & 0 & 1 posizione \\
+            1 & 0 & $D_1$ & $D_0$ & 0 & 0 & 2 posizioni \\
+            1 & 1 & $D_0$ & 0 & 0 & 0 & 3 posizioni \\
+        \end{tabular}
+    \end{center}
+    
+    \textbf{Vantaggi:}
+    \begin{itemize}
+        \item Scorrimento veloce (tempo costante)
+        \item Usato in processori moderni
+        \item Implementabile con multiplexer a cascata
+    \end{itemize}
+\end{frame}
+
+\section{Circuiti Aritmetici}
+
+% Slide 13: Semisommatore (Half Adder)
+\begin{frame}{Semisommatore (Half Adder)}
+    \begin{columns}
+        \column{0.5\textwidth}
+        \textbf{Definizione:}
+        \\Circuito che somma 2 bit producendo somma e riporto.
+        
+        \vspace{0.3cm}
+        \textbf{Ingressi:}
+        \begin{itemize}
+            \item A, B (bit da sommare)
+        \end{itemize}
+        
+        \textbf{Uscite:}
+        \begin{itemize}
+            \item S (Sum - somma)
+            \item C (Carry - riporto)
+        \end{itemize}
+        
+        \vspace{0.3cm}
+        \textbf{Equazioni:}
+        \begin{align*}
+            S &= A \oplus B \\
+            C &= A \cdot B
+        \end{align*}
+        
+        \column{0.5\textwidth}
+        \textbf{Tavola di verità:}
+        \begin{center}
+            \begin{tabular}{cc|cc}
+                A & B & S & C \\
+                \hline
+                0 & 0 & 0 & 0 \\
+                0 & 1 & 1 & 0 \\
+                1 & 0 & 1 & 0 \\
+                1 & 1 & 0 & 1 \\
+            \end{tabular}
+        \end{center}
+        
+        \vspace{0.3cm}
+        \textbf{Schema logico:}
+        \begin{center}
+            \begin{tikzpicture}[scale=0.8]
+                % XOR gate for Sum
+                \node[xor port] (xor) at (0,1) {};
+                \draw (xor.in 1) -- ++(-0.5,0) node[left] {A};
+                \draw (xor.in 2) -- ++(-0.5,0) node[left] {B};
+                \draw (xor.out) -- ++(0.5,0) node[right] {S};
+                
+                % AND gate for Carry
+                \node[and port] (and) at (0,-0.5) {};
+                \draw (and.in 1) -- ++(-0.5,0) node[left] {A};
+                \draw (and.in 2) -- ++(-0.5,0) node[left] {B};
+                \draw (and.out) -- ++(0.5,0) node[right] {C};
+            \end{tikzpicture}
+        \end{center}
+        
+        \textbf{Limitazione:}
+        \\Non gestisce riporto in ingresso (Carry-in)
+    \end{columns}
+\end{frame}
+
+% Slide 14: Sommatore Completo (Full Adder)
+\begin{frame}{Sommatore Completo (Full Adder)}
+    \begin{columns}
+        \column{0.5\textwidth}
+        \textbf{Definizione:}
+        \\Somma 3 bit (2 operandi + riporto precedente)
+        
+        \vspace{0.3cm}
+        \textbf{Ingressi:}
+        \begin{itemize}
+            \item A, B (bit da sommare)
+            \item $C_{in}$ (riporto ingresso)
+        \end{itemize}
+        
+        \textbf{Uscite:}
+        \begin{itemize}
+            \item S (somma)
+            \item $C_{out}$ (riporto uscita)
+        \end{itemize}
+        
+        \vspace{0.3cm}
+        \textbf{Equazioni:}
+        \begin{align*}
+            S &= A \oplus B \oplus C_{in} \\
+            C_{out} &= AB + C_{in}(A \oplus B)
+        \end{align*}
+        
+        \column{0.5\textwidth}
+        \textbf{Tavola di verità:}
+        \begin{center}
+            \small
+            \begin{tabular}{ccc|cc}
+                A & B & $C_{in}$ & S & $C_{out}$ \\
+                \hline
+                0 & 0 & 0 & 0 & 0 \\
+                0 & 0 & 1 & 1 & 0 \\
+                0 & 1 & 0 & 1 & 0 \\
+                0 & 1 & 1 & 0 & 1 \\
+                1 & 0 & 0 & 1 & 0 \\
+                1 & 0 & 1 & 0 & 1 \\
+                1 & 1 & 0 & 0 & 1 \\
+                1 & 1 & 1 & 1 & 1 \\
+            \end{tabular}
+        \end{center}
+        
+        \vspace{0.2cm}
+        \textbf{Implementazione con 2 Half Adder:}
+        \begin{center}
+            \begin{tikzpicture}[scale=0.65]
+                \node[draw, rectangle] (ha1) at (0,0) {HA};
+                \node[draw, rectangle] (ha2) at (2.5,0) {HA};
+                \node[or port] (or) at (2.5,-1.3) {};
+                
+                \draw[<-] (ha1.west) ++(-0.5,0.15) node[left] {\small A} -- (ha1.west |- 0,0.15);
+                \draw[<-] (ha1.west) ++(-0.5,-0.15) node[left] {\small B} -- (ha1.west |- 0,-0.15);
+                
+                \draw (ha1.east |- 0,0.15) -- (ha2.west |- 0,0.15) node[midway, above] {\tiny S};
+                \draw[<-] (ha2.west |- 0,-0.15) -- ++(-0.7,0) node[left] {\small $C_{in}$};
+                
+                \draw (ha1.east |- 0,-0.15) -- ++(0.2,0) |- (or.in 1);
+                \draw (ha2.east |- 0,-0.15) -- ++(0.2,0) |- (or.in 2);
+                
+                \draw[->] (ha2.east |- 0,0.15) -- ++(0.5,0) node[right] {\small S};
+                \draw[->] (or.out) -- ++(0.5,0) node[right] {\small $C_{out}$};
+            \end{tikzpicture}
+        \end{center}
+    \end{columns}
+\end{frame}
+
+% Slide 15: Addizionatore Ripple Carry
+\begin{frame}{Addizionatore a Propagazione (Ripple Carry Adder)}
+    \textbf{Principio:}
+    \\Collegamento in cascata di Full Adder per sommare numeri multi-bit.
+    
+    \begin{center}
+        \begin{tikzpicture}[scale=0.7]
+            % FA boxes
+            \foreach \i in {0,1,2,3} {
+                \node[draw, rectangle, minimum width=1.2cm, minimum height=1.5cm] (fa\i) at (\i*2.5,0) {FA};
+                
+                % Labels
+                \node[above] at (fa\i.north) {Bit \i};
+                
+                % Inputs A and B
+                \draw[<-] (fa\i.north west) -- ++(0,0.5) node[above] {$A_\i$};
+                \draw[<-] (fa\i.north east) -- ++(0,0.5) node[above] {$B_\i$};
+                
+                % Sum output
+                \draw[->] (fa\i.south) -- ++(0,-0.5) node[below] {$S_\i$};
+            }
+            
+            % Carry connections
+            \draw[<-] (fa0.west) -- ++(-0.7,0) node[left] {$C_0=0$};
+            \foreach \i in {0,1,2} {
+                \pgfmathtruncatemacro{\next}{\i+1}
+                \draw[->] (fa\i.east) -- (fa\next.west) node[midway, above] {$C_{\next}$};
+            }
+            \draw[->] (fa3.east) -- ++(0.7,0) node[right] {$C_4$};
+        \end{tikzpicture}
+    \end{center}
+    
+    \vspace{0.3cm}
+    
+    \textbf{Caratteristiche:}
+    \begin{itemize}
+        \item Semplice da implementare
+        \item Il riporto si propaga da destra a sinistra
+        \item \textbf{Tempo di propagazione:} $T = n \times t_{FA}$ dove $n$ è il numero di bit
+    \end{itemize}
+    
+    \vspace{0.3cm}
+    
+    \textbf{Svantaggio principale:}
+    \\Lento per numeri con molti bit (es. 32 o 64 bit) a causa della propagazione sequenziale del riporto.
+\end{frame}
+
+% Slide 16: Sottrazione
+\begin{frame}{Sottrazione Binaria}
+    \begin{columns}
+        \column{0.5\textwidth}
+        \textbf{Metodo diretto:}
+        \\Prestito invece di riporto
+        
+        \vspace{0.3cm}
+        \textbf{Half Subtractor:}
+        \begin{itemize}
+            \item Ingressi: A, B
+            \item Uscite: D (differenza), B (prestito)
+        \end{itemize}
+        
+        \textbf{Equazioni:}
+        \begin{align*}
+            D &= A \oplus B \\
+            B_{out} &= \overline{A} \cdot B
+        \end{align*}
+        
+        \vspace{0.3cm}
+        \textbf{Full Subtractor:}
+        \begin{align*}
+            D &= A \oplus B \oplus B_{in} \\
+            B_{out} &= \overline{A}B + B_{in}(\overline{A \oplus B})
+        \end{align*}
+        
+        \column{0.5\textwidth}
+        \textbf{Metodo preferito:}
+        \\Usare complemento a due
+        
+        \vspace{0.3cm}
+        $$A - B = A + (\text{complemento di } B) + 1$$
+        
+        \vspace{0.3cm}
+        \textbf{Vantaggi:}
+        \begin{itemize}
+            \item Riutilizza circuito addizionatore
+            \item Più efficiente
+            \item Un solo tipo di circuito per + e -
+        \end{itemize}
+        
+        \vspace{0.3cm}
+        \textbf{Esempio:} $5 - 3$ (4 bit)
+        \begin{align*}
+            5 &= 0101 \\
+            3 &= 0011 \\
+            \overline{3} &= 1100 \\
+            \overline{3} + 1 &= 1101 \\
+            5 + 1101 &= 10010 \\
+            \text{Risultato} &= 0010 = 2
+        \end{align*}
+        (Il riporto finale viene scartato)
+    \end{columns}
+\end{frame}
+
+% Slide 17: Sommatore-Sottrattore
+\begin{frame}{Circuito Somma e Sottrazione}
+    \textbf{Implementazione unificata:}
+    
+    \begin{center}
+        \begin{tikzpicture}[scale=0.7]
+            % Control signal
+            \node at (-2, 2.5) {SUB};
+            \draw[->] (-1.5, 2.5) -- (5, 2.5);
+            
+            % XOR gates for B inversion
+            \foreach \i in {0,1,2,3} {
+                \node[xor port, scale=0.7] (xor\i) at (\i*2,1.5) {};
+                \draw (xor\i.in 1) -- ++(0,0.4) node[above] {$B_\i$};
+                \draw (xor\i.in 2) -- ++(-0.3,0) -- ++(-0.3,1) -- (-1.5,2.5);
+            }
+            
+            % FA boxes
+            \foreach \i in {0,1,2,3} {
+                \node[draw, rectangle, minimum width=1.2cm, minimum height=1.3cm] (fa\i) at (\i*2,0) {FA};
+                
+                \draw[<-] (fa\i.north west) ++(0.1,0) -- ++(0,0.3) node[above] {$A_\i$};
+                \draw (xor\i.out) -- (fa\i.north east);
+                
+                \draw[->] (fa\i.south) -- ++(0,-0.4) node[below] {$S_\i$};
+            }
+            
+            % Carry connections
+            \draw (fa0.west) -- ++(-0.5,0) node[left] {SUB};
+            \draw[-] (-0.5,0) -- (-0.5,2.5);
+            
+            \foreach \i in {0,1,2} {
+                \pgfmathtruncatemacro{\next}{\i+1}
+                \draw[->] (fa\i.east) -- (fa\next.west);
+            }
+            \draw[->] (fa3.east) -- ++(0.5,0) node[right] {$C_{out}$};
+        \end{tikzpicture}
+    \end{center}
+    
+    \vspace{0.3cm}
+    
+    \textbf{Funzionamento:}
+    \begin{itemize}
+        \item \textbf{SUB = 0:} Addizione ($S = A + B$)
+        \begin{itemize}
+            \item XOR lascia passare B invariato
+            \item $C_{in} = 0$
+        \end{itemize}
+        \item \textbf{SUB = 1:} Sottrazione ($S = A - B$)
+        \begin{itemize}
+            \item XOR inverte tutti i bit di B ($\overline{B}$)
+            \item $C_{in} = 1$ (per completare complemento a due)
+            \item Risultato: $A + \overline{B} + 1 = A - B$
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+% Slide 18: Carry Lookahead Adder
+\begin{frame}{Addizionatore a Riporto Anticipato (Carry Lookahead)}
+    \textbf{Problema del Ripple Carry:}
+    \\Ritardo proporzionale al numero di bit.
+    
+    \vspace{0.3cm}
+    
+    \textbf{Soluzione:} Calcolare tutti i riporti in parallelo
+    
+    \vspace{0.3cm}
+    
+    \textbf{Definizioni:}
+    \begin{itemize}
+        \item \textbf{Generate (G):} $G_i = A_i \cdot B_i$ (genera sempre riporto)
+        \item \textbf{Propagate (P):} $P_i = A_i \oplus B_i$ (propaga riporto)
+    \end{itemize}
+    
+    \vspace{0.3cm}
+    
+    \textbf{Equazioni riporto (4 bit):}
+    \begin{align*}
+        C_0 &= \text{Carry-in} \\
+        C_1 &= G_0 + P_0 \cdot C_0 \\
+        C_2 &= G_1 + P_1 \cdot G_0 + P_1 \cdot P_0 \cdot C_0 \\
+        C_3 &= G_2 + P_2 \cdot G_1 + P_2 \cdot P_1 \cdot G_0 + P_2 \cdot P_1 \cdot P_0 \cdot C_0 \\
+        C_4 &= G_3 + P_3 \cdot G_2 + P_3 \cdot P_2 \cdot G_1 + P_3 \cdot P_2 \cdot P_1 \cdot G_0 \\
+        &\quad + P_3 \cdot P_2 \cdot P_1 \cdot P_0 \cdot C_0
+    \end{align*}
+    
+    \vspace{0.3cm}
+    
+    \textbf{Vantaggi:}
+    \begin{itemize}
+        \item Tempo costante indipendente dal numero di bit
+        \item Molto più veloce per addizionatori a 32/64 bit
+    \end{itemize}
+    
+    \textbf{Svantaggi:}
+    \begin{itemize}
+        \item Complessità hardware maggiore
+        \item Più porte logiche necessarie
+    \end{itemize}
+\end{frame}
+
+% Slide 19: Struttura CLA
+\begin{frame}{Struttura del Carry Lookahead Adder}
+    \begin{center}
+        \begin{tikzpicture}[scale=0.65]
+            % Bottom level - bit operations
+            \foreach \i in {0,1,2,3} {
+                \node[draw, rectangle, minimum width=0.8cm, minimum height=0.8cm] (bit\i) at (\i*2.5,0) {\small Bit \i};
+                \draw[<-] (bit\i.north west) -- ++(0,0.4) node[above] {\tiny $A_\i$};
+                \draw[<-] (bit\i.north east) -- ++(0,0.4) node[above] {\tiny $B_\i$};
+                \draw[->] (bit\i.south) -- ++(0,-0.3) node[below] {\tiny $S_\i$};
+                
+                % G and P outputs
+                \draw[->] (bit\i.east) ++(0,0.15) -- ++(0.3,0) -- ++(0,0.8) node[above] {\tiny $G_\i$};
+                \draw[->] (bit\i.east) ++(0,-0.15) -- ++(0.5,0) -- ++(0,0.5) node[above] {\tiny $P_\i$};
+            }
+            
+            % CLA Unit
+            \node[draw, rectangle, minimum width=9cm, minimum height=1.5cm] (cla) at (3.75,2.5) {Carry Lookahead Unit};
+            
+            % Carry outputs
+            \foreach \i in {0,1,2,3} {
+                \draw[->] (cla.south) ++(\i*2.5-4,0) -- ++(0,-0.5) -- (bit\i.west) node[midway, left] {\tiny $C_\i$};
+            }
+            \draw[->] (cla.east) -- ++(0.5,0) node[right] {\tiny $C_4$};
+            
+            % Carry in
+            \draw[<-] (cla.west) -- ++(-0.5,0) node[left] {\tiny $C_0$};
+        \end{tikzpicture}
+    \end{center}
+    
+    \vspace{0.4cm}
+    
+    \textbf{Confronto prestazioni (32 bit):}
+    \begin{center}
+        \begin{tabular}{lcc}
+            \toprule
+            Tipo & Ritardo & Complessità \\
+            \midrule
+            Ripple Carry & $32 \times t_{FA}$ & Bassa \\
+            Carry Lookahead & $\sim 4 \times t_{FA}$ & Alta \\
+            \bottomrule
+        \end{tabular}
+    \end{center}
+    
+    \vspace{0.3cm}
+    
+    \textbf{Approccio gerarchico:}
+    \\Per numeri molto grandi (64 bit), si usano CLA a più livelli:
+    \begin{itemize}
+        \item Livello 1: CLA a 4 bit
+        \item Livello 2: CLA che combina i gruppi di 4 bit
+    \end{itemize}
+\end{frame}
+
+% Slide 20: Complemento a Due
+\begin{frame}{Rappresentazione in Complemento a Due}
+    \begin{columns}
+        \column{0.5\textwidth}
+        \textbf{Definizione:}
+        \\Metodo standard per rappresentare numeri con segno.
+        
+        \vspace{0.3cm}
+        \textbf{Procedura:}
+        \begin{enumerate}
+            \item Invertire tutti i bit (complemento a uno)
+            \item Aggiungere 1 al risultato
+        \end{enumerate}
+        
+        \vspace{0.3cm}
+        \textbf{Esempio:} -5 in 8 bit
+        \begin{align*}
+            +5 &= 00000101 \\
+            \text{Inverti} &= 11111010 \\
+            +1 &= 11111011 = -5
+        \end{align*}
+        
+        \vspace{0.3cm}
+        \textbf{Riconoscimento segno:}
+        \begin{itemize}
+            \item MSB = 0 → numero positivo
+            \item MSB = 1 → numero negativo
+        \end{itemize}
+        
+        \column{0.5\textwidth}
+        \textbf{Range (n bit):}
+        $$-2^{n-1} \text{ a } +2^{n-1}-1$$
+        
+        \textbf{Esempio 4 bit:} da -8 a +7
+        \begin{center}
+            \small
+            \begin{tabular}{cl}
+                Binario & Decimale \\
+                \hline
+                0111 & +7 \\
+                0110 & +6 \\
+                ... & ... \\
+                0001 & +1 \\
+                0000 & 0 \\
+                1111 & -1 \\
+                1110 & -2 \\
+                ... & ... \\
+                1000 & -8 \\
+            \end{tabular}
+        \end{center}
+        
+        \textbf{Vantaggi:}
+        \begin{itemize}
+            \item Una sola rappresentazione per 0
+            \item Somma/sottrazione identiche
+            \item Circuiti più semplici
+        \end{itemize}
+    \end{columns}
+\end{frame}
+
+% Slide 21: Overflow
+\begin{frame}{Rilevamento Overflow}
+    \textbf{Overflow:}
+    \\Si verifica quando il risultato non può essere rappresentato con il numero di bit disponibili.
+    
+    \vspace{0.3cm}
+    
+    \textbf{Condizioni overflow (complemento a due):}
+    \begin{itemize}
+        \item Somma di due positivi dà negativo
+        \item Somma di due negativi dà positivo
+    \end{itemize}
+    
+    \vspace{0.3cm}
+    
+    \textbf{Formula rilevamento:}
+    $$V = C_n \oplus C_{n-1}$$
+    dove $C_n$ è il riporto finale e $C_{n-1}$ il riporto del bit di segno.
+    
+    \vspace{0.3cm}
+    
+    \textbf{Esempi (4 bit):}
+    \begin{columns}
+        \column{0.5\textwidth}
+        \textbf{Overflow presente:}
+        \begin{align*}
+            &\quad 0110 \quad (+6) \\
+            + &\quad 0101 \quad (+5) \\
+            \hline
+            &\quad 1011 \quad (-5) \quad \text{ERRORE!}
+        \end{align*}
+        
+        \column{0.5\textwidth}
+        \textbf{Overflow assente:}
+        \begin{align*}
+            &\quad 0011 \quad (+3) \\
+            + &\quad 0010 \quad (+2) \\
+            \hline
+            &\quad 0101 \quad (+5) \quad \text{OK}
+        \end{align*}
+    \end{columns}
+    
+    \vspace{0.3cm}
+    
+    \textbf{Flag nei processori:}
+    \begin{itemize}
+        \item \textbf{V (Overflow):} indica overflow aritmetico
+        \item \textbf{C (Carry):} indica riporto finale (per numeri senza segno)
+    \end{itemize}
+\end{frame}
+
+% Slide 22: Moltiplicazione - Algoritmo Base
+\begin{frame}{Moltiplicazione Binaria - Metodo Carta e Penna}
+    \textbf{Principio:}
+    \\Simile alla moltiplicazione decimale
+    
+    \vspace{0.3cm}
+    
+    \textbf{Esempio:} $6 \times 5 = 30$ (4 bit)
+    
+    \begin{center}
+        \begin{tabular}{cccccccr}
+            & & & & 0 & 1 & 1 & 0 \quad (6) \\
+            $\times$ & & & & 0 & 1 & 0 & 1 \quad (5) \\
+            \hline
+            & & & & 0 & 1 & 1 & 0 \quad ($6 \times 1$) \\
+            & & & 0 & 0 & 0 & 0 & \quad ($6 \times 0$) \\
+            & & 0 & 1 & 1 & 0 & & \quad ($6 \times 1$) \\
+            + & 0 & 0 & 0 & 0 & & & \quad ($6 \times 0$) \\
+            \hline
+            & 0 & 0 & 1 & 1 & 1 & 1 & 0 \quad (30)
+        \end{tabular}
+    \end{center}
+    
+    \vspace{0.3cm}
+    
+    \textbf{Osservazioni:}
+    \begin{itemize}
+        \item Prodotto di numeri a $n$ bit richiede $2n$ bit
+        \item Se moltiplicatore bit = 1 → somma moltiplicando
+        \item Se moltiplicatore bit = 0 → somma 0
+        \item Ogni prodotto parziale è shiftato a sinistra
+    \end{itemize}
+    
+    \vspace{0.3cm}
+    
+    \textbf{Algoritmo:}
+    \begin{enumerate}
+        \item Inizializza prodotto = 0
+        \item Per ogni bit del moltiplicatore (da LSB a MSB):
+        \begin{itemize}
+            \item Se bit = 1, somma moltiplicando shiftato
+            \item Shifta moltiplicando a sinistra
+        \end{itemize}
+    \end{enumerate}
+\end{frame}
+
+% Slide 23: Moltiplicatore Hardware
+\begin{frame}{Moltiplicatore Hardware}
+    \textbf{Implementazione sequenziale:}
+    
+    \begin{center}
+        \begin{tikzpicture}[scale=0.65]
+            % Multiplicand register
+            \node[draw, rectangle, minimum width=2cm, minimum height=0.8cm] (mcd) at (0,3) {Moltiplicando};
+            
+            % Multiplier register
+            \node[draw, rectangle, minimum width=2cm, minimum height=0.8cm] (mpl) at (5,3) {Moltiplicatore};
+            
+            % ALU (Adder)
+            \node[draw, rectangle, minimum width=2cm, minimum height=1.2cm] (alu) at (0,1) {ALU\\(Adder)};
+            
+            % Product register
+            \node[draw, rectangle, minimum width=4cm, minimum height=0.8cm] (prod) at (2.5,-0.5) {Registro Prodotto (2n bit)};
+            
+            % Control
+            \node[draw, rectangle, minimum width=2cm, minimum height=0.8cm] (ctrl) at (5,0.5) {Controllo};
+            
+            % Connections
+            \draw[->] (mcd) -- (alu);
+            \draw[->] (alu) -- (prod);
+            \draw[->] (prod.east) -- ++(1,0) |- (ctrl);
+            \draw[->] (mpl) -- (ctrl);
+            \draw[->] (ctrl) -- (alu);
+            \draw[->] (prod.north) -- ++(0,0.3) -| (alu.east);
+        \end{tikzpicture}
+    \end{center}
+    
+    \vspace{0.3cm}
+    
+    \textbf{Fasi dell'algoritmo (per n bit):}
+    \begin{enumerate}
+        \item Esamina LSB del moltiplicatore
+        \item Se LSB = 1: Prodotto = Prodotto + Moltiplicando
+        \item Shift destro del moltiplicatore
+        \item Shift sinistro del moltiplicando
+        \item Ripeti per n volte
+    \end{enumerate}
+    
+    \vspace{0.3cm}
+    
+    \textbf{Ottimizzazioni moderne:}
+    \begin{itemize}
+        \item Moltiplicatori paralleli (più veloci ma più costosi)
+        \item Algoritmo di Booth (riduce numero di addizioni)
+        \item Array multiplier (completamente combinatorio)
+    \end{itemize}
+\end{frame}
+
+% Slide 24: Divisione
+\begin{frame}{Divisione Binaria}
+    \textbf{Algoritmo di divisione (simile a divisione decimale):}
+    
+    \vspace{0.3cm}
+    
+    \textbf{Esempio:} $13 \div 3$ in binario
+    
+    \begin{center}
+        \begin{tabular}{r|l}
+            & 0100 \quad (quoziente = 4) \\
+            \cline{2-2}
+            0011 & 1101 \quad (dividendo = 13) \\
+            & 0011 \quad (sottrai divisore) \\
+            \cline{2-2}
+            & 1010 \\
+            & 0011 \\
+            \cline{2-2}
+            & 0111 \\
+            & 0011 \\
+            \cline{2-2}
+            & 0100 \\
+            & 0011 \\
+            \cline{2-2}
+            & 0001 \quad (resto = 1)
+        \end{tabular}
+    \end{center}
+    
+    \vspace{0.3cm}
+    
+    \textbf{Algoritmo sequenziale:}
+    \begin{enumerate}
+        \item Inizializza resto = dividendo
+        \item Shifta resto a sinistra
+        \item Sottrai divisore dal resto
+        \item Se risultato $\geq$ 0:
+        \begin{itemize}
+            \item Imposta bit quoziente = 1
+            \item Resto = risultato sottrazione
+        \end{itemize}
+        \item Altrimenti:
+        \begin{itemize}
+            \item Imposta bit quoziente = 0
+            \item Ripristina resto
+        \end{itemize}
+        \item Ripeti per n bit
+    \end{enumerate}
+\end{frame}
+
+% Slide 25: Divisore Hardware
+\begin{frame}{Divisore Hardware}
+    \begin{center}
+        \begin{tikzpicture}[scale=0.65]
+            % Divisor register
+            \node[draw, rectangle, minimum width=2cm, minimum height=0.8cm] (div) at (0,3.5) {Divisore};
+            
+            % ALU (Subtractor)
+            \node[draw, rectangle, minimum width=2cm, minimum height=1.2cm] (alu) at (0,1.5) {ALU\\(Subtract)};
+            
+            % Remainder register
+            \node[draw, rectangle, minimum width=3cm, minimum height=0.8cm] (rem) at (3,1.5) {Resto (2n bit)};
+            
+            % Quotient register
+            \node[draw, rectangle, minimum width=2cm, minimum height=0.8cm] (quo) at (3,-0.5) {Quoziente};
+            
+            % Control
+            \node[draw, rectangle, minimum width=2cm, minimum height=0.8cm] (ctrl) at (6,1.5) {Controllo};
+            
+            % Connections
+            \draw[->] (div) -- (alu);
+            \draw[<->] (alu) -- (rem);
+            \draw[->] (rem.east) -- (ctrl.west);
+            \draw[->] (ctrl) -- (quo);
+            \draw[->] (rem.south) -- (quo.north);
+        \end{tikzpicture}
+    \end{center}
+    
+    \vspace{0.3cm}
+    
+    \textbf{Caratteristiche:}
+    \begin{itemize}
+        \item Operazione più lenta delle altre aritmetiche
+        \item Richiede $n$ iterazioni per $n$ bit
+        \item Gestione divisione per zero essenziale
+    \end{itemize}
+    
+    \vspace{0.3cm}
+    
+    \textbf{Divisione con segno:}
+    \begin{itemize}
+        \item Convertire operandi in valori assoluti
+        \item Eseguire divisione senza segno
+        \item Determinare segno risultato:
+        \begin{itemize}
+            \item Segni uguali → quoziente positivo
+            \item Segni diversi → quoziente negativo
+            \item Resto ha sempre segno del dividendo
+        \end{itemize}
+    \end{itemize}
+    
+    \vspace{0.3cm}
+    
+    \textbf{Ottimizzazioni:}
+    \begin{itemize}
+        \item SRT Division (convergenza più veloce)
+        \item Newton-Raphson per divisione in virgola mobile
+    \end{itemize}
+\end{frame}
+
+% Slide 26: Comparatore
+\begin{frame}{Comparatore di Magnitudine}
+    \begin{columns}
+        \column{0.5\textwidth}
+        \textbf{Funzione:}
+        \\Confronta due numeri binari A e B
+        
+        \vspace{0.3cm}
+        \textbf{Uscite:}
+        \begin{itemize}
+            \item A > B
+            \item A = B
+            \item A < B
+        \end{itemize}
+        
+        \vspace{0.3cm}
+        \textbf{Comparatore 1-bit:}
+        \begin{align*}
+            A = B &: A \odot B = \overline{A \oplus B} \\
+            A > B &: A \cdot \overline{B} \\
+            A < B &: \overline{A} \cdot B
+        \end{align*}
+        
+        \vspace{0.3cm}
+        \textbf{Metodo alternativo:}
+        \\Usare sottrazione: $A - B$
+        \begin{itemize}
+            \item Se risultato = 0 → A = B
+            \item Se bit segno = 0 → A > B
+            \item Se bit segno = 1 → A < B
+        \end{itemize}
+        
+        \column{0.5\textwidth}
+        \begin{center}
+            \begin{tikzpicture}[scale=0.8]
+                \node[draw, rectangle, minimum width=2cm, minimum height=2.5cm] (cmp) at (0,0) {Comparatore\\4-bit};
+                
+                \draw[<-] (cmp.west) ++(-1,0.5) node[left] {A[3:0]} -- (cmp.west |- 0,0.5);
+                \draw[<-] (cmp.west) ++(-1,-0.5) node[left] {B[3:0]} -- (cmp.west |- 0,-0.5);
+                
+                \draw[->] (cmp.east |- 0,0.7) -- ++(1,0) node[right] {A>B};
+                \draw[->] (cmp.east |- 0,0) -- ++(1,0) node[right] {A=B};
+                \draw[->] (cmp.east |- 0,-0.7) -- ++(1,0) node[right] {A<B};
+            \end{tikzpicture}
+        \end{center}
+        
+        \textbf{Comparatore n-bit a cascata:}
+        \\Confronto bit per bit da MSB a LSB
+        \begin{enumerate}
+            \item Confronta bit più significativi
+            \item Se uguali, passa al bit successivo
+            \item Se diversi, determina risultato
+        \end{enumerate}
+        
+        \vspace{0.3cm}
+        \textbf{Equazioni 4-bit:}
+        \begin{align*}
+            A=B &= (A_3 \odot B_3)(A_2 \odot B_2) \\
+            &\quad \cdot (A_1 \odot B_1)(A_0 \odot B_0) \\
+            A>B &= A_3\overline{B_3} + (A_3 \odot B_3)A_2\overline{B_2} + ... \\
+            A<B &= \overline{A_3}B_3 + (A_3 \odot B_3)\overline{A_2}B_2 + ...
+        \end{align*}
+    \end{columns}
+\end{frame}
+
+% Slide 27: ALU Completa
+\begin{frame}{Unità Aritmetico-Logica (ALU)}
+    \textbf{Componente centrale del processore:}
+    
+    \begin{center}
+        \begin{tikzpicture}[scale=0.75]
+            \node[draw, trapezium, trapezium left angle=70, trapezium right angle=110, 
+                  minimum width=4cm, minimum height=3.5cm] (alu) at (0,0) {\Large ALU};
+            
+            % Inputs
+            \draw[<-, line width=1.5pt] (alu.north west) ++(-0.5,0) -- ++(-1.5,0) node[left] {Operando A};
+            \draw[<-, line width=1.5pt] (alu.north east) ++(0.5,0) -- ++(1.5,0) node[right] {Operando B};
+            
+            % Control
+            \draw[<-] (alu.south) -- ++(0,-1) node[below] {Selezione Operazione};
+            
+            % Outputs
+            \draw[->, line width=1.5pt] (alu.east) -- ++(1.5,0) node[right] {Risultato};
+            
+            % Flags
+            \node[draw, rectangle, minimum width=1.5cm, minimum height=2cm] (flags) at (4,-1.5) {Flags};
+            \draw[->] (alu.south east) -- (flags.north west);
+            
+            \node[right] at (flags.east) {
+                \begin{tabular}{l}
+                    Z (Zero) \\
+                    N (Negative) \\
+                    C (Carry) \\
+                    V (Overflow) \\
+                \end{tabular}
+            };
+        \end{tikzpicture}
+    \end{center}
+    
+    \vspace{0.3cm}
+    
+    \textbf{Operazioni tipiche:}
+    \begin{columns}
+        \column{0.5\textwidth}
+        \textit{Aritmetiche:}
+        \begin{itemize}
+            \item ADD, SUB
+            \item INC, DEC
+            \item NEG (complemento)
+        \end{itemize}
+        
+        \column{0.5\textwidth}
+        \textit{Logiche:}
+        \begin{itemize}
+            \item AND, OR, XOR, NOT
+            \item SHL, SHR, ROL, ROR
+            \item Comparazione
+        \end{itemize}
+    \end{columns}
+\end{frame}
+
+% Slide 28: Esempio ALU 74181
+\begin{frame}{Esempio: ALU 74181}
+    \textbf{ALU storica a 4 bit (1970):}
+    
+    \vspace{0.3cm}
+    
+    \begin{columns}
+        \column{0.5\textwidth}
+        \textbf{Caratteristiche:}
+        \begin{itemize}
+            \item 4 bit di dati
+            \item 5 bit di selezione ($S_0$ - $S_4$)
+            \item Modo aritmetico/logico (M)
+            \item 16 funzioni logiche
+            \item 16 funzioni aritmetiche
+        \end{itemize}
+        
+        \vspace{0.3cm}
+        \textbf{Ingressi:}
+        \begin{itemize}
+            \item A[3:0], B[3:0]: operandi
+            \item S[3:0]: selezione funzione
+            \item M: modo (0=aritm, 1=logic)
+            \item $C_n$: carry-in
+        \end{itemize}
+        
+        \column{0.5\textwidth}
+        \textbf{Uscite:}
+        \begin{itemize}
+            \item F[3:0]: risultato
+            \item A=B: uguaglianza
+            \item $C_{n+4}$: carry-out
+            \item G, P: generate/propagate
+        \end{itemize}
+        
+        \vspace{0.3cm}
+        \textbf{Alcune operazioni (M=0):}
+        \begin{center}
+            \small
+            \begin{tabular}{cl}
+                S[3:0] & Operazione \\
+                \hline
+                0000 & A \\
+                0110 & A - B \\
+                1001 & A + B \\
+                1100 & A + 1 \\
+            \end{tabular}
+        \end{center}
+        
+        \textbf{Espandibilità:}
+        \\Più 74181 in cascata per ALU a 8, 16, 32 bit
+    \end{columns}
+\end{frame}
+
+% Slide 29: Applicazioni Pratiche
+\begin{frame}{Applicazioni dei Circuiti Combinatori}
+    \textbf{1. Processori:}
+    \begin{itemize}
+        \item ALU per tutte le operazioni aritmetico-logiche
+        \item Decoder per decodifica istruzioni
+        \item MUX per selezione operandi e risultati
+    \end{itemize}
+    
+    \vspace{0.3cm}
+    
+    \textbf{2. Memorie:}
+    \begin{itemize}
+        \item Decoder per selezione indirizzo
+        \item MUX per accesso dati
+        \item Comparatori per gestione cache
+    \end{itemize}
+    
+    \vspace{0.3cm}
+    
+    \textbf{3. Comunicazioni:}
+    \begin{itemize}
+        \item MUX/DEMUX per multiplexing segnali
+        \item Encoder per codifica dati
+        \item Comparatori per rilevazione errori
+    \end{itemize}
+    
+    \vspace{0.3cm}
+    
+    \textbf{4. Sistemi embedded:}
+    \begin{itemize}
+        \item Priority encoder per gestione interrupt
+        \item Shifter per protocolli seriali
+        \item ALU semplificate per microcontrollori
+    \end{itemize}
+    
+    \vspace{0.3cm}
+    
+    \textbf{5. FPGA e ASIC:}
+    \begin{itemize}
+        \item Blocchi base per progettazione custom
+        \item Implementazione algoritmi DSP
+        \item Acceleratori hardware
+    \end{itemize}
+\end{frame}
+
+% Slide 30: Conclusioni e Riepilogo
+\begin{frame}{Riepilogo e Conclusioni}
+    \textbf{Concetti chiave appresi:}
+    
+    \vspace{0.3cm}
+    
+    \begin{enumerate}
+        \item \textbf{Circuiti di routing:}
+        \begin{itemize}
+            \item Decoder, Encoder, MUX, DEMUX
+            \item Selezione e distribuzione segnali
+        \end{itemize}
+        
+        \vspace{0.2cm}
+        
+        \item \textbf{Circuiti logici:}
+        \begin{itemize}
+            \item Operazioni bit a bit
+            \item Scorrimenti e rotazioni
+        \end{itemize}
+        
+        \vspace{0.2cm}
+        
+        \item \textbf{Circuiti aritmetici:}
+        \begin{itemize}
+            \item Addizionatori (Ripple Carry, Carry Lookahead)
+            \item Moltiplicatori e divisori
+            \item Complemento a due e gestione overflow
+        \end{itemize}
+        
+        \vspace{0.2cm}
+        
+        \item \textbf{ALU:}
+        \begin{itemize}
+            \item Combinazione di tutti i circuiti
+            \item Cuore computazionale del processore
+        \end{itemize}
+    \end{enumerate}
+    
+    \vspace{0.3cm}
+    
+    \textbf{Prospettive future:}
+    \begin{itemize}
+        \item Studio circuiti sequenziali (flip-flop, registri)
+        \item Architettura dei processori
+        \item Progettazione con HDL (VHDL, Verilog)
+    \end{itemize}
+\end{frame}
+
+\end{document}
