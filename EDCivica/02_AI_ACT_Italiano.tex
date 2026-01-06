@@ -150,9 +150,6 @@
 
 % Slide 4: Rischio Inaccettabile - Pratiche Vietate
 \begin{frame}{Rischio Inaccettabile: Pratiche IA Vietate}
-\begin{tikzpicture}[remember picture,overlay]
-\node[anchor=north west, text=warningred, font=\Huge] at ([xshift=1cm,yshift=-1cm]current page.north west) {$\times$};
-\end{tikzpicture}
 
 \textbf{Queste applicazioni IA sono completamente vietate nell'UE:}
 
@@ -178,14 +175,12 @@
 
 \vspace{0.2cm}
 \begin{alertblock}{Principio}
-Queste pratiche sono incompatibili con i valori fondamentali dell'UE e la Carta dei Diritti Fondamentali.
+Queste pratiche sono incompatibili con i valori fondamentali dell'UE e la Carta dei \textbf{Diritti Fondamentali}.
 \end{alertblock}
 \end{frame}
 
 % Slide 5: Altre Pratiche Vietate
 \begin{frame}{Altre Pratiche Vietate}
-\begin{columns}[T]
-\column{0.48\textwidth}
 \begin{block}{4. Riconoscimento delle Emozioni}
 \textbf{Vietato in:}
 \begin{itemize}
@@ -206,27 +201,27 @@ Queste pratiche sono incompatibili con i valori fondamentali dell'UE e la Carta 
 \item Per creare/espandere database di riconoscimento facciale
 \end{itemize}
 \end{block}
+\end{frame}
 
-\column{0.48\textwidth}
-\begin{block}{6. Riconoscimento Facciale in Tempo Reale}
-\textbf{Divieto generale} per le forze dell'ordine negli spazi pubblici
-
-\vspace{0.2cm}
-\textbf{Eccezioni limitate:}
-\begin{itemize}
-\item Ricerca mirata di vittime
-\item Prevenzione di minacce specifiche
-\item Rilevamento crimini gravi
-\end{itemize}
-
-\vspace{0.2cm}
-\textit{Richiede autorizzazione giudiziaria e supervisione rigorosa}
-\end{block}
-
-\begin{tikzpicture}
-\node[cloud, draw, fill=warningred!20, cloud puffs=10, minimum width=3cm, minimum height=1.5cm, align=center] {Protezione\\Privacy};
-\end{tikzpicture}
-\end{columns}
+\begin{frame}{Altre pratiche vietate}
+	\begin{block}{6. Riconoscimento Facciale in Tempo Reale}
+		\textbf{Divieto generale} per le forze dell'ordine negli spazi pubblici
+		
+		\vspace{0.2cm}
+		\textbf{Eccezioni limitate:}
+		\begin{itemize}
+			\item Ricerca mirata di vittime
+			\item Prevenzione di minacce specifiche
+			\item Rilevamento crimini gravi
+		\end{itemize}
+		
+		\vspace{0.2cm}
+		\textit{Richiede autorizzazione giudiziaria e supervisione rigorosa}
+	\end{block}
+	
+	\begin{tikzpicture}
+		\node[cloud, draw, fill=warningred!20, cloud puffs=10, minimum width=3cm, minimum height=1.5cm, align=center] {Protezione\\Privacy};
+	\end{tikzpicture}
 \end{frame}
 
 % NUOVA SLIDE 6: Esempio Concreto - Riconoscimento Emozioni
@@ -246,16 +241,6 @@ Queste pratiche sono incompatibili con i valori fondamentali dell'UE e la Carta 
 \end{alertblock}
 
 \vspace{0.2cm}
-
-\begin{exampleblock}{Perché è Vietato}
-\begin{itemize}
-\item Invade la privacy dei lavoratori
-\item Rilevamento emozioni inaffidabile
-\item Crea pressione psicologica
-\item Potenziale di discriminazione
-\end{itemize}
-\end{exampleblock}
-
 \column{0.48\textwidth}
 \begin{block}{Esempio Scolastico}
 \textbf{Università installa IA per rilevare attenzione studenti}
@@ -269,20 +254,31 @@ Queste pratiche sono incompatibili con i valori fondamentali dell'UE e la Carta 
 \textbf{Risultato:} \textcolor{warningred}{VIETATO}
 \end{block}
 
-\vspace{0.2cm}
 
-\begin{exampleblock}{Eccezione Consentita}
-\textbf{Sistema di monitoraggio ospedaliero:}
-\begin{itemize}
-\item Rileva livelli di stress del paziente
-\item Scopo di sicurezza medica
-\item Supervisione di professionisti sanitari
-\item Richiesto consenso del paziente
-\end{itemize}
-\textbf{Risultato:} \textcolor{safegreen}{CONSENTITO}
-\end{exampleblock}
 \end{columns}
 \end{frame}
+
+\begin{frame}{Esempio concreto}
+\begin{exampleblock}{Perché è Vietato}
+	\begin{itemize}
+		\item Invade la privacy dei lavoratori
+		\item Rilevamento emozioni inaffidabile
+		\item Crea pressione psicologica
+		\item Potenziale di discriminazione
+	\end{itemize}
+\end{exampleblock}
+\begin{exampleblock}{Eccezione Consentita}
+	\textbf{Sistema di monitoraggio ospedaliero:}
+	\begin{itemize}
+		\item Rileva livelli di stress del paziente
+		\item Scopo di sicurezza medica
+		\item Supervisione di professionisti sanitari
+		\item Richiesto consenso del paziente
+	\end{itemize}
+	\textbf{Risultato:} \textcolor{safegreen}{CONSENTITO}
+\end{exampleblock}
+\end{frame}
+
 
 % NUOVA SLIDE 7: Esempio Concreto - Social Scoring
 \begin{frame}{Esempio Concreto: Sistemi di Social Scoring}
@@ -299,32 +295,36 @@ Queste pratiche sono incompatibili con i valori fondamentali dell'UE e la Carta 
 \textbf{Risultato:} \textcolor{warningred}{\Large ASSOLUTAMENTE VIETATO}
 \end{alertblock}
 
-\begin{columns}[T]
-\column{0.48\textwidth}
-\begin{block}{Perché è Vietato}
-\begin{itemize}
-\item Sorveglianza di massa
-\item Accesso discriminatorio ai servizi
-\item Blocca la libera espressione
-\item Viola la dignità umana
-\item Crea controllo sociale
-\end{itemize}
-\end{block}
 
-\column{0.48\textwidth}
-\begin{block}{Contesto Reale}
-\begin{itemize}
-\item Sistema di Credito Sociale cinese
-\item Milioni di persone colpite
-\item Restringe viaggi, lavoro, servizi
-\item Basato su monitoraggio comportamenti
-\end{itemize}
-\vspace{0.3cm}
-\small \textit{Tali scenari distopici non possono essere implementati nell'UE}
-\end{block}
-\end{columns}
 \end{frame}
 
+
+\begin{frame}{Esempio concreto: Sistemi di Social Scoring}
+	\begin{columns}[T]
+		\column{0.48\textwidth}
+		\begin{block}{Perché è Vietato}
+			\begin{itemize}
+				\item Sorveglianza di massa
+				\item Accesso discriminatorio ai servizi
+				\item Blocca la libera espressione
+				\item Viola la dignità umana
+				\item Crea controllo sociale
+			\end{itemize}
+		\end{block}
+		
+		\column{0.48\textwidth}
+		\begin{block}{Contesto Reale}
+			\begin{itemize}
+				\item Sistema di Credito Sociale cinese
+				\item Milioni di persone colpite
+				\item Restringe viaggi, lavoro, servizi
+				\item Basato su monitoraggio comportamenti
+			\end{itemize}
+			\vspace{0.3cm}
+			\small \textit{Tali scenari distopici non possono essere implementati nell'UE}
+		\end{block}
+	\end{columns}
+\end{frame}
 % NUOVA SLIDE 8: Esempi Concreti - Violazioni Biometriche
 \begin{frame}{Esempi Concreti: Violazioni Biometriche}
 \begin{columns}[T]
@@ -341,20 +341,6 @@ Queste pratiche sono incompatibili con i valori fondamentali dell'UE e la Carta 
 \textbf{Risultato:} \textcolor{warningred}{VIETATO}
 \end{alertblock}
 
-\vspace{0.2cm}
-
-\begin{alertblock}{Vietato: Raccolta Facciale}
-\textbf{Scenario: Database di Azienda Tecnologica}
-\begin{itemize}
-\item Raccoglie miliardi di foto dai social media
-\item Costruisce database di riconoscimento facciale
-\item Vende accesso ad aziende private
-\item Nessun consenso degli utenti ottenuto
-\end{itemize}
-\vspace{0.2cm}
-\textbf{Risultato:} \textcolor{warningred}{VIETATO}
-\end{alertblock}
-
 \column{0.48\textwidth}
 \begin{block}{Impatto nel Mondo Reale}
 \textbf{Caso di Studio: Clearview AI}
@@ -366,23 +352,36 @@ Queste pratiche sono incompatibili con i valori fondamentali dell'UE e la Carta 
 \item \textbf{L'AI Act vieterebbe esplicitamente questo}
 \end{itemize}
 \end{block}
-
-\vspace{0.2cm}
-
-\begin{exampleblock}{Il Danno}
-\begin{itemize}
-\item Viola la privacy su scala massiva
-\item Abilita la discriminazione
-\item Nessun controllo individuale
-\item Perpetua pregiudizi
-\item Effetto raggelante sulla libertà
-\end{itemize}
-\end{exampleblock}
-
-\vspace{0.2cm}
-\textit{Il tuo volto non è un dato libero}
 \end{columns}
 \end{frame}
+
+
+\begin{frame}{Esempi concreti: violazioni biometriche}
+
+		\begin{alertblock}{Vietato: Raccolta Facciale}
+			\textbf{Scenario: Database di Azienda Tecnologica}
+			\begin{itemize}
+				\item Raccoglie miliardi di foto dai social media
+				\item Costruisce database di riconoscimento facciale
+				\item Vende accesso ad aziende private
+				\item Nessun consenso degli utenti ottenuto
+			\end{itemize}
+			\textbf{Risultato:} \textcolor{warningred}{VIETATO}
+		\end{alertblock}
+\begin{exampleblock}{Il Danno}
+			\begin{itemize}
+				\item Viola la privacy su scala massiva
+				\item Abilita la discriminazione
+				\item Nessun controllo individuale - perpetua pregiudizi
+			\end{itemize}
+		\end{exampleblock}
+		
+		\vspace{0.2cm}
+		\textit{Il tuo volto non è un dato libero}
+
+	
+\end{frame}
+	
 
 % Slide 9: Sistemi IA ad Alto Rischio - Panoramica
 \begin{frame}{Sistemi IA ad Alto Rischio: Quando l'IA Richiede Garanzie Speciali}
@@ -495,50 +494,63 @@ I sistemi ad alto rischio devono essere tracciabili per ricostruire:
 \end{center}
 \end{frame}
 
-% Slide 12: Categorie di Sistemi ad Alto Rischio - Parte 1
-\begin{frame}{Sistemi ad Alto Rischio: Categorie Pratiche (1/2)}
-\begin{columns}[T]
-\column{0.48\textwidth}
-\begin{block}{1. Identificazione Biometrica}
-\begin{itemize}
-\item Sistemi biometrici per identificare persone
-\item Quando non completamente vietati
-\item Richiesta supervisione rigorosa
-\end{itemize}
-\end{block}
+% Slide 12a: Categorie di Sistemi ad Alto Rischio - Parte 1
+\begin{frame}{Sistemi ad Alto Rischio: Categorie Pratiche (1/3)}
+	\begin{block}{1. Identificazione Biometrica}
+		\begin{itemize}
+			\item Sistemi biometrici per identificare persone
+			\item Quando non completamente vietati
+			\item Richiesta supervisione rigorosa
+		\end{itemize}
+	\end{block}
+	
+	\begin{block}{2. Infrastrutture Critiche}
+		\begin{itemize}
+			\item Reti elettriche, acqua, gas
+			\item Gestione traffico stradale
+			\item Sistemi il cui guasto può impattare la sicurezza
+		\end{itemize}
+	\end{block}
+	
+	\begin{alertblock}{Nota Importante}
+		Queste categorie riguardano sistemi che possono avere impatto diretto sulla sicurezza fisica e l'identificazione delle persone
+	\end{alertblock}
+\end{frame}
 
-\begin{block}{2. Infrastrutture Critiche}
-\begin{itemize}
-\item Reti elettriche, acqua, gas
-\item Gestione traffico stradale
-\item Sistemi il cui guasto può impattare la sicurezza
-\end{itemize}
-\end{block}
+% Slide 12b: Categorie di Sistemi ad Alto Rischio - Parte 2
+\begin{frame}{Sistemi ad Alto Rischio: Categorie Pratiche (2/3)}
+	\begin{block}{3. Istruzione}
+		\begin{itemize}
+			\item Determinazione accesso alle istituzioni educative
+			\item Valutazione risultati di apprendimento degli studenti
+			\item Monitoraggio per disonestà negli esami
+			\item Sistemi che influenzano il percorso formativo
+		\end{itemize}
+	\end{block}
+	
+	\begin{exampleblock}{Esempi Pratici}
+		\begin{itemize}
+			\item Algoritmi per ammissione universitaria
+			\item Sistemi di valutazione automatica
+			\item Software di proctoring online
+		\end{itemize}
+	\end{exampleblock}
+\end{frame}
 
-\begin{block}{3. Istruzione}
-\begin{itemize}
-\item Determinazione accesso alle istituzioni
-\item Valutazione risultati di apprendimento
-\item Monitoraggio per disonestà negli esami
-\end{itemize}
-\end{block}
-
-\column{0.48\textwidth}
-\begin{block}{4. Occupazione}
-\begin{itemize}
-\item Sistemi di screening CV
-\item Valutazione colloqui
-\item Monitoraggio prestazioni
-\item Decisioni su promozioni e licenziamenti
-\end{itemize}
-\end{block}
-
-\vspace{0.5cm}
-
-\begin{alertblock}{Filo Conduttore}
-Tutti questi sistemi possono influenzare significativamente i diritti fondamentali e la sicurezza delle persone
-\end{alertblock}
-\end{columns}
+% Slide 12c: Categorie di Sistemi ad Alto Rischio - Parte 3
+\begin{frame}{Sistemi ad Alto Rischio: Categorie Pratiche (3/3)}
+	\begin{block}{4. Occupazione e Gestione dei Lavoratori}
+		\begin{itemize}
+			\item Sistemi di screening e selezione CV
+			\item Valutazione automatica di colloqui
+			\item Monitoraggio delle prestazioni lavorative
+			\item Decisioni su promozioni e licenziamenti
+		\end{itemize}
+	\end{block}
+	
+	\begin{alertblock}{Filo Conduttore delle Categorie}
+		Tutti questi sistemi possono influenzare significativamente i diritti fondamentali, le opportunità di vita e la sicurezza delle persone
+	\end{alertblock}
 \end{frame}
 
 % Slide 13: Categorie di Sistemi ad Alto Rischio - Parte 2
@@ -554,7 +566,7 @@ Tutti questi sistemi possono influenzare significativamente i diritti fondamenta
 \end{itemize}
 \end{block}
 
-\begin{block}{6. Servizi Finanziari}
+\begin{block}{6. Servizi Finanziari}	\end{tikzpicture}
 \begin{itemize}
 \item Sistemi di credit scoring
 \item Valutazione affidabilità creditizia
@@ -617,68 +629,105 @@ Tutti questi sistemi possono influenzare significativamente i diritti fondamenta
 \end{frame}
 
 % Slide 15: Sistemi a Rischio Minimo
-\begin{frame}{Rischio Minimo: La Maggioranza dei Sistemi IA}
-\begin{tikzpicture}[remember picture,overlay]
-\node[anchor=north east, text=safegreen, font=\Huge] at ([xshift=-1cm,yshift=-1cm]current page.north east) {$\checkmark$};
-\end{tikzpicture}
+% Slide: Rischio Minimo - Parte 1
+\begin{frame}{Rischio Minimo: La Maggioranza dei Sistemi IA (1/2)}
+	\begin{tikzpicture}[remember picture,overlay]
+		\node[anchor=north east, text=safegreen, font=\Huge] at ([xshift=-1cm,yshift=-1cm]current page.north east) {$\checkmark$};
+	\end{tikzpicture}
+	
+	\textbf{La maggior parte dei sistemi IA attualmente usati nell'UE rientra in questa categoria}
+	
+	\vspace{0.5cm}
+	
+	\begin{columns}[T]
+		\column{0.48\textwidth}
+		\begin{block}{Esempi di Applicazioni}
+			\begin{itemize}
+				\item Videogiochi con IA
+				\item Filtri antispam email
+				\item Raccomandazioni per acquisti online
+				\item Assistenti virtuali semplici
+				\item Molte applicazioni quotidiane
+				\item Strumenti di editing foto/video
+			\end{itemize}
+		\end{block}
+		
+		\column{0.48\textwidth}
+		\begin{block}{Caratteristiche Comuni}
+			\begin{itemize}
+				\item Impatto limitato sui diritti fondamentali
+				\item Rischi minimi per gli utenti
+				\item Utilizzo diffuso e consolidato
+				\item Benefici chiari per i consumatori
+			\end{itemize}
+		\end{block}
+	\end{columns}
+	
+	\vspace{0.5cm}
+	
+	\begin{exampleblock}{Principio Guida}
+		\centering
+		L'AI Act riconosce che non tutti i sistemi IA rappresentano rischi significativi e meritano la stessa attenzione regolatoria
+	\end{exampleblock}
+\end{frame}
 
-\textbf{La maggior parte dei sistemi IA attualmente usati nell'UE rientra in questa categoria}
-
-\vspace{0.5cm}
-
-\begin{columns}[T]
-\column{0.48\textwidth}
-\begin{block}{Esempi}
-\begin{itemize}
-\item Videogiochi con IA
-\item Filtri antispam
-\item Raccomandazioni acquisti online
-\item Molte applicazioni quotidiane
-\end{itemize}
-\end{block}
-
-\begin{block}{Requisiti}
-\begin{itemize}
-\item Nessun obbligo speciale
-\item Nessuna valutazione di conformità
-\item Nessuna burocrazia complessa
-\end{itemize}
-\end{block}
-
-\column{0.48\textwidth}
-\begin{block}{Misure Volontarie}
-Adozione incoraggiata di:
-\begin{itemize}
-\item Codici di condotta
-\item Best practice
-\item Autoregolamentazione
-\end{itemize}
-\end{block}
-
-\vspace{0.3cm}
-
-\begin{block}{Integrazione}
-Sistemi già regolati da:
-\begin{itemize}
-\item Digital Services Act (DSA)
-\item Digital Markets Act (DMA)
-\end{itemize}
-Nessuna sovrapposizione normativa
-\end{block}
-\end{columns}
-
-\vspace{0.3cm}
-\begin{center}
-\textbf{Focus: Non soffocare l'innovazione mantenendo standard di base}
-\end{center}
+% Slide: Rischio Minimo - Parte 2
+\begin{frame}{Rischio Minimo: La Maggioranza dei Sistemi IA (2/2)}
+	\begin{columns}[T]
+		\column{0.48\textwidth}
+		\begin{block}{Requisiti Regolatori}
+			\begin{itemize}
+				\item \textcolor{safegreen}{\textbf{Nessun obbligo speciale}}
+				\item Nessuna valutazione di conformità richiesta
+				\item Nessuna burocrazia complessa
+				\item Libero sviluppo e implementazione
+			\end{itemize}
+		\end{block}
+		
+		\vspace{0.5cm}
+		
+		\begin{block}{Misure Volontarie Incoraggiate}
+			\begin{itemize}
+				\item Adozione di codici di condotta
+				\item Implementazione di best practice
+				\item Autoregolamentazione settoriale
+				\item Trasparenza volontaria
+			\end{itemize}
+		\end{block}
+		
+		\column{0.48\textwidth}
+		\begin{block}{Integrazione con Altra Normativa}
+			Sistemi già regolati da:
+			\begin{itemize}
+				\item \textbf{Digital Services Act (DSA)}
+				\item \textbf{Digital Markets Act (DMA)}
+				\item GDPR (protezione dati)
+				\item Normative settoriali esistenti
+			\end{itemize}
+			\vspace{0.2cm}
+			\textcolor{euroblue}{\textbf{Nessuna sovrapposizione normativa}}
+		\end{block}
+		
+		\vspace{0.5cm}
+		
+		\begin{alertblock}{Vantaggi dell'Approccio}
+			\begin{itemize}
+				\item Riduzione oneri amministrativi
+				\item Stimolo all'innovazione
+				\item Competitività europea
+			\end{itemize}
+		\end{alertblock}
+	\end{columns}
+	
+	\vspace{0.3cm}
+	\begin{center}
+		\textbf{Focus: Non soffocare l'innovazione mantenendo standard di base}
+	\end{center}
 \end{frame}
 
 % Slide 16: Requisiti di Trasparenza
 \begin{frame}{Trasparenza: Il Diritto di Sapere}
 \textbf{Gli utenti devono essere informati quando interagiscono con l'IA}
-
-\vspace{0.5cm}
-
 \begin{columns}[T]
 \column{0.48\textwidth}
 \begin{block}{1. Chatbot e Assistenti Virtuali}
@@ -690,9 +739,6 @@ Richiesta divulgazione chiara:
 \end{itemize}
 \end{block}
 
-\begin{example}[Buona Pratica]
-\textit{``Ciao! Sono un assistente IA. Come posso aiutarti oggi?''}
-\end{example}
 
 \column{0.48\textwidth}
 \begin{block}{2. Contenuti Generati da IA}
@@ -704,21 +750,20 @@ Devono essere chiaramente etichettati:
 \item Video prodotti da IA
 \end{itemize}
 \end{block}
-
-\begin{block}{Formato Leggibile da Macchine}
-\begin{itemize}
-\item Etichettatura facilmente rilevabile
-\item Verifica automatica possibile
-\end{itemize}
-\end{block}
 \end{columns}
 
-\vspace{0.5cm}
-\begin{center}
-\begin{tikzpicture}
-\node[rectangle, draw, thick, fill=blue!20, minimum width=10cm, minimum height=0.8cm, align=center] {\textbf{Obiettivo: Prevenire manipolazione e proteggere la fiducia}};
-\end{tikzpicture}
-\end{center}
+\end{frame}
+
+\begin{frame}{Trasparenza: il diritto di sapere}
+\begin{example}[Buona Pratica]
+	\textit{``Ciao! Sono un assistente IA. Come posso aiutarti oggi?''}
+\end{example}
+\begin{block}{Formato Leggibile da Macchine}
+	\begin{itemize}
+		\item Etichettatura facilmente rilevabile
+		\item Verifica automatica possibile
+	\end{itemize}
+\end{block}
 \end{frame}
 
 % Slide 17: Deepfake
@@ -813,44 +858,56 @@ A differenza dell'IA a scopo specifico:
 \end{frame}
 
 % Slide 19: Modelli con Rischio Sistemico
-\begin{frame}{Modelli con Rischio Sistemico}
-\textbf{I modelli più potenti richiedono garanzie aggiuntive}
+% Slide: Modelli con Rischio Sistemico - Parte 1
+\begin{frame}{Modelli con Rischio Sistemico (1/2)}
+	\textbf{I modelli più potenti richiedono garanzie aggiuntive}
+	\vspace{0.4cm}
+	
+	\begin{block}{Soglia di Identificazione}
+		Modelli addestrati con potenza computazionale superiore a:
+		\[10^{25} \text{ FLOPS (Operazioni in Virgola Mobile al Secondo)}\]
+		\vspace{0.3cm}
+		\small Questa soglia può essere aggiornata dall'Ufficio per l'IA man mano che la tecnologia evolve
+	\end{block}
+	
+	\vspace{0.5cm}
+	
+	\begin{exampleblock}{Contesto}
+		Si tratta di modelli di intelligenza artificiale estremamente potenti, come i grandi modelli linguistici (LLM) di ultima generazione, che per la loro capacità possono rappresentare rischi a livello di sistema
+	\end{exampleblock}
+\end{frame}
 
-\vspace{0.4cm}
-
-\begin{block}{Soglia di Identificazione}
-Modelli addestrati con potenza computazionale superiore a:
-\[10^{25} \text{ FLOPS (Operazioni in Virgola Mobile al Secondo)}\]
-\vspace{0.2cm}
-\small Questa soglia può essere aggiornata dall'Ufficio per l'IA man mano che la tecnologia evolve
-\end{block}
-
-\vspace{0.4cm}
-
-\begin{columns}[T]
-\column{0.48\textwidth}
-\begin{alertblock}{Rischi Sistemici}
-\begin{itemize}
-\item Disinformazione di massa
-\item Attacchi informatici coordinati
-\item Manipolazione sociale
-\item Guasti su larga scala
-\item Conseguenze indesiderate
-\end{itemize}
-\end{alertblock}
-
-\column{0.48\textwidth}
-\begin{block}{Obblighi Richiesti}
-\begin{itemize}
-\item Valutare i rischi sistemici
-\item Mitigare i rischi identificati
-\item Segnalare incidenti gravi
-\item Condurre test approfonditi
-\item Garantire cybersicurezza
-\item Riportare consumo energetico
-\end{itemize}
-\end{block}
-\end{columns}
+% Slide: Modelli con Rischio Sistemico - Parte 2
+\begin{frame}{Modelli con Rischio Sistemico (2/2)}
+	\begin{columns}[T]
+		\column{0.48\textwidth}
+		\begin{alertblock}{Rischi Sistemici Potenziali}
+			\begin{itemize}
+				\item Disinformazione di massa
+				\item Attacchi informatici coordinati
+				\item Manipolazione sociale su larga scala
+				\item Guasti con effetti diffusi
+				\item Conseguenze indesiderate imprevedibili
+			\end{itemize}
+		\end{alertblock}
+		
+		\column{0.48\textwidth}
+		\begin{block}{Obblighi per i Provider}
+			\begin{itemize}
+				\item Valutare i rischi sistemici
+				\item Mitigare i rischi identificati
+				\item Segnalare incidenti gravi
+				\item Condurre test approfonditi
+				\item Garantire cybersicurezza
+				\item Riportare consumo energetico
+			\end{itemize}
+		\end{block}
+	\end{columns}
+	
+	\vspace{0.5cm}
+	\begin{center}
+		\small \textit{Maggiore potenza = Maggiore responsabilità}
+	\end{center}
 \end{frame}
 
 % Slide 20: Eccezione Open Source
@@ -872,6 +929,13 @@ Il regolamento riconosce il valore di:
 \begin{exampleblock}{Benefici}
 Modelli gratuiti con codice aperto possono beneficiare di requisiti più leggeri
 \end{exampleblock}
+
+\vspace{0.5cm}
+\begin{center}
+\begin{tikzpicture}
+	\node[rectangle, draw, thick, fill=blue!20, minimum width=10cm, minimum height=0.8cm, align=center] {\textbf{Obiettivo: Prevenire manipolazione e proteggere la fiducia}};
+\end{tikzpicture}
+\end{center}
 
 \column{0.48\textwidth}
 \begin{alertblock}{Limitazione Importante}
@@ -991,55 +1055,98 @@ Le sanzioni variano in base alla gravità della violazione e possono essere calc
 \end{frame}
 
 % Slide 23: Sanzioni - Parte 2
-\begin{frame}{Sanzioni: Disposizioni Speciali}
-\begin{columns}[T]
-\column{0.48\textwidth}
-\begin{block}{PMI e Startup}
-\textbf{Trattamento speciale:}
-\begin{itemize}
-\item Si applica l'importo più basso dei due
-\item Riconoscimento che multe elevate potrebbero essere devastanti
-\item Principio di proporzionalità
-\end{itemize}
-\end{block}
+% Slide: Sanzioni - Disposizioni Speciali - Parte 1
+\begin{frame}{Sanzioni: Disposizioni Speciali (1/2)}
+	\begin{columns}[T]
+		\column{0.48\textwidth}
+		\begin{block}{Trattamento per PMI e Startup}
+			\textbf{Protezione speciale:}
+			\begin{itemize}
+				\item Si applica l'importo più basso tra i due
+				\item Riconoscimento che multe elevate potrebbero essere devastanti
+				\item Principio di proporzionalità e sostenibilità
+			\end{itemize}
+		\end{block}
+		
+		\vspace{0.5cm}
+		
+		\begin{exampleblock}{Esempio Pratico}
+			Per una PMI che viola i requisiti sui dati:
+			\begin{itemize}
+				\item Multa teorica: €35M o 7\% del fatturato globale
+				\item \textbf{Viene applicato l'importo più basso}
+				\item Obiettivo: sanzione efficace ma non distruttiva
+			\end{itemize}
+		\end{exampleblock}
+		
+		\column{0.48\textwidth}
+		\begin{alertblock}{Razionale della Disposizione}
+			\begin{itemize}
+				\item Supportare l'innovazione europea
+				\item Evitare di soffocare le startup
+				\item Mantenere competitività
+				\item Bilanciare conformità e crescita economica
+			\end{itemize}
+		\end{alertblock}
+		
+		\vspace{0.5cm}
+		
+		\begin{block}{Chi Ne Beneficia}
+			\begin{itemize}
+				\item Piccole e medie imprese (PMI)
+				\item Startup tecnologiche
+				\item Aziende in fase di crescita
+			\end{itemize}
+		\end{block}
+	\end{columns}
+\end{frame}
 
-\vspace{0.3cm}
-
-\begin{exampleblock}{Esempio}
-Per una PMI che viola i requisiti sui dati:
-\begin{itemize}
-\item €35M o 7\% del fatturato
-\item \textbf{Importo più basso} viene applicato
-\end{itemize}
-\end{exampleblock}
-
-\column{0.48\textwidth}
-\begin{block}{Istituzioni UE}
-\textbf{Nessuna esenzione:}
-\begin{itemize}
-\item Agenzie UE soggette a multe
-\item Il Garante Europeo della Protezione Dati può imporre sanzioni
-\item Le regole si applicano a pubblico e privato allo stesso modo
-\end{itemize}
-\end{block}
-
-\vspace{0.3cm}
-
-\begin{block}{Diritti dei Cittadini}
-\begin{itemize}
-\item Diritto di presentare reclami
-\item Autorità di vigilanza devono indagare
-\item Procedure specifiche garantite
-\end{itemize}
-\end{block}
-\end{columns}
-
-\vspace{0.5cm}
-\begin{center}
-\begin{tikzpicture}
-\node[rectangle, draw, thick, fill=euroblue!20, minimum width=10cm, minimum height=0.8cm, align=center, font=\small] {\textbf{Forte effetto deterrente, specialmente per le grandi aziende tecnologiche}};
-\end{tikzpicture}
-\end{center}
+% Slide: Sanzioni - Disposizioni Speciali - Parte 2
+\begin{frame}{Sanzioni: Disposizioni Speciali (2/2)}
+	\begin{columns}[T]
+		\column{0.48\textwidth}
+		\begin{block}{Istituzioni dell'Unione Europea}
+			\textbf{Nessuna esenzione:}
+			\begin{itemize}
+				\item Agenzie e istituzioni UE soggette a multe
+				\item Il Garante Europeo della Protezione Dati può imporre sanzioni
+				\item Le regole si applicano equamente a pubblico e privato
+			\end{itemize}
+		\end{block}
+		
+		\vspace{0.5cm}
+		
+		\begin{exampleblock}{Principio Fondamentale}
+			Accountability universale: nessuno è al di sopra della legge, nemmeno le istituzioni pubbliche
+		\end{exampleblock}
+		
+		\column{0.48\textwidth}
+		\begin{block}{Diritti dei Cittadini}
+			\begin{itemize}
+				\item Diritto di presentare reclami alle autorità
+				\item Autorità di vigilanza devono indagare
+				\item Procedure specifiche garantite per legge
+				\item Tutela effettiva dei diritti fondamentali
+			\end{itemize}
+		\end{block}
+		
+		\vspace{0.5cm}
+		
+		\begin{block}{Meccanismi di Enforcement}
+			\begin{itemize}
+				\item Indagini obbligatorie
+				\item Trasparenza procedurale
+				\item Diritto di ricorso
+			\end{itemize}
+		\end{block}
+	\end{columns}
+	
+	\vspace{0.5cm}
+	\begin{center}
+		\begin{tikzpicture}
+			\node[rectangle, draw, thick, fill=euroblue!20, minimum width=10cm, minimum height=0.8cm, align=center, font=\small] {\textbf{Forte effetto deterrente, specialmente per le grandi aziende tecnologiche}};
+		\end{tikzpicture}
+	\end{center}
 \end{frame}
 
 % Slide 24: Tempistiche di Implementazione
@@ -1065,7 +1172,103 @@ Per una PMI che viola i requisiti sui dati:
 
 \node[circle, fill=safegreen, minimum size=0.4cm] (m3) at (10,0) {};
 \node[above=0.1cm of m3, text width=2.5cm, align=center] {\textbf{+24 mesi}\\Regolamento\\completo};
+	\end{tikzpicture}
+\end{frame}
+% Slide: Rischio Minimo - Parte 1
+\begin{frame}{Rischio Minimo: La Maggioranza dei Sistemi IA (1/2)}
+	\begin{tikzpicture}[remember picture,overlay]
+		\node[anchor=north east, text=safegreen, font=\Huge] at ([xshift=-1cm,yshift=-1cm]current page.north east) {$\checkmark$};
+	\end{tikzpicture}
+	
+	\textbf{La maggior parte dei sistemi IA attualmente usati nell'UE rientra in questa categoria}
+	
+	\vspace{0.5cm}
+	
+	\begin{columns}[T]
+		\column{0.48\textwidth}
+		\begin{block}{Esempi di Applicazioni}
+			\begin{itemize}
+				\item Videogiochi con IA
+				\item Filtri antispam email
+				\item Raccomandazioni per acquisti online
+				\item Assistenti virtuali semplici
+				\item Molte applicazioni quotidiane
+				\item Strumenti di editing foto/video
+			\end{itemize}
+		\end{block}
+		
+		\column{0.48\textwidth}
+		\begin{block}{Caratteristiche Comuni}
+			\begin{itemize}
+				\item Impatto limitato sui diritti fondamentali
+				\item Rischi minimi per gli utenti
+				\item Utilizzo diffuso e consolidato
+				\item Benefici chiari per i consumatori
+			\end{itemize}
+		\end{block}
+	\end{columns}
+	
+	\vspace{0.5cm}
+	
+	\begin{exampleblock}{Principio Guida}
+		\centering
+		L'AI Act riconosce che non tutti i sistemi IA rappresentano rischi significativi e meritano la stessa attenzione regolatoria
+	\end{exampleblock}
+\end{frame}
 
+% Slide: Rischio Minimo - Parte 2
+\begin{frame}{Rischio Minimo: La Maggioranza dei Sistemi IA (2/2)}
+	\begin{columns}[T]
+		\column{0.48\textwidth}
+		\begin{block}{Requisiti Regolatori}
+			\begin{itemize}
+				\item \textcolor{safegreen}{\textbf{Nessun obbligo speciale}}
+				\item Nessuna valutazione di conformità richiesta
+				\item Nessuna burocrazia complessa
+				\item Libero sviluppo e implementazione
+			\end{itemize}
+		\end{block}
+		
+		\vspace{0.5cm}
+		
+		\begin{block}{Misure Volontarie Incoraggiate}
+			\begin{itemize}
+				\item Adozione di codici di condotta
+				\item Implementazione di best practice
+				\item Autoregolamentazione settoriale
+				\item Trasparenza volontaria
+			\end{itemize}
+		\end{block}
+		
+		\column{0.48\textwidth}
+		\begin{block}{Integrazione con Altra Normativa}
+			Sistemi già regolati da:
+			\begin{itemize}
+				\item \textbf{Digital Services Act (DSA)}
+				\item \textbf{Digital Markets Act (DMA)}
+				\item GDPR (protezione dati)
+				\item Normative settoriali esistenti
+			\end{itemize}
+			\vspace{0.2cm}
+			\textcolor{euroblue}{\textbf{Nessuna sovrapposizione normativa}}
+		\end{block}
+		
+		\vspace{0.5cm}
+		
+		\begin{alertblock}{Vantaggi dell'Approccio}
+			\begin{itemize}
+				\item Riduzione oneri amministrativi
+				\item Stimolo all'innovazione
+				\item Competitività europea
+			\end{itemize}
+		\end{alertblock}
+	\end{columns}
+	
+	\vspace{0.3cm}
+	\begin{center}
+		\textbf{Focus: Non soffocare l'innovazione mantenendo standard di base}
+	\end{center}
+\end{frame}
 \node[circle, fill=blue!50, minimum size=0.4cm] (m4) at (12.5,0) {};
 \node[below=0.2cm of m4, text width=2cm, align=center] {\textbf{+36 mesi}\\Alcuni sistemi\\alto rischio};
 \end{tikzpicture}
@@ -1281,16 +1484,9 @@ Far funzionare l'equilibrio:
 % Slide finale
 \begin{frame}
 \begin{center}
-\Huge Grazie!
-
-\vspace{1cm}
-
-\Large Domande?
-
-\vspace{1.5cm}
 
 \normalsize
-\textbf{IIS Fermi Sacconi Ceci}\\
+\textbf{IIS Fermi Sacconi Cpia}\\
 Ascoli Piceno, Italia
 
 \vspace{0.5cm}
