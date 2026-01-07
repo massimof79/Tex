@@ -1,0 +1,375 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{tikz}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{enumitem}
+\usepackage{url}
+\usepackage{lipsum} % solo per spaziatura dimostrativa, puoi rimuoverlo
+
+\geometry{margin=2.5cm}
+
+% Colori AES
+\definecolor{aesblue}{RGB}{0,102,204}
+\definecolor{aesgreen}{RGB}{0,153,76}
+\definecolor{aesred}{RGB}{204,0,0}
+\definecolor{aesorange}{RGB}{255,128,0}
+
+% Unicode support (facoltativo)
+\usepackage{newunicodechar}
+\newunicodechar{⊕}{\ensuremath{\oplus}}
+\newunicodechar{⟹}{\ensuremath{\Longrightarrow}}
+\newunicodechar{≈}{\ensuremath{\approx}}
+
+% Stile codice
+\lstset{
+	basicstyle=\ttfamily\small,
+	breaklines=true,
+	frame=single,
+	backgroundcolor=\color{gray!5},
+	language=Python
+}
+
+\title{AES: Advanced Encryption Standard \\ \large La Crittografia Simmetrica Moderna}
+\author{Prof. Fedeli Massimo \\ IIS Fermi Sacconi Cpia - Ascoli Piceno}
+\date{\today}
+
+\begin{document}
+	
+	\maketitle
+	
+	\tableofcontents
+	\newpage
+	
+	\section{Introduzione alla Crittografia}
+	
+	\subsection{Cos'è la Crittografia?}
+	La \textbf{crittografia} è la scienza che studia le tecniche per rendere un messaggio incomprensibile a persone non autorizzate.
+	
+	\textbf{Obiettivi principali:}
+	\begin{itemize}
+		\item \textcolor{aesblue}{Confidenzialità}: solo destinatari autorizzati possono leggere il contenuto.
+		\item \textcolor{aesgreen}{Integrità}: garantisce che il messaggio non sia stato modificato.
+		\item \textcolor{aesred}{Autenticità}: verifica l'identità del mittente.
+	\end{itemize}
+	
+	\begin{center}
+		\begin{tikzpicture}[scale=0.8]
+			\node[draw, rectangle, fill=aesblue!20] (plain) at (0,0) {CIAO};
+			\node[draw, rectangle, fill=aesred!20] (cipher) at (4,0) {X9K2};
+			\draw[->, thick] (plain) -- (cipher) node[midway, above] {Cifratura};
+		\end{tikzpicture}
+	\end{center}
+	
+	\subsection{Crittografia Simmetrica vs Asimmetrica}
+	
+	\begin{description}
+		\item[Crittografia Simmetrica:] Usa la \textcolor{aesgreen}{stessa chiave} per cifrare e decifrare.  
+		Esempi: AES, DES, 3DES.  
+		Veloce ed efficiente, ma richiede uno scambio sicuro della chiave.
+		
+		\item[Crittografia Asimmetrica:] Usa \textcolor{aesred}{due chiavi diverse} (pubblica e privata).  
+		Esempi: RSA, ECC.  
+		Più lenta, ma non richiede il canale sicuro per lo scambio della chiave.
+	\end{description}
+	
+	L’\textbf{AES} è un algoritmo di crittografia \textcolor{aesblue}{simmetrica}.
+	
+	\section{Storia e Contesto di AES}
+	
+	\subsection{Prima di AES: Il DES}
+	Il \textbf{DES (Data Encryption Standard)} fu standardizzato nel 1977:
+	\begin{itemize}
+		\item Chiave di 56 bit → oggi \textbf{troppo corta} per resistere agli attacchi brute-force.
+		\item Blocchi di 64 bit.
+		\item Negli anni '90, diventò insicuro.
+	\end{itemesection}
+	
+	Come soluzione temporanea si adottò il \textbf{3DES}, che applica DES tre volte (chiave effettiva di 168 bit), ma era lento e inefficiente. Emerse la necessità di un nuovo standard.
+	
+	\subsection{La Nascita di AES}
+	Nel 1997, il NIST (National Institute of Standards and Technology) lanciò un concorso internazionale per un nuovo algoritmo di crittografia.
+	
+	\textbf{Requisiti:}
+	\begin{itemize}
+		\item Crittografia a blocchi simmetrica
+		\item Blocco: 128 bit
+		\item Chiavi: 128, 192, 256 bit
+		\item Sicurezza > 3DES
+		\item Efficienza su hardware e software
+	\end{itemize}
+	
+	Da 15 candidati, ne furono selezionati 5 finalisti. Nel 2000 fu scelto \textbf{Rijndael}, creato dai crittografi belgi \textbf{Joan Daemen} e \textbf{Vincent Rijmen}.
+	
+	\subsection{Caratteristiche di AES}
+	\begin{itemize}
+		\item \textbf{Tipo:} Cifrario a blocchi
+		\item \textbf{Dimensione blocco:} 128 bit (16 byte)
+		\item \textbf{Dimensioni chiave e round:}
+		\begin{itemize}
+			\item AES-128: 10 round
+			\item AES-192: 12 round
+			\item AES-256: 14 round
+		\end{itemize}
+	\end{itemize}
+	
+	\textbf{Vantaggi:} Sicuro, veloce, flessibile, standard mondiale.
+	
+	\textbf{Utilizzi comuni:}
+	\begin{itemize}
+		\item Wi-Fi (WPA2/WPA3)
+		\item HTTPS/TLS
+		\item VPN
+		\item Crittografia disco (BitLocker, FileVault)
+		\item App di messaggistica (Signal, WhatsApp)
+	\end{itemize}
+	
+	\section{Struttura di AES}
+	
+	\subsection{Rappresentazione dei Dati: La Matrice di Stato}
+	AES organizza i 16 byte del blocco in una \textbf{matrice 4×4}, detta \textit{State Matrix}. I byte sono inseriti \textbf{per colonna}, non per riga.
+	
+	\begin{center}
+		\begin{tikzpicture}[scale=0.8]
+			% Input lineare
+			\foreach \x in {0,...,15} {
+				\draw[fill=aesblue!30] (\x*0.5,2) rectangle ++(0.4,0.4);
+				\node at (\x*0.5+0.2,2.2) {\tiny \x};
+			}
+			\draw[->, thick] (4,1.5) -- (4,1);
+			\node at (5,1.25) {riorganizzazione};
+			% Matrice 4x4
+			\foreach \row in {0,...,3} {
+				\foreach \col in {0,...,3} {
+					\pgfmathtruncatemacro{\val}{\col*4+\row}
+					\draw[fill=aesgreen!30] (1+\col*0.6,-0.5-\row*0.6) rectangle ++(0.5,0.5);
+					\node at (1.25+\col*0.6,-0.25-\row*0.6) {\tiny \val};
+				}
+			}
+		\end{tikzpicture}
+	\end{center}
+	
+	\subsection{Schema Generale}
+	AES applica una sequenza fissa di operazioni:
+	\begin{enumerate}
+		\item \textbf{AddRoundKey} iniziale.
+		\item \textbf{N round} (10, 12 o 14 a seconda della chiave), ognuno composto da:
+		\begin{itemize}
+			\item SubBytes
+			\item ShiftRows
+			\item MixColumns
+			\item AddRoundKey
+		\end{itemize}
+		\item \textbf{Round finale} (senza MixColumns):
+		\begin{itemize}
+			\item SubBytes
+			\item ShiftRows
+			\item AddRoundKey
+		\end{itemize}
+	\end{enumerate}
+	
+	\section{Le Quattro Operazioni di AES}
+	
+	\subsection{1. SubBytes – Sostituzione non lineare}
+	Ogni byte è sostituito tramite una tabella fissa chiamata \textbf{S-Box}.  
+	- Non lineare → introduce \textit{confusione}.  
+	- Basata su operazioni nel campo di Galois $GF(2^8)$.
+	
+	Esempio: il byte \texttt{0x53} diventa \texttt{0xED} dopo SubBytes.
+	
+	\subsection{2. ShiftRows – Diffusione orizzontale}
+	Le righe della matrice di stato vengono spostate ciclicamente a sinistra:
+	\begin{itemize}
+		\item Riga 0: 0 posizioni
+		\item Riga 1: 1 posizione
+		\item Riga 2: 2 posizioni
+		\item Riga 3: 3 posizioni
+	\end{itemize}
+	
+	Questo diffonde i byte tra le colonne.
+	
+	\subsection{3. MixColumns – Diffusione verticale}
+	Ogni colonna è trasformata tramite moltiplicazione matriciale in $GF(2^8)$:
+	
+	\[
+	\begin{bmatrix}
+		02 & 03 & 01 & 01 \\
+		01 & 02 & 03 & 01 \\
+		01 & 01 & 02 & 03 \\
+		03 & 01 & 01 & 02
+	\end{bmatrix}
+	\times
+	\begin{bmatrix}
+		s_{0,j} \\
+		s_{1,j} \\
+		s_{2,j} \\
+		s_{3,j}
+	\end{bmatrix}
+	=
+	\begin{bmatrix}
+		s'_{0,j} \\
+		s'_{1,j} \\
+		s'_{2,j} \\
+		s'_{3,j}
+	\end{bmatrix}
+	\]
+	
+	\textbf{Nota:} Non applicata nell’ultimo round. Garantisce che ogni byte di output dipenda da tutti i byte della colonna.
+	
+	\subsection{4. AddRoundKey – Combinazione con la chiave}
+	La matrice di stato è combinata con la chiave del round tramite XOR bit-a-bit (operazione $\oplus$).
+	
+	\[
+	s'_{i,j} = s_{i,j} \oplus k_{i,j}
+	\]
+	
+	XOR è reversibile: la stessa operazione serve per decifrare.
+	
+	\section{Key Expansion (Espansione della Chiave)}
+	AES richiede una chiave diversa per ogni round. L’algoritmo \textbf{Key Expansion} genera tutte le chiavi di round a partire dalla chiave iniziale (128/192/256 bit).
+	
+	- AES-128: genera 11 chiavi (10 round + iniziale)
+	- Ogni 4 word, si applicano trasformazioni: \texttt{RotWord}, \texttt{SubWord}, e XOR con costante \texttt{Rcon}.
+	
+	Questo garantisce un \textit{effetto valanga}: piccole modifiche alla chiave influenzano tutti i round.
+	
+	\section{Decifratura}
+	La decifratura è l’inverso della cifratura, con operazioni inverse applicate in ordine inverso:
+	
+	\begin{itemize}
+		\item \textbf{InvSubBytes}: usa la S-Box inversa
+		\item \textbf{InvShiftRows}: sposta a destra
+		\item \textbf{InvMixColumns}: usa matrice inversa \\
+		{\small $\begin{bmatrix}
+				0E & 0B & 0D & 09 \\
+				09 & 0E & 0B & 0D \\
+				0D & 09 & 0E & 0B \\
+				0B & 0D & 09 & 0E
+			\end{bmatrix}$}
+		\item \textbf{AddRoundKey}: identica (XOR è auto-inversa)
+	\end{itemize}
+	
+	Le chiavi di round sono usate in ordine inverso.
+	
+	\section{Modi di Operazione}
+	
+	AES cifra solo blocchi di 128 bit. Per messaggi lunghi, si usano \textbf{modi di operazione}:
+	
+	\begin{description}
+		\item[ECB (Electronic Codebook):] Ogni blocco è cifrato indipendentemente. \textcolor{aesred}{Pericoloso!} Blocchi identici → cifrati identici (es. immagini rivelano pattern).
+		
+		\item[CBC (Cipher Block Chaining):] Ogni blocco in chiaro è XOR con il blocco cifrato precedente. Richiede un \textbf{IV (Initialization Vector)} casuale. Più sicuro di ECB.
+		
+		\item[CTR (Counter):] Trasforma AES in cifrario a flusso. Usa un contatore cifrato con AES, poi XOR con il plaintext. \textbf{Parallelizzabile} e adatto per accesso casuale.
+		
+		\item[GCM (Galois/Counter Mode):] Combina CTR con autenticazione (\textbf{GHASH}). Fornisce \textit{crittografia + integrità}. Usato in TLS 1.3. \textbf{Consigliato per nuove applicazioni.}
+	\end{description}
+	
+	\section{Sicurezza di AES}
+	
+	\subsection{Robustezza contro Brute-Force}
+	\begin{center}
+		\begin{tabular}{|l|c|c|}
+			\hline
+			Variante & Chiavi possibili & Sicurezza \\
+			\hline
+			AES-128 & $2^{128} \approx 3.4 \times 10^{38}$ & Alta \\
+			AES-192 & $2^{192}$ & Altissima \\
+			AES-256 & $2^{256} \approx 1.1 \times 10^{77}$ & Estrema \\
+			\hline
+		\end{tabular}
+	\end{center}
+	
+	Con 1 miliardo di tentativi/sec, servirebbero \textbf{miliardi di anni} per rompere anche solo l’AES-128.
+	
+	\subsection{Attacchi Conosciuti}
+	- \textbf{Biclique attack}: teorico, riduce complessità a $2^{126.1}$ → non pratico.
+	- \textbf{Related-key attacks}: richiedono scenari irrealistici.
+	- \textbf{Minacce reali}: side-channel attacks, implementazioni deboli, riutilizzo di IV, uso di ECB.
+	
+	\subsection{AES e Computer Quantistici}
+	L’algoritmo di Grover permette una ricerca quadratica: $O(\sqrt{N})$ invece di $O(N)$.
+	
+	- AES-128 → sicurezza ridotta a $2^{64}$ → vulnerabile.
+	- AES-256 → sicurezza $2^{128}$ → \textcolor{aesgreen}{ancora sicuro}.
+	
+	**Raccomandazione:** usare AES-256 in contesti sensibili al rischio quantistico.
+	
+	\section{Applicazioni Pratiche}
+	
+	AES è usato ovunque:
+	\begin{itemize}
+		\item \textbf{Comunicazioni:} Wi-Fi (WPA2/3), HTTPS, VPN, SSH, Signal
+		\item \textbf{Storage:} BitLocker, FileVault, LUKS, database cifrati
+		\item \textbf{File:} PDF, Office, 7-Zip, WinRAR
+		\item \textbf{Hardware:} Processori con AES-NI, smartphone, IoT
+	\end{itemize}
+	
+	\subsection{Accelerazione Hardware: AES-NI}
+	Moderni processori (Intel, AMD, ARM) includono istruzioni dedicate (\textbf{AES-NI}) che:
+	\begin{itemize}
+		\item Accelerano AES di 4–10×
+		\item Riducono consumo energetico
+		\item Mitigano side-channel attacks
+	\end{itemize}
+	
+	\section{Esempio Pratico in Python}
+	
+	```python
+	from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+	from cryptography.hazmat.backends import default_backend
+	import os
+	
+	# Chiave e IV casuali
+	key = os.urandom(32)  # 256 bit
+	iv = os.urandom(16)   # 128 bit
+	
+	# Cifrario AES in modalità CBC
+	cipher = Cipher(algorithms.AES(key), modes.CBC(iv), backend=default_backend())
+	
+	# Padding manuale (in pratica usare PKCS7)
+	plaintext = b"Messaggio segreto per la scuola!"
+	plaintext_padded = plaintext + b'\x00' * (16 - len(plaintext) % 16)
+	
+	# Cifratura
+	encryptor = cipher.encryptor()
+	ciphertext = encryptor.update(plaintext_padded) + encryptor.finalize()
+	
+	# Decifratura
+	decryptor = cipher.decryptor()
+	decrypted = decryptor.update(ciphertext) + decryptor.finalize()
+	print(decrypted.rstrip(b'\x00').decode())
+	
+	\section{Conclusioni}
+	
+	\begin{itemize}
+		\item AES è lo standard mondiale di crittografia simmetrica.
+		\item Basato su 4 operazioni che garantiscono confusione e diffusione.
+		\item Sicuro contro tutti gli attacchi pratici conosciuti.
+		\item AES-256 è resistente anche ai computer quantistici.
+		\item Attenzione alla scelta del \textbf{modo di operazione}: evitare ECB, preferire GCM.
+		\item Grazie ad AES-NI, la crittografia è veloce e efficiente su hardware moderno.
+	\end{itemize}
+	
+	\section{Risorse per Approfondire}
+	
+	\begin{itemize}
+		\item \textbf{Documenti ufficiali:} FIPS 197 (NIST)
+		\item \textbf{Tool online:}
+		\begin{itemize}
+			\item \url{https://www.cryptool.org/}
+			\item \url{https://aesencryption.net/}
+			\item \url{https://www.javainuse.com/aesgenerator}
+		\end{itemize}
+		\item \textbf{Libri:} "Understanding Cryptography" (Paar & Pelzl), "The Design of Rijndael"
+		\item \textbf{Video:} Computerphile (YouTube), Cryptography I (Coursera)
+	\end{itemize}
+	
+	\end{document}

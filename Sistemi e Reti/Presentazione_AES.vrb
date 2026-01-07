@@ -1,0 +1,36 @@
+\frametitle{Esempio Pratico in Python}
+\textbf{Uso di AES con la libreria \texttt{cryptography}:}
+
+\begin{lstlisting}[language=Python, basicstyle=\tiny, frame=single]
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+from cryptography.hazmat.backends import default_backend
+import os
+
+# Generazione chiave casuale (256 bit)
+key = os.urandom(32)  # 32 byte = 256 bit
+
+# Generazione IV casuale (128 bit)
+iv = os.urandom(16)   # 16 byte = 128 bit
+
+# Creazione del cifrario AES in modalita CBC
+cipher = Cipher(
+    algorithms.AES(key),
+    modes.CBC(iv),
+    backend=default_backend()
+)
+
+# Cifratura
+plaintext = b"Messaggio segreto per la scuola!"
+# Padding necessario per blocchi di 16 byte
+plaintext_padded = plaintext + b'\x00' * (16 - len(plaintext) % 16)
+
+encryptor = cipher.encryptor()
+ciphertext = encryptor.update(plaintext_padded) + encryptor.finalize()
+
+print(f"Testo cifrato: {ciphertext.hex()}")
+
+# Decifratura
+decryptor = cipher.decryptor()
+decrypted = decryptor.update(ciphertext) + decryptor.finalize()
+print(f"Testo decifrato: {decrypted.rstrip(b'\\x00').decode()}")
+\end{lstlisting}

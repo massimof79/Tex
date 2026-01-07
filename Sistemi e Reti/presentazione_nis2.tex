@@ -1,0 +1,1003 @@
+\documentclass[aspectratio=169]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{multicol}
+\usepackage{xcolor}
+
+\usetikzlibrary{shapes,arrows,positioning,shadows,calc}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+
+% Definizione colori personalizzati
+\definecolor{darkblue}{RGB}{0,51,102}
+\definecolor{lightblue}{RGB}{51,153,255}
+\definecolor{alertred}{RGB}{204,0,0}
+\definecolor{successgreen}{RGB}{0,153,51}
+
+\setbeamercolor{structure}{fg=darkblue}
+\setbeamercolor{palette primary}{bg=darkblue,fg=white}
+\setbeamercolor{palette secondary}{bg=lightblue,fg=white}
+\setbeamercolor{palette tertiary}{bg=darkblue,fg=white}
+
+\title[Cybersecurity e NIS 2]{Sicurezza Informatica e Direttiva NIS 2}
+\subtitle{Minacce Cyber e Nuova Normativa Europea}
+\author{Prof. Fedeli Massimo - IIS Fermi Sacconi Cpia}
+\institute{Ascoli Piceno}
+\date{\today}
+
+\begin{document}
+
+% Slide 1 - Titolo
+\begin{frame}
+\titlepage
+\end{frame}
+
+% Slide 2 - Indice
+\begin{frame}{Indice}
+\tableofcontents
+\end{frame}
+
+\section{Il Panorama delle Minacce Informatiche}
+
+% Slide 3 - Introduzione alle minacce
+\begin{frame}{Il Panorama delle Minacce Informatiche}
+\begin{columns}[T]
+\column{0.5\textwidth}
+\textbf{Scenario Attuale:}
+\begin{itemize}
+\item Crescita esponenziale degli attacchi
+\item Maggiore complessità e sofisticazione
+\item Impatto su aziende, PA e infrastrutture critiche
+\item Evoluzione continua delle tecniche di attacco
+\end{itemize}
+
+\column{0.5\textwidth}
+\begin{tikzpicture}[scale=0.8]
+\begin{axis}[
+    ybar,
+    width=6cm,
+    height=5cm,
+    ylabel={Numero attacchi},
+    symbolic x coords={2020,2021,2022,2023,2024},
+    xtick=data,
+    ymin=0,
+    enlarge x limits=0.2,
+    bar width=15pt,
+    nodes near coords,
+]
+\addplot[fill=alertred] coordinates {(2020,100) (2021,145) (2022,198) (2023,265) (2024,340)};
+\end{axis}
+\end{tikzpicture}
+\end{columns}
+\end{frame}
+
+% Slide 4 - Principali tipologie di attacchi
+\begin{frame}{Principali Tipologie di Attacchi}
+\centering
+
+\begin{tikzpicture}[scale=0.9]
+% Nodo centrale
+\node[circle, draw=darkblue, fill=lightblue!30, minimum size=2cm, font=\Large\bfseries] (center) at (0,0) {Minacce\\Cyber};
+
+% Nodi attacchi
+\node[rectangle, draw=alertred, fill=alertred!20, minimum width=2.5cm, minimum height=1cm, rounded corners] (ransomware) at (-4,2) {\textbf{Ransomware}};
+\node[rectangle, draw=alertred, fill=alertred!20, minimum width=2.5cm, minimum height=1cm, rounded corners] (phishing) at (4,2) {\textbf{Phishing}};
+\node[rectangle, draw=alertred, fill=alertred!20, minimum width=2.5cm, minimum height=1cm, rounded corners] (ddos) at (-4,-2) {\textbf{DDoS}};
+\node[rectangle, draw=alertred, fill=alertred!20, minimum width=2.5cm, minimum height=1cm, rounded corners] (supply) at (4,-2) {\textbf{Supply Chain}};
+
+% Collegamenti
+\draw[->, thick, darkblue] (center) -- (ransomware);
+\draw[->, thick, darkblue] (center) -- (phishing);
+\draw[->, thick, darkblue] (center) -- (ddos);
+\draw[->, thick, darkblue] (center) -- (supply);
+\end{tikzpicture}
+\end{frame}
+
+\section{Ransomware}
+
+% Slide 5 - Ransomware
+\begin{frame}{Ransomware: Il Ricatto Digitale}
+\begin{columns}[T]
+\column{0.5\textwidth}
+\textbf{Cos'è:}
+\begin{itemize}
+\item Malware che cifra i dati
+\item Rende inaccessibili file e sistemi
+\item Richiesta di riscatto in criptovaluta
+\item Minaccia di pubblicazione dati
+\end{itemize}
+
+\vspace{0.5cm}
+\textbf{Caso emblematico:}\\
+\textcolor{alertred}{Sistema Sanitario Irlandese (2021)}
+\begin{itemize}
+\item Ospedali e ambulatori bloccati
+\item Sospensione servizi per giorni
+\item Impatto su migliaia di pazienti
+\end{itemize}
+
+\column{0.5\textwidth}
+\begin{tikzpicture}[scale=0.85]
+% Computer
+\node[rectangle, draw=black, fill=gray!30, minimum width=3cm, minimum height=2cm] (pc) at (0,0) {};
+\node at (0,0.5) {$\bigstar$};
+\node[font=\small] at (0,-0.3) {File Cifrati};
+
+% Lucchetto
+\node[font=\Huge, text=alertred] at (0,-1.5) {$\blacksquare$};
+
+% Hacker
+\node[rectangle, draw=alertred, fill=alertred!20, minimum width=2.5cm, minimum height=1.5cm, rounded corners] (hacker) at (0,-4) {
+\begin{minipage}{2.2cm}
+\centering
+
+$\clubsuit$\\
+\small Richiesta\\
+\small Riscatto
+\end{minipage}
+};
+
+% Freccia
+\draw[->, very thick, alertred] (0,-2.2) -- (0,-3.2);
+\end{tikzpicture}
+\end{columns}
+\end{frame}
+
+% Slide 6 - Meccanismo Ransomware
+\begin{frame}{Come Funziona un Attacco Ransomware}
+\centering
+
+\begin{tikzpicture}[
+    node distance=1.5cm,
+    every node/.style={font=\small},
+    block/.style={rectangle, draw=darkblue, fill=lightblue!30, text width=3cm, text centered, rounded corners, minimum height=1cm},
+    alert/.style={rectangle, draw=alertred, fill=alertred!20, text width=3cm, text centered, rounded corners, minimum height=1cm}
+]
+\node[block] (1) {\textbf{1. Infezione}\\Email, download, vulnerabilità};
+\node[block, right=of 1] (2) {\textbf{2. Propagazione}\\Diffusione nella rete};
+\node[alert, right=of 2] (3) {\textbf{3. Cifratura}\\Dati inaccessibili};
+\node[alert, below=of 2] (4) {\textbf{4. Richiesta}\\Pagamento riscatto};
+\node[block, left=of 4] (5) {\textbf{5. Decisione}\\Pagare o ripristinare};
+
+\draw[->, very thick] (1) -- (2);
+\draw[->, very thick] (2) -- (3);
+\draw[->, very thick] (3) -- (4);
+\draw[->, very thick] (4) -- (5);
+\end{tikzpicture}
+
+\vspace{0.5cm}
+\begin{alertblock}{Nota Importante}
+Non esiste garanzia che pagando si ottengano i dati. È fondamentale avere backup offline aggiornati!
+\end{alertblock}
+\end{frame}
+
+\section{Phishing}
+
+% Slide 7 - Phishing
+\begin{frame}{Phishing: L'Inganno via Email}
+\begin{columns}[T]
+\column{0.5\textwidth}
+\textbf{Definizione:}\\
+Email fraudolente che imitano comunicazioni ufficiali per rubare credenziali e dati sensibili.
+
+\vspace{0.5cm}
+\textbf{Obiettivi:}
+\begin{itemize}
+\item Password e credenziali
+\item Numeri carte di credito
+\item Dati personali sensibili
+\item Accesso a sistemi aziendali
+\end{itemize}
+
+\vspace{0.5cm}
+\textbf{Caratteristiche comuni:}
+\begin{itemize}
+\item Senso di urgenza
+\item Mittente apparentemente legittimo
+\item Link a siti contraffatti
+\item Richiesta dati riservati
+\end{itemize}
+
+\column{0.5\textwidth}
+\begin{tikzpicture}[scale=0.8]
+% Email fraudolenta
+\node[rectangle, draw=alertred, fill=white, minimum width=4cm, minimum height=5cm, line width=2pt] (email) at (0,0) {};
+\node[font=\small] at (0,2) {$\triangleright$~\textbf{Aggiorna Password}};
+\node[font=\tiny, text width=3.5cm, align=left] at (0,1) {
+Da: it-support@azienda.com\\
+\vspace{0.2cm}
+Gentile utente,\\
+\vspace{0.1cm}
+La sua password scadrà tra 24 ore. Clicchi qui per aggiornarla...
+};
+
+\node[rectangle, draw=alertred, fill=alertred!30, minimum width=2cm, minimum height=0.6cm, rounded corners] at (0,-0.8) {\textbf{CLICCA QUI}};
+
+% Freccia verso sito fake
+\draw[->, very thick, alertred] (0,-1.5) -- (0,-2.5);
+\node[rectangle, draw=black, fill=gray!20, minimum width=3.5cm, minimum height=1cm] at (0,-3.3) {
+\begin{minipage}{3cm}
+\centering
+
+\tiny Sito fake\\
+\tiny Furto credenziali
+\end{minipage}
+};
+\end{tikzpicture}
+\end{columns}
+\end{frame}
+
+% Slide 8 - Come riconoscere il Phishing
+\begin{frame}{Come Riconoscere un Tentativo di Phishing}
+\begin{columns}[T]
+\column{0.5\textwidth}
+\textbf{\textcolor{alertred}{Segnali di allarme:}}
+\begin{itemize}
+\item[$\blacktriangledown$] Errori grammaticali o ortografici
+\item[$\blacktriangledown$] Indirizzo email sospetto
+\item[$\blacktriangledown$] Richieste urgenti
+\item[$\blacktriangledown$] Link con URL strani
+\item[$\blacktriangledown$] Allegati inaspettati
+\item[$\blacktriangledown$] Richieste di dati sensibili
+\end{itemize}
+
+\column{0.5\textwidth}
+\textbf{\textcolor{successgreen}{Buone pratiche:}}
+\begin{itemize}
+\item[$\checkmark$] Verificare sempre il mittente
+\item[$\checkmark$] Controllare l'URL prima di cliccare
+\item[$\checkmark$] Non fornire mai password via email
+\item[$\checkmark$] Usare autenticazione a due fattori
+\item[$\checkmark$] Contattare direttamente l'ente
+\item[$\checkmark$] Segnalare email sospette
+\end{itemize}
+\end{columns}
+
+\vspace{0.5cm}
+\begin{block}{Esempio URL fraudolento}
+\texttt{www.b\textcolor{alertred}{an}ca-intesa.com} invece di \texttt{www.intesa.it}\\
+\small Notare la differenza: caratteri aggiunti, domini simili ma diversi
+\end{block}
+\end{frame}
+
+\section{Attacchi DDoS}
+
+% Slide 9 - Attacchi DDoS
+\begin{frame}{Attacchi DDoS: Il Sovraccarico dei Sistemi}
+\begin{columns}[T]
+\column{0.5\textwidth}
+\textbf{Distributed Denial of Service}
+
+\vspace{0.3cm}
+\textbf{Obiettivo:}\\
+Rendere un servizio inaccessibile sovraccaricandolo con richieste massive.
+
+\vspace{0.3cm}
+\textbf{Come funziona:}
+\begin{itemize}
+\item Utilizzo di botnet (migliaia di dispositivi compromessi)
+\item Invio simultaneo di richieste
+\item Saturazione banda e risorse
+\item Impossibilità di servire utenti legittimi
+\end{itemize}
+
+\vspace{0.3cm}
+\textbf{Impatti:}
+\begin{itemize}
+\item Blocco servizi online
+\item Perdite economiche
+\item Danni reputazionali
+\end{itemize}
+
+\column{0.5\textwidth}
+\begin{tikzpicture}[scale=0.75]
+% Server target
+\node[rectangle, draw=alertred, fill=alertred!30, minimum width=2cm, minimum height=1.5cm, line width=2pt] (server) at (0,0) {
+\begin{minipage}{1.8cm}
+\centering
+
+$\bigstar$\\
+\small Server\\
+\small Sovraccarico
+\end{minipage}
+};
+
+% Botnet
+\foreach \x in {1,...,8} {
+    \pgfmathsetmacro{\angle}{360/8*\x}
+    \pgfmathsetmacro{\radius}{4}
+    \node[circle, draw=darkblue, fill=lightblue!30, minimum size=0.7cm] (bot\x) at (\angle:\radius) {\tiny$\bigstar$};
+    \draw[->, thick, alertred] (bot\x) -- (server);
+}
+
+% Etichetta botnet
+\node[font=\small\bfseries, text=darkblue] at (0,-3) {Botnet: migliaia di dispositivi};
+
+% Frecce richieste multiple
+\node[font=\tiny, text=alertred] at (2.5,2) {Richieste};
+\node[font=\tiny, text=alertred] at (-2.5,2) {Richieste};
+\node[font=\tiny, text=alertred] at (2.5,-2) {Richieste};
+\end{tikzpicture}
+\end{columns}
+\end{frame}
+
+% Slide 10 - Tipologie DDoS
+\begin{frame}{Tipologie di Attacchi DDoS}
+\centering
+
+\begin{tikzpicture}[
+    node distance=2cm,
+    block/.style={rectangle, draw=darkblue, fill=lightblue!20, text width=4.5cm, text centered, rounded corners, minimum height=1.2cm, font=\small}
+]
+\node[block] (volumetric) at (0,3) {\textbf{Attacchi Volumetrici}\\Saturazione della banda di rete};
+\node[block] (protocol) at (0,1) {\textbf{Attacchi a Livello Protocollo}\\Esaurimento risorse server/firewall};
+\node[block] (application) at (0,-1) {\textbf{Attacchi Applicativi}\\Target: applicazioni web specifiche};
+
+% Esempi
+\node[text width=5cm, font=\tiny, align=left] at (6,3) {
+Es: UDP flood, ICMP flood\\
+Volume: 100+ Gbps
+};
+\node[text width=5cm, font=\tiny, align=left] at (6,1) {
+Es: SYN flood, Ping of Death\\
+Esaurimento connessioni
+};
+\node[text width=5cm, font=\tiny, align=left] at (6,-1) {
+Es: HTTP flood, Slowloris\\
+Richieste HTTP apparentemente legittime
+};
+
+\draw[->, thick] (volumetric.east) -- ++(1,0);
+\draw[->, thick] (protocol.east) -- ++(1,0);
+\draw[->, thick] (application.east) -- ++(1,0);
+\end{tikzpicture}
+
+\vspace{0.3cm}
+\begin{alertblock}{Caso Pratico}
+Blocco di piattaforme bancarie online che impedisce ai clienti di accedere ai propri conti per ore o giorni, causando disservizi massivi.
+\end{alertblock}
+\end{frame}
+
+\section{Supply Chain Attack}
+
+% Slide 11 - Supply Chain Attack
+\begin{frame}{Supply Chain Attack: L'Attacco alla Catena di Fornitura}
+\begin{columns}[T]
+\column{0.5\textwidth}
+\textbf{Strategia dell'attacco:}
+\begin{enumerate}
+\item Target: fornitore o partner meno protetto
+\item Compromissione del fornitore
+\item Propagazione all'organizzazione principale
+\item Infezione multipla attraverso la catena
+\end{enumerate}
+
+\vspace{0.5cm}
+\textbf{Perché è pericoloso:}
+\begin{itemize}
+\item Difficile da rilevare
+\item Fiducia nei fornitori
+\item Effetto a cascata
+\item Scala d'impatto enorme
+\end{itemize}
+
+\column{0.5\textwidth}
+\begin{tikzpicture}[scale=0.75]
+% Fornitore (compromesso)
+\node[rectangle, draw=alertred, fill=alertred!30, minimum width=2.5cm, minimum height=1.2cm, line width=2pt, rounded corners] (supplier) at (0,3) {
+\begin{minipage}{2.3cm}
+\centering
+
+$\diamond$\\
+\small Fornitore\\
+\scriptsize (COMPROMESSO)
+\end{minipage}
+};
+
+% Clienti
+\node[rectangle, draw=darkblue, fill=lightblue!30, minimum width=2cm, minimum height=1cm, rounded corners] (client1) at (-3,0) {\small Azienda A};
+\node[rectangle, draw=darkblue, fill=lightblue!30, minimum width=2cm, minimum height=1cm, rounded corners] (client2) at (0,0) {\small Azienda B};
+\node[rectangle, draw=darkblue, fill=lightblue!30, minimum width=2cm, minimum height=1cm, rounded corners] (client3) at (3,0) {\small Azienda C};
+
+% Frecce di propagazione
+\draw[->, very thick, alertred] (supplier) -- (client1) node[midway, left, font=\tiny] {Malware};
+\draw[->, very thick, alertred] (supplier) -- (client2) node[midway, right, font=\tiny] {Malware};
+\draw[->, very thick, alertred] (supplier) -- (client3) node[midway, right, font=\tiny] {Malware};
+
+% Utenti finali
+\foreach \x in {-3,0,3} {
+    \node[circle, draw=darkblue, fill=white, minimum size=0.6cm] at (\x,-1.5) {\tiny$\bullet$};
+    \draw[->, thick, alertred] (\x,-0.6) -- (\x,-1.2);
+}
+\node[font=\small] at (0,-2.5) {Migliaia di utenti finali infettati};
+\end{tikzpicture}
+\end{columns}
+\end{frame}
+
+% Slide 12 - Caso SolarWinds
+\begin{frame}{Caso SolarWinds (2020): Un Attacco Emblematico}
+\textbf{Dinamica dell'attacco:}
+\begin{itemize}
+\item \textbf{Target primario:} SolarWinds (software di gestione IT)
+\item \textbf{Metodo:} Modifica del software Orion con malware nascosto
+\item \textbf{Distribuzione:} Update automatici inviati ai clienti
+\item \textbf{Scala:} \textcolor{alertred}{18.000+ organizzazioni infettate}
+\end{itemize}
+
+\vspace{0.5cm}
+\begin{columns}[T]
+\column{0.5\textwidth}
+\textbf{Vittime:}
+\begin{itemize}
+\item Agenzie governative USA
+\item Dipartimento della Difesa
+\item Multinazionali Fortune 500
+\item Istituzioni finanziarie
+\end{itemize}
+
+\column{0.5\textwidth}
+\textbf{Conseguenze:}
+\begin{itemize}
+\item Accesso prolungato ai sistemi (mesi)
+\item Furto di dati sensibili
+\item Costi di remediation miliardari
+\item Perdita di fiducia nel software
+\end{itemize}
+\end{columns}
+
+\vspace{0.5cm}
+\begin{alertblock}{Lezione appresa}
+Necessità di verificare e monitorare costantemente anche i fornitori di fiducia. La sicurezza della supply chain è fondamentale.
+\end{alertblock}
+\end{frame}
+
+\section{Intelligenza Artificiale nelle Minacce Cyber}
+
+% Slide 13 - IA e Cybersecurity
+\begin{frame}{Il Ruolo dell'Intelligenza Artificiale negli Attacchi}
+\begin{columns}[T]
+\column{0.5\textwidth}
+\textbf{L'IA come arma degli attaccanti:}
+
+\vspace{0.3cm}
+\textcolor{alertred}{\textbf{AI}~Applicazioni offensive:}
+\begin{itemize}
+\item Phishing personalizzato e convincente
+\item Imitazione stile di scrittura
+\item Analisi vulnerabilità in tempo reale
+\item Identificazione target redditizi
+\item Evasione sistemi di rilevamento
+\item Botnet intelligenti e adattive
+\end{itemize}
+
+\vspace{0.3cm}
+\textbf{Ransomware avanzati:}
+\begin{itemize}
+\item Selezione automatica vittime
+\item Occultamento attività malevole
+\item Adattamento comportamentale
+\end{itemize}
+
+\column{0.5\textwidth}
+\begin{tikzpicture}[scale=0.8]
+% Cervello IA
+\node[circle, draw=darkblue, fill=lightblue!30, minimum size=2.5cm, line width=2pt] (ai) at (0,2) {
+\begin{minipage}{2cm}
+\centering
+
+\Large\textbf{AI}\\
+\small IA\\
+\small Offensiva
+\end{minipage}
+};
+
+% Capacità
+\node[rectangle, draw=alertred, fill=alertred!20, text width=2.2cm, align=center, rounded corners, font=\tiny] (phish) at (-3,0) {Phishing\\Automatizzato};
+\node[rectangle, draw=alertred, fill=alertred!20, text width=2.2cm, align=center, rounded corners, font=\tiny] (vuln) at (3,0) {Scansione\\Vulnerabilità};
+\node[rectangle, draw=alertred, fill=alertred!20, text width=2.2cm, align=center, rounded corners, font=\tiny] (evasion) at (-3,-2) {Evasione\\Rilevamento};
+\node[rectangle, draw=alertred, fill=alertred!20, text width=2.2cm, align=center, rounded corners, font=\tiny] (adapt) at (3,-2) {Adattamento\\Dinamico};
+
+% Collegamenti
+\draw[->, thick] (ai) -- (phish);
+\draw[->, thick] (ai) -- (vuln);
+\draw[->, thick] (ai) -- (evasion);
+\draw[->, thick] (ai) -- (adapt);
+\end{tikzpicture}
+
+\vspace{0.3cm}
+\begin{alertblock}{Sfida crescente}
+La velocità e la scala degli attacchi potenziati dall'IA richiedono contromisure altrettanto avanzate.
+\end{alertblock}
+\end{columns}
+\end{frame}
+
+% Slide 14 - DDoS intelligenti
+\begin{frame}{DDoS Intelligenti e IA}
+\textbf{Botnet potenziate dall'IA:}
+
+\vspace{0.5cm}
+\begin{columns}[T]
+\column{0.5\textwidth}
+\textbf{Capacità tradizionali:}
+\begin{itemize}
+\item Pattern di attacco fissi
+\item Rilevamento più semplice
+\item Comportamento prevedibile
+\item Difese statiche efficaci
+\end{itemize}
+
+\vspace{0.5cm}
+\textcolor{successgreen}{$\odot$~Vulnerabilità:}\\
+Le difese tradizionali possono identificare pattern ripetuti.
+
+\column{0.5\textwidth}
+\textbf{Con IA:}
+\begin{itemize}
+\item[\textbf{AI}] Pattern dinamici e variabili
+\item[\textbf{AI}] Elusione dei sistemi di rilevamento
+\item[\textbf{AI}] Adattamento in tempo reale
+\item[\textbf{AI}] Necessarie difese dinamiche
+\end{itemize}
+
+\vspace{0.5cm}
+\textcolor{alertred}{$\blacktriangledown$~Minaccia:}\\
+Difficile distinguere traffico legittimo da attacco.
+\end{columns}
+
+\vspace{0.5cm}
+\begin{block}{Esempio concreto}
+Una botnet con IA può alternare tipologie di attacco (volumetrico, protocollo, applicativo) in base alle reazioni del sistema di difesa, rendendo molto più difficile la mitigazione.
+\end{block}
+\end{frame}
+
+\section{La Direttiva NIS 2}
+
+% Slide 15 - Introduzione NIS 2
+\begin{frame}{La Direttiva NIS 2: Risposta Europea}
+\begin{columns}[T]
+\column{0.5\textwidth}
+\textbf{Direttiva (UE) 2022/2555}
+
+\vspace{0.3cm}
+\textbf{Data}~\textbf{Timeline:}
+\begin{itemize}
+\item Approvata: 14 dicembre 2022
+\item Entrata in vigore: 17 gennaio 2023
+\item Recepimento Stati UE: 17 ottobre 2024
+\end{itemize}
+
+\vspace{0.5cm}
+\textbf{Obiettivo:}\\
+Garantire un livello \textcolor{successgreen}{\textbf{elevato e omogeneo}} di sicurezza informatica in tutta l'UE.
+
+\vspace{0.5cm}
+\textbf{Principi cardine:}
+\begin{itemize}
+\item Resilienza dei sistemi
+\item Risposta rapida agli incidenti
+\item Cultura condivisa della cybersecurity
+\item Cooperazione pubblico-privato
+\end{itemize}
+
+\column{0.5\textwidth}
+\begin{tikzpicture}[scale=0.75]
+% Mappa Europa stilizzata
+\node[draw=darkblue, fill=lightblue!30, ellipse, minimum width=4cm, minimum height=5cm, line width=2pt] (eu) at (0,0) {};
+\node[font=\Large\bfseries, text=darkblue] at (0,1.5) {UNIONE};
+\node[font=\Large\bfseries, text=darkblue] at (0,0.8) {EUROPEA};
+
+% Simbolo sicurezza
+\node[circle, draw=successgreen, fill=successgreen!20, minimum size=2cm, line width=2pt] at (0,-0.5) {\Huge\textbf{Shield}};
+
+% Stati membri
+\node[font=\small] at (0,-2.3) {27 Stati Membri};
+\node[font=\small, text=successgreen] at (0,-2.9) {Un unico standard di sicurezza};
+
+% Stelle simboliche
+\foreach \angle in {0,72,144,216,288} {
+    \node[star, star points=5, star point ratio=2.5, draw=yellow!80!orange, fill=yellow!60, minimum size=0.3cm] at ({1.8*cos(\angle)},{1.8*sin(\angle)+0.5}) {};
+}
+\end{tikzpicture}
+\end{columns}
+\end{frame}
+
+% Slide 16 - Limiti NIS 1
+\begin{frame}{Perché NIS 2? I Limiti della Prima Direttiva}
+\textbf{Direttiva NIS 1 (2016) - Problematiche riscontrate:}
+
+\vspace{0.5cm}
+\begin{columns}[T]
+\column{0.5\textwidth}
+\textcolor{alertred}{$\times$~Criticità:}
+\begin{enumerate}
+\item \textbf{Applicazione disomogenea}
+\begin{itemize}
+\item Discrezionalità degli Stati
+\item Frammentazione normativa
+\item Differenze nei livelli di sicurezza
+\end{itemize}
+
+\item \textbf{Ambito troppo ristretto}
+\begin{itemize}
+\item Solo 4 settori coperti
+\item Realtà digitali escluse
+\item Copertura insufficiente
+\end{itemize}
+\end{enumerate}
+
+\column{0.5\textwidth}
+\begin{enumerate}
+\setcounter{enumi}{2}
+\item \textbf{Requisiti poco specifici}
+\begin{itemize}
+\item Misure generiche
+\item Mancanza di linee guida chiare
+\item Implementazione incerta
+\end{itemize}
+
+\item \textbf{Monitoraggio inefficace}
+\begin{itemize}
+\item Sistema di controllo debole
+\item Sanzioni inadeguate
+\item Scarsa conformità
+\end{itemize}
+\end{enumerate}
+\end{columns}
+
+\vspace{0.5cm}
+\begin{alertblock}{Fattori acceleranti}
+\textbf{Pandemia COVID-19} (lavoro remoto), \textbf{Guerra in Ucraina} (cyber warfare), \textbf{Attacchi supply chain} (interconnessione vulnerabilità)
+\end{alertblock}
+\end{frame}
+
+% Slide 17 - Settori NIS 2
+\begin{frame}{Ampliamento dei Settori Coinvolti}
+\textbf{Da 4 a oltre 15 settori:}
+
+\vspace{0.3cm}
+\begin{columns}[T]
+\column{0.5\textwidth}
+\textcolor{darkblue}{\textbf{NIS 1 (2016):}}
+\begin{itemize}
+\item[$\checkmark$] Energia
+\item[$\checkmark$] Trasporti
+\item[$\checkmark$] Banche
+\item[$\checkmark$] Sanità
+\end{itemize}
+
+\vspace{0.5cm}
+\textcolor{successgreen}{\textbf{Nuovi settori NIS 2:}}
+\begin{itemize}
+\item[$+$] Pubblica Amministrazione
+\item[$+$] Acque reflue e rifiuti
+\item[$+$] Spazio e satelliti
+\item[$+$] Servizi postali
+\item[$+$] Produzione microchip e farmaci
+\item[$+$] Gestione servizi TIC
+\item[$+$] Servizi digitali
+\item[$+$] Ricerca
+\end{itemize}
+
+\column{0.5\textwidth}
+\begin{tikzpicture}[scale=0.7]
+% Grafico comparativo
+\begin{axis}[
+    ybar,
+    width=6.5cm,
+    height=7cm,
+    ylabel={Numero settori coperti},
+    symbolic x coords={NIS 1,NIS 2},
+    xtick=data,
+    ymin=0,
+    ymax=18,
+    bar width=40pt,
+    nodes near coords,
+    nodes near coords style={font=\Large\bfseries},
+    ylabel style={font=\small},
+]
+\addplot[fill=darkblue] coordinates {(NIS 1,4)};
+\addplot[fill=successgreen] coordinates {(NIS 2,15)};
+\end{axis}
+
+% Etichetta incremento
+\node[font=\Large\bfseries, text=successgreen] at (3.5,0) {+275\%};
+\end{tikzpicture}
+
+\vspace{0.3cm}
+\begin{block}{Impatto}
+Maggiore copertura = maggiore protezione dell'ecosistema digitale europeo
+\end{block}
+\end{columns}
+\end{frame}
+
+% Slide 18 - Obblighi NIS 2
+\begin{frame}{Obblighi di Sicurezza Informatica}
+\textbf{Misure concrete e documentate:}
+
+\vspace{0.3cm}
+\begin{columns}[T]
+\column{0.5\textwidth}
+\textbf{Shield}~\textbf{Prevenzione:}
+\begin{itemize}
+\item Analisi dei rischi
+\item Valutazione vulnerabilità
+\item Gestione incidenti
+\item Piani di continuità operativa
+\end{itemize}
+
+\vspace{0.3cm}
+$\blacksquare$~\textbf{Protezione:}
+\begin{itemize}
+\item Crittografia dati
+\item Controllo accessi
+\item Sicurezza supply chain
+\item Backup e ripristino
+\end{itemize}
+
+\column{0.5\textwidth}
+$\bullet$s~\textbf{Persone:}
+\begin{itemize}
+\item Formazione continua
+\item Consapevolezza rischi
+\item Responsabilità dirigenziali
+\item Cultura della sicurezza
+\end{itemize}
+
+\vspace{0.3cm}
+\textbf{Check}~\textbf{Conformità:}
+\begin{itemize}
+\item Documentazione completa
+\item Audit regolari
+\item Report periodici
+\item Verifiche di sicurezza
+\end{itemize}
+\end{columns}
+
+\vspace{0.5cm}
+\begin{exampleblock}{Esempio pratico}
+Un'azienda energetica deve dimostrare di avere un piano per reagire rapidamente a un attacco ransomware, garantendo comunque la fornitura minima di servizio.
+\end{exampleblock}
+\end{frame}
+
+% Slide 19 - Notifica incidenti e sanzioni
+\begin{frame}{Notifica degli Incidenti e Sanzioni}
+\begin{columns}[T]
+\column{0.5\textwidth}
+\textbf{Timeline di notifica:}
+
+\begin{tikzpicture}[scale=0.85]
+% Freccia temporale
+\draw[->, very thick, darkblue] (0,0) -- (6,0);
+
+% 24 ore
+\node[circle, draw=alertred, fill=alertred!30, minimum size=1cm, font=\tiny\bfseries] at (1,0) {24h};
+\node[text width=2cm, font=\tiny, align=center] at (1,-1) {Prima\\segnalazione};
+
+% 72 ore
+\node[circle, draw=orange, fill=orange!30, minimum size=1cm, font=\tiny\bfseries] at (3.5,0) {72h};
+\node[text width=2cm, font=\tiny, align=center] at (3.5,-1) {Relazione\\tecnica};
+
+% 1 mese
+\node[circle, draw=successgreen, fill=successgreen!30, minimum size=1cm, font=\tiny\bfseries] at (6,0) {1 mese};
+\node[text width=2cm, font=\tiny, align=center] at (6,-1) {Relazione\\finale};
+
+% Asse temporale
+\node[font=\small] at (0,-0.3) {0};
+\node[font=\small] at (7,-0.3) {Tempo};
+\end{tikzpicture}
+
+\vspace{0.5cm}
+\textbf{Esempio:}\\
+Un ospedale colpito da malware deve informare immediatamente l'ACN (Agenzia per la Cybersicurezza Nazionale).
+
+\column{0.5\textwidth}
+\textbf{Sanzioni per inadempienza:}
+
+\vspace{0.3cm}
+\textcolor{alertred}{$\blacktriangledown$~Soggetti essenziali:}
+\begin{itemize}
+\item Fino a \textbf{10 milioni €}
+\item Oppure \textbf{2\% fatturato globale}
+\end{itemize}
+
+\vspace{0.3cm}
+\textcolor{orange}{$\blacktriangledown$~Altri soggetti:}
+\begin{itemize}
+\item Fino a \textbf{7 milioni €}
+\item Oppure \textbf{1,4\% fatturato globale}
+\end{itemize}
+
+\vspace{0.3cm}
+\begin{alertblock}{Responsabilità dirigenti}
+I dirigenti possono essere sanzionati personalmente per negligenza, con possibili interdizioni.
+\end{alertblock}
+\end{columns}
+\end{frame}
+
+% Slide 20 - Applicazione in Italia
+\begin{frame}{Applicazione in Italia}
+\textbf{Decreto Legislativo n. 138 del 4 settembre 2024}
+
+\vspace{0.5cm}
+\begin{columns}[T]
+\column{0.5\textwidth}
+\textbf{Loc}~\textbf{Autorità competente:}\\
+\textcolor{darkblue}{\textbf{Agenzia per la Cybersicurezza Nazionale (ACN)}}
+
+\vspace{0.3cm}
+\textbf{Istituita:} 2021\\
+\textbf{Dipende:} Presidenza del Consiglio
+
+\vspace{0.5cm}
+\textbf{Compiti principali:}
+\begin{itemize}
+\item[\textbf{Config}] Strategia nazionale cybersecurity
+\item[\textbf{Support}] Coordinamento risposta incidenti
+\item[\textbf{Help}] Supporto tecnico PA e privati
+\item[$\triangleright$] Gestione notifiche NIS 2
+\item[\textbf{Edu}] Formazione e sensibilizzazione
+\item[\textbf{Law}] Vigilanza e sanzioni
+\end{itemize}
+
+\column{0.5\textwidth}
+\begin{tikzpicture}[scale=0.75]
+% Logo ACN simbolico
+\node[rectangle, draw=darkblue, fill=lightblue!30, minimum width=4cm, minimum height=2cm, line width=2pt, rounded corners] (acn) at (0,3) {
+\begin{minipage}{3.5cm}
+\centering
+
+\Large\textbf{Shield}\\
+\vspace{0.2cm}
+\textbf{ACN}\\
+\small Agenzia Cybersicurezza\\
+\small Nazionale
+\end{minipage}
+};
+
+% Funzioni
+\node[rectangle, draw=darkblue, fill=white, text width=1.5cm, align=center, rounded corners, font=\tiny] at (-2,0.5) {Prevenzione};
+\node[rectangle, draw=darkblue, fill=white, text width=1.5cm, align=center, rounded corners, font=\tiny] at (2,0.5) {Monitoraggio};
+\node[rectangle, draw=darkblue, fill=white, text width=1.5cm, align=center, rounded corners, font=\tiny] at (-2,-1) {Risposta};
+\node[rectangle, draw=darkblue, fill=white, text width=1.5cm, align=center, rounded corners, font=\tiny] at (2,-1) {Recupero};
+
+% Collegamenti
+\draw[->, thick] (acn.south) -- (-2,1.2);
+\draw[->, thick] (acn.south) -- (2,1.2);
+\draw[->, thick] (acn.south) -- (-2,-0.3);
+\draw[->, thick] (acn.south) -- (2,-0.3);
+\end{tikzpicture}
+
+\vspace{0.3cm}
+\begin{block}{Scadenza registrazione}
+\textbf{28 febbraio 2025:} termine per registrarsi sulla piattaforma ACN
+\end{block}
+\end{columns}
+\end{frame}
+
+% Slide 21 - Benefici per i cittadini
+\begin{frame}{Benefici Concreti per i Cittadini}
+\textbf{Impatti positivi della NIS 2:}
+
+\vspace{0.5cm}
+\begin{columns}[T]
+\column{0.5\textwidth}
+\textcolor{successgreen}{$\checkmark$~Servizi più affidabili:}
+\begin{itemize}
+\item Continuità ospedali e sanità
+\item Stabilità servizi pubblici
+\item Energia e acqua garantite
+\item Trasporti funzionanti
+\end{itemize}
+
+\vspace{0.3cm}
+\textcolor{successgreen}{$\blacksquare$~Dati protetti:}
+\begin{itemize}
+\item Protezione dati personali
+\item Riduzione furti identità
+\item Sicurezza fascicoli sanitari
+\item Privacy rispettata
+\end{itemize}
+
+\column{0.5\textwidth}
+\textcolor{successgreen}{$\smile$~Maggiore fiducia:}
+\begin{itemize}
+\item Servizi online sicuri
+\item Home banking protetto
+\item E-government affidabile
+\item Transazioni sicure
+\end{itemize}
+
+\vspace{0.3cm}
+\textcolor{successgreen}{\textbf{Shield}~Prevenzione truffe:}
+\begin{itemize}
+\item Meno phishing efficace
+\item Consapevolezza rischi
+\item Educazione digitale
+\item Difesa attiva
+\end{itemize}
+\end{columns}
+
+\vspace{0.5cm}
+\begin{exampleblock}{In sintesi}
+NIS 2 non è solo una normativa per aziende ed enti: protegge anche la vita digitale quotidiana dei cittadini, riducendo disagi e aumentando la sicurezza.
+\end{exampleblock}
+\end{frame}
+
+% Slide 22 - Conclusioni
+\begin{frame}{Conclusioni}
+\textbf{Verso un'Europa digitalmente sicura}
+
+\vspace{0.5cm}
+\begin{columns}[T]
+\column{0.5\textwidth}
+\textcolor{darkblue}{\textbf{Chart}~Il contesto:}
+\begin{itemize}
+\item Minacce in continua evoluzione
+\item IA che potenzia gli attacchi
+\item Interconnessione crescente
+\item Necessità di protezione coordinata
+\end{itemize}
+
+\vspace{0.5cm}
+\textcolor{successgreen}{\textbf{Shield}~La risposta:}
+\begin{itemize}
+\item NIS 2 come framework comune
+\item Obblighi chiari e misurabili
+\item Sanzioni deterrenti
+\item Cultura della cybersecurity
+\end{itemize}
+
+\column{0.5\textwidth}
+\begin{tikzpicture}[scale=0.75]
+% Piramide della sicurezza
+\draw[fill=successgreen!30, draw=darkblue, line width=1.5pt] (0,0) -- (3,0) -- (1.5,4) -- cycle;
+\draw[fill=successgreen!20, draw=darkblue, line width=1.5pt] (3,0) -- (4.5,0) -- (1.5,4) -- cycle;
+
+% Livelli
+\node[font=\tiny, text width=2cm, align=center] at (1.5,0.5) {\textbf{Tecnologia}\\Misure tecniche};
+\node[font=\tiny, text width=2cm, align=center] at (1.5,1.8) {\textbf{Processi}\\Procedure e policy};
+\node[font=\tiny, text width=2cm, align=center] at (1.5,3.2) {\textbf{Persone}\\Formazione};
+
+% Obiettivo
+\node[font=\small\bfseries, text=darkblue] at (2.5,-0.7) {Ecosistema resiliente};
+\end{tikzpicture}
+
+\vspace{0.3cm}
+\begin{block}{Responsabilità condivisa}
+Pubblico e privato devono collaborare per costruire un ambiente digitale sicuro.
+\end{block}
+\end{columns}
+
+\vspace{0.5cm}
+\centering
+
+\large\textcolor{darkblue}{\textbf{La sicurezza informatica è responsabilità di tutti}}
+\end{frame}
+
+% Slide 23 - Riferimenti
+\begin{frame}{Riferimenti Bibliografici}
+\small
+\begin{itemize}
+\item Direttiva (UE) 2022/2555 del Parlamento Europeo e del Consiglio
+\item \url{https://digital-strategy.ec.europa.eu/it/policies/nis2-directive}
+\item \url{https://direttivanis2.eu}
+\item \url{https://www.akamai.com/it/glossary/what-is-nis2}
+\item Decreto Legislativo 4 settembre 2024, n. 138
+\item \url{https://www.acn.gov.it} - Agenzia per la Cybersicurezza Nazionale
+\end{itemize}
+
+\vspace{1cm}
+\centering
+
+\Large\textcolor{darkblue}{\textbf{Grazie per l'attenzione!}}
+
+\vspace{0.5cm}
+\normalsize
+\textbf{?}~Domande?
+\end{frame}
+
+\end{document}

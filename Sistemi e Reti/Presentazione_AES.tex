@@ -1,0 +1,1327 @@
+\documentclass[aspectratio=169]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{tikz}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{pgfplots}
+\usepackage{newunicodechar}
+\newunicodechar{⊕}{\ensuremath{\oplus}}
+\newunicodechar{⟹}{\ensuremath{\Longrightarrow}}
+\newunicodechar{≈}{\ensuremath{\approx}}
+\pgfplotsset{compat=1.18}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+
+\title{AES: Advanced Encryption Standard}
+\subtitle{La Crittografia Simmetrica Moderna}
+\author{Prof. Fedeli Massimo}
+\institute{IIS Fermi Sacconi Cpia - Ascoli Piceno}
+\date{\today}
+
+\definecolor{aesblue}{RGB}{0,102,204}
+\definecolor{aesgreen}{RGB}{0,153,76}
+\definecolor{aesred}{RGB}{204,0,0}
+\definecolor{aesorange}{RGB}{255,128,0}
+
+\begin{document}
+
+% Slide 1: Titolo
+\frame{\titlepage}
+
+% Slide 2: Indice
+\begin{frame}
+\frametitle{Contenuti}
+\tableofcontents
+\end{frame}
+
+\section{Introduzione alla Crittografia}
+
+% Slide 3: Cos'è la Crittografia
+\begin{frame}
+\frametitle{Cos'è la Crittografia?}
+\begin{block}{Definizione}
+La \textbf{crittografia} è la scienza che studia le tecniche per rendere un messaggio incomprensibile a persone non autorizzate.
+\end{block}
+
+\vspace{0.5cm}
+
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{Obiettivi principali:}
+\begin{itemize}
+    \item \textcolor{aesblue}{Confidenzialità}: solo destinatari autorizzati possono leggere
+    \item \textcolor{aesgreen}{Integrità}: il messaggio non è stato modificato
+    \item \textcolor{aesred}{Autenticità}: verifica dell'identità del mittente
+\end{itemize}
+
+\column{0.5\textwidth}
+\begin{center}
+\begin{tikzpicture}[scale=0.8]
+    \node[draw, rectangle, fill=aesblue!20] (plain) at (0,0) {CIAO};
+    \node[draw, rectangle, fill=aesred!20] (cipher) at (4,0) {X9K2};
+    \draw[->, thick] (plain) -- (cipher) node[midway, above] {Cifratura};
+\end{tikzpicture}
+\end{center}
+\end{columns}
+\end{frame}
+
+% Slide 4: Crittografia Simmetrica vs Asimmetrica
+\begin{frame}
+\frametitle{Tipi di Crittografia}
+\begin{columns}
+\column{0.5\textwidth}
+\begin{block}{Crittografia Simmetrica}
+\begin{center}
+\begin{tikzpicture}[scale=0.7]
+    \node[draw, circle, fill=aesblue!30] (key1) at (0,2) {K};
+    \node[draw, rectangle] (alice) at (-2,0) {Alice};
+    \node[draw, rectangle] (bob) at (2,0) {Bob};
+    \draw[->, thick] (key1) -- (alice);
+    \draw[->, thick] (key1) -- (bob);
+    \draw[<->, thick, red] (alice) -- (bob) node[midway, below] {canale};
+\end{tikzpicture}
+\end{center}
+\textcolor{aesgreen}{\textbf{Stessa chiave}} per cifrare e decifrare\\
+\textbf{Esempi:} AES, DES, 3DES\\
+\textbf{Veloce} ed efficiente
+\end{block}
+
+\column{0.5\textwidth}
+\begin{block}{Crittografia Asimmetrica}
+\begin{center}
+\begin{tikzpicture}[scale=0.7]
+    \node[draw, circle, fill=aesblue!30] (pub) at (0,2.5) {Pubblica};
+    \node[draw, circle, fill=aesred!30] (priv) at (0,0.5) {Privata};
+    \node[draw, rectangle] (user) at (-2,1.5) {Utente};
+    \draw[->, thick] (pub) -- (user);
+    \draw[->, thick, dashed] (priv) -- (user);
+\end{tikzpicture}
+\end{center}
+\textcolor{aesred}{\textbf{Chiavi diverse}}: pubblica e privata\\
+\textbf{Esempi:} RSA, ECC\\
+\textbf{Più lenta} ma non richiede scambio sicuro
+\end{block}
+\end{columns}
+
+\vspace{0.3cm}
+\textbf{AES} è un algoritmo di \textcolor{aesblue}{crittografia simmetrica}
+\end{frame}
+
+\section{Storia e Contesto di AES}
+
+% Slide 5: Prima di AES - DES
+\begin{frame}
+\frametitle{Prima di AES: Il DES}
+\begin{block}{DES - Data Encryption Standard (1977)}
+\begin{itemize}
+    \item Sviluppato da IBM, standardizzato da NIST
+    \item Chiave di \textbf{56 bit} (troppo corta!)
+    \item Blocchi di 64 bit
+    \item Negli anni '90 diventa vulnerabile agli attacchi brute force
+\end{itemize}
+\end{block}
+
+\vspace{0.3cm}
+
+\begin{center}
+\begin{tikzpicture}
+    \draw[fill=aesred!20] (0,0) rectangle (2,1);
+    \node at (1,0.5) {DES};
+    \node at (1,1.5) {56 bit};
+    
+    \draw[->, ultra thick, red] (2.5,0.5) -- (3.5,0.5);
+    \node at (3,1) {ROTTO};
+    
+    \draw[fill=aesgreen!20] (4,0) rectangle (6,1);
+    \node at (5,0.5) {3DES};
+    \node at (5,1.5) {168 bit};
+    
+    \draw[->, ultra thick, aesblue] (6.5,0.5) -- (7.5,0.5);
+    
+    \draw[fill=aesblue!30] (8,0) rectangle (10,1);
+    \node at (9,0.5) {\textbf{AES}};
+    \node at (9,1.5) {128/192/256 bit};
+\end{tikzpicture}
+\end{center}
+
+\textbf{3DES:} soluzione temporanea (applica DES tre volte)\\
+\textbf{Necessità:} nuovo standard più sicuro e veloce
+\end{frame}
+
+% Slide 6: Nascita di AES
+\begin{frame}
+\frametitle{La Nascita di AES}
+\begin{block}{Concorso NIST (1997-2000)}
+Il NIST (National Institute of Standards and Technology) bandisce un concorso pubblico per trovare un successore del DES
+\end{block}
+
+\textbf{Requisiti:}
+\begin{itemize}
+    \item Crittografia a blocchi simmetrica
+    \item Lunghezza blocco: 128 bit
+    \item Lunghezze chiave: 128, 192, 256 bit
+    \item Sicurezza superiore a 3DES
+    \item Efficienza su varie piattaforme
+\end{itemize}
+
+\vspace{0.3cm}
+
+\begin{center}
+\begin{tikzpicture}
+    \node[draw, rectangle, fill=aesorange!20, minimum width=3cm] at (0,0) {15 candidati};
+    \draw[->, thick] (1.5,0) -- (2.5,0);
+    \node[draw, rectangle, fill=aesgreen!20, minimum width=2cm] at (4,0) {5 finalisti};
+    \draw[->, thick] (5,0) -- (6,0);
+    \node[draw, rectangle, fill=aesblue!30, minimum width=2cm, minimum height=0.8cm] at (7.5,0) {\textbf{Rijndael}};
+\end{tikzpicture}
+\end{center}
+
+\textbf{Vincitore (2000):} \textcolor{aesblue}{Rijndael}, sviluppato dai crittografi belgi Joan Daemen e Vincent Rijmen
+\end{frame}
+
+% Slide 7: Caratteristiche Principali
+\begin{frame}
+\frametitle{Caratteristiche di AES}
+\begin{columns}
+\column{0.5\textwidth}
+\begin{block}{Parametri Fondamentali}
+\begin{itemize}
+    \item \textbf{Tipo:} Cifrario a blocchi
+    \item \textbf{Dimensione blocco:} 128 bit (16 byte)
+    \item \textbf{Dimensioni chiave:}
+    \begin{itemize}
+        \item AES-128: 128 bit (10 round)
+        \item AES-192: 192 bit (12 round)
+        \item AES-256: 256 bit (14 round)
+    \end{itemize}
+\end{itemize}
+\end{block}
+
+\column{0.5\textwidth}
+\begin{block}{Vantaggi}
+\begin{itemize}
+    \item \textcolor{aesgreen}{Altamente sicuro}
+    \item \textcolor{aesblue}{Veloce ed efficiente}
+    \item \textcolor{aesorange}{Flessibile}
+    \item \textcolor{aesred}{Standard mondiale}
+\end{itemize}
+\end{block}
+
+\vspace{0.3cm}
+
+\textbf{Utilizzi:}
+\begin{itemize}
+    \item Wi-Fi (WPA2/WPA3)
+    \item HTTPS/TLS
+    \item VPN
+    \item Crittografia disco
+    \item Messaggistica sicura
+\end{itemize}
+\end{columns}
+\end{frame}
+
+\section{Struttura di AES}
+
+% Slide 8: Rappresentazione Dati
+\begin{frame}
+\frametitle{Come AES Rappresenta i Dati}
+\begin{block}{La Matrice di Stato (State Matrix)}
+I 16 byte del blocco sono organizzati in una matrice 4×4
+\end{block}
+
+\begin{center}
+\begin{tikzpicture}[scale=0.8]
+    % Input lineare
+    \foreach \x in {0,...,15} {
+        \draw[fill=aesblue!30] (\x*0.5,2) rectangle ++(0.4,0.4);
+        \node at (\x*0.5+0.2,2.2) {\tiny \x};
+    }
+    \node at (8,-0.5+2) {128 bit = 16 byte};
+    
+    \draw[->, thick] (4,1.5) -- (4,1);
+    \node at (5,1.25) {riorganizzazione};
+    
+    % Matrice 4x4
+    \foreach \row in {0,...,3} {
+        \foreach \col in {0,...,3} {
+            \pgfmathtruncatemacro{\val}{\col*4+\row}
+            \draw[fill=aesgreen!30] (1+\col*0.6,-0.5-\row*0.6) rectangle ++(0.5,0.5);
+            \node at (1.25+\col*0.6,-0.25-\row*0.6) {\tiny \val};
+        }
+    }
+    
+    \node at (5.5,-1) {Matrice di Stato};
+    \node at (5.5,-1.5) {(4 righe × 4 colonne)};
+\end{tikzpicture}
+\end{center}
+
+\textbf{Nota:} I byte sono disposti \textit{per colonna}, non per riga!
+\end{frame}
+
+% Slide 9: Schema Generale
+\begin{frame}
+\frametitle{Schema Generale di AES}
+\begin{center}
+\begin{tikzpicture}[scale=0.85]
+    % Input
+    \node[draw, rectangle, fill=aesblue!20, minimum width=3cm, minimum height=0.8cm] (input) at (0,0) {Plaintext (128 bit)};
+    
+    % Initial Round
+    \node[draw, rectangle, fill=aesorange!20, minimum width=3cm, minimum height=0.8cm] (initial) at (0,-1.5) {AddRoundKey};
+    
+    % Round box
+    \node[draw, rectangle, fill=aesgreen!20, minimum width=3cm, minimum height=3cm] (rounds) at (0,-4.5) {};
+    \node at (0,-3.2) {\textbf{Ripeti N volte:}};
+    \node at (0,-3.8) {1. SubBytes};
+    \node at (0,-4.3) {2. ShiftRows};
+    \node at (0,-4.8) {3. MixColumns};
+    \node at (0,-5.3) {4. AddRoundKey};
+    
+    % Final round
+    \node[draw, rectangle, fill=aesred!20, minimum width=3cm, minimum height=2cm] (final) at (0,-7.5) {};
+    \node at (0,-6.8) {\textbf{Round Finale:}};
+    \node at (0,-7.3) {1. SubBytes};
+    \node at (0,-7.8) {2. ShiftRows};
+    \node at (0,-8.3) {3. AddRoundKey};
+    
+    % Output
+    \node[draw, rectangle, fill=aesblue!20, minimum width=3cm, minimum height=0.8cm] (output) at (0,-9.5) {Ciphertext (128 bit)};
+    
+    % Key
+    \node[draw, rectangle, fill=yellow!30, minimum width=2cm] (key) at (5,-4.5) {Chiave};
+    \node at (5,-5.2) {128/192/256 bit};
+    
+    % Arrows
+    \draw[->, thick] (input) -- (initial);
+    \draw[->, thick] (initial) -- (rounds);
+    \draw[->, thick] (rounds) -- (final);
+    \draw[->, thick] (final) -- (output);
+    \draw[->, thick] (key) -- (3,-4.5);
+    
+    % Round count
+    \node at (6,-3) {N = 10 (AES-128)};
+    \node at (6,-3.5) {N = 12 (AES-192)};
+    \node at (6,-4) {N = 14 (AES-256)};
+\end{tikzpicture}
+\end{center}
+\end{frame}
+
+\section{Le Quattro Operazioni di AES}
+
+% Slide 10: SubBytes
+\begin{frame}
+\frametitle{1. SubBytes - Sostituzione}
+\begin{block}{Obiettivo}
+Sostituire ogni byte della matrice con un altro byte usando una tabella speciale chiamata \textbf{S-Box} (Substitution Box)
+\end{block}
+
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{Come funziona:}
+\begin{enumerate}
+    \item Prendi un byte (es. \texttt{0x53})
+    \item Dividi in due nibble: \texttt{5} e \texttt{3}
+    \item Usa \texttt{5} come riga, \texttt{3} come colonna
+    \item Il valore nella S-Box è il byte sostituito
+\end{enumerate}
+
+\textbf{Proprietà:}
+\begin{itemize}
+    \item \textcolor{aesgreen}{Non lineare} (confusione)
+    \item Iniettiva (ogni input → output unico)
+    \item Basata su matematica in $GF(2^8)$
+\end{itemize}
+
+\column{0.5\textwidth}
+\begin{center}
+\textbf{S-Box Semplificata (4×4)}
+\tiny
+\begin{tabular}{c|cccc}
+  & 0 & 1 & 2 & 3 \\
+\hline
+0 & 63 & 7C & 77 & 7B \\
+1 & F2 & 6B & 6F & C5 \\
+2 & 30 & 01 & 67 & 2B \\
+3 & FE & D7 & AB & 76 \\
+\end{tabular}
+\end{center}
+
+\vspace{0.3cm}
+
+\textbf{Esempio:}
+\begin{center}
+\begin{tikzpicture}[scale=0.6]
+    \node[draw, fill=aesblue!30] at (0,0) {53};
+    \draw[->, thick] (0.5,0) -- (1.5,0);
+    \node at (1,-0.5) {\tiny S-Box};
+    \node[draw, fill=aesgreen!30] at (2,0) {ED};
+\end{tikzpicture}
+\end{center}
+\end{columns}
+\end{frame}
+
+% Slide 11: ShiftRows
+\begin{frame}
+\frametitle{2. ShiftRows - Spostamento Righe}
+\begin{block}{Obiettivo}
+Spostare ciclicamente i byte di ogni riga verso sinistra di un numero fisso di posizioni
+\end{block}
+
+\begin{center}
+\begin{tikzpicture}[scale=0.8]
+    % Before
+    \node at (-1,1.5) {\textbf{Prima:}};
+    \foreach \row in {0,...,3} {
+        \foreach \col in {0,...,3} {
+            \pgfmathtruncatemacro{\val}{\col*4+\row}
+            \ifnum\row=0
+                \draw[fill=aesblue!30] (\col*0.8,1.5-\row*0.8) rectangle ++(0.7,0.7);
+            \fi
+            \ifnum\row=1
+                \draw[fill=aesgreen!30] (\col*0.8,1.5-\row*0.8) rectangle ++(0.7,0.7);
+            \fi
+            \ifnum\row=2
+                \draw[fill=aesorange!30] (\col*0.8,1.5-\row*0.8) rectangle ++(0.7,0.7);
+            \fi
+            \ifnum\row=3
+                \draw[fill=aesred!30] (\col*0.8,1.5-\row*0.8) rectangle ++(0.7,0.7);
+            \fi
+            \node at (\col*0.8+0.35,1.5-\row*0.8+0.35) {\tiny \val};
+        }
+    }
+    
+    % Arrows
+    \draw[->, ultra thick] (3.5,0) -- (4.5,0);
+    
+    % After
+    \node at (8.5,1.5) {\textbf{Dopo:}};
+    % Row 0: no shift
+    \foreach \col in {0,...,3} {
+        \pgfmathtruncatemacro{\val}{\col*4}
+        \draw[fill=aesblue!30] (5+\col*0.8,1.5) rectangle ++(0.7,0.7);
+        \node at (5+\col*0.8+0.35,1.5+0.35) {\tiny \val};
+    }
+    % Row 1: shift 1
+    \foreach \col in {0,...,3} {
+        \pgfmathtruncatemacro{\oldcol}{mod(\col+1,4)}
+        \pgfmathtruncatemacro{\val}{\oldcol*4+1}
+        \draw[fill=aesgreen!30] (5+\col*0.8,0.7) rectangle ++(0.7,0.7);
+        \node at (5+\col*0.8+0.35,0.7+0.35) {\tiny \val};
+    }
+    % Row 2: shift 2
+    \foreach \col in {0,...,3} {
+        \pgfmathtruncatemacro{\oldcol}{mod(\col+2,4)}
+        \pgfmathtruncatemacro{\val}{\oldcol*4+2}
+        \draw[fill=aesorange!30] (5+\col*0.8,-0.1) rectangle ++(0.7,0.7);
+        \node at (5+\col*0.8+0.35,-0.1+0.35) {\tiny \val};
+    }
+    % Row 3: shift 3
+    \foreach \col in {0,...,3} {
+        \pgfmathtruncatemacro{\oldcol}{mod(\col+3,4)}
+        \pgfmathtruncatemacro{\val}{\oldcol*4+3}
+        \draw[fill=aesred!30] (5+\col*0.8,-0.9) rectangle ++(0.7,0.7);
+        \node at (5+\col*0.8+0.35,-0.9+0.35) {\tiny \val};
+    }
+\end{tikzpicture}
+\end{center}
+
+\textbf{Spostamenti:}
+\begin{itemize}
+    \item Riga 0: \textcolor{aesblue}{0 posizioni} (nessuno spostamento)
+    \item Riga 1: \textcolor{aesgreen}{1 posizione} a sinistra
+    \item Riga 2: \textcolor{aesorange}{2 posizioni} a sinistra
+    \item Riga 3: \textcolor{aesred}{3 posizioni} a sinistra
+\end{itemize}
+
+\textbf{Effetto:} Diffonde i byte tra le colonne (\textit{diffusione})
+\end{frame}
+
+% Slide 12: MixColumns
+\begin{frame}
+\frametitle{3. MixColumns - Mescolamento Colonne}
+\begin{block}{Obiettivo}
+Mescolare i byte all'interno di ogni colonna usando operazioni matematiche in $GF(2^8)$
+\end{block}
+
+\textbf{Operazione:} Moltiplicazione matriciale con una matrice fissa
+
+\begin{center}
+\begin{tikzpicture}[scale=0.7]
+    % Matrix
+    \node at (-1,1) {$\begin{bmatrix}
+    02 & 03 & 01 & 01 \\
+    01 & 02 & 03 & 01 \\
+    01 & 01 & 02 & 03 \\
+    03 & 01 & 01 & 02
+    \end{bmatrix}$};
+    
+    \node at (2,1) {$\times$};
+    
+    \node at (3.5,1) {$\begin{bmatrix}
+    s_{0,j} \\
+    s_{1,j} \\
+    s_{2,j} \\
+    s_{3,j}
+    \end{bmatrix}$};
+    
+    \node at (5,1) {$=$};
+    
+    \node at (6.5,1) {$\begin{bmatrix}
+    s'_{0,j} \\
+    s'_{1,j} \\
+    s'_{2,j} \\
+    s'_{3,j}
+    \end{bmatrix}$};
+\end{tikzpicture}
+\end{center}
+
+\textbf{Nota importante:}
+\begin{itemize}
+    \item Le operazioni sono in \textcolor{aesred}{campo di Galois $GF(2^8)$}
+    \item Non è l'aritmetica normale! (es: $02 \times 03 \neq 6$)
+    \item Ogni colonna viene processata indipendentemente
+    \item \textbf{Non viene applicata} nell'ultimo round
+\end{itemize}
+
+\textbf{Effetto:} Massima diffusione - ogni byte di output dipende da tutti i byte di input della colonna
+\end{frame}
+
+% Slide 13: AddRoundKey
+\begin{frame}
+\frametitle{4. AddRoundKey - Aggiunta Chiave di Round}
+\begin{block}{Obiettivo}
+Combinare la matrice di stato con la chiave del round corrente usando XOR bit a bit
+\end{block}
+
+\begin{center}
+\begin{tikzpicture}[scale=0.8]
+    % State matrix
+    \node at (-1,1.5) {\textbf{Stato:}};
+    \foreach \row in {0,...,3} {
+        \foreach \col in {0,...,3} {
+            \draw[fill=aesblue!30] (\col*0.8,1.5-\row*0.8) rectangle ++(0.7,0.7);
+            \node at (\col*0.8+0.35,1.5-\row*0.8+0.35) {\tiny $s_{\row,\col}$};
+        }
+    }
+    
+    % XOR
+    \node[circle, draw, fill=yellow!30] at (4,0) {$\oplus$};
+    
+    % Round key
+    \node at (4.5,1.5) {\textbf{Chiave Round:}};
+    \foreach \row in {0,...,3} {
+        \foreach \col in {0,...,3} {
+            \draw[fill=aesgreen!30] (5.5+\col*0.8,1.5-\row*0.8) rectangle ++(0.7,0.7);
+            \node at (5.5+\col*0.8+0.35,1.5-\row*0.8+0.35) {\tiny $k_{\row,\col}$};
+        }
+    }
+    
+    % Result
+    \node at (9,1.5) {\textbf{Risultato:}};
+    \foreach \row in {0,...,3} {
+        \foreach \col in {0,...,3} {
+            \draw[fill=aesorange!30] (10+\col*0.8,1.5-\row*0.8) rectangle ++(0.7,0.7);
+            \node at (10+\col*0.8+0.35,1.5-\row*0.8+0.35) {\tiny $s'_{\row,\col}$};
+        }
+    }
+\end{tikzpicture}
+\end{center}
+
+\textbf{Operazione XOR (⊕):}
+\begin{center}
+\begin{tabular}{cc|c}
+A & B & A⊕B \\
+\hline
+0 & 0 & 0 \\
+0 & 1 & 1 \\
+1 & 0 & 1 \\
+1 & 1 & 0 \\
+\end{tabular}
+\end{center}
+
+\textbf{Esempio:} \texttt{10110011 ⊕ 11001010 = 01111001}
+
+\textbf{Proprietà:} Reversibile (la stessa operazione decifra!)
+\end{frame}
+
+\section{Key Expansion}
+
+% Slide 14: Espansione della Chiave
+\begin{frame}
+\frametitle{Key Expansion - Espansione della Chiave}
+\begin{block}{Problema}
+AES necessita di una chiave diversa per ogni round, ma l'utente fornisce una sola chiave iniziale
+\end{block}
+
+\textbf{Soluzione:} L'algoritmo di \textcolor{aesblue}{Key Expansion} genera tutte le chiavi di round dalla chiave originale
+
+\vspace{0.3cm}
+
+\begin{center}
+\begin{tikzpicture}[scale=0.75]
+    % Input key
+    \node[draw, rectangle, fill=yellow!30, minimum width=2.5cm] at (0,0) {Chiave Originale};
+    \node at (0,-0.6) {128/192/256 bit};
+    
+    % Expansion
+    \draw[->, ultra thick] (1.5,0) -- (2.5,0);
+    \node[draw, rectangle, fill=aesblue!20, minimum width=2cm, minimum height=1.5cm] at (4,0) {Key};
+    \node at (4,-0.3) {Expansion};
+    \node at (4,0.3) {Algorithm};
+    
+    % Output keys
+    \draw[->, ultra thick] (5.5,0) -- (6.5,0);
+    \foreach \i in {0,...,3} {
+        \node[draw, rectangle, fill=aesgreen!30, minimum width=1.5cm, minimum height=0.4cm] at (9,0.6-\i*0.5) {Round Key \i};
+    }
+    \node at (9,-1.5) {...};
+    \node[draw, rectangle, fill=aesgreen!30, minimum width=1.5cm, minimum height=0.4cm] at (9,-2) {Round Key N};
+\end{tikzpicture}
+\end{center}
+
+\textbf{Numero di chiavi generate:}
+\begin{itemize}
+    \item AES-128: 11 chiavi (1 iniziale + 10 round)
+    \item AES-192: 13 chiavi (1 iniziale + 12 round)
+    \item AES-256: 15 chiavi (1 iniziale + 14 round)
+\end{itemize}
+\end{frame}
+
+% Slide 15: Come Funziona Key Expansion
+\begin{frame}
+\frametitle{Come Funziona la Key Expansion}
+\textbf{Processo semplificato per AES-128:}
+
+\begin{enumerate}
+    \item La chiave di 128 bit viene divisa in 4 \textit{word} (parole) di 32 bit ciascuna: $W_0, W_1, W_2, W_3$
+    \item Per generare le nuove word ($W_4, W_5, ..., W_{43}$):
+    \begin{itemize}
+        \item \textbf{Se} la posizione è multipla di 4: applica una trasformazione speciale
+        \begin{enumerate}
+            \item \textcolor{aesred}{RotWord}: ruota i byte
+            \item \textcolor{aesblue}{SubWord}: applica S-Box
+            \item \textcolor{aesgreen}{XOR con costante}: Rcon
+        \end{enumerate}
+        \item \textbf{Altrimenti}: semplice XOR con le word precedenti
+    \end{itemize}
+\end{enumerate}
+
+\vspace{0.3cm}
+
+\begin{center}
+\begin{tikzpicture}[scale=0.7]
+    \node[draw, rectangle, fill=yellow!30] at (0,0) {$W_{i-4}$};
+    \node[circle, draw, fill=aesblue!30] at (2,0) {⊕};
+    \node[draw, rectangle, fill=aesgreen!30] at (4,0) {g($W_{i-1}$)};
+    \draw[->, thick] (0.8,0) -- (1.5,0);
+    \draw[->, thick] (4.8,0) -- (5.5,0);
+    \node[draw, rectangle, fill=aesorange!30] at (7,0) {$W_i$};
+    \draw[->, thick] (2.5,0) -- (6.2,0);
+    
+    \node at (4,-1) {\footnotesize $g()$ = RotWord + SubWord + Rcon};
+\end{tikzpicture}
+\end{center}
+
+\textbf{Proprietà importante:} Ogni bit della chiave influenza tutti i round successivi (effetto valanga)
+\end{frame}
+
+\section{Decifratura}
+
+% Slide 16: Decifratura AES
+\begin{frame}
+\frametitle{Decifratura con AES}
+\begin{block}{Principio Fondamentale}
+La decifratura è il \textbf{processo inverso} della cifratura, applicato in ordine inverso
+\end{block}
+
+\begin{columns}
+\column{0.48\textwidth}
+\begin{center}
+\textbf{\textcolor{aesgreen}{CIFRATURA}}
+\end{center}
+\begin{enumerate}
+    \item AddRoundKey
+    \item \textbf{Per ogni round:}
+    \begin{itemize}
+        \item SubBytes
+        \item ShiftRows
+        \item MixColumns
+        \item AddRoundKey
+    \end{itemize}
+    \item \textbf{Round finale:}
+    \begin{itemize}
+        \item SubBytes
+        \item ShiftRows
+        \item AddRoundKey
+    \end{itemize}
+\end{enumerate}
+
+\column{0.48\textwidth}
+\begin{center}
+\textbf{\textcolor{aesred}{DECIFRATURA}}
+\end{center}
+\begin{enumerate}
+    \item AddRoundKey
+    \item \textbf{Per ogni round:}
+    \begin{itemize}
+        \item \textcolor{aesred}{InvShiftRows}
+        \item \textcolor{aesred}{InvSubBytes}
+        \item AddRoundKey
+        \item \textcolor{aesred}{InvMixColumns}
+    \end{itemize}
+    \item \textbf{Round finale:}
+    \begin{itemize}
+        \item \textcolor{aesred}{InvShiftRows}
+        \item \textcolor{aesred}{InvSubBytes}
+        \item AddRoundKey
+    \end{itemize}
+\end{enumerate}
+\end{columns}
+
+\vspace{0.3cm}
+\textbf{Nota:} Le chiavi di round sono usate in ordine inverso!
+\end{frame}
+
+% Slide 17: Operazioni Inverse
+\begin{frame}
+\frametitle{Le Operazioni Inverse}
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{InvSubBytes}
+\begin{itemize}
+    \item Usa la \textcolor{aesred}{S-Box inversa}
+    \item Stessa logica ma tabella diversa
+    \item $s = \text{S-Box}(x)$ ⟹ $x = \text{InvS-Box}(s)$
+\end{itemize}
+
+\vspace{0.3cm}
+
+\textbf{InvShiftRows}
+\begin{itemize}
+    \item Spostamento verso \textcolor{aesred}{destra}
+    \item Riga 0: 0 posizioni
+    \item Riga 1: 1 posizione (→)
+    \item Riga 2: 2 posizioni (→)
+    \item Riga 3: 3 posizioni (→)
+\end{itemize}
+
+\column{0.5\textwidth}
+\textbf{InvMixColumns}
+\begin{itemize}
+    \item Usa una \textcolor{aesred}{matrice inversa}
+    \item Stessa operazione matematica
+    \item Annulla l'effetto di MixColumns
+\end{itemize}
+
+\vspace{0.2cm}
+
+$$\begin{bmatrix}
+0E & 0B & 0D & 09 \\
+09 & 0E & 0B & 0D \\
+0D & 09 & 0E & 0B \\
+0B & 0D & 09 & 0E
+\end{bmatrix}$$
+
+\vspace{0.3cm}
+
+\textbf{AddRoundKey}
+\begin{itemize}
+    \item \textcolor{aesgreen}{Identica!} XOR è auto-inversa
+\end{itemize}
+\end{columns}
+\end{frame}
+
+\section{Modi di Operazione}
+
+% Slide 18: Modi di Operazione
+\begin{frame}
+\frametitle{Modi di Operazione di AES}
+\begin{block}{Problema}
+AES cifra solo blocchi di 128 bit. Come gestiamo messaggi più lunghi?
+\end{block}
+
+\textbf{Soluzione:} I \textcolor{aesblue}{modi di operazione} definiscono come applicare AES a messaggi di lunghezza arbitraria
+
+\vspace{0.3cm}
+
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{Modi principali:}
+\begin{itemize}
+    \item \textbf{ECB} - Electronic Codebook
+    \item \textbf{CBC} - Cipher Block Chaining
+    \item \textbf{CTR} - Counter
+    \item \textbf{GCM} - Galois/Counter Mode
+\end{itemize}
+
+\column{0.5\textwidth}
+\textbf{Caratteristiche:}
+\begin{itemize}
+    \item \textcolor{aesgreen}{Parallelizzazione}
+    \item \textcolor{aesblue}{Resistenza agli attacchi}
+    \item \textcolor{aesorange}{Gestione errori}
+    \item \textcolor{aesred}{Autenticazione}
+\end{itemize}
+\end{columns}
+\end{frame}
+
+% Slide 19: ECB vs CBC
+\begin{frame}
+\frametitle{ECB vs CBC}
+\begin{columns}
+\column{0.5\textwidth}
+\begin{center}
+\textbf{ECB - Electronic Codebook}
+\end{center}
+\begin{tikzpicture}[scale=0.6]
+    \node[draw, rectangle, fill=aesblue!30] (p1) at (0,2) {$P_1$};
+    \node[draw, rectangle, fill=aesblue!30] (p2) at (0,0) {$P_2$};
+    
+    \node[draw, rectangle, fill=aesgreen!30] (e1) at (2,2) {AES};
+    \node[draw, rectangle, fill=aesgreen!30] (e2) at (2,0) {AES};
+    
+    \node[draw, rectangle, fill=aesred!30] (c1) at (4,2) {$C_1$};
+    \node[draw, rectangle, fill=aesred!30] (c2) at (4,0) {$C_2$};
+    
+    \draw[->, thick] (p1) -- (e1);
+    \draw[->, thick] (p2) -- (e2);
+    \draw[->, thick] (e1) -- (c1);
+    \draw[->, thick] (e2) -- (c2);
+    
+    \node[draw, rectangle, fill=yellow!30] (k) at (2,-1.5) {Key};
+    \draw[->, thick] (k) -- (e2);
+    \draw[->, thick] (k) -- (2,1.5);
+\end{tikzpicture}
+
+\textcolor{aesred}{\textbf{PROBLEMA:}} Blocchi identici → cifrati identici
+
+\vspace{0.2cm}
+\small
+Esempio: l'immagine del pinguino Tux cifrata con ECB mostra il pattern originale
+
+\column{0.5\textwidth}
+\begin{center}
+\textbf{CBC - Cipher Block Chaining}
+\end{center}
+\begin{tikzpicture}[scale=0.6]
+    \node[draw, rectangle, fill=aesorange!30] (iv) at (-1,3) {IV};
+    
+    \node[draw, rectangle, fill=aesblue!30] (p1) at (0,2) {$P_1$};
+    \node[circle, draw] (xor1) at (1,2) {⊕};
+    \node[draw, rectangle, fill=aesgreen!30] (e1) at (2.5,2) {AES};
+    \node[draw, rectangle, fill=aesred!30] (c1) at (4,2) {$C_1$};
+    
+    \node[draw, rectangle, fill=aesblue!30] (p2) at (0,0) {$P_2$};
+    \node[circle, draw] (xor2) at (1,0) {⊕};
+    \node[draw, rectangle, fill=aesgreen!30] (e2) at (2.5,0) {AES};
+    \node[draw, rectangle, fill=aesred!30] (c2) at (4,0) {$C_2$};
+    
+    \draw[->, thick] (iv) -- (xor1);
+    \draw[->, thick] (p1) -- (xor1);
+    \draw[->, thick] (xor1) -- (e1);
+    \draw[->, thick] (e1) -- (c1);
+    
+    \draw[->, thick] (p2) -- (xor2);
+    \draw[->, thick] (c1) |- (1,1) -- (xor2);
+    \draw[->, thick] (xor2) -- (e2);
+    \draw[->, thick] (e2) -- (c2);
+\end{tikzpicture}
+
+\textcolor{aesgreen}{\textbf{VANTAGGIO:}} Ogni blocco dipende dai precedenti
+\begin{itemize}
+    \item Usa un IV (Initialization Vector)
+    \item Più sicuro di ECB
+\end{itemize}
+\end{columns}
+\end{frame}
+
+% Slide 20: CTR e GCM
+\begin{frame}
+\frametitle{CTR e GCM - Modi Moderni}
+\begin{columns}
+\column{0.5\textwidth}
+\begin{center}
+\textbf{CTR - Counter Mode}
+\end{center}
+\begin{tikzpicture}[scale=0.55]
+    \node[draw, rectangle, fill=yellow!30] (ctr1) at (0,2) {CTR+0};
+    \node[draw, rectangle, fill=aesgreen!30] (e1) at (1.5,2) {AES};
+    \node[circle, draw] (xor1) at (3,2) {⊕};
+    \node[draw, rectangle, fill=aesblue!30] (p1) at (3,3) {$P_1$};
+    \node[draw, rectangle, fill=aesred!30] (c1) at (4.5,2) {$C_1$};
+    
+    \node[draw, rectangle, fill=yellow!30] (ctr2) at (0,0) {CTR+1};
+    \node[draw, rectangle, fill=aesgreen!30] (e2) at (1.5,0) {AES};
+    \node[circle, draw] (xor2) at (3,0) {⊕};
+    \node[draw, rectangle, fill=aesblue!30] (p2) at (3,1) {$P_2$};
+    \node[draw, rectangle, fill=aesred!30] (c2) at (4.5,0) {$C_2$};
+    
+    \draw[->, thick] (ctr1) -- (e1);
+    \draw[->, thick] (e1) -- (xor1);
+    \draw[->, thick] (p1) -- (xor1);
+    \draw[->, thick] (xor1) -- (c1);
+    
+    \draw[->, thick] (ctr2) -- (e2);
+    \draw[->, thick] (e2) -- (xor2);
+    \draw[->, thick] (p2) -- (xor2);
+    \draw[->, thick] (xor2) -- (c2);
+\end{tikzpicture}
+
+\textbf{Vantaggi:}
+\begin{itemize}
+    \item \textcolor{aesgreen}{Parallelizzabile}
+    \item Accesso casuale ai blocchi
+    \item Simmetrico (cifra=decifra)
+\end{itemize}
+
+\column{0.5\textwidth}
+\begin{center}
+\textbf{GCM - Galois/Counter Mode}
+\end{center}
+\begin{tikzpicture}[scale=0.6]
+    \node[draw, rectangle, fill=aesblue!30, minimum width=2cm] at (0,2) {Plaintext};
+    \draw[->, thick] (0,1.5) -- (0,1);
+    \node[draw, rectangle, fill=aesgreen!30, minimum width=2cm] at (0,0.5) {CTR Mode};
+    \draw[->, thick] (0,0) -- (0,-0.5);
+    \node[draw, rectangle, fill=aesred!30, minimum width=2cm] at (0,-1) {Ciphertext};
+    
+    \draw[->, thick] (1.2,-1) -- (2,-1);
+    \node[draw, rectangle, fill=aesorange!30, minimum width=1.5cm] at (3,-1) {GHASH};
+    \draw[->, thick] (3.8,-1) -- (4.5,-1);
+    \node[draw, rectangle, fill=yellow!30, minimum width=1.2cm] at (5.5,-1) {TAG};
+\end{tikzpicture}
+
+\vspace{0.3cm}
+
+\textbf{GCM = CTR + Autenticazione}
+
+\textbf{Vantaggi:}
+\begin{itemize}
+    \item \textcolor{aesgreen}{Cifratura + autenticazione}
+    \item Rileva manomissioni
+    \item Standard per TLS 1.3
+    \item \textbf{Molto usato oggi!}
+\end{itemize}
+\end{columns}
+\end{frame}
+
+\section{Sicurezza di AES}
+
+% Slide 21: Robustezza di AES
+\begin{frame}
+\frametitle{Quanto è Sicuro AES?}
+\begin{block}{Forza Brute-Force}
+Tentare tutte le chiavi possibili
+\end{block}
+
+\begin{center}
+\begin{tabular}{|l|c|c|c|}
+\hline
+\textbf{Variante} & \textbf{Chiavi Possibili} & \textbf{Tempo Stimato*} & \textbf{Sicurezza} \\
+\hline
+AES-128 & $2^{128}$ ≈ $3.4 \times 10^{38}$ & Miliardi di anni & \textcolor{aesgreen}{Alta} \\
+\hline
+AES-192 & $2^{192}$ ≈ $6.3 \times 10^{57}$ & Eoni & \textcolor{aesgreen}{Altissima} \\
+\hline
+AES-256 & $2^{256}$ ≈ $1.1 \times 10^{77}$ & Oltre l'età dell'universo & \textcolor{aesgreen}{Estrema} \\
+\hline
+\end{tabular}
+\end{center}
+
+\footnotesize *Con computer attuali che provano 1 miliardo di chiavi/secondo
+
+\vspace{0.3cm}
+
+\textbf{Per confronto:}
+\begin{itemize}
+    \item Atomi nell'universo osservabile: $≈ 10^{80}$
+    \item AES-256 ha quasi lo stesso numero di chiavi!
+\end{itemize}
+
+\vspace{0.2cm}
+
+\textcolor{aesblue}{\textbf{Conclusione:}} AES è praticamente \textbf{inattaccabile} con la tecnologia attuale
+\end{frame}
+
+% Slide 22: Attacchi Conosciuti
+\begin{frame}
+\frametitle{Attacchi Teorici e Pratici}
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{Attacchi Teorici}
+\begin{itemize}
+    \item \textbf{Biclique Attack (2011)}
+    \begin{itemize}
+        \item Riduce la complessità di AES-128 a $2^{126.1}$
+        \item Miglioramento trascurabile
+        \item \textcolor{aesgreen}{Non pratico}
+    \end{itemize}
+    \item \textbf{Related-Key Attacks}
+    \begin{itemize}
+        \item Funzionano solo in scenari irrealistici
+        \item Richiedono chiavi correlate
+        \item \textcolor{aesgreen}{Non applicabili in pratica}
+    \end{itemize}
+\end{itemize}
+
+\column{0.5\textwidth}
+\textbf{Minacce Reali}
+\begin{itemize}
+    \item \textcolor{aesred}{\textbf{Implementazioni deboli}}
+    \begin{itemize}
+        \item Side-channel attacks
+        \item Timing attacks
+        \item Cache attacks
+    \end{itemize}
+    \item \textcolor{aesred}{\textbf{Gestione chiavi}}
+    \begin{itemize}
+        \item Chiavi deboli
+        \item Riutilizzo di IV
+        \item Storage non sicuro
+    \end{itemize}
+    \item \textcolor{aesred}{\textbf{Modi d'uso errati}}
+    \begin{itemize}
+        \item ECB per dati ripetitivi
+        \item Padding oracle attacks
+    \end{itemize}
+\end{itemize}
+\end{columns}
+
+\vspace{0.3cm}
+\begin{alertblock}{Importante}
+AES è sicuro, ma deve essere \textbf{implementato e usato correttamente}!
+\end{alertblock}
+\end{frame}
+
+% Slide 23: Computer Quantistici
+\begin{frame}
+\frametitle{AES e Computer Quantistici}
+\begin{block}{La Minaccia Quantistica}
+I computer quantistici potrebbero rompere molti algoritmi crittografici
+\end{block}
+
+\textbf{Algoritmo di Grover (1996):}
+\begin{itemize}
+    \item Ricerca in uno spazio di $N$ elementi
+    \item Computer classico: $O(N)$ operazioni
+    \item Computer quantistico: $O(\sqrt{N})$ operazioni
+\end{itemize}
+
+\vspace{0.3cm}
+
+\textbf{Impatto su AES:}
+
+\begin{center}
+\begin{tikzpicture}[scale=0.8]
+    \draw[fill=aesblue!30] (0,0) rectangle (3,1);
+    \node at (1.5,0.5) {AES-128};
+    \node at (1.5,1.5) {$2^{128}$ bit sicurezza};
+    \draw[->, thick, red] (3.5,0.5) -- (4.5,0.5);
+    \node at (4,1.2) {Grover};
+    \draw[fill=aesorange!30] (5,0) rectangle (8,1);
+    \node at (6.5,0.5) {AES-128};
+    \node at (6.5,1.5) {$2^{64}$ bit sicurezza};
+    
+    \draw[fill=aesgreen!30] (0,-2) rectangle (3,-1);
+    \node at (1.5,-1.5) {AES-256};
+    \node at (1.5,-0.5) {$2^{256}$ bit sicurezza};
+    \draw[->, thick, red] (3.5,-1.5) -- (4.5,-1.5);
+    \node at (4,-0.8) {Grover};
+    \draw[fill=aesgreen!30] (5,-2) rectangle (8,-1);
+    \node at (6.5,-1.5) {AES-256};
+    \node at (6.5,-0.5) {$2^{128}$ bit sicurezza};
+\end{tikzpicture}
+\end{center}
+
+\textbf{Conclusione:}
+\begin{itemize}
+    \item AES-128 diventa vulnerabile
+    \item \textcolor{aesgreen}{AES-256 rimane sicuro} anche contro computer quantistici
+\end{itemize}
+\end{frame}
+
+\section{Applicazioni Pratiche}
+
+% Slide 24: Dove si Usa AES
+\begin{frame}
+\frametitle{Applicazioni di AES nel Mondo Reale}
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{Comunicazioni:}
+\begin{itemize}
+    \item \textbf{Wi-Fi}: WPA2/WPA3
+    \item \textbf{VPN}: OpenVPN, IPsec
+    \item \textbf{TLS/SSL}: HTTPS
+    \item \textbf{Messaggistica}: Signal, WhatsApp
+    \item \textbf{SSH}: connessioni sicure
+\end{itemize}
+
+\vspace{0.3cm}
+
+\textbf{Storage:}
+\begin{itemize}
+    \item BitLocker (Windows)
+    \item FileVault (macOS)
+    \item LUKS (Linux)
+    \item Crittografia database
+    \item Cloud storage (Google Drive, Dropbox)
+\end{itemize}
+
+\column{0.5\textwidth}
+\textbf{File e Archivi:}
+\begin{itemize}
+    \item 7-Zip (cifratura archivi)
+    \item WinRAR
+    \item PDF cifrati
+    \item Office (Word, Excel)
+\end{itemize}
+
+\vspace{0.3cm}
+
+\textbf{Multimedia:}
+\begin{itemize}
+    \item Streaming protetto (DRM)
+    \item Videogiochi (protezione)
+\end{itemize}
+
+\vspace{0.3cm}
+
+\textbf{Hardware:}
+\begin{itemize}
+    \item Processori moderni (AES-NI)
+    \item Smartphone
+    \item Dispositivi IoT
+    \item Smart card
+\end{itemize}
+\end{columns}
+
+\vspace{0.3cm}
+\begin{center}
+\colorbox{aesblue!20}{\textbf{AES è ovunque nella nostra vita digitale!}}
+\end{center}
+\end{frame}
+
+% Slide 25: Accelerazione Hardware
+\begin{frame}
+\frametitle{Accelerazione Hardware: AES-NI}
+\begin{block}{AES-NI (AES New Instructions)}
+Set di istruzioni nei processori moderni per accelerare AES
+\end{block}
+
+\textbf{Vantaggi:}
+\begin{columns}
+\column{0.5\textwidth}
+\begin{itemize}
+    \item \textcolor{aesgreen}{\textbf{Velocità}}: 4-10× più veloce
+    \item \textcolor{aesblue}{\textbf{Sicurezza}}: resistente a side-channel
+    \item \textcolor{aesorange}{\textbf{Efficienza}}: meno consumo energetico
+\end{itemize}
+
+\column{0.5\textwidth}
+\begin{center}
+\begin{tikzpicture}[scale=0.7]
+    \draw[fill=aesred!30] (0,2) rectangle (2,3);
+    \node at (1,2.5) {Software};
+    \node at (1,3.5) {100 MB/s};
+    
+    \draw[fill=aesgreen!30] (3,0.5) rectangle (5,3);
+    \node at (4,1.75) {AES-NI};
+    \node at (4,3.5) {1000 MB/s};
+    
+    \draw[->, ultra thick] (2.2,2.5) -- (2.8,2);
+    \node at (2.5,3) {\textbf{10×}};
+\end{tikzpicture}
+\end{center}
+\end{columns}
+
+\vspace{0.3cm}
+
+\textbf{Disponibilità:}
+\begin{itemize}
+    \item Intel: dal 2010 (Westmere)
+    \item AMD: dal 2011 (Bulldozer)
+    \item ARM: ARMv8 Cryptography Extensions
+    \item Smartphone moderni
+\end{itemize}
+
+\textbf{Risultato:} Crittografia AES praticamente "gratis" in termini di performance
+\end{frame}
+
+% Slide 26: Esempio Pratico Python
+\begin{frame}[fragile]
+\frametitle{Esempio Pratico in Python}
+\textbf{Uso di AES con la libreria \texttt{cryptography}:}
+
+\begin{lstlisting}[language=Python, basicstyle=\tiny, frame=single]
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+from cryptography.hazmat.backends import default_backend
+import os
+
+# Generazione chiave casuale (256 bit)
+key = os.urandom(32)  # 32 byte = 256 bit
+
+# Generazione IV casuale (128 bit)
+iv = os.urandom(16)   # 16 byte = 128 bit
+
+# Creazione del cifrario AES in modalita CBC
+cipher = Cipher(
+    algorithms.AES(key),
+    modes.CBC(iv),
+    backend=default_backend()
+)
+
+# Cifratura
+plaintext = b"Messaggio segreto per la scuola!"
+# Padding necessario per blocchi di 16 byte
+plaintext_padded = plaintext + b'\x00' * (16 - len(plaintext) % 16)
+
+encryptor = cipher.encryptor()
+ciphertext = encryptor.update(plaintext_padded) + encryptor.finalize()
+
+print(f"Testo cifrato: {ciphertext.hex()}")
+
+# Decifratura
+decryptor = cipher.decryptor()
+decrypted = decryptor.update(ciphertext) + decryptor.finalize()
+print(f"Testo decifrato: {decrypted.rstrip(b'\\x00').decode()}")
+\end{lstlisting}
+\end{frame}
+
+\section{Conclusioni}
+
+% Slide 27: Punti Chiave
+\begin{frame}
+\frametitle{Punti Chiave da Ricordare}
+\begin{enumerate}
+    \item \textbf{AES è lo standard mondiale} per la crittografia simmetrica
+    \begin{itemize}
+        \item Sicuro, veloce, versatile
+    \end{itemize}
+    
+    \item \textbf{Struttura basata su 4 operazioni}
+    \begin{itemize}
+        \item SubBytes (confusione)
+        \item ShiftRows (diffusione)
+        \item MixColumns (diffusione)
+        \item AddRoundKey (combinazione con chiave)
+    \end{itemize}
+    
+    \item \textbf{Sicurezza eccezionale}
+    \begin{itemize}
+        \item Nessun attacco pratico conosciuto
+        \item AES-256 resistente anche ai computer quantistici
+    \end{itemize}
+    
+    \item \textbf{Modi di operazione} essenziali per sicurezza reale
+    \begin{itemize}
+        \item Evitare ECB
+        \item Preferire GCM per autenticazione
+    \end{itemize}
+    
+    \item \textbf{Accelerazione hardware} rende AES velocissimo
+\end{enumerate}
+\end{frame}
+
+% Slide 28: Risorse
+\begin{frame}
+\frametitle{Risorse per Approfondire}
+\textbf{Documentazione Ufficiale:}
+\begin{itemize}
+    \item FIPS 197 - Specifica ufficiale AES
+    \item NIST Special Publications
+\end{itemize}
+
+\vspace{0.3cm}
+
+\textbf{Tool Online:}
+\begin{itemize}
+    \item \url{https://www.cryptool.org/} - CrypTool (simulazioni)
+    \item \url{https://aesencryption.net/} - AES Calculator
+    \item \url{https://www.javainuse.com/aesgenerator} - AES Generator
+\end{itemize}
+
+\vspace{0.3cm}
+
+\textbf{Libri Consigliati:}
+\begin{itemize}
+    \item "Understanding Cryptography" - Paar \& Pelzl
+    \item "The Design of Rijndael" - Daemen \& Rijmen
+\end{itemize}
+
+\vspace{0.3cm}
+
+\textbf{Video e Corsi:}
+\begin{itemize}
+    \item Coursera - Cryptography I (Stanford)
+    \item YouTube - Computerphile (video su AES)
+\end{itemize}
+\end{frame}
+
+% Slide 29: Quiz Finale
+\begin{frame}
+\frametitle{Quiz di Verifica}
+\begin{enumerate}
+    \item Qual è la dimensione del blocco in AES?
+    \begin{itemize}
+        \item[$\square$] 64 bit
+        \item[$\square$] 128 bit
+        \item[$\square$] 256 bit
+    \end{itemize}
+    
+    \item Quanti round ha AES-192?
+    \begin{itemize}
+        \item[$\square$] 10
+        \item[$\square$] 12
+        \item[$\square$] 14
+    \end{itemize}
+    
+    \item Quale operazione NON viene applicata nell'ultimo round?
+    \begin{itemize}
+        \item[$\square$] SubBytes
+        \item[$\square$] MixColumns
+        \item[$\square$] AddRoundKey
+    \end{itemize}
+    
+    \item Quale modo di operazione include autenticazione?
+    \begin{itemize}
+        \item[$\square$] ECB
+        \item[$\square$] CBC
+        \item[$\square$] GCM
+    \end{itemize}
+\end{enumerate}
+
+\vspace{0.3cm}
+\textit{Risposte: 1-B, 2-B, 3-B, 4-C}
+\end{frame}
+
+% Slide 30: Grazie
+\begin{frame}
+\frametitle{}
+\begin{center}
+\Huge{\textbf{Grazie per l'attenzione!}}
+
+\vspace{1cm}
+
+\Large{Domande?}
+
+\vspace{1cm}
+
+\normalsize
+\textcolor{aesblue}{\textbf{Prof. Massimo}}\\
+IIS Fermi Sacconi Ceci\\
+Ascoli Piceno
+
+\vspace{0.5cm}
+
+\textit{"La crittografia è l'arte di scrivere in codice.\\
+AES è il suo capolavoro moderno."}
+\end{center}
+\end{frame}
+
+\end{document}
