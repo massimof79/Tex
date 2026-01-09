@@ -1,0 +1,1291 @@
+\documentclass[aspectratio=169]{beamer}
+\usetheme{Madrid}
+
+\usepackage[italian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows,positioning}
+
+\tikzstyle{entity}=[draw, rectangle, minimum width=2.8cm, minimum height=1cm]
+\tikzstyle{relationship}=[draw, diamond, aspect=2]
+\tikzstyle{attribute}=[draw, ellipse]
+\tikzstyle{line}=[draw]
+
+\title{Progettazione logica delle basi di dati}
+\subtitle{Ristrutturazione dello schema Entità--Relazione}
+\author{Prof. Fedeli Massimo - Tutti i diritti riservati}
+\date{}
+
+\begin{document}
+	
+	%------------------------------------------------
+	\begin{frame}
+		\titlepage
+	\end{frame}
+	
+
+	
+	%------------------------------------------------
+	\begin{frame}{Perché non basta tradurre lo schema ER}
+		Lo schema ER consente costrutti che il modello relazionale non supporta
+		direttamente.
+		
+		\vspace{0.3cm}
+		Ad esempio:
+		\begin{itemize}
+			\item attributi multivalore;
+			\item attributi composti;
+			\item gerarchie ISA;
+			\item generalizzazioni.
+		\end{itemize}
+		
+		\vspace{0.2cm}
+		Per questo è necessaria una fase di ristrutturazione.
+	\end{frame}
+	
+	
+	%------------------------------------------------
+	\begin{frame}{Il concetto di carico applicativo}
+		Quando si progetta un database è fondamentale sapere come verrà usato.
+		
+		\vspace{0.3cm}
+		Il \textbf{carico applicativo} descrive:
+		\begin{itemize}
+			\item quali operazioni vengono eseguite;
+			\item con quale frequenza;
+			\item su quali dati.
+		\end{itemize}
+		
+		\vspace{0.2cm}
+		Queste informazioni influenzano le scelte progettuali.
+	\end{frame}
+	
+	%------------------------------------------------
+	\begin{frame}{Perché il carico applicativo è importante}
+		Due schemi equivalenti dal punto di vista dei dati possono avere
+		\textbf{prestazioni} molto diverse.
+		
+		\vspace{0.3cm}
+		Conoscere il carico applicativo permette di:
+		\begin{itemize}
+			\item valutare i costi delle operazioni;
+			\item decidere se mantenere o eliminare ridondanze;
+			\item migliorare l'efficienza complessiva del sistema.
+		\end{itemize}
+	\end{frame}
+	
+	%------------------------------------------------
+	\begin{frame}{Schema ER di esempio}
+		Consideriamo uno schema semplificato con impiegati e dipartimenti.
+		
+		\centering
+		\begin{tikzpicture}[node distance=2.2cm]
+			\node[entity] (I) {Impiegato};
+			\node[entity, right=4cm of I] (D) {Dipartimento};
+			\node[relationship, below=1.5cm of I] (A) {Afferenza};
+			
+			\draw[line] (I) -- node[left]{(1,1)} (A);
+			\draw[line] (A) -- node[right]{(1,n)} (D);
+		\end{tikzpicture}
+		
+		\vspace{0.2cm}
+		Ogni impiegato lavora in un solo dipartimento, mentre un dipartimento
+		può avere più impiegati.
+	\end{frame}
+	
+	%------------------------------------------------
+	\begin{frame}{Ristrutturazione dello schema ER}
+		La ristrutturazione consiste nel modificare lo schema ER per renderlo
+		\textbf{compatibile} con il modello relazionale.
+		
+		\vspace{0.3cm}
+		Non si perdono informazioni, ma:
+		\begin{itemize}
+			\item si semplifica la struttura;
+			\item si rendono espliciti i vincoli;
+			\item si prepara lo schema alla traduzione.
+		\end{itemize}
+	\end{frame}
+	
+	%------------------------------------------------
+	\begin{frame}{Attività della ristrutturazione}
+		Le principali attività della ristrutturazione sono:
+		
+		\begin{enumerate}
+			\item analisi delle ridondanze;
+			\item eliminazione degli attributi multivalore;
+			\item eliminazione degli attributi composti;
+			\item eliminazione di ISA e generalizzazioni;
+			\item scelta degli identificatori principali.
+		\end{enumerate}
+	\end{frame}
+	
+	%------------------------------------------------
+\begin{frame}{Ridondanza: definizione}
+	Una \textbf{ridondanza} è un'informazione che può essere derivata da altre
+	informazioni già presenti nello schema.
+	
+	\vspace{0.3cm}
+	Esempio:
+	\begin{itemize}
+		\item \textbf{numero di abitanti} di una città;
+		\item \textbf{derivabile} dal numero di persone residenti.
+	\end{itemize}
+	
+	\vspace{0.4cm}
+	\centering
+	\begin{tikzpicture}[node distance=1.8cm]
+		
+		\node[entity] (Persona) {Persona};
+		\node[entity, right=4cm of Persona] (Citta) {Città};
+		
+		\node[relationship, below=0.5cm of Persona] (Res) {Residenza};
+		
+		\draw[line] (Persona) -- node[left]{(1,1)} (Res);
+		\draw[line] (Res) -- node[right]{(0,n)} (Citta);
+		
+		\node[attribute, above=0.5cm of Citta] (Ab) {NumAbitanti};
+		\draw[line,dashed] (Citta) -- (Ab);
+		
+	\end{tikzpicture}
+	
+.
+\end{frame}
+
+\begin{frame}{Ridondanza: osservazione}
+		\vspace{0.2cm}
+	\small
+	\textbf{Osservazione:} l'attributo \emph{NumAbitanti} è ridondante perché può
+	essere \textbf{calcolato} contando le persone collegate alla città tramite
+	la relazione \emph{Residenza}
+\end{frame}
+	
+
+
+\begin{frame}{Vantaggi e svantaggi delle ridondanze}
+	\begin{columns}[T]
+		
+		%---------------------------------
+		% COLONNA SINISTRA – TESTO
+		%---------------------------------
+		\begin{column}{0.55\textwidth}
+			Mantenere una ridondanza può avere effetti diversi sulle prestazioni
+			e sulla gestione dei dati.
+			
+			\vspace{0.3cm}
+			\textbf{Vantaggi (lettura):}
+			\begin{itemize}
+				\item interrogazioni più veloci;
+				\item meno accessi ai dati.
+			\end{itemize}
+			
+			\vspace{0.2cm}
+			\textbf{Svantaggi (aggiornamento):}
+			\begin{itemize}
+				\item aggiornamenti più complessi;
+				\item rischio di incoerenza;
+				\item maggiore occupazione di spazio.
+			\end{itemize}
+			
+			\vspace{0.2cm}
+			\small
+			\textbf{In sintesi:} la ridondanza favorisce le interrogazioni,
+			ma rende più delicata la gestione degli aggiornamenti.
+		\end{column}
+		
+		%---------------------------------
+		% COLONNA DESTRA – SCHEMA ER
+		%---------------------------------
+		\begin{column}{0.45\textwidth}
+			\centering
+			\begin{tikzpicture}[node distance=2.4cm, scale=0.9, transform shape]
+				
+				\node[entity] (Citta) {Città};
+				\node[entity, below=2.8cm of Citta] (Persona) {Persona};
+				
+				\node[relationship, right=1.8cm of Persona] (Res) {Residenza};
+				
+				\draw[line] (Citta) -- node[right]{(0,n)} (Res);
+				\draw[line] (Res) -- node[below]{(1,1)} (Persona);
+				
+				\node[attribute, above=0.9cm of Citta] (Num) {NumAbitanti};
+				\draw[line,dashed] (Citta) -- (Num);
+				
+				\node[below=1.2cm of Persona, align=center, text width=3.5cm] {
+					\footnotesize
+					\textbf{Lettura:}\\
+					1 accesso\\
+					\vspace{0.1cm}
+					\textbf{Aggiornamento:}\\
+					2 scritture
+				};
+				
+			\end{tikzpicture}
+		\end{column}
+		
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Esempio di ristrutturazione: schema iniziale}
+	Consideriamo un sistema che gestisce persone e città di residenza.
+	
+	\vspace{0.3cm}
+	Nello schema iniziale \textbf{non è presente alcuna ridondanza}:
+	il numero di abitanti di una città può essere \textbf{calcolato} contando
+	le persone residenti.
+	
+	\begin{columns}[T]
+		\begin{column}{0.55\textwidth}
+			\begin{itemize}
+				\item Ogni persona risiede in una sola città
+				\item Una città può avere molte persone
+				\item Il numero di abitanti non è memorizzato
+			\end{itemize}
+		\end{column}
+		
+		\begin{column}{0.45\textwidth}
+			\centering
+			\begin{tikzpicture}[node distance=2.4cm, scale=0.9, transform shape]
+				
+				\node[entity] (Persona) {Persona};
+				\node[entity, above=2.6cm of Persona] (Citta) {Città};
+				
+				\node[relationship, right=1.8cm of Persona] (Res) {Residenza};
+				
+				\draw[line] (Persona) -- node[below]{(1,1)} (Res);
+				\draw[line] (Res) -- node[right]{(0,n)} (Citta);
+				
+			\end{tikzpicture}
+		\end{column}
+	\end{columns}
+	
+	\vspace{0.2cm}
+	\small
+	\textbf{Osservazione:} lo schema è corretto ma può risultare costoso
+	per interrogazioni frequenti sul numero di abitanti.
+\end{frame}
+
+	\begin{frame}{Valutazione dei costi: schema senza ridondanza}
+		Per valutare l'efficienza dello schema analizziamo
+		\textbf{volumi dei dati} e \textbf{accessi alle operazioni}.
+		
+		\vspace{0.3cm}
+		\textbf{Tabella dei volumi}
+		
+		\begin{center}
+			\begin{tabular}{|l|c|}
+				\hline
+				\textbf{Costrutto} & \textbf{Numero di istanze} \\
+				\hline
+				Persona & 1.000.000 \\
+				Città & 200 \\
+				Residenza & 1.000.000 \\
+				\hline
+			\end{tabular}
+		\end{center}
+		
+		\vspace{0.4cm}
+		\textbf{Operazione di interesse}
+		
+		\begin{quote}
+			Stampare i dati di una città con il numero di abitanti  
+			(eseguita 2 volte al giorno).
+		\end{quote}
+		
+		\vspace{0.2cm}
+		\textbf{Tabella degli accessi}
+		
+		\begin{center}
+			\begin{tabular}{|l|c|}
+				\hline
+				\textbf{Costrutto} & \textbf{Accessi in lettura} \\
+				\hline
+				Residenza & 5.000 \\
+				Persona & 5.000 \\
+				\hline
+			\end{tabular}
+		\end{center}
+		
+		\vspace{0.2cm}
+		\small
+		\textbf{Conclusione:} il numero di accessi è elevato,
+		perché il dato deve essere ricalcolato ogni volta.
+	\end{frame}
+	
+	\begin{frame}{Schema ristrutturato con ridondanza}
+		Per migliorare le prestazioni delle interrogazioni,
+		si decide di \textbf{introdurre una ridondanza}.
+		
+		\vspace{0.2cm}
+		Si aggiunge all'entità \emph{Città} l'attributo \emph{NumAbitanti},
+		aggiornato ogni volta che una persona cambia residenza.
+		
+		\begin{columns}[T]
+			\begin{column}{0.45\textwidth}
+				\centering
+				\begin{tikzpicture}[node distance=2.4cm, scale=0.9, transform shape]
+					
+					\node[entity] (Citta) {Città};
+					\node[entity, below=2.8cm of Citta] (Persona) {Persona};
+					
+					\node[relationship, right=1.8cm of Persona] (Res) {Residenza};
+					
+					\draw[line] (Citta) -- node[right]{(0,n)} (Res);
+					\draw[line] (Res) -- node[below]{(1,1)} (Persona);
+					
+					\node[attribute, above=0.9cm of Citta] (Num) {NumAbitanti};
+					\draw[line,dashed] (Citta) -- (Num);
+					
+				\end{tikzpicture}
+			\end{column}
+			
+			\begin{column}{0.55\textwidth}
+				\textbf{Nuova valutazione dei costi}
+				
+				\vspace{0.2cm}
+				\begin{itemize}
+					\item Lettura numero abitanti:
+					\begin{itemize}
+						\item 1 solo accesso alla tabella Città
+					\end{itemize}
+					\item Inserimento di una persona:
+					\begin{itemize}
+						\item 1 scrittura su Persona
+						\item 1 aggiornamento su Città
+					\end{itemize}
+				\end{itemize}
+				
+				\vspace{0.2cm}
+				\textbf{Conclusione:}
+				meno costi in lettura, più costi in aggiornamento.
+			\end{column}
+		\end{columns}
+		
+		\vspace{0.2cm}
+		\small
+		La scelta è conveniente solo se le interrogazioni
+		sono molto più frequenti degli aggiornamenti.
+	\end{frame}
+	
+	
+	\begin{frame}{Confronto dei costi: con e senza ridondanza}
+		Confrontiamo ora i costi delle operazioni principali nei due schemi.
+		
+		\vspace{0.3cm}
+		\textbf{Operazioni considerate}
+		\begin{itemize}
+			\item O1: inserimento di una nuova persona
+			\item O2: lettura dei dati di una città con numero di abitanti
+		\end{itemize}
+		
+		\vspace{0.3cm}
+		\textbf{Confronto degli accessi}
+		
+		\begin{center}
+			\begin{tabular}{|l|c|c|}
+				\hline
+				\textbf{Operazione} & \textbf{Senza ridondanza} & \textbf{Con ridondanza} \\
+				\hline
+				O1 – Inserimento persona & 1 scrittura & 2 scritture \\
+				O2 – Lettura abitanti & 10.000 letture & 1 lettura \\
+				\hline
+			\end{tabular}
+		\end{center}
+		
+		\vspace{0.3cm}
+		\textbf{Interpretazione}
+		\begin{itemize}
+			\item la ridondanza aumenta il costo degli aggiornamenti;
+			\item riduce drasticamente il costo delle interrogazioni;
+			\item conviene se le letture sono molto più frequenti delle scritture.
+		\end{itemize}
+		
+		\vspace{0.2cm}
+		\small
+		\textbf{Conclusione progettuale:} la scelta dipende dal carico applicativo,
+		non solo dalla struttura dello schema.
+	\end{frame}
+	
+	
+	\begin{frame}{Contro-esempio: carico dominato dagli aggiornamenti}
+		Consideriamo ora un contesto applicativo diverso, in cui
+		le \textbf{operazioni di aggiornamento sono molto frequenti},
+		mentre le interrogazioni aggregate sono rare.
+		
+		\vspace{0.3cm}
+		Scenario tipico:
+		\begin{itemize}
+			\item sistema anagrafico o gestionale;
+			\item frequenti inserimenti, cancellazioni e cambi di residenza;
+			\item raramente si richiede il numero totale di abitanti.
+		\end{itemize}
+		
+		\vspace{0.2cm}
+		In questo caso la presenza di una ridondanza può diventare
+		\textbf{uno svantaggio}.
+	\end{frame}
+	
+	\begin{frame}{Valutazione dei costi: aggiornamenti frequenti}
+		Analizziamo volumi e operazioni nel nuovo scenario.
+		
+		\vspace{0.3cm}
+		\textbf{Tabella dei volumi}
+		
+		\begin{center}
+			\begin{tabular}{|l|c|}
+				\hline
+				\textbf{Costrutto} & \textbf{Numero di istanze} \\
+				\hline
+				Persona & 500.000 \\
+				Città & 200 \\
+				Residenza & 500.000 \\
+				\hline
+			\end{tabular}
+		\end{center}
+		
+		\vspace{0.3cm}
+		\textbf{Operazioni di interesse}
+		
+		\begin{itemize}
+			\item O1: inserimento o modifica residenza  
+			\quad (3.000 operazioni al giorno)
+			\item O2: lettura numero abitanti di una città  
+			\quad (1 volta al giorno)
+		\end{itemize}
+		
+		\vspace{0.2cm}
+		Il carico applicativo è chiaramente sbilanciato sugli aggiornamenti.
+	\end{frame}
+	
+	\begin{frame}{Confronto dei costi: eliminare la ridondanza}
+		Confrontiamo i costi nei due schemi.
+		
+		\vspace{0.3cm}
+		\begin{center}
+			\begin{tabular}{|l|c|c|}
+				\hline
+				\textbf{Operazione} & \textbf{Con ridondanza} & \textbf{Senza ridondanza} \\
+				\hline
+				O1 – Aggiornamento residenza & 2 scritture & 1 scrittura \\
+				O2 – Lettura abitanti & 1 lettura & 5.000 letture \\
+				\hline
+			\end{tabular}
+		\end{center}
+		
+		\vspace{0.3cm}
+		\textbf{Valutazione complessiva}
+		\begin{itemize}
+			\item gli aggiornamenti sono molto frequenti;
+			\item la lettura aggregata è rara;
+			\item il costo aggiuntivo degli aggiornamenti non è giustificato.
+		\end{itemize}
+		
+		\vspace{0.2cm}
+		\small
+		\textbf{Decisione progettuale:}  
+		in questo scenario è preferibile \textbf{eliminare il campo calcolato}
+		e calcolare il valore solo quando necessario.
+	\end{frame}
+	
+	%------------------------------------------------
+	\begin{frame}{Attributi multivalore}
+		Un \textbf{attributo multivalore} è un attributo che può assumere più valori
+		per una stessa entità.
+		
+		\vspace{0.3cm}
+		Esempi tipici:
+		\begin{itemize}
+			\item numeri di telefono;
+			\item indirizzi email;
+			\item lingue conosciute.
+		\end{itemize}
+	\end{frame}
+	
+	%------------------------------------------------
+	\begin{frame}{Perché gli attributi multivalore non sono ammessi}
+		Nel modello relazionale:
+		\begin{itemize}
+			\item ogni campo di una tabella deve contenere un solo valore;
+			\item non sono ammesse liste o insiemi di valori.
+		\end{itemize}
+		
+		\vspace{0.2cm}
+		Per questo gli attributi multivalore devono essere eliminati.
+	\end{frame}
+	
+	%------------------------------------------------
+	\begin{frame}{Eliminazione di un attributo multivalore}
+		L'attributo multivalore viene trasformato in una relazione separata.
+		
+		\centering
+		\begin{tikzpicture}[node distance=2.5cm]
+			\node[entity] (P) {Persona};
+			\node[entity, right=3.5cm of P] (T) {Telefono};
+			\node[relationship, below=1.5cm of P] (H) {Ha};
+			
+			\draw[line] (P) -- node[left]{(1,n)} (H);
+			\draw[line] (H) -- node[right]{(1,1)} (T);
+			\node[attribute, above=1cm of T] {Numero};
+		\end{tikzpicture}
+		
+		\vspace{0.2cm}
+		Ogni valore dell'attributo diventa una nuova istanza.
+	\end{frame}
+	
+	\begin{frame}{Attributi multivalore di una relazione}
+		Un attributo multivalore può appartenere anche a una \textbf{relazione},
+		non solo a un'entità.
+		
+		\vspace{0.3cm}
+		Esempio:
+		\begin{itemize}
+			\item un impiegato partecipa a un progetto;
+			\item per ogni partecipazione possono esserci più \emph{ruoli} svolti.
+		\end{itemize}
+		
+		\vspace{0.3cm}
+		\centering
+		\begin{tikzpicture}[node distance=2.5cm]
+			
+			\node[entity] (Imp) {Impiegato};
+			\node[entity, right=4cm of Imp] (Pro) {Progetto};
+			
+			\node[relationship, below=1.5cm of Imp] (Par) {Partecipa};
+			
+			\draw[line] (Imp) -- node[left]{(0,n)} (Par);
+			\draw[line] (Par) -- node[right]{(0,n)} (Pro);
+			
+			\node[attribute, above=0.9cm of Par] (Ruolo) {Ruolo};
+			\draw[line] (Par) -- node[right]{(1,n)} (Ruolo);
+			
+		\end{tikzpicture}
+		
+		\vspace{0.2cm}
+		\small
+		\textbf{Problema:} il modello relazionale non ammette attributi multivalore,
+		nemmeno quando sono associati a una relazione.
+	\end{frame}
+	
+	
+	\begin{frame}{Eliminazione: trasformare la relazione in entità}
+		Per eliminare un attributo multivalore di una relazione,
+		è necessario \textbf{trasformare la relazione stessa in un'entità}.
+		
+		\vspace{0.3cm}
+		La relazione \emph{Partecipa} diventa una nuova entità autonoma,
+		che rappresenta ogni singola partecipazione.
+		
+		\vspace{0.3cm}
+		\centering
+		\begin{tikzpicture}[node distance=2.6cm]
+			
+			\node[entity] (Imp) {Impiegato};
+			\node[entity, right=4cm of Imp] (Pro) {Progetto};
+			\node[entity, below=2.5cm of Imp] (ParE) {Partecipazione};
+			
+			\draw[line] (Imp) -- node[left]{(1,n)} (ParE);
+			\draw[line] (ParE) -- node[right]{(1,n)} (Pro);
+			
+		\end{tikzpicture}
+		
+		\vspace{0.2cm}
+		\small
+		\textbf{Osservazione:} ora ogni partecipazione è identificabile
+		come istanza distinta, pronta per avere attributi propri.
+	\end{frame}
+	\begin{frame}{Eliminazione completa dell'attributo multivalore}
+		A questo punto l'attributo multivalore \emph{Ruolo} può essere eliminato
+		trasformandolo in una relazione separata.
+		
+		\vspace{0.3cm}
+		\centering
+		\begin{tikzpicture}[node distance=1.6cm]
+			
+			\node[entity] (Imp) {Impiegato};
+			\node[entity, right=4cm of Imp] (Pro) {Progetto};
+			\node[entity, below=1.5cm of Imp] (ParE) {Partecipazione};
+			\node[entity, below=1.5cm of Pro] (RuoloE) {Ruolo};
+			
+			\node[relationship, below=1.4cm of ParE] (HaR) {HaRuolo};
+			
+			\draw[line] (Imp) -- node[left]{(1,n)} (ParE);
+			\draw[line] (ParE) -- node[right]{(1,n)} (Pro);
+			
+			\draw[line] (ParE) -- node[left]{(1,n)} (HaR);
+			\draw[line] (HaR) -- node[right]{(1,1)} (RuoloE);
+			
+		\end{tikzpicture}
+		
+		\vspace{0.2cm}
+		\small
+		\textbf{Risultato:}
+		\begin{itemize}
+			\item nessun attributo multivalore;
+			\item schema completamente traducibile;
+			\item maggiore flessibilità nella gestione dei ruoli.
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}{Eliminazione di attributi multivalore di una relazione}
+		\textbf{Procedura riassuntiva in 3 passi}
+		
+		\vspace{0.4cm}
+		\begin{enumerate}
+			\item \textbf{Individuare l'attributo multivalore} associato alla relazione  
+			(es. \emph{Ruolo} nella relazione \emph{Partecipa}).
+			
+			\vspace{0.2cm}
+			\item \textbf{Trasformare la relazione in un'entità}  
+			ogni istanza della relazione diventa un oggetto autonomo  
+			(es. \emph{Partecipa} → \emph{Partecipazione}).
+			
+			\vspace{0.2cm}
+			\item \textbf{Trasformare l'attributo multivalore in una relazione}  
+			introducendo una nuova entità per il dominio dei valori  
+			(es. \emph{Ruolo} come entità collegata a \emph{Partecipazione}).
+		\end{enumerate}
+		
+		\vspace{0.3cm}
+		\begin{block}{Risultato}
+			Lo schema non contiene più attributi multivalore ed è
+			completamente compatibile con il modello relazionale.
+		\end{block}
+	\end{frame}
+	
+	%------------------------------------------------
+	\begin{frame}{Attributi composti}
+		Un \textbf{attributo composto} è formato da più sotto-attributi.
+		
+		\vspace{0.3cm}
+		Esempio:
+		\begin{itemize}
+			\item Indirizzo = Via, Numero, CAP.
+		\end{itemize}
+		
+		\vspace{0.2cm}
+		Nel modello relazionale gli attributi devono essere atomici.
+	\end{frame}
+	
+	%------------------------------------------------
+	\begin{frame}{Eliminazione degli attributi composti}
+		Un attributo composto viene eliminato:
+		\begin{itemize}
+			\item scomponendolo nei suoi \textbf{attributi elementari};
+			\item oppure trasformandolo in una \textbf{nuova entità}.
+		\end{itemize}
+		
+		\vspace{0.2cm}
+		La scelta dipende dalla cardinalità e dall'uso dell'attributo.
+	\end{frame}
+	
+	\begin{frame}{Esempio 1: scomposizione di un attributo composto}
+		Consideriamo l'attributo composto \emph{Indirizzo} associato
+		all'entità \emph{Persona}.
+		
+		\vspace{0.3cm}
+		L'attributo \emph{Indirizzo} è formato da più parti:
+		\emph{Via}, \emph{Numero} e \emph{CAP}.
+		
+		\vspace{0.3cm}
+		\centering
+		\begin{tikzpicture}[node distance=2.6cm]
+			
+			\node[entity] (P) {Persona};
+			
+			\node[attribute, above=1cm of P] (Ind) {Indirizzo};
+			\draw[line] (P) -- (Ind);
+			
+			\node[attribute, above left=0.9cm of Ind] (Via) {Via};
+			\node[attribute, above=0.9cm of Ind] (Num) {Numero};
+			\node[attribute, above right=0.9cm of Ind] (CAP) {CAP};
+			
+			\draw[line] (Ind) -- (Via);
+			\draw[line] (Ind) -- (Num);
+			\draw[line] (Ind) -- (CAP);
+			
+		\end{tikzpicture}
+		
+		\vspace{0.3cm}
+		\small
+		\textbf{Trasformazione:} l'attributo composto viene eliminato
+		e i suoi componenti diventano attributi diretti dell'entità.
+	\end{frame}
+	
+	
+	\begin{frame}{Esempio 2: attributo composto trasformato in entità}
+		Se l'attributo composto è opzionale oppure viene riutilizzato,
+		può essere opportuno trasformarlo in una nuova entità.
+		
+		\vspace{0.3cm}
+		Esempio: una persona può avere \emph{al più un indirizzo},
+		ma l'indirizzo è un'informazione autonoma.
+		
+		\vspace{0.3cm}
+		\centering
+		\begin{tikzpicture}[node distance=2.8cm]
+			
+			\node[entity] (P) {Persona};
+			\node[entity, right=4cm of P] (I) {Indirizzo};
+			
+			\node[relationship, below=1.5cm of P] (Ab) {Abita};
+			
+			\draw[line] (P) -- node[left]{(0,1)} (Ab);
+			\draw[line] (Ab) -- node[right]{(1,1)} (I);
+			
+			\node[attribute, above=0.9cm of I] (Via) {Via};
+			\node[attribute, above right=0.9cm of I] (Num) {Numero};
+			\node[attribute, above left=0.9cm of I] (CAP) {CAP};
+			
+			\draw[line] (I) -- (Via);
+			\draw[line] (I) -- (Num);
+			\draw[line] (I) -- (CAP);
+			
+		\end{tikzpicture}
+		
+		\vspace{0.3cm}
+		\small
+		\textbf{Osservazione:} questa soluzione rende esplicita
+		l'opzionalità dell'attributo e facilita la gestione futura.
+	\end{frame}
+	\begin{frame}{Motivazioni della scelta progettuale}
+		Quando si elimina un attributo composto, la scelta della trasformazione
+		non è arbitraria, ma dipende da precise \textbf{motivazioni progettuali}.
+		
+		\vspace{0.3cm}
+		\textbf{Motivazioni per la scomposizione in attributi elementari}
+		\begin{itemize}
+			\item l'attributo è sempre presente per ogni istanza dell'entità;
+			\item i componenti sono strettamente legati e usati insieme;
+			\item non è necessario gestire l'attributo separatamente;
+			\item si vuole mantenere uno schema semplice e compatto.
+		\end{itemize}
+		
+		\vspace{0.3cm}
+		\textbf{Motivazioni per la trasformazione in nuova entità}
+		\begin{itemize}
+			\item l'attributo è opzionale o può mancare;
+			\item i suoi componenti possono essere usati indipendentemente;
+			\item l'attributo rappresenta un concetto autonomo del dominio;
+			\item è utile evitare valori nulli nell'entità principale.
+		\end{itemize}
+		
+		\vspace{0.3cm}
+		\begin{block}{Conclusione}
+			La trasformazione scelta deve riflettere il \textbf{significato dei dati}
+			e il loro \textbf{utilizzo reale}, non solo le regole del modello.
+		\end{block}
+	\end{frame}
+	
+	
+	%------------------------------------------------
+	\begin{frame}{Relazioni ISA}
+		Le \textbf{relazioni ISA} rappresentano specializzazioni tra entità.
+		
+		\vspace{0.3cm}
+		Esempio:
+		\begin{itemize}
+			\item Studente è una Persona;
+			\item Docente è una Persona.
+		\end{itemize}
+		
+		\vspace{0.2cm}
+		Nel modello ER sono molto naturali.
+	\end{frame}
+	
+	%------------------------------------------------
+	\begin{frame}{Problema delle ISA nel modello relazionale}
+		Il modello relazionale non supporta direttamente le gerarchie.
+		
+		\vspace{0.3cm}
+		È quindi necessario:
+		\begin{itemize}
+			\item eliminare le ISA;
+			\item esprimere i vincoli in modo esplicito.
+		\end{itemize}
+	\end{frame}
+	
+	%------------------------------------------------
+\begin{frame}{Eliminazione delle relazioni ISA}
+	\begin{columns}[T]
+		
+		%---------------------------------
+		% COLONNA SINISTRA – TESTO
+		%---------------------------------
+		\begin{column}{0.55\textwidth}
+			La relazione ISA viene sostituita da una \textbf{relazione binaria}
+			tra l'entità figlia e l'entità padre.
+			
+			\vspace{0.3cm}
+			Dopo la trasformazione:
+			\begin{itemize}
+				\item le entità diventano \textbf{disgiunte};
+				\item la specializzazione non è più implicita;
+				\item la gerarchia è rappresentata tramite relazioni.
+			\end{itemize}
+			
+			\vspace{0.2cm}
+			\small
+			\textbf{Osservazione:} i vincoli di specializzazione
+			(vincoli ISA) vengono espressi separatamente.
+		\end{column}
+		
+		%---------------------------------
+		% COLONNA DESTRA – SCHEMA ER
+		%---------------------------------
+		\begin{column}{0.45\textwidth}
+			\centering
+			\begin{tikzpicture}[node distance=2.4cm, scale=0.9, transform shape]
+				
+				\node[entity] (Persona) {Persona};
+				\node[entity, below=2.6cm of Persona] (Studente) {Studente};
+				
+				\node[relationship, right=2cm of Studente] (ISA) {ISA-S-P};
+				
+				\draw[line] (Studente) -- node[below]{(1,1)} (ISA);
+				\draw[line] (ISA) -- node[right]{(0,1)} (Persona);
+				
+			\end{tikzpicture}
+			
+			\vspace{0.2cm}
+			\footnotesize
+			Studente è specializzazione di Persona
+		\end{column}
+		
+	\end{columns}
+\end{frame}
+\begin{frame}{Perché eliminare la ISA senza collassare le entità}
+	L’eliminazione di una relazione ISA \textbf{non} comporta
+	l’unione delle entità coinvolte in un’unica entità.
+	
+	\vspace{0.3cm}
+	\textbf{Perché non collassare le entità in una sola}
+	\begin{itemize}
+		\item le entità figlie possono avere attributi diversi e specifici;
+		\item non tutte le istanze dell’entità padre appartengono alle entità figlie;
+		\item il collasso introdurrebbe molti valori nulli;
+		\item si perderebbe l’informazione sulla specializzazione.
+	\end{itemize}
+	
+	\vspace{0.3cm}
+	\textbf{Perché usare una relazione binaria}
+	\begin{itemize}
+		\item mantiene separati i concetti del dominio;
+		\item rende esplicita la specializzazione;
+		\item consente di esprimere correttamente i vincoli ISA;
+		\item prepara lo schema alla traduzione nel modello relazionale.
+	\end{itemize}
+	
+	\vspace{0.3cm}
+	\begin{block}{Idea chiave}
+		La ristrutturazione non semplifica “accorpando”,  
+		ma rende \textbf{esplicite} le informazioni prima implicite.
+	\end{block}
+\end{frame}
+\begin{frame}{Quando è opportuno collassare le entità in una relazione ISA}
+	In alcuni casi particolari, le entità collegate da una relazione ISA
+	possono essere \textbf{collassate in un’unica entità}.
+	
+	\vspace{0.3cm}
+	\textbf{Condizioni necessarie per il collasso}
+	\begin{itemize}
+		\item tutte le istanze dell’entità padre appartengono a una sola entità figlia
+		(generalizzazione \textbf{completa});
+		\item le entità figlie sono \textbf{mutuamente esclusive} (disgiunte);
+		\item gli attributi specifici delle entità figlie sono pochi;
+		\item il numero di valori nulli rimane contenuto.
+	\end{itemize}
+	
+	\vspace{0.3cm}
+	\textbf{Modalità di collasso}
+	\begin{itemize}
+		\item si crea un’unica entità con tutti gli attributi;
+		\item si introduce un attributo \emph{tipo} (discriminante);
+		\item il valore del discriminante determina quali attributi sono significativi.
+	\end{itemize}
+	
+	\vspace{0.3cm}
+	\begin{block}{Avvertenza}
+		Il collasso semplifica lo schema, ma va usato solo se
+		\textbf{non compromette chiarezza e integrità dei dati}.
+	\end{block}
+\end{frame}
+
+
+\begin{frame}{Esempio grafico: collasso di una relazione ISA}
+	Consideriamo una generalizzazione \textbf{completa e disgiunta},
+	in cui ogni istanza dell’entità padre appartiene esattamente
+	a una sola entità figlia.
+	
+	\vspace{0.3cm}
+	\begin{columns}[T]
+		
+		%-------------------------------
+		% PRIMA – CON ISA
+		%-------------------------------
+		\begin{column}{0.48\textwidth}
+			\centering
+			\textbf{Schema con ISA}
+			
+			\vspace{0.2cm}
+			\begin{tikzpicture}[node distance=1.2cm, scale=0.7, transform shape]
+				
+				\node[entity] (Persona) {Persona};
+				\node[entity, below left=2cm of Persona] (Stud) {Studente};
+				\node[entity, below right=2.4cm of Persona] (Doc) {Docente};
+				
+				\draw[line] (Stud) -- (Persona);
+				\draw[line] (Doc) -- (Persona);
+				
+			\end{tikzpicture}
+			
+			\vspace{0.2cm}
+			\footnotesize
+			Generalizzazione completa e disgiunta
+		\end{column}
+		
+		%-------------------------------
+		% DOPO – COLLASSO
+		%-------------------------------
+		\begin{column}{0.48\textwidth}
+			\centering
+			\textbf{Schema dopo il collasso}
+			
+			\vspace{0.2cm}
+			\begin{tikzpicture}[node distance=1.2cm, scale=0.7, transform shape]
+				
+				\node[entity] (Persona2) {Persona};
+				
+				\node[attribute, above=0.9cm of Persona2] (Tipo) {Tipo};
+				\node[attribute, left=1.4cm of Persona2] (Mat) {Matricola};
+				\node[attribute, right=1.4cm of Persona2] (Fas) {Fascia};
+				
+				\draw[line] (Persona2) -- (Tipo);
+				\draw[line] (Persona2) -- (Mat);
+				\draw[line] (Persona2) -- (Fas);
+				
+			\end{tikzpicture}
+			
+			\vspace{0.2cm}
+			\footnotesize
+			Tipo = Studente / Docente
+		\end{column}
+		
+	\end{columns}
+	
+	\vspace{0.2cm}
+	\small
+	\textbf{Osservazione:} il collasso è possibile perché ogni persona
+	è \emph{o studente o docente}, senza eccezioni.
+\end{frame}
+
+
+\begin{frame}{Gestione delle gerarchie ISA: le tre strategie possibili}
+	Quando si incontra una relazione ISA, esistono \textbf{tre strategie}
+	di ristrutturazione possibili.
+	
+	\vspace{0.4cm}
+	\begin{enumerate}
+		\item \textbf{Collassare le entità figlie nel padre}  
+		(un’unica entità con discriminante);
+		\item \textbf{Sostituire la ISA con relazioni binarie}  
+		mantenendo padre e figlie separate;
+		\item \textbf{Eliminare l’entità padre}  
+		trasferendo i suoi attributi alle entità figlie.
+	\end{enumerate}
+	
+	\vspace{0.3cm}
+	\begin{block}{Obiettivo}
+		Scegliere la strategia che rappresenta meglio
+		il dominio applicativo ed è più adatta all’uso dei dati.
+	\end{block}
+\end{frame}
+
+\begin{frame}{Guida decisionale: domande da porsi}
+	Per scegliere la strategia corretta, è utile rispondere
+	alle seguenti domande, in ordine.
+	
+	\vspace{0.4cm}
+	\begin{enumerate}
+		\item \textbf{La generalizzazione è completa?}  
+		Tutte le istanze del padre appartengono a una figlia?
+		
+		\item \textbf{Le entità figlie sono disgiunte?}  
+		Ogni istanza appartiene a una sola entità figlia?
+		
+		\item \textbf{Gli attributi specifici delle figlie sono pochi?}
+		
+		\item \textbf{L’entità padre ha un ruolo autonomo nel dominio?}
+	\end{enumerate}
+	
+	\vspace{0.3cm}
+	Le risposte a queste domande indirizzano la scelta progettuale.
+\end{frame}
+
+
+\begin{frame}{Schema decisionale per la gestione di una ISA}
+	\begin{itemize}
+		\item \textbf{Se la generalizzazione è completa e disgiunta}  
+		\begin{itemize}
+			\item e gli attributi specifici sono pochi →  
+			\textbf{collassare le entità figlie nel padre};
+		\end{itemize}
+		
+		\vspace{0.2cm}
+		\item \textbf{Se il padre rappresenta un concetto autonomo}  
+		\begin{itemize}
+			\item oppure la generalizzazione è parziale →  
+			\textbf{sostituire la ISA con relazioni binarie};
+		\end{itemize}
+		
+		\vspace{0.2cm}
+		\item \textbf{Se l’entità padre non ha significato autonomo}  
+		\begin{itemize}
+			\item e serve solo a raccogliere attributi comuni →  
+			\textbf{eliminare il padre e trasferire gli attributi};
+		\end{itemize}
+	\end{itemize}
+	
+	\vspace{0.3cm}
+	\begin{block}{Regola d’oro}
+		Non scegliere in base alla semplicità dello schema,
+		ma in base al \textbf{significato dei dati}.
+	\end{block}
+\end{frame}
+
+\begin{frame}{Schema iniziale: gerarchia ISA}
+	Consideriamo uno schema con una relazione di specializzazione
+	tra un’entità padre e due entità figlie.
+	
+	\vspace{0.3cm}
+	\centering
+	\begin{tikzpicture}[node distance=2.8cm]
+		
+		\node[entity] (Persona) {Persona};
+		
+		\node[entity, below left=2.6cm of Persona] (Stud) {Studente};
+		\node[entity, below right=2.6cm of Persona] (Doc) {Docente};
+		
+		\draw[line] (Stud) -- (Persona);
+		\draw[line] (Doc) -- (Persona);
+		
+		\node[attribute, above=1cm of Persona] (Nome) {Nome};
+		\node[attribute, above right=1cm of Persona] (CF) {CodiceFiscale};
+		
+		\draw[line] (Persona) -- (Nome);
+		\draw[line] (Persona) -- (CF);
+		
+		\node[attribute, above=0.9cm of Stud] (Mat) {Matricola};
+		\draw[line] (Stud) -- (Mat);
+		
+		\node[attribute, above=0.9cm of Doc] (Fas) {Fascia};
+		\draw[line] (Doc) -- (Fas);
+		
+	\end{tikzpicture}
+	
+	\vspace{0.3cm}
+	\small
+	\textbf{Osservazione:}
+	\begin{itemize}
+		\item \emph{Persona} rappresenta il concetto generale;
+		\item \emph{Studente} e \emph{Docente} sono specializzazioni;
+		\item la relazione ISA è ancora implicita e va ristrutturata.
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Esempio 1: collasso delle entità figlie nel padre}
+	\textbf{Caso:} generalizzazione completa e disgiunta, con pochi attributi specifici.
+	
+	\vspace{0.3cm}
+	\centering
+	\begin{tikzpicture}[node distance=2.6cm]
+		
+		\node[entity] (Persona) {Persona};
+		
+		\node[attribute, above=0.9cm of Persona] (Tipo) {Tipo};
+		\node[attribute, left=1.6cm of Persona] (Mat) {Matricola};
+		\node[attribute, right=1.6cm of Persona] (Fas) {Fascia};
+		
+		\draw[line] (Persona) -- (Tipo);
+		\draw[line] (Persona) -- (Mat);
+		\draw[line] (Persona) -- (Fas);
+		
+	\end{tikzpicture}
+	
+	\vspace{0.3cm}
+	\small
+	\textbf{Spiegazione:}
+	\begin{itemize}
+		\item tutte le persone sono o studenti o docenti;
+		\item un attributo \emph{Tipo} discrimina il ruolo;
+		\item soluzione compatta, ma con possibili valori nulli.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Esempio 2: sostituzione della ISA con relazioni binarie}
+	\textbf{Caso:} entità padre con significato autonomo
+	e generalizzazione non necessariamente completa.
+	
+	\vspace{0.3cm}
+	\centering
+	\begin{tikzpicture}[node distance=2.8cm]
+		
+		\node[entity] (Persona) {Persona};
+		\node[entity, below left=2.6cm of Persona] (Stud) {Studente};
+		\node[entity, below right=2.6cm of Persona] (Doc) {Docente};
+		
+		\node[relationship, below=1.4cm of Stud] (ISAS) {ISA-S};
+		\node[relationship, below=1.4cm of Doc] (ISAD) {ISA-D};
+		
+		\draw[line] (Stud) -- node[left]{(1,1)} (ISAS);
+		\draw[line] (ISAS) -- node[right]{(0,1)} (Persona);
+		
+		\draw[line] (Doc) -- node[right]{(1,1)} (ISAD);
+		\draw[line] (ISAD) -- node[left]{(0,1)} (Persona);
+		
+	\end{tikzpicture}
+	
+	\vspace{0.3cm}
+	\small
+	\textbf{Spiegazione:}
+	\begin{itemize}
+		\item il padre mantiene un ruolo autonomo;
+		\item nessun valore nullo;
+		\item i vincoli ISA sono resi espliciti.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Esempio 3: eliminazione dell’entità padre}
+	\textbf{Caso:} l’entità padre non ha significato autonomo
+	e serve solo a raccogliere attributi comuni.
+	
+	\vspace{0.3cm}
+	\centering
+	\begin{tikzpicture}[node distance=3cm]
+		
+		\node[entity] (Stud) {Studente};
+		\node[entity, right=5cm of Stud] (Doc) {Docente};
+		
+		\node[attribute, above=1cm of Stud] (NomeS) {Nome};
+		\node[attribute, above right=1cm of Stud] (CodS) {CodiceFiscale};
+		
+		\node[attribute, above=1cm of Doc] (NomeD) {Nome};
+		\node[attribute, above right=1cm of Doc] (CodD) {CodiceFiscale};
+		
+		\draw[line] (Stud) -- (NomeS);
+		\draw[line] (Stud) -- (CodS);
+		
+		\draw[line] (Doc) -- (NomeD);
+		\draw[line] (Doc) -- (CodD);
+		
+	\end{tikzpicture}
+	
+	\vspace{0.3cm}
+	\small
+	\textbf{Spiegazione:}
+	\begin{itemize}
+		\item gli attributi del padre sono duplicati;
+		\item schema più semplice;
+		\item maggiore ridondanza, minore espressività.
+	\end{itemize}
+\end{frame}
+
+
+	%------------------------------------------------
+	\begin{frame}{Identificatori delle entità}
+		Un \textbf{identificatore} è un insieme di attributi che permette di distinguere
+		univocamente ogni istanza di un'entità.
+		
+		\vspace{0.3cm}
+		Ogni entità deve avere:
+		\begin{itemize}
+			\item almeno un identificatore;
+			\item un identificatore principale.
+		\end{itemize}
+	\end{frame}
+	
+	%------------------------------------------------
+	\begin{frame}{Scelta dell'identificatore principale}
+		L'identificatore principale dovrebbe essere:
+		\begin{itemize}
+			\item semplice;
+			\item stabile nel tempo;
+			\item usato frequentemente nelle operazioni.
+		\end{itemize}
+		
+		\vspace{0.2cm}
+		Se necessario, si introduce un \textbf{codice artificiale}.
+	\end{frame}
+	
+	
+	%------------------------------------------------
+	\begin{frame}{Schema ER ristrutturato}
+		Al termine della ristrutturazione, lo schema ER:
+		
+		\begin{itemize}
+			\item non contiene attributi multivalore;
+			\item non contiene attributi composti;
+			\item non contiene ISA o generalizzazioni;
+			\item assegna un identificatore principale a ogni entità.
+		\end{itemize}
+	\end{frame}
+	
+	%------------------------------------------------
+	\begin{frame}{Preparazione alla traduzione relazionale}
+		Lo schema ER ristrutturato è il punto di partenza
+		per la traduzione nel modello relazionale.
+		
+		\vspace{0.3cm}
+		Nella fase successiva:
+		\begin{itemize}
+			\item entità → tabelle;
+			\item relazioni → tabelle;
+			\item attributi → colonne.
+		\end{itemize}
+	\end{frame}
+	
+	%------------------------------------------------
+	\begin{frame}{Riepilogo finale}
+		La ristrutturazione dello schema ER è una fase fondamentale
+		della progettazione logica.
+		
+		\vspace{0.3cm}
+		Permette di:
+		\begin{itemize}
+			\item mantenere il significato dei dati;
+			\item rispettare le regole del modello relazionale;
+			\item progettare database corretti ed efficienti.
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}{Riferimenti bibliografici}
+		I contenuti presentati si basano sui principali testi e materiali
+		di riferimento per la progettazione delle basi di dati.
+		
+		\vspace{0.4cm}
+		\begin{itemize}
+			\item C. Batini, S. Ceri, S. Navathe,  
+			\emph{Fondamenti di basi di dati},  
+			McGraw-Hill Education.
+			
+			\vspace{0.2cm}
+			\item A. Silberschatz, H. Korth, S. Sudarshan,  
+			\emph{Database System Concepts},  
+			McGraw-Hill.
+			
+			\vspace{0.2cm}
+			\item P. Atzeni, S. Ceri, S. Paraboschi, R. Torlone,  
+			\emph{Basi di dati – Modelli e linguaggi di interrogazione},  
+			McGraw-Hill.
+			
+			\vspace{0.2cm}
+			\item Materiale didattico e dispense di corso  
+			sulla progettazione concettuale e logica delle basi di dati.
+		\end{itemize}
+		
+		\vspace{0.3cm}
+		\small
+		I diagrammi e gli esempi sono stati adattati a fini didattici.
+	\end{frame}
+	
+\end{document}
