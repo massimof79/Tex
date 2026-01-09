@@ -1,0 +1,1465 @@
+\documentclass[aspectratio=169,10pt]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{booktabs}
+\usepackage{array}
+
+% Tema e colori
+\usetheme{Madrid}
+\usecolortheme{default}
+
+% Definizione colori personalizzati
+\definecolor{sqlblue}{RGB}{0,102,204}
+\definecolor{sqlgreen}{RGB}{0,153,76}
+\definecolor{sqlred}{RGB}{204,0,0}
+\definecolor{codebg}{RGB}{245,245,245}
+\definecolor{commentgreen}{RGB}{0,128,0}
+\definecolor{keywordblue}{RGB}{0,0,255}
+
+% Configurazione listing per SQL
+\lstdefinestyle{sqlstyle}{
+	language=SQL,
+	basicstyle=\ttfamily\small,
+	keywordstyle=\color{keywordblue}\bfseries,
+	commentstyle=\color{commentgreen}\itshape,
+	stringstyle=\color{sqlred},
+	backgroundcolor=\color{codebg},
+	frame=single,
+	breaklines=true,
+	showstringspaces=false,
+	numbers=left,
+	numberstyle=\tiny\color{gray},
+	captionpos=b,
+	tabsize=2,
+	morekeywords={CONSTRAINT, REFERENCES, CASCADE, RESTRICT, CHECK, DEFAULT, AUTO_INCREMENT}
+}
+
+\lstset{style=sqlstyle}
+
+% Informazioni sul documento
+\title{Il Linguaggio SQL}
+\subtitle{Costrutti DDL - Data Definition Language}
+\author{Prof. Massimo Fedeli}
+\institute{ITS Made in Italy - Fabbrica Digitale}
+\date{\today}
+
+\begin{document}
+	
+	% --- SLIDE 1: Titolo ---
+	\begin{frame}
+		\titlepage
+	\end{frame}
+	
+	% --- SLIDE 2: Sommario ---
+	\begin{frame}{Sommario}
+		\tableofcontents
+	\end{frame}
+	
+	% ===============================================
+	% SEZIONE 1: INTRODUZIONE AL DDL
+	% ===============================================
+	\section{Introduzione al DDL}
+	
+	% --- SLIDE 3 ---
+	\begin{frame}{Data Definition Language (DDL)}
+		\begin{block}{Definizione}
+			Il DDL è l'insieme di istruzioni utilizzate per \textbf{modificare la struttura} della base di dati.
+		\end{block}
+		
+		\vspace{0.3cm}
+		
+		\begin{columns}[T]
+			\column{0.48\textwidth}
+			\textbf{Operazioni principali:}
+			\begin{itemize}
+				\item Definizione di schemi
+				\item Creazione di tabelle
+				\item Modifica di strutture
+				\item Cancellazione di oggetti
+			\end{itemize}
+			
+			\column{0.48\textwidth}
+			\textbf{Elementi gestiti:}
+			\begin{itemize}
+				\item Tabelle (table)
+				\item Vincoli (constraints)
+				\item Domini
+				\item Viste (view)
+			\end{itemize}
+		\end{columns}
+	\end{frame}
+	
+	% --- SLIDE 4 ---
+	\begin{frame}{DDL vs DML}
+		\begin{center}
+			\begin{tabular}{|p{0.45\textwidth}|p{0.45\textwidth}|}
+				\hline
+				\rowcolor{sqlblue!20}
+				\textbf{DDL (Definition)} & \textbf{DML (Manipulation)} \\
+				\hline
+				Modifica la \textbf{struttura} & Modifica i \textbf{dati} \\
+				\hline
+				CREATE, ALTER, DROP & INSERT, UPDATE, DELETE, SELECT \\
+				\hline
+				Definisce schemi e tabelle & Opera sulle righe \\
+				\hline
+				Effetto permanente & Può essere annullato (ROLLBACK) \\
+				\hline
+			\end{tabular}
+		\end{center}
+		
+		\vspace{0.3cm}
+		
+		\begin{alertblock}{Attenzione}
+			Le operazioni DDL sono \textbf{irreversibili} e modificano la struttura del database in modo permanente.
+		\end{alertblock}
+	\end{frame}
+	
+	% ===============================================
+	% SEZIONE 2: GESTIONE DEGLI SCHEMI
+	% ===============================================
+	\section{Gestione degli Schemi}
+	
+	% --- SLIDE 5 ---
+	\begin{frame}[fragile]{Creazione di uno Schema}
+		\begin{block}{Sintassi}
+			\begin{lstlisting}
+				CREATE SCHEMA [IF NOT EXISTS] NomeSchema
+				[AUTHORIZATION utente];
+			\end{lstlisting}
+		\end{block}
+		
+		\textbf{Esempi pratici:}
+		\begin{lstlisting}
+			-- Creazione schema semplice
+			CREATE SCHEMA IF NOT EXISTS UniversitaDB;
+			
+			-- Creazione con autorizzazione
+			CREATE SCHEMA AziendaDB AUTHORIZATION amministratore;
+		\end{lstlisting}
+		
+		\begin{block}{Note}
+			\begin{itemize}
+				\item La clausola \texttt{IF NOT EXISTS} evita errori se lo schema esiste già
+				\item Uno schema è una collezione logica di tabelle e oggetti
+			\end{itemize}
+		\end{block}
+	\end{frame}
+	
+	% --- SLIDE 6 ---
+	\begin{frame}[fragile]{Selezione e Cancellazione Schema}
+		\textbf{Selezionare uno schema:}
+		\begin{lstlisting}
+			USE NomeSchema;
+		\end{lstlisting}
+		
+		\vspace{0.3cm}
+		
+		\textbf{Cancellare uno schema:}
+		\begin{lstlisting}
+			DROP SCHEMA [IF EXISTS] NomeSchema;
+		\end{lstlisting}
+		
+		\begin{alertblock}{Attenzione!}
+			Il comando \texttt{DROP SCHEMA} cancella \textbf{tutto il contenuto} dello schema, incluse tutte le tabelle e i dati in esse contenuti.
+		\end{alertblock}
+		
+		\textbf{Esempio completo:}
+		\begin{lstlisting}
+			USE UniversitaDB;  -- Seleziona lo schema
+			-- ... operazioni varie ...
+			DROP SCHEMA IF EXISTS TestDB;  -- Cancella schema di test
+		\end{lstlisting}
+	\end{frame}
+	
+	% ===============================================
+	% SEZIONE 3: CREAZIONE DELLE TABELLE
+	% ===============================================
+	\section{Creazione delle Tabelle}
+	
+	% --- SLIDE 7 ---
+	\begin{frame}[fragile]{CREATE TABLE - Sintassi Base}
+		\begin{block}{Sintassi}
+			\begin{lstlisting}
+				CREATE TABLE [IF NOT EXISTS] NomeTabella (
+				nome_campo1 tipo_campo1 [vincoli],
+				nome_campo2 tipo_campo2 [vincoli],
+				...
+				[vincoli_tabella]
+				);
+			\end{lstlisting}
+		\end{block}
+		
+		\textbf{Esempio basilare:}
+		\begin{lstlisting}
+			CREATE TABLE Studenti (
+			Matricola CHAR(10),
+			Nome VARCHAR(20),
+			Cognome VARCHAR(20),
+			AnnoIscrizione INTEGER
+			);
+		\end{lstlisting}
+	\end{frame}
+	
+	% --- SLIDE 8 ---
+	\begin{frame}[fragile]{Tipi di Dato in SQL}
+		\begin{columns}[T]
+			\column{0.48\textwidth}
+			\textbf{Tipi numerici:}
+			\begin{itemize}
+				\item \texttt{INTEGER} / \texttt{INT}
+				\item \texttt{SMALLINT}
+				\item \texttt{DECIMAL(p,s)} / \texttt{NUMERIC}
+				\item \texttt{FLOAT} / \texttt{REAL}
+				\item \texttt{DOUBLE}
+			\end{itemize}
+			
+			\column{0.48\textwidth}
+			\textbf{Tipi stringa:}
+			\begin{itemize}
+				\item \texttt{CHAR(n)} - lunghezza fissa
+				\item \texttt{VARCHAR(n)} - lunghezza variabile
+				\item \texttt{TEXT} - testo lungo
+			\end{itemize}
+			
+			\textbf{Altri tipi:}
+			\begin{itemize}
+				\item \texttt{DATE}
+				\item \texttt{TIME}
+				\item \texttt{DATETIME} / \texttt{TIMESTAMP}
+				\item \texttt{BOOLEAN}
+			\end{itemize}
+		\end{columns}
+	\end{frame}
+	
+	% --- SLIDE 9 ---
+	\begin{frame}[fragile]{Esempio Completo di CREATE TABLE}
+		\begin{lstlisting}
+			CREATE TABLE IF NOT EXISTS Studenti (
+			Matricola CHAR(10),
+			Nome VARCHAR(20) NOT NULL,
+			Cognome VARCHAR(20) NOT NULL,
+			CodiceFiscale CHAR(16) UNIQUE,
+			DataNascita DATE,
+			AnnoIscrizione INTEGER DEFAULT 1,
+			Email VARCHAR(100),
+			CONSTRAINT pk_matricola PRIMARY KEY (Matricola)
+			);
+		\end{lstlisting}
+		
+		\begin{block}{Elementi chiave}
+			\begin{itemize}
+				\item \texttt{NOT NULL}: impedisce valori nulli
+				\item \texttt{UNIQUE}: valori univoci nella colonna
+				\item \texttt{DEFAULT}: valore predefinito
+				\item \texttt{PRIMARY KEY}: chiave primaria
+			\end{itemize}
+		\end{block}
+	\end{frame}
+	
+	% --- SLIDE 10 ---
+	\begin{frame}[fragile]{Valori di Default}
+		\begin{block}{Definizione}
+			I valori di default specificano cosa assegnare all'attributo quando non si indica un valore esplicitamente.
+		\end{block}
+		
+		\textbf{Esempi:}
+		\begin{lstlisting}
+			CREATE TABLE Iscrizioni (
+			ID INTEGER PRIMARY KEY,
+			DataIscrizione DATE DEFAULT CURRENT_DATE,
+			AnnoAccademico INTEGER DEFAULT 1,
+			NumeroPatente CHAR(20) DEFAULT NULL,
+			Stato VARCHAR(20) DEFAULT 'ATTIVO'
+			);
+		\end{lstlisting}
+		
+		\begin{alertblock}{Nota}
+			Se non si specifica un valore di default, si assume \texttt{NULL} (se ammesso).
+		\end{alertblock}
+	\end{frame}
+	
+	% ===============================================
+	% SEZIONE 4: VINCOLI INTRA-RELAZIONALI
+	% ===============================================
+	\section{Vincoli Intra-relazionali}
+	
+	% --- SLIDE 11 ---
+	\begin{frame}{Tipologie di Vincoli}
+		\begin{center}
+			\begin{tikzpicture}[
+				level 1/.style={sibling distance=4cm, level distance=1.5cm},
+				level 2/.style={sibling distance=2cm, level distance=1.5cm},
+				every node/.style={draw, rectangle, rounded corners, fill=blue!10, minimum width=3cm, align=center}
+				]
+				\node {Vincoli d'Integrità}
+				child { node {Vincoli\\Intra-relazionali}
+					child { node[fill=green!10] {NOT NULL} }
+					child { node[fill=green!10] {UNIQUE} }
+					child { node[fill=green!10] {PRIMARY KEY} }
+					child { node[fill=green!10] {CHECK} }
+				}
+				child { node {Vincoli\\Inter-relazionali}
+					child { node[fill=orange!10] {FOREIGN KEY} }
+					child { node[fill=orange!10] {REFERENCES} }
+				};
+			\end{tikzpicture}
+		\end{center}
+	\end{frame}
+	
+	% --- SLIDE 12 ---
+	\begin{frame}[fragile]{Vincolo NOT NULL}
+		\begin{block}{Scopo}
+			Vieta la presenza di valori nulli in quella colonna.
+		\end{block}
+		
+		\textbf{Sintassi:}
+		\begin{lstlisting}
+			CREATE TABLE Studenti (
+			Matricola CHAR(10),
+			Nome VARCHAR(20) NOT NULL DEFAULT 'N.D.',
+			Cognome VARCHAR(20) NOT NULL,
+			Email VARCHAR(100),  -- può essere NULL
+			PRIMARY KEY (Matricola)
+			);
+		\end{lstlisting}
+		
+		\begin{alertblock}{Importante}
+			\begin{itemize}
+				\item Il vincolo NOT NULL si applica a \textbf{singole colonne}
+				\item Il valore di default viene specificato \textbf{dopo} il vincolo NOT NULL
+				\item Non si può specificare NOT NULL per coppie di colonne
+			\end{itemize}
+		\end{alertblock}
+	\end{frame}
+	
+	% --- SLIDE 13 ---
+	\begin{frame}[fragile]{Vincolo UNIQUE}
+		\begin{block}{Scopo}
+			Garantisce che non esistano due righe con gli stessi valori per l'attributo specificato.
+		\end{block}
+		
+		\textbf{UNIQUE su singola colonna:}
+		\begin{lstlisting}
+			CREATE TABLE Studenti (
+			Matricola CHAR(10),
+			CodiceFiscale CHAR(16) UNIQUE,
+			Email VARCHAR(100) NOT NULL UNIQUE,
+			Nome VARCHAR(20) NOT NULL,
+			Cognome VARCHAR(20) NOT NULL,
+			PRIMARY KEY (Matricola)
+			);
+		\end{lstlisting}
+		
+		\begin{block}{Nota su NULL}
+			Il vincolo UNIQUE \textbf{non esclude} la presenza di più righe con valori NULL (che si assumono tutti diversi fra loro).
+		\end{block}
+	\end{frame}
+	
+	% --- SLIDE 14 ---
+	\begin{frame}[fragile]{Vincolo UNIQUE su Più Colonne}
+		\textbf{Sintassi 1: Senza nome vincolo}
+		\begin{lstlisting}
+			CREATE TABLE Studenti (
+			Matricola CHAR(10),
+			Nome VARCHAR(20) NOT NULL,
+			Cognome VARCHAR(20) NOT NULL,
+			AnnoIscrizione INTEGER,
+			UNIQUE(Nome, Cognome),
+			PRIMARY KEY (Matricola)
+			);
+		\end{lstlisting}
+		
+		\textbf{Sintassi 2: Con nome vincolo}
+		\begin{lstlisting}
+			CREATE TABLE Studenti (
+			Matricola CHAR(10),
+			Nome VARCHAR(20) NOT NULL,
+			Cognome VARCHAR(20) NOT NULL,
+			AnnoIscrizione INTEGER,
+			CONSTRAINT uq_nome_cognome UNIQUE(Nome, Cognome),
+			PRIMARY KEY (Matricola)
+			);
+		\end{lstlisting}
+	\end{frame}
+	
+	% --- SLIDE 15 ---
+	\begin{frame}[fragile]{Ordine dei Vincoli}
+		\begin{block}{Regola}
+			Quando i vincoli sono espressi su una singola colonna, l'ordine è:
+			\begin{center}
+				\texttt{tipo} $\rightarrow$ \texttt{NOT NULL} $\rightarrow$ \texttt{DEFAULT} $\rightarrow$ \texttt{UNIQUE}
+			\end{center}
+		\end{block}
+		
+		\textbf{Esempio corretto:}
+		\begin{lstlisting}
+			CREATE TABLE Studenti (
+			Matricola CHAR(10),
+			Nome VARCHAR(20) NOT NULL DEFAULT 'N.D.' UNIQUE,
+			Cognome VARCHAR(20) NOT NULL,
+			AnnoIscrizione INTEGER,
+			PRIMARY KEY (Matricola)
+			);
+		\end{lstlisting}
+		
+		\begin{alertblock}{Attenzione}
+			Un ordine errato può causare errori di sintassi.
+		\end{alertblock}
+	\end{frame}
+	
+	% --- SLIDE 16 ---
+	\begin{frame}[fragile]{Vincolo PRIMARY KEY}
+		\begin{block}{Scopo}
+			Identifica la chiave primaria della tabella (implica NOT NULL e UNIQUE).
+		\end{block}
+		
+		\textbf{Può esserci un solo vincolo di PRIMARY KEY per tabella!}
+		
+		\textbf{Sintassi 1: Chiave primaria singola}
+		\begin{lstlisting}
+			CREATE TABLE Studenti (
+			Matricola CHAR(10) PRIMARY KEY,
+			Nome VARCHAR(20) NOT NULL,
+			Cognome VARCHAR(20) NOT NULL
+			);
+		\end{lstlisting}
+		
+		\textbf{Sintassi 2: Chiave primaria composta}
+		\begin{lstlisting}
+			CREATE TABLE Veicoli (
+			Targa CHAR(10),
+			CodiceProprietario CHAR(20) NOT NULL,
+			PRIMARY KEY (Targa, CodiceProprietario)
+			);
+		\end{lstlisting}
+	\end{frame}
+	
+	% --- SLIDE 17 ---
+	\begin{frame}[fragile]{PRIMARY KEY - Tre Modalità}
+		\textbf{Modalità 1: Inline (solo chiave singola)}
+		\begin{lstlisting}
+			CREATE TABLE Veicoli (
+			Targa CHAR(10) PRIMARY KEY,
+			CodiceProprietario CHAR(20) NOT NULL
+			);
+		\end{lstlisting}
+		
+		\textbf{Modalità 2: A livello di tabella}
+		\begin{lstlisting}
+			CREATE TABLE Veicoli (
+			Targa CHAR(10),
+			CodiceProprietario CHAR(20) NOT NULL,
+			PRIMARY KEY (Targa, CodiceProprietario)
+			);
+		\end{lstlisting}
+		
+		\textbf{Modalità 3: Con nome vincolo}
+		\begin{lstlisting}
+			CREATE TABLE Veicoli (
+			Targa CHAR(10),
+			CodiceProprietario CHAR(20) NOT NULL,
+			CONSTRAINT pk_veicoli PRIMARY KEY (Targa, CodiceProprietario)
+			);
+		\end{lstlisting}
+	\end{frame}
+	
+	% --- SLIDE 18 ---
+	\begin{frame}[fragile]{Vincolo CHECK}
+		\begin{block}{Scopo}
+			Verifica generiche condizioni sui valori di una o più colonne.
+		\end{block}
+		
+		\textbf{CHECK su singola colonna:}
+		\begin{lstlisting}
+			CREATE TABLE Esami (
+			Matricola CHAR(10),
+			Corso VARCHAR(20) UNIQUE,
+			Voto INTEGER CHECK (Voto >= 18 AND Voto <= 30),
+			PRIMARY KEY (Corso, Matricola)
+			);
+		\end{lstlisting}
+		
+		\textbf{CHECK su più colonne:}
+		\begin{lstlisting}
+			CREATE TABLE Fatture (
+			ID INTEGER PRIMARY KEY,
+			ImportoLordo DECIMAL(10,2),
+			Netto DECIMAL(10,2),
+			Ritenute DECIMAL(10,2),
+			CHECK (ImportoLordo = Netto + Ritenute)
+			);
+		\end{lstlisting}
+	\end{frame}
+	
+	% --- SLIDE 19 ---
+	\begin{frame}[fragile]{CHECK - Esempi Avanzati}
+		\textbf{Con nome vincolo:}
+		\begin{lstlisting}
+			CREATE TABLE Esami (
+			Matricola CHAR(10),
+			Corso VARCHAR(20),
+			Voto INTEGER,
+			Lode BOOLEAN DEFAULT FALSE,
+			CONSTRAINT ck_voto CHECK (Voto >= 18 AND Voto <= 30),
+			CONSTRAINT ck_lode CHECK (Lode = FALSE OR Voto = 30),
+			PRIMARY KEY (Corso, Matricola)
+			);
+		\end{lstlisting}
+		
+		\begin{block}{Nota}
+			Il vincolo è violato se esiste \textbf{almeno una tupla} che rende falsa la condizione.
+		\end{block}
+		
+		\textbf{Altri esempi:}
+		\begin{lstlisting}
+			CHECK (DataFine > DataInizio)
+			CHECK (Stipendio > 0)
+			CHECK (Email LIKE '%@%.%')
+		\end{lstlisting}
+	\end{frame}
+	
+	% ===============================================
+	% SEZIONE 5: VINCOLI INTER-RELAZIONALI
+	% ===============================================
+	\section{Vincoli Inter-relazionali}
+	
+	% --- SLIDE 20 ---
+	\begin{frame}{Integrità Referenziale}
+		\begin{block}{Definizione}
+			Vincolo che crea un legame tra valori di attributi in tabelle diverse.
+		\end{block}
+		
+		\begin{center}
+			\begin{tikzpicture}[
+				table/.style={rectangle, draw=blue!50, fill=blue!10, thick, minimum width=3cm, minimum height=2cm},
+				arrow/.style={->, >=stealth, thick, blue!70}
+				]
+				% Tabella interna
+				\node[table] (interno) at (0,0) {
+					\textbf{Studente}\\[0.2cm]
+					\texttt{PK} Matricola\\
+					\texttt{FK} CodiceEsame\\
+					Nome
+				};
+				
+				% Tabella esterna
+				\node[table] (esterno) at (6,0) {
+					\textbf{Esame}\\[0.2cm]
+					\texttt{PK} Codice\\
+					Nome\\
+					Crediti
+				};
+				
+				% Freccia
+				\draw[arrow] (interno.east) -- (esterno.west) node[midway, above] {riferisce};
+				\node[below=0.5cm of interno] {\small Tabella interna/referente};
+				\node[below=0.5cm of esterno] {\small Tabella esterna/riferita};
+			\end{tikzpicture}
+		\end{center}
+		
+		\begin{alertblock}{Regola}
+			L'attributo della tabella esterna deve essere soggetto a vincolo UNIQUE (di solito PRIMARY KEY).
+		\end{alertblock}
+	\end{frame}
+	
+	% --- SLIDE 21 ---
+	\begin{frame}[fragile]{FOREIGN KEY - Concetto}
+		\begin{block}{Vincolo di Foreign Key}
+			Impone che, per ogni tupla, il valore dell'attributo della tabella interna, se diverso da NULL, deve essere uguale a un valore dell'attributo della tabella esterna.
+		\end{block}
+		
+		\textbf{Schema esempio:}
+		\begin{lstlisting}
+			-- Tabella esterna (riferita)
+			CREATE TABLE Dipartimenti (
+			NomeDipartimento CHAR(15) PRIMARY KEY,
+			Sede VARCHAR(50)
+			);
+			
+			-- Tabella interna (referente)
+			CREATE TABLE Impiegati (
+			Matricola CHAR(6) PRIMARY KEY,
+			Nome VARCHAR(50) NOT NULL,
+			Cognome VARCHAR(50) NOT NULL,
+			Dipartimento CHAR(15),
+			FOREIGN KEY (Dipartimento) 
+			REFERENCES Dipartimenti(NomeDipartimento)
+			);
+		\end{lstlisting}
+	\end{frame}
+	
+	% --- SLIDE 22 ---
+	\begin{frame}[fragile]{Vincolo REFERENCES}
+		\begin{block}{Uso}
+			Permette di specificare vincoli di colonna per singoli attributi.
+		\end{block}
+		
+		\textbf{Sintassi compatta:}
+		\begin{lstlisting}
+			CREATE TABLE Impiegati (
+			Matricola CHAR(6) PRIMARY KEY,
+			Cognome VARCHAR(50) NOT NULL,
+			Nome VARCHAR(50) NOT NULL,
+			Dipartimento CHAR(15) 
+			REFERENCES Dipartimenti(NomeDipartimento),
+			Stipendio DECIMAL(10,2)
+			);
+		\end{lstlisting}
+		
+		\begin{block}{Quando usare REFERENCES}
+			\begin{itemize}
+				\item Quando la foreign key è composta da \textbf{un solo attributo}
+				\item Per una sintassi più compatta e leggibile
+			\end{itemize}
+		\end{block}
+	\end{frame}
+	
+	% --- SLIDE 23 ---
+	\begin{frame}[fragile]{FOREIGN KEY per Più Attributi}
+		\begin{block}{Vincolo FOREIGN KEY}
+			Necessario quando si referenziano più attributi contemporaneamente.
+		\end{block}
+		
+		\begin{lstlisting}
+			CREATE TABLE Anagrafica (
+			Nome VARCHAR(50),
+			Cognome VARCHAR(50),
+			DataNascita DATE,
+			PRIMARY KEY (Nome, Cognome)
+			);
+			
+			CREATE TABLE Impiegati (
+			Matricola CHAR(6) PRIMARY KEY,
+			NomeDip VARCHAR(50),
+			CognomeDip VARCHAR(50),
+			Stipendio DECIMAL(10,2),
+			FOREIGN KEY (NomeDip, CognomeDip) 
+			REFERENCES Anagrafica(Nome, Cognome)
+			);
+		\end{lstlisting}
+	\end{frame}
+	
+	% --- SLIDE 24 ---
+	\begin{frame}[fragile]{FOREIGN KEY con Nome Vincolo}
+		\begin{block}{Best Practice}
+			Dare un nome al vincolo facilita successive modifiche e debugging.
+		\end{block}
+		
+		\begin{lstlisting}
+			CREATE TABLE Impiegati (
+			Matricola CHAR(6) PRIMARY KEY,
+			NomeDip VARCHAR(50),
+			CognomeDip VARCHAR(50),
+			Dipartimento CHAR(15),
+			CONSTRAINT fk_anagrafica 
+			FOREIGN KEY (NomeDip, CognomeDip) 
+			REFERENCES Anagrafica(Nome, Cognome),
+			CONSTRAINT fk_dipartimento 
+			FOREIGN KEY (Dipartimento) 
+			REFERENCES Dipartimenti(NomeDipartimento)
+			);
+		\end{lstlisting}
+		
+		\begin{alertblock}{Vantaggio}
+			Il nome permette di rimuovere facilmente il vincolo con \texttt{ALTER TABLE ... DROP CONSTRAINT nome\_vincolo}
+		\end{alertblock}
+	\end{frame}
+	
+	% ===============================================
+	% SEZIONE 6: POLITICHE DI REAZIONE
+	% ===============================================
+	\section{Politiche di Reazione}
+	
+	% --- SLIDE 25 ---
+	\begin{frame}{Politiche di Reazione - Introduzione}
+		\begin{block}{Problema}
+			Cosa succede quando si modifica o cancella una riga nella tabella esterna che è referenziata da una foreign key?
+		\end{block}
+		
+		\begin{columns}[T]
+			\column{0.48\textwidth}
+			\textbf{Tabella interna:}
+			\begin{itemize}
+				\item Inserimento: sempre controllato
+				\item Modifica: sempre controllata
+				\item \textcolor{red}{Nessuna politica necessaria}
+			\end{itemize}
+			
+			\column{0.48\textwidth}
+			\textbf{Tabella esterna:}
+			\begin{itemize}
+				\item Modifica: \textcolor{blue}{politica definibile}
+				\item Cancellazione: \textcolor{blue}{politica definibile}
+				\item 4 opzioni disponibili
+			\end{itemize}
+		\end{columns}
+		
+		\vspace{0.3cm}
+		
+		\begin{alertblock}{Default}
+			Se non specificata, la politica predefinita è \texttt{NO ACTION} (o \texttt{RESTRICT}).
+		\end{alertblock}
+	\end{frame}
+	
+	% --- SLIDE 26 ---
+	\begin{frame}[fragile]{Sintassi Politiche di Reazione}
+		\begin{block}{Sintassi}
+			\begin{lstlisting}
+				FOREIGN KEY (colonna) REFERENCES tabella(colonna)
+				ON DELETE { NO ACTION | CASCADE | SET NULL | SET DEFAULT }
+				ON UPDATE { NO ACTION | CASCADE | SET NULL | SET DEFAULT }
+			\end{lstlisting}
+		\end{block}
+		
+		\textbf{Le quattro politiche:}
+		\begin{enumerate}
+			\item \texttt{NO ACTION} (o \texttt{RESTRICT}): blocca l'operazione
+			\item \texttt{CASCADE}: propaga l'operazione
+			\item \texttt{SET NULL}: imposta NULL
+			\item \texttt{SET DEFAULT}: imposta valore di default
+		\end{enumerate}
+		
+		\begin{alertblock}{MySQL}
+			La politica \texttt{SET DEFAULT} \textbf{non è supportata} in MySQL.
+		\end{alertblock}
+	\end{frame}
+	
+	% --- SLIDE 27 ---
+	\begin{frame}{Politiche ON UPDATE}
+		\begin{block}{NO ACTION / RESTRICT}
+			Se si tenta di aggiornare un valore referenziato, l'operazione viene \textbf{bloccata} e viene generato un errore.
+		\end{block}
+		
+		\begin{block}{CASCADE}
+			Se si aggiorna un valore nella tabella esterna, tutti i valori corrispondenti nella tabella interna vengono \textbf{aggiornati automaticamente} al nuovo valore.
+		\end{block}
+		
+		\begin{block}{SET NULL}
+			Se si aggiorna un valore nella tabella esterna, i valori corrispondenti nella tabella interna vengono impostati a \texttt{NULL}.
+		\end{block}
+		
+		\begin{block}{SET DEFAULT}
+			I valori corrispondenti nella tabella interna vengono impostati al \textbf{valore di default} (non supportato in MySQL).
+		\end{block}
+	\end{frame}
+	
+	% --- SLIDE 28 ---
+	\begin{frame}{Politiche ON DELETE}
+		\begin{block}{NO ACTION / RESTRICT}
+			Se si tenta di cancellare una riga referenziata, l'operazione viene \textbf{bloccata} e viene generato un errore.
+		\end{block}
+		
+		\begin{block}{CASCADE}
+			Se si cancella una riga nella tabella esterna, tutte le righe corrispondenti nella tabella interna vengono \textbf{cancellate automaticamente}.
+		\end{block}
+		
+		\begin{block}{SET NULL}
+			Se si cancella una riga nella tabella esterna, i valori della foreign key nella tabella interna vengono impostati a \texttt{NULL}.
+		\end{block}
+		
+		\begin{block}{SET DEFAULT}
+			I valori della foreign key nella tabella interna vengono impostati al \textbf{valore di default} (non supportato in MySQL).
+		\end{block}
+	\end{frame}
+	
+	% --- SLIDE 29 ---
+	\begin{frame}[fragile]{Esempio CASCADE}
+		\begin{lstlisting}
+			CREATE TABLE Dipartimenti (
+			IdReparto INTEGER PRIMARY KEY,
+			Nome VARCHAR(50)
+			);
+			
+			CREATE TABLE Impiegati (
+			Matricola CHAR(6) PRIMARY KEY,
+			Nome VARCHAR(50),
+			IdReparto INTEGER,
+			CONSTRAINT fk_reparto FOREIGN KEY (IdReparto)
+			REFERENCES Dipartimenti(IdReparto)
+			ON DELETE CASCADE
+			ON UPDATE CASCADE
+			);
+		\end{lstlisting}
+		
+		\begin{exampleblock}{Comportamento}
+			\begin{itemize}
+				\item Se si cancella un dipartimento, vengono cancellati \textbf{tutti gli impiegati} di quel dipartimento
+				\item Se si modifica l'ID di un dipartimento, viene aggiornato automaticamente in tutti gli impiegati
+			\end{itemize}
+		\end{exampleblock}
+	\end{frame}
+	
+	% --- SLIDE 30 ---
+	\begin{frame}[fragile]{Esempio SET NULL}
+		\begin{lstlisting}
+			CREATE TABLE Impiegati (
+			Matricola CHAR(6) PRIMARY KEY,
+			Nome VARCHAR(50),
+			IdReparto INTEGER,
+			CONSTRAINT fk_reparto FOREIGN KEY (IdReparto)
+			REFERENCES Dipartimenti(IdReparto)
+			ON DELETE SET NULL
+			ON UPDATE NO ACTION
+			);
+		\end{lstlisting}
+		
+		\begin{exampleblock}{Comportamento}
+			\begin{itemize}
+				\item Se si cancella un dipartimento, il campo \texttt{IdReparto} degli impiegati viene impostato a \texttt{NULL}
+				\item Le modifiche all'ID del dipartimento sono \textbf{bloccate} se ci sono impiegati collegati
+			\end{itemize}
+		\end{exampleblock}
+		
+		\begin{alertblock}{Requisito}
+			La colonna \texttt{IdReparto} deve \textbf{permettere NULL}.
+		\end{alertblock}
+	\end{frame}
+	
+	% --- SLIDE 31 ---
+	\begin{frame}[fragile]{Esempio Completo con Politiche}
+		\begin{lstlisting}
+			CREATE TABLE Studenti (
+			Matricola CHAR(10) PRIMARY KEY,
+			Nome VARCHAR(50) NOT NULL,
+			Cognome VARCHAR(50) NOT NULL
+			);
+			
+			CREATE TABLE Iscrizioni (
+			CodIscrizione CHAR(20),
+			Matricola CHAR(10),
+			CorsoID INTEGER,
+			CONSTRAINT pk_iscrizioni 
+			PRIMARY KEY (CodIscrizione, Matricola),
+			CONSTRAINT fk_studenti 
+			FOREIGN KEY (Matricola) 
+			REFERENCES Studenti(Matricola)
+			ON DELETE CASCADE       -- cancellazione in cascata
+			ON UPDATE NO ACTION     -- modifiche non permesse
+			);
+		\end{lstlisting}
+	\end{frame}
+	
+	% ===============================================
+	% SEZIONE 7: MODIFICA DELLO SCHEMA
+	% ===============================================
+	\section{Modifica dello Schema}
+	
+	% --- SLIDE 32 ---
+	\begin{frame}[fragile]{DROP TABLE}
+		\begin{block}{Scopo}
+			Rimuove completamente una tabella dal database.
+		\end{block}
+		
+		\textbf{Sintassi:}
+		\begin{lstlisting}
+			DROP TABLE [IF EXISTS] NomeTabella [RESTRICT | CASCADE];
+		\end{lstlisting}
+		
+		\begin{columns}[T]
+			\column{0.48\textwidth}
+			\textbf{RESTRICT:}
+			\begin{itemize}
+				\item Cancella solo se vuota
+				\item Nessun oggetto dipendente
+				\item (MySQL: non implementato)
+			\end{itemize}
+			
+			\column{0.48\textwidth}
+			\textbf{CASCADE:}
+			\begin{itemize}
+				\item Cancella tabella e dati
+				\item Cancella viste dipendenti
+				\item (MySQL: non implementato)
+			\end{itemize}
+		\end{columns}
+		
+		\vspace{0.3cm}
+		
+		\begin{alertblock}{MySQL}
+			In MySQL, \texttt{DROP TABLE} cancella sempre la tabella e tutti i suoi dati, ignorando RESTRICT/CASCADE.
+		\end{alertblock}
+	\end{frame}
+	
+	% --- SLIDE 33 ---
+	\begin{frame}[fragile]{DROP TABLE - Esempi}
+		\textbf{Esempi pratici:}
+		\begin{lstlisting}
+			-- Cancellazione semplice
+			DROP TABLE Studenti;
+			
+			-- Cancellazione sicura (no errore se non esiste)
+			DROP TABLE IF EXISTS StudentiTemp;
+			
+			-- Cancellazione di più tabelle
+			DROP TABLE IF EXISTS Tabella1, Tabella2, Tabella3;
+		\end{lstlisting}
+		
+		\begin{alertblock}{Attenzione alle Foreign Key}
+			Se altre tabelle hanno foreign key che riferiscono la tabella da cancellare:
+			\begin{itemize}
+				\item L'operazione viene bloccata
+				\item Soluzione: disabilitare temporaneamente i controlli
+			\end{itemize}
+		\end{alertblock}
+		
+		\begin{lstlisting}
+			SET FOREIGN_KEY_CHECKS = 0;
+			DROP TABLE TabellaEsterna;
+			SET FOREIGN_KEY_CHECKS = 1;
+		\end{lstlisting}
+	\end{frame}
+	
+	% --- SLIDE 34 ---
+	\begin{frame}{DROP TABLE vs DELETE FROM}
+		\begin{center}
+			\begin{tabular}{|p{0.45\textwidth}|p{0.45\textwidth}|}
+				\hline
+				\rowcolor{sqlblue!20}
+				\textbf{DROP TABLE Tabella} & \textbf{DELETE FROM Tabella} \\
+				\hline
+				Elimina la \textbf{struttura} & Elimina solo i \textbf{dati} \\
+				\hline
+				Cancella lo schema & Mantiene lo schema \\
+				\hline
+				Rimuove vincoli e indici & Mantiene vincoli e indici \\
+				\hline
+				Cancella viste dipendenti & Mantiene le viste \\
+				\hline
+				\textbf{Irreversibile} & Può essere annullato (ROLLBACK) \\
+				\hline
+				Più veloce & Più lento \\
+				\hline
+			\end{tabular}
+		\end{center}
+		
+		\begin{exampleblock}{Quando usare cosa?}
+			\begin{itemize}
+				\item \texttt{DROP TABLE}: quando non serve più la tabella
+				\item \texttt{DELETE FROM}: quando si vogliono cancellare solo i dati
+			\end{itemize}
+		\end{exampleblock}
+	\end{frame}
+	
+	% --- SLIDE 35 ---
+	\begin{frame}[fragile]{ALTER TABLE - Introduzione}
+		\begin{block}{Scopo}
+			Permette di modificare la struttura di una tabella esistente.
+		\end{block}
+		
+		\textbf{Operazioni possibili:}
+		\begin{itemize}
+			\item Aggiungere colonne
+			\item Rimuovere colonne
+			\item Modificare colonne
+			\item Aggiungere vincoli
+			\item Rimuovere vincoli
+		\end{itemize}
+		
+		\textbf{Sintassi base:}
+		\begin{lstlisting}
+			ALTER TABLE NomeTabella 
+			ADD [COLUMN] NomeColonna Definizione;
+			
+			ALTER TABLE NomeTabella 
+			DROP [COLUMN] NomeColonna;
+		\end{lstlisting}
+	\end{frame}
+	
+	% --- SLIDE 36 ---
+	\begin{frame}[fragile]{ALTER TABLE - Aggiungere Colonne}
+		\textbf{Aggiunta colonna semplice:}
+		\begin{lstlisting}
+			ALTER TABLE Studenti 
+			ADD COLUMN Sesso CHAR(1);
+		\end{lstlisting}
+		
+		\textbf{Aggiunta con vincoli e default:}
+		\begin{lstlisting}
+			ALTER TABLE Studenti 
+			ADD COLUMN DataIscrizione DATE DEFAULT CURRENT_DATE;
+			
+			ALTER TABLE Studenti 
+			ADD COLUMN Email VARCHAR(100) UNIQUE;
+			
+			ALTER TABLE Studenti 
+			ADD COLUMN Telefono VARCHAR(15) NOT NULL DEFAULT 'N.D.';
+		\end{lstlisting}
+		
+		\begin{alertblock}{Nota}
+			Le nuove colonne assumono valore \texttt{NULL} o il valore di default per tutte le righe esistenti.
+		\end{alertblock}
+	\end{frame}
+	
+	% --- SLIDE 37 ---
+	\begin{frame}[fragile]{ALTER TABLE - Rimuovere Colonne}
+		\textbf{Rimozione colonna:}
+		\begin{lstlisting}
+			ALTER TABLE Studenti 
+			DROP COLUMN AnnoIscrizione;
+		\end{lstlisting}
+		
+		\begin{alertblock}{Attenzione!}
+			\begin{itemize}
+				\item La cancellazione è \textbf{irreversibile}
+				\item Se la colonna è referenziata da foreign key, l'operazione \textbf{fallisce}
+				\item Tutti i dati nella colonna vengono \textbf{persi}
+			\end{itemize}
+		\end{alertblock}
+		
+		\textbf{Esempio che fallisce:}
+		\begin{lstlisting}
+			CREATE TABLE BaseTabella (
+			ID INTEGER PRIMARY KEY,
+			Nome VARCHAR(50) UNIQUE
+			);
+			
+			-- Fallisce se Nome è referenziato
+			ALTER TABLE BaseTabella DROP COLUMN Nome;
+		\end{lstlisting}
+	\end{frame}
+	
+	% --- SLIDE 38 ---
+	\begin{frame}[fragile]{ALTER TABLE - Gestione Vincoli (1)}
+		\textbf{Aggiungere vincolo di PRIMARY KEY:}
+		\begin{lstlisting}
+			ALTER TABLE Studenti 
+			ADD PRIMARY KEY (Matricola);
+		\end{lstlisting}
+		
+		\textbf{Rimuovere PRIMARY KEY:}
+		\begin{lstlisting}
+			ALTER TABLE Studenti 
+			DROP PRIMARY KEY;
+		\end{lstlisting}
+		
+		\textbf{Aggiungere UNIQUE:}
+		\begin{lstlisting}
+			ALTER TABLE Studenti 
+			ADD CONSTRAINT uq_email UNIQUE (Email);
+		\end{lstlisting}
+		
+		\textbf{Rimuovere UNIQUE:}
+		\begin{lstlisting}
+			ALTER TABLE Studenti 
+			DROP INDEX uq_email;
+			-- oppure
+			ALTER TABLE Studenti 
+			DROP KEY uq_email;
+		\end{lstlisting}
+	\end{frame}
+	
+	% --- SLIDE 39 ---
+	\begin{frame}[fragile]{ALTER TABLE - Gestione Vincoli (2)}
+		\textbf{Aggiungere FOREIGN KEY:}
+		\begin{lstlisting}
+			ALTER TABLE Impiegati 
+			ADD CONSTRAINT fk_dipartimento 
+			FOREIGN KEY (IdReparto) 
+			REFERENCES Dipartimenti(IdReparto)
+			ON DELETE CASCADE;
+		\end{lstlisting}
+		
+		\textbf{Rimuovere FOREIGN KEY:}
+		\begin{lstlisting}
+			ALTER TABLE Impiegati 
+			DROP FOREIGN KEY fk_dipartimento;
+		\end{lstlisting}
+		
+		\begin{alertblock}{Importante}
+			\begin{itemize}
+				\item Quando si aggiunge un vincolo, \textbf{deve essere soddisfatto} dall'istanza corrente
+				\item Usare nomi espliciti per i vincoli facilita la loro rimozione
+			\end{itemize}
+		\end{alertblock}
+	\end{frame}
+	
+	% --- SLIDE 40 ---
+	\begin{frame}[fragile]{ALTER TABLE - Esempio Completo}
+		\begin{lstlisting}
+			-- Creazione tabella base
+			CREATE TABLE Studenti (
+			Matricola CHAR(10),
+			Nome VARCHAR(50)
+			);
+			
+			-- Aggiunta PRIMARY KEY
+			ALTER TABLE Studenti ADD PRIMARY KEY (Matricola);
+			
+			-- Aggiunta colonne
+			ALTER TABLE Studenti ADD COLUMN Cognome VARCHAR(50);
+			ALTER TABLE Studenti ADD COLUMN Email VARCHAR(100) UNIQUE;
+			
+			-- Aggiunta vincolo NOT NULL (MySQL: modifica colonna)
+			ALTER TABLE Studenti MODIFY Cognome VARCHAR(50) NOT NULL;
+			
+			-- Aggiunta FOREIGN KEY
+			ALTER TABLE Studenti 
+			ADD COLUMN CorsoID INTEGER,
+			ADD CONSTRAINT fk_corso 
+			FOREIGN KEY (CorsoID) REFERENCES Corsi(ID);
+		\end{lstlisting}
+	\end{frame}
+	
+	% ===============================================
+	% SEZIONE 8: VISTE (VIEWS)
+	% ===============================================
+	\section{Viste (Views)}
+	
+	% --- SLIDE 41 ---
+	\begin{frame}[fragile]{Viste - Introduzione}
+		\begin{block}{Definizione}
+			Le viste sono \textbf{tabelle virtuali} il cui contenuto dipende dal contenuto di altre tabelle.
+		\end{block}
+		
+		\textbf{Sintassi:}
+		\begin{lstlisting}
+			CREATE [OR REPLACE] VIEW NomeVista [(ListaAttributi)] 
+			AS SelectSQL;
+		\end{lstlisting}
+		
+		\textbf{Esempio base:}
+		\begin{lstlisting}
+			CREATE VIEW ImpiegatiCostosi (Matricola, Nome, Cognome) 
+			AS SELECT Matricola, Nome, Cognome
+			FROM Impiegati
+			WHERE StipendioAnnuale > 30000;
+		\end{lstlisting}
+		
+		\begin{block}{Nota}
+			La lista degli attributi può essere omessa. In tal caso, lo schema è quello della SELECT.
+		\end{block}
+	\end{frame}
+	
+	% --- SLIDE 42 ---
+	\begin{frame}[fragile]{Utilizzo delle Viste}
+		\textbf{Una volta creata, la vista si usa come una normale tabella:}
+		\begin{lstlisting}
+			-- Interrogazione della vista
+			SELECT * FROM ImpiegatiCostosi;
+			
+			-- Join con la vista
+			SELECT IC.Nome, IC.Cognome, D.Nome AS Dipartimento
+			FROM ImpiegatiCostosi IC
+			JOIN Dipartimenti D ON IC.IdReparto = D.IdReparto;
+			
+			-- Filtri sulla vista
+			SELECT * FROM ImpiegatiCostosi
+			WHERE Nome LIKE 'M%'
+			ORDER BY Cognome;
+		\end{lstlisting}
+		
+		\begin{exampleblock}{Vantaggio}
+			Le viste permettono di semplificare query complesse e riutilizzarle facilmente.
+		\end{exampleblock}
+	\end{frame}
+	
+	% --- SLIDE 43 ---
+	\begin{frame}[fragile]{Viste - Esempi Pratici}
+		\textbf{Vista per impiegati recenti:}
+		\begin{lstlisting}
+			CREATE VIEW ImpiegatiRecenti (Matricola, Nome, Cognome, DataAssunzione)
+			AS SELECT Matricola, Nome, Cognome, DataAssunzione
+			FROM Impiegati
+			WHERE DataAssunzione > '2020-01-01';
+		\end{lstlisting}
+		
+		\textbf{Vista con join:}
+		\begin{lstlisting}
+			CREATE VIEW ImpiegatiMilanesi 
+			AS SELECT I.Matricola, I.Nome, I.Cognome, I.StipendioAnnuale
+			FROM Impiegati I
+			JOIN Reparti R ON I.IdReparto = R.IdReparto
+			WHERE R.Citta = 'Milano';
+		\end{lstlisting}
+		
+		\textbf{Uso della vista:}
+		\begin{lstlisting}
+			-- Media stipendi impiegati milanesi
+			SELECT AVG(StipendioAnnuale) FROM ImpiegatiMilanesi;
+		\end{lstlisting}
+	\end{frame}
+	
+	% --- SLIDE 44 ---
+	\begin{frame}[fragile]{Viste - Esempi con Aggregazione}
+		\textbf{Vista con GROUP BY:}
+		\begin{lstlisting}
+			CREATE VIEW StatisticheDipartimenti
+			AS SELECT 
+			D.Nome AS Dipartimento,
+			COUNT(*) AS NumeroImpiegati,
+			AVG(I.StipendioAnnuale) AS StipendioMedio,
+			MAX(I.StipendioAnnuale) AS StipendioMax
+			FROM Dipartimenti D
+			JOIN Impiegati I ON D.IdReparto = I.IdReparto
+			GROUP BY D.IdReparto, D.Nome;
+		\end{lstlisting}
+		
+		\textbf{Interrogazione della vista:}
+		\begin{lstlisting}
+			-- Dipartimenti con più di 10 impiegati
+			SELECT * FROM StatisticheDipartimenti
+			WHERE NumeroImpiegati > 10;
+			
+			-- Dipartimenti ordinati per stipendio medio
+			SELECT * FROM StatisticheDipartimenti
+			ORDER BY StipendioMedio DESC;
+		\end{lstlisting}
+	\end{frame}
+	
+	% --- SLIDE 45 ---
+	\begin{frame}{Utilizzi Tipici delle Viste}
+		\begin{enumerate}
+			\item \textbf{Sicurezza:}
+			\begin{itemize}
+				\item Impedire ad alcuni utenti l'accesso completo ai dati
+				\item Esempio: vista che nasconde stipendi e dati sensibili
+			\end{itemize}
+			
+			\vspace{0.2cm}
+			
+			\item \textbf{Convenienza:}
+			\begin{itemize}
+				\item Semplificare la scrittura delle query
+				\item Quando una query complessa compare più volte
+			\end{itemize}
+			
+			\vspace{0.2cm}
+			
+			\item \textbf{Indipendenza logica:}
+			\begin{itemize}
+				\item Isolare le applicazioni dalla struttura fisica del DB
+				\item Se cambia lo schema, le applicazioni continuano a funzionare
+			\end{itemize}
+			
+			\vspace{0.2cm}
+			
+			\item \textbf{Riutilizzo del codice:}
+			\begin{itemize}
+				\item Definire una volta, usare ovunque
+				\item Manutenzione centralizzata della logica di business
+			\end{itemize}
+		\end{enumerate}
+	\end{frame}
+	
+	% --- SLIDE 46 ---
+	\begin{frame}[fragile]{Modifica e Cancellazione Viste}
+		\textbf{Modificare una vista esistente:}
+		\begin{lstlisting}
+			CREATE OR REPLACE VIEW ImpiegatiCostosi 
+			AS SELECT Matricola, Nome, Cognome, StipendioAnnuale
+			FROM Impiegati
+			WHERE StipendioAnnuale > 40000;  -- soglia modificata
+		\end{lstlisting}
+		
+		\textbf{Cancellare una vista:}
+		\begin{lstlisting}
+			DROP VIEW [IF EXISTS] NomeVista;
+		\end{lstlisting}
+		
+		\textbf{Esempi:}
+		\begin{lstlisting}
+			DROP VIEW ImpiegatiCostosi;
+			
+			DROP VIEW IF EXISTS ImpiegatiRecenti;
+			
+			-- Cancellazione multipla
+			DROP VIEW IF EXISTS Vista1, Vista2, Vista3;
+		\end{lstlisting}
+		
+		\begin{alertblock}{Nota}
+			Cancellare una vista non elimina i dati sottostanti, solo la definizione della vista.
+		\end{alertblock}
+	\end{frame}
+	
+	% ===============================================
+	% SEZIONE 9: DATA CONTROL LANGUAGE (DCL)
+	% ===============================================
+	\section{Data Control Language (DCL)}
+	
+	% --- SLIDE 47 ---
+	\begin{frame}[fragile]{DCL - Introduzione}
+		\begin{block}{Definizione}
+			Il DCL è il linguaggio per gestire i permessi e l'accesso al database.
+		\end{block}
+		
+		\textbf{Comandi principali:}
+		\begin{itemize}
+			\item \texttt{CREATE USER}: crea nuovi utenti
+			\item \texttt{DROP USER}: elimina utenti
+			\item \texttt{GRANT}: concede privilegi
+			\item \texttt{REVOKE}: revoca privilegi
+		\end{itemize}
+		
+		\vspace{0.3cm}
+		
+		\textbf{Creazione utente:}
+		\begin{lstlisting}
+			CREATE USER 'mario'@'%' IDENTIFIED BY 'password123';
+			CREATE USER 'admin'@'localhost' IDENTIFIED BY 'admin_pwd';
+		\end{lstlisting}
+		
+		\textbf{Cancellazione utente:}
+		\begin{lstlisting}
+			DROP USER 'mario'@'%';
+		\end{lstlisting}
+	\end{frame}
+	
+	% --- SLIDE 48 ---
+	\begin{frame}[fragile]{GRANT - Concessione Privilegi}
+		\textbf{Sintassi base:}
+		\begin{lstlisting}
+			GRANT privilegi ON oggetto 
+			TO utente 
+			[WITH GRANT OPTION];
+		\end{lstlisting}
+		
+		\textbf{Esempi:}
+		\begin{lstlisting}
+			-- Tutti i privilegi su una tabella
+			GRANT ALL PRIVILEGES ON Impiegati TO 'mario'@'%';
+			
+			-- Privilegi specifici
+			GRANT SELECT, INSERT ON Studenti TO 'utente1'@'localhost';
+			
+			-- Su tutto il database
+			GRANT SELECT ON UniversitaDB.* TO 'lettore'@'%';
+			
+			-- Con possibilità di delegare
+			GRANT SELECT ON Impiegati TO 'admin'@'%' 
+			WITH GRANT OPTION;
+		\end{lstlisting}
+		
+		\begin{block}{WITH GRANT OPTION}
+			Permette all'utente di concedere a sua volta i privilegi ricevuti ad altri utenti.
+		\end{block}
+	\end{frame}
+	
+	% --- SLIDE 49 ---
+	\begin{frame}[fragile]{REVOKE - Revoca Privilegi}
+		\textbf{Sintassi:}
+		\begin{lstlisting}
+			REVOKE privilegi ON oggetto FROM utente;
+		\end{lstlisting}
+		
+		\textbf{Esempi:}
+		\begin{lstlisting}
+			-- Revoca tutti i privilegi
+			REVOKE ALL PRIVILEGES ON Impiegati FROM 'mario'@'%';
+			
+			-- Revoca privilegi specifici
+			REVOKE INSERT, UPDATE ON Studenti FROM 'utente1'@'localhost';
+			
+			-- Revoca su database
+			REVOKE SELECT ON UniversitaDB.* FROM 'lettore'@'%';
+		\end{lstlisting}
+		
+		\begin{alertblock}{Importante}
+			\begin{itemize}
+				\item Un utente può revocare \textbf{solo privilegi che lui ha concesso}
+				\item La revoca non è automaticamente ricorsiva
+			\end{itemize}
+		\end{alertblock}
+	\end{frame}
+	
+	% --- SLIDE 50 ---
+	\begin{frame}[fragile]{Privilegi Disponibili}
+		\begin{columns}[T]
+			\column{0.48\textwidth}
+			\textbf{Privilegi sui dati:}
+			\begin{itemize}
+				\item \texttt{SELECT}
+				\item \texttt{INSERT}
+				\item \texttt{UPDATE}
+				\item \texttt{DELETE}
+			\end{itemize}
+			
+			\textbf{Privilegi sulla struttura:}
+			\begin{itemize}
+				\item \texttt{CREATE}
+				\item \texttt{ALTER}
+				\item \texttt{DROP}
+				\item \texttt{INDEX}
+			\end{itemize}
+			
+			\column{0.48\textwidth}
+			\textbf{Privilegi amministrativi:}
+			\begin{itemize}
+				\item \texttt{ALL PRIVILEGES}
+				\item \texttt{GRANT OPTION}
+				\item \texttt{CREATE USER}
+				\item \texttt{RELOAD}
+				\item \texttt{SHUTDOWN}
+			\end{itemize}
+			
+			\textbf{Privilegi speciali:}
+			\begin{itemize}
+				\item \texttt{EXECUTE} (procedure)
+				\item \texttt{REFERENCES}
+				\item \texttt{TRIGGER}
+			\end{itemize}
+		\end{columns}
+	\end{frame}
+	
+	% --- SLIDE 51: Riepilogo ---
+	\begin{frame}{Riepilogo Costrutti DDL}
+		\begin{center}
+			\begin{tabular}{|l|l|}
+				\hline
+				\rowcolor{sqlblue!20}
+				\textbf{Operazione} & \textbf{Comando} \\
+				\hline
+				Creare schema & \texttt{CREATE SCHEMA} \\
+				\hline
+				Creare tabella & \texttt{CREATE TABLE} \\
+				\hline
+				Modificare tabella & \texttt{ALTER TABLE} \\
+				\hline
+				Cancellare tabella & \texttt{DROP TABLE} \\
+				\hline
+				Creare vista & \texttt{CREATE VIEW} \\
+				\hline
+				Cancellare vista & \texttt{DROP VIEW} \\
+				\hline
+				Concedere privilegi & \texttt{GRANT} \\
+				\hline
+				Revocare privilegi & \texttt{REVOKE} \\
+				\hline
+			\end{tabular}
+		\end{center}
+		
+		\vspace{0.5cm}
+		
+		\begin{block}{Ricorda}
+			Il DDL modifica la \textbf{struttura} del database, non i dati. Le operazioni sono \textbf{permanenti} e vanno eseguite con attenzione.
+		\end{block}
+	\end{frame}
+	
+	% --- SLIDE 52: Bibliografia ---
+	\begin{frame}{Bibliografia e Riferimenti}
+		\begin{itemize}
+			\item SQL Standard - ISO/IEC 9075
+			\item MySQL Reference Manual - \url{https://dev.mysql.com/doc/}
+			\item PostgreSQL Documentation - \url{https://www.postgresql.org/docs/}
+			\item Atzeni, Ceri, Paraboschi, Torlone - "Basi di Dati"
+			\item Elmasri, Navathe - "Fundamentals of Database Systems"
+		\end{itemize}
+		
+		\vspace{0.5cm}
+		
+		\begin{center}
+			\Large{\textbf{Grazie per l'attenzione!}}
+			
+			\vspace{0.3cm}
+			
+			\normalsize
+			Per domande o chiarimenti:\\
+			\texttt{massimo.tivoli@iisfermi.edu.it}
+		\end{center}
+	\end{frame}
+	
+\end{document}

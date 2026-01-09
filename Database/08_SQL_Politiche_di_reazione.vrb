@@ -1,0 +1,36 @@
+\frametitle{Privilegi Disponibili}
+\begin{columns}[T]
+			\column{0.48\textwidth}
+			\textbf{Privilegi sui dati:}
+			\begin{itemize}
+				\item \texttt{SELECT}
+				\item \texttt{INSERT}
+				\item \texttt{UPDATE}
+				\item \texttt{DELETE}
+			\end{itemize}
+			
+			\textbf{Privilegi sulla struttura:}
+			\begin{itemize}
+				\item \texttt{CREATE}
+				\item \texttt{ALTER}
+				\item \texttt{DROP}
+				\item \texttt{INDEX}
+			\end{itemize}
+			
+			\column{0.48\textwidth}
+			\textbf{Privilegi amministrativi:}
+			\begin{itemize}
+				\item \texttt{ALL PRIVILEGES}
+				\item \texttt{GRANT OPTION}
+				\item \texttt{CREATE USER}
+				\item \texttt{RELOAD}
+				\item \texttt{SHUTDOWN}
+			\end{itemize}
+			
+			\textbf{Privilegi speciali:}
+			\begin{itemize}
+				\item \texttt{EXECUTE} (procedure)
+				\item \texttt{REFERENCES}
+				\item \texttt{TRIGGER}
+			\end{itemize}
+		\end{columns}
