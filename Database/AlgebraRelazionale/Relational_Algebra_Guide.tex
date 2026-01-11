@@ -1,0 +1,250 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{geometry}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{lipsum} % Only for placeholder text if needed; can be removed
+
+\hypersetup{
+	colorlinks=true,
+	linkcolor=blue,
+	filecolor=magenta,      
+	urlcolor=cyan,
+}
+
+\geometry{margin=1in}
+\title{A Step-by-Step Guide to Writing Queries in Relational Algebra}
+\author{Prof. Fedeli Massimo – IIS Fermi Sacconi Cpia}
+\date{}
+
+\begin{document}
+	
+	\maketitle
+	\thispagestyle{empty}
+	\newpage
+	
+	\section*{Introduction}
+	
+	Relational Algebra is a procedural query language that forms the mathematical foundation of relational database systems. Introduced by Edgar F. Codd in his seminal 1970 paper “A Relational Model of Data for Large Shared Data Banks,” it provides a formal framework for manipulating and retrieving data stored in tables (relations). Unlike SQL—which is declarative and focuses on \textit{what} data to retrieve—relational algebra is \textit{procedural}: it describes \textit{how} to obtain the desired result through a sequence of well-defined operations.
+	
+	The core operators of relational algebra include:
+	\begin{itemize}
+		\item \textbf{Selection} ($\sigma$): filters rows based on a condition.
+		\item \textbf{Projection} ($\pi$): selects specific columns.
+		\item \textbf{Union} ($\cup$), \textbf{Difference} ($-$), and \textbf{Intersection} ($\cap$): combine or compare sets of tuples.
+		\item \textbf{Cartesian Product} ($\times$) and \textbf{Join} ($\bowtie$): combine data from multiple relations.
+		\item \textbf{Rename} ($\rho$): changes relation or attribute names.
+		\item (Extended) \textbf{Aggregation} ($\gamma$) and \textbf{Division} ($\div$): support grouping and universal quantification.
+	\end{itemize}
+	
+	Why learn relational algebra today?
+	
+	\begin{itemize}
+		\item \textbf{Conceptual clarity}: It helps you understand \textit{how} databases work under the hood, beyond writing SQL statements.
+		\item \textbf{Query optimization}: Database management systems (DBMS) internally translate SQL queries into relational algebra expressions to optimize execution plans.
+		\item \textbf{Foundation for advanced topics}: Knowledge of relational algebra is essential for studying database theory, query languages, and data integrity.
+		\item \textbf{Problem-solving skill}: Translating natural-language questions into formal expressions sharpens logical and analytical thinking—skills valuable in programming, data science, and software engineering.
+	\end{itemize}
+	
+	This guide is designed for students encountering relational algebra for the first time. It assumes no prior knowledge beyond basic familiarity with tables and relationships. Using the \textbf{UIBK Music Streaming Service} database—a realistic, pedagogical schema inspired by real-world applications—we will walk through a systematic, step-by-step method to construct correct and efficient relational algebra queries.
+	
+	By mastering this formalism, you will not only become better at writing SQL but also develop a deeper understanding of how data is structured, connected, and retrieved in modern information systems.
+	
+	\section*{The Mental Algorithm: How to Build a Relational Algebra Query}
+	
+	Before diving into details, keep this 5-step mental algorithm in mind. Think of it as your “recipe” for every query:
+	
+	\begin{enumerate}[label=\textbf{Step \arabic*:}, left=0pt]
+		\item \textbf{What do I need to output?}  
+		Identify the attributes (columns) the query asks for (e.g., names, IDs). This tells you what to put in the final \textit{projection} ($\pi$).
+		
+		\item \textbf{Where is this data stored?}  
+		List all relations (tables) that contain the required attributes or are needed to connect them (via foreign keys).
+		
+		\item \textbf{What conditions must be satisfied?}  
+		Identify filters (e.g., “from Italy”, “genre = Rock”). These become \textit{selections} ($\sigma$).
+		
+		\item \textbf{How do I connect the tables?}  
+		Use \textit{joins} ($\bowtie$) to combine relations based on matching keys (e.g., \texttt{CustomerId}, \texttt{TrackId}).
+		
+		\item \textbf{Do I need advanced logic?}  
+		Ask: Is this a “not”, “all”, or “count/average” query? If yes, consider \textit{difference} ($-$), \textit{division} ($\div$), or \textit{aggregation} ($\gamma$).
+	\end{enumerate}
+	
+	Once you’ve answered these five questions, you can assemble your expression **from the inside out**:  
+	start with selections, then join, then project.
+	
+	\section*{Step 1: Understand the Question}
+	
+	Before writing any symbols, read the query carefully. Ask yourself:
+	
+	\begin{itemize}[left=0pt]
+		\item What information am I asked to return? (e.g., names, IDs, counts?)
+		\item Which tables (relations) contain this information?
+		\item Are there conditions or filters? (e.g., “from Italy”, “price > 10”)
+		\item Do I need to combine data from multiple tables?
+	\end{itemize}
+	
+	\textbf{Example}:  
+	“Find the name of all customers who live in Italy.”
+	
+	\begin{itemize}
+		\item Output: \texttt{FirstName} and \texttt{LastName}
+		\item Table: \texttt{Customer}
+		\item Condition: \texttt{Country = 'Italy'}
+	\end{itemize}
+	
+	\section*{Step 2: Reference Schema — UIBK Music Streaming Service Database}
+	
+	All queries in this guide refer to the following relational schema:
+	
+	\begin{itemize}
+		\item \textbf{Artist}(\textit{ArtistId}, \textit{Name})
+		\item \textbf{Album}(\textit{AlbumId}, \textit{Title}, \textit{ArtistId})
+		\item \textbf{Track}(\textit{TrackId}, \textit{Name}, \textit{AlbumId}, \textit{GenreId}, \textit{Milliseconds}, \textit{Bytes}, \textit{UnitPrice})
+		\item \textbf{PlaylistContent}(\textit{PlaylistId}, \textit{TrackId})
+		\item \textbf{Playlist}(\textit{PlaylistId}, \textit{Name})
+		\item \textbf{Genre}(\textit{GenreId}, \textit{Name})
+		\item \textbf{Invoice}(\textit{InvoiceId}, \textit{CustomerId}, \textit{InvoiceDate}, \textit{Total})
+		\item \textbf{InvoiceParts}(\textit{InvoicePartId}, \textit{InvoiceId}, \textit{TrackId}, \textit{UnitPrice}, \textit{Quantity})
+		\item \textbf{Customer}(\textit{CustomerId}, \textit{FirstName}, \textit{LastName}, \textit{Address}, \textit{City}, \textit{Country}, \textit{PostalCode}, \textit{Email})
+	\end{itemize}
+	
+	\textbf{Key Relationships}:
+	\begin{itemize}
+		\item \texttt{Album.ArtistId} $\rightarrow$ \texttt{Artist.ArtistId}
+		\item \texttt{Track.AlbumId} $\rightarrow$ \texttt{Album.AlbumId}
+		\item \texttt{Track.GenreId} $\rightarrow$ \texttt{Genre.GenreId}
+		\item \texttt{PlaylistContent.PlaylistId} $\rightarrow$ \texttt{Playlist.PlaylistId}
+		\item \texttt{PlaylistContent.TrackId} $\rightarrow$ \texttt{Track.TrackId}
+		\item \texttt{Invoice.CustomerId} $\rightarrow$ \texttt{Customer.CustomerId}
+		\item \texttt{InvoiceParts.InvoiceId} $\rightarrow$ \texttt{Invoice.InvoiceId}
+		\item \texttt{InvoiceParts.TrackId} $\rightarrow$ \texttt{Track.TrackId}
+	\end{itemize}
+	
+	\textbf{Tip}: Always check foreign key relationships when joining tables!
+	
+	\section*{Step 3: Apply Selection ($\sigma$) to Filter Rows}
+	
+	Use the \textbf{selection operator} $\sigma_{\text{condition}}(R)$ to keep only the rows that satisfy a condition.
+	
+	\textbf{Example}:  
+	Customers from Italy:
+	\[
+	\sigma_{\text{Country} = \text{'Italy'}}(\text{Customer})
+	\]
+	
+	\section*{Step 4: Combine Relations with Join ($\bowtie$)}
+	
+	When data is split across tables, use the \textbf{join operator} $\bowtie$ to combine them based on common attributes (usually foreign keys).
+	
+	\textbf{Example}:  
+	Find tracks purchased by Italian customers.
+	
+	\begin{enumerate}
+		\item Get Italian customers: $\sigma_{\text{Country}='Italy'}(\text{Customer})$
+		\item Join with \texttt{Invoice}: on \texttt{CustomerId}
+		\item Join with \texttt{InvoiceParts}: on \texttt{InvoiceId}
+		\item Join with \texttt{Track}: on \texttt{TrackId}
+	\end{enumerate}
+	
+	Full expression (without projection yet):
+	\[
+	(((\sigma_{\text{Country}='Italy'}(\text{Customer})) \bowtie \text{Invoice}) \bowtie \text{InvoiceParts}) \bowtie \text{Track}
+	\]
+	
+	\section*{Step 5: Project Only the Required Attributes ($\pi$)}
+	
+	Use the \textbf{projection operator} $\pi_{\text{attr}_1, \dots, \text{attr}_n}(R)$ to keep only the columns you need in the final result.
+	
+	\textbf{Example}:  
+	Return only track names:
+	\[
+	\pi_{\text{Name}}\Big( (((\sigma_{\text{Country}='Italy'}(\text{Customer})) \bowtie \text{Invoice}) \bowtie \text{InvoiceParts}) \bowtie \text{Track} \Big)
+	\]
+	
+	\section*{Step 6: Handle Advanced Cases (Optional)}
+	
+	Some queries require more advanced operators:
+	
+	\begin{description}
+		\item[Difference ($-$):] Find items in one set but not another.  
+		Example: “Tracks never purchased” = All tracks $-$ Purchased tracks.
+		
+		\item[Division ($\div$):] Used for “for all” queries.  
+		Example: “Customers who bought tracks from every genre”.
+		
+		\item[Aggregation ($\gamma$):] Compute sums, averages, counts.  
+		Example: $\gamma_{\text{avg(UnitPrice)}}(\text{Track})$
+	\end{description}
+	
+	\section*{Step 7: Simplify and Check}
+	
+	\begin{itemize}
+		\item Can you reduce the number of joins?
+		\item Are all attributes correctly named?
+		\item Does the output match what the question asks?
+	\end{itemize}
+	
+	\textbf{Tip}: Work backwards—start from the desired output, then ask: “Where does this data come from?”
+	
+	\section*{Worked Example}
+	
+	\textbf{Query}: “Find the name of all playlists that contain at least one track from the ‘Rock’ genre.”
+	
+	\begin{enumerate}
+		\item Needed output: \texttt{Playlist.Name}
+		\item Tables involved: \texttt{Playlist}, \texttt{PlaylistContent}, \texttt{Track}, \texttt{Genre}
+		\item Conditions: \texttt{Genre.Name = 'Rock'}
+		\item Steps:
+		\begin{itemize}
+			\item Select Rock genre: $\sigma_{\text{Name}='Rock'}(\text{Genre})$
+			\item Join with Track: $\text{Track} \bowtie_{\text{Track.GenreId = Genre.GenreId}} (\cdots)$
+			\item Join with PlaylistContent: on \texttt{TrackId}
+			\item Join with Playlist: on \texttt{PlaylistId}
+			\item Project \texttt{Name} from Playlist
+		\end{itemize}
+		\item Final expression:
+		\[
+		\pi_{\text{Playlist.Name}}\Big(
+		\text{Playlist} \bowtie 
+		\text{PlaylistContent} \bowtie 
+		\text{Track} \bowtie 
+		\sigma_{\text{Name}='Rock'}(\text{Genre})
+		\Big)
+		\]
+	\end{enumerate}
+	
+	\section*{Summary Checklist}
+	
+	\begin{enumerate}
+		\item[$\square$] Understood the natural-language query?
+		\item[$\square$] Identified all necessary relations? (Refer to Section 2!)
+		\item[$\square$] Applied selections ($\sigma$) to filter rows?
+		\item[$\square$] Joined relations correctly using foreign keys?
+		\item[$\square$] Projected only the required attributes ($\pi$)?
+		\item[$\square$] Considered advanced operators if needed (e.g., $-$, $\div$, $\gamma$)?
+	\end{enumerate}
+	
+	With practice, writing relational algebra expressions will become intuitive—and it will greatly improve your ability to write efficient SQL queries!
+	
+	\section*{References}
+	
+	\begin{enumerate}
+		\item R. Ramakrishnan and J. Gehrke, \textit{Database Management Systems}, 3rd ed. New York: McGraw-Hill, 2003. (Chapter 4: Relational Algebra and Calculus)
+		
+		\item A. Silberschatz, H. F. Korth, and S. Sudarshan, \textit{Database System Concepts}, 7th ed. New York: McGraw-Hill, 2019. (Section 6.1–6.2)
+		
+		\item C. J. Date, \textit{An Introduction to Database Systems}, 8th ed. Boston: Addison-Wesley, 2003.
+		
+		\item University of Innsbruck (UIBK), Department of Databases and Information Systems. Course materials on Relational Algebra. Available: \url{https://www.dbs.uibk.ac.at/}
+		
+		\item “Chinook Database.” GitHub Repository, 2023. [Online]. Available: \url{https://github.com/lerocha/chinook-database}. (Note: The UIBK Music Streaming schema used in this guide is inspired by the Chinook sample database.)
+		
+		\item Stanford University, “Relational Algebra,” CS145: Introduction to Databases. [Online]. Available: \url{https://cs145-fa22.github.io/slides/04-relational-algebra.pdf}
+	\end{enumerate}
+	
+\end{document}
