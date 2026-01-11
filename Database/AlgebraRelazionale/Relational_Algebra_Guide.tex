@@ -6,7 +6,6 @@
 \usepackage{enumitem}
 \usepackage{graphicx}
 \usepackage{hyperref}
-\usepackage{lipsum} % Only for placeholder text if needed; can be removed
 
 \hypersetup{
 	colorlinks=true,
@@ -139,22 +138,57 @@
 	
 	\section*{Step 4: Combine Relations with Join ($\bowtie$)}
 	
-	When data is split across tables, use the \textbf{join operator} $\bowtie$ to combine them based on common attributes (usually foreign keys).
+	When data is split across tables, you must combine them to answer complex questions. In relational algebra, the most common way to do this is the **natural join** ($\bowtie$), which automatically matches tuples with equal values on attributes that share the same name (e.g., \texttt{CustomerId}).
 	
-	\textbf{Example}:  
-	Find tracks purchased by Italian customers.
-	
-	\begin{enumerate}
-		\item Get Italian customers: $\sigma_{\text{Country}='Italy'}(\text{Customer})$
-		\item Join with \texttt{Invoice}: on \texttt{CustomerId}
-		\item Join with \texttt{InvoiceParts}: on \texttt{InvoiceId}
-		\item Join with \texttt{Track}: on \texttt{TrackId}
-	\end{enumerate}
-	
-	Full expression (without projection yet):
+	However, in practice—and especially when attribute names differ—you may need to specify the join condition explicitly. While pure relational algebra uses natural join, many textbooks and courses adopt a **theta-join** notation:  
 	\[
-	(((\sigma_{\text{Country}='Italy'}(\text{Customer})) \bowtie \text{Invoice}) \bowtie \text{InvoiceParts}) \bowtie \text{Track}
-	\]
+	R \bowtie_{\theta} S
+	\]  
+	where $\theta$ is a condition (e.g., $R.A = S.B$).
+	
+	Below, we explain the main types of joins you should know.
+	
+	\subsection*{Types of Joins in Relational Algebra}
+	
+	Although classical relational algebra defines only the **natural join**, it is useful to understand how it relates to other join types commonly used in SQL and database theory.
+	
+	\begin{description}
+		\item[Natural Join ($R \bowtie S$)]  
+		Combines tuples from $R$ and $S$ that have \textbf{equal values on all attributes with the same name}. The common attributes appear only once in the result.  
+		\textbf{Example}:  
+		$\text{Customer} \bowtie \text{Invoice}$ joins on \texttt{CustomerId} (present in both relations) and returns one \texttt{CustomerId} column.
+		
+		\item[Theta-Join ($R \bowtie_{\theta} S$)]  
+		A generalization where you specify a condition $\theta$ (e.g., equality, inequality). In practice, this is how we join tables when keys have different names or when using non-equality conditions.  
+		\textbf{Example}:  
+		$\text{Track} \bowtie_{\text{Track.GenreId} = \text{Genre.GenreId}} \text{Genre}$
+		
+		\item[Equijoin]  
+		A theta-join where $\theta$ consists only of equality conditions on attributes. Most foreign-key joins are equijoins. Natural join is a special case of equijoin where duplicate columns are removed.
+		
+		\item[Outer Joins (Left, Right, Full)]  
+		\textit{Note}: These are **not part of classical relational algebra**, which operates only on complete tuples (no nulls). However, they are essential in SQL.  
+		- \textbf{Left outer join}: keeps all tuples from the left relation, filling missing right-side data with NULL.  
+		- Used when you want “all artists, even those without albums.”  
+		Since relational algebra does not support NULLs, such queries are often expressed using **union** and **difference** instead.  
+		\textbf{Example (simulated)}:  
+		To find all artists and their albums (including artists with no albums):  
+		\[
+		\pi_{\text{Name, Title}}((\text{Artist} \bowtie \text{Album})) \cup \pi_{\text{Name, Title} \leftarrow \text{NULL}}(\text{Artist} - \pi_{\text{ArtistId}}(\text{Album}))
+		\]  
+		(This is advanced; usually, standard curriculum focuses on inner/natural joins.)
+		
+	\end{description}
+	
+	\textbf{Practical Advice for This Course}:  
+	In exercises based on the UIBK schema, assume that:
+	\begin{itemize}
+		\item All joins are **inner joins** (only matching tuples are kept).
+		\item When two tables share a foreign key (e.g., \texttt{Track.GenreId} and \texttt{Genre.GenreId}), use an explicit equijoin if names differ, or natural join if you rename attributes first (using $\rho$).
+		\item For simplicity, we often write:  
+		$\text{Track} \bowtie \text{Genre}$  
+		implying the join on \texttt{GenreId}, even if attribute names are technically different. In formal settings, use renaming or theta-join.
+	\end{itemize}
 	
 	\section*{Step 5: Project Only the Required Attributes ($\pi$)}
 	
