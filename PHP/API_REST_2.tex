@@ -1,0 +1,1019 @@
+\documentclass[10pt]{beamer}
+\usetheme{Madrid}
+\usecolortheme{default}
+
+% Pacchetti utili
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[italian]{babel}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{url}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric}
+
+% Stile per il codice
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+	backgroundcolor=\color{backcolour},
+	commentstyle=\color{codegreen},
+	keywordstyle=\color{magenta},
+	numberstyle=\tiny\color{codegray},
+	stringstyle=\color{codepurple},
+	basicstyle=\ttfamily\footnotesize,
+	breakatwhitespace=false,
+	breaklines=true,
+	captionpos=b,
+	keepspaces=true,
+	numbers=left,
+	numbersep=5pt,
+	showspaces=false,
+	showstringspaces=false,
+	showtabs=false,
+	tabsize=2
+}
+
+\lstset{style=mystyle}
+
+\title{API REST in PHP}
+\subtitle{Creazione e Test di un'API CRUD con PHP e MySQL}
+\author{Prof. Fedeli Massimo}
+\institute{IIS Fermi Sacconi Cpia di Ascoli Piceno}
+\date{\today}
+
+\begin{document}
+	
+	\frame{\titlepage}
+	
+	% -----------------------------
+	% INDICE
+	% -----------------------------
+	
+	\begin{frame}{Indice}
+		\tableofcontents
+	\end{frame}
+	
+	% -----------------------------
+	% SEZIONE 1: Introduzione alle API
+	% -----------------------------
+	
+	\section{Introduzione alle API}
+	
+	\begin{frame}{Cos'è un'API?}
+		\begin{itemize}
+			\item \textbf{API} = \textit{Application Programming Interface} \\
+			È un'interfaccia software che definisce le regole con cui due componenti software possono interagire.
+			
+			\item Permette a programmi diversi — anche scritti in linguaggi differenti o eseguiti su macchine distinte — di \textbf{scambiare dati} o \textbf{richiedere servizi} in modo strutturato.
+			
+			\item Esistono due categorie principali:
+			\begin{itemize}
+				\item \textbf{API locali}: usate all'interno di un'applicazione (es. metodi di una classe in PHP).
+				\item \textbf{Web API}: accessibili via rete (Internet/Intranet), tipicamente tramite protocollo HTTP/HTTPS.
+			\end{itemize}
+			
+			\item Alcuni modelli comuni di Web API:
+			\begin{itemize}
+				\item \textbf{REST} – architettura leggera basata su HTTP e risorse (oggi la più diffusa).
+				\item \textbf{SOAP} – standard più rigido, basato su XML e con specifiche complesse.
+				\item \textbf{GraphQL} – sviluppato da Facebook, permette al client di richiedere esattamente i dati necessari.
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}{Web API}
+		\begin{center}
+			\begin{tikzpicture}[node distance=1.5cm]
+				\node (client) [draw, rectangle] {Client};
+				\node (api) [draw, rectangle, right of=client, xshift=2cm] {API Web};
+				\node (db) [draw, cylinder, shape border rotate=90, aspect=0.3, below of=api, yshift=-1cm] {Database};
+				
+				\draw[->, thick] (client) -- node[above]{HTTP Request} (api);
+				\draw[->, thick] (api) -- node[right]{Query} (db);
+				\draw[->, thick] (db) -- node[left]{Dati} (api);
+				\draw[->, thick] (api) -- node[below]{HTTP Response} (client);
+			\end{tikzpicture}
+		\end{center}
+	\end{frame}
+	
+	\begin{frame}{Perché non connettersi direttamente al database?}
+		\begin{itemize}
+			\item \textbf{Sicurezza}: \\
+			I database in cloud o su server remoti \textit{non consentono connessioni dirette} da client esterni per motivi di sicurezza. Consentire l'accesso diretto esporrebbe credenziali, strutture dati e potenzialmente l'intero sistema ad attacchi (es. SQL injection, data leak).
+			
+			\item \textbf{Controllo e validazione}: \\
+			Un'API REST agisce come intermediario che \textit{filtra, convalida e sanitizza} ogni richiesta prima di toccare il database. Questo evita operazioni non autorizzate o malformate.
+			
+			\item \textbf{Astrazione}: \\
+			L'API nasconde la complessità del database (tabelle, relazioni, query). Se la struttura del DB cambia, basta aggiornare l'API — i client non devono essere modificati.
+			
+			\item \textbf{Scalabilità e manutenzione}: \\
+			Attraverso l'API è possibile implementare facilmente:
+			\begin{itemize}
+				\item Logging delle richieste
+				\item Rate limiting (limitare il numero di chiamate)
+				\item Caching delle risposte
+				\item Autenticazione e autorizzazione (es. token JWT)
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+	
+	% -----------------------------
+	% SEZIONE 2: Architettura REST
+	% -----------------------------
+	
+	\section{Architettura REST}
+	
+	\begin{frame}{Cos'è REST?}
+		\begin{itemize}
+			\item \textbf{REST} = \textit{Representational State Transfer} \\
+			È uno stile architetturale per la progettazione di sistemi distribuiti, introdotto da Roy Fielding nel 2000. Oggi è lo standard de facto per le Web API.
+			
+			\item \textbf{Basato su HTTP/HTTPS}: \\
+			Utilizza il protocollo HTTP (o HTTPS per connessioni sicure) come mezzo di comunicazione tra client e server. Tutte le operazioni avvengono tramite richieste e risposte HTTP.
+			
+			\item \textbf{Utilizza i verbi HTTP standard} per esprimere operazioni sulle risorse:
+			\begin{itemize}
+				\item \texttt{GET} – legge dati (Read)
+				\item \texttt{POST} – crea nuovi dati (Create)
+				\item \texttt{PUT} – aggiorna dati esistenti (Update)
+				\item \texttt{DELETE} – rimuove dati (Delete)
+			\end{itemize}
+			Questi quattro metodi corrispondono alle operazioni \textbf{CRUD}.
+			
+			\item \textbf{Risorse identificate da URL}: \\
+			Ogni entità (es. un libro, un utente) è una "risorsa" accessibile tramite un URI univoco, ad esempio: \\
+			\texttt{https://miosito.com/api/books/123}
+			
+			\item \textbf{Formato dati tipico: JSON} \\
+			I dati scambiati tra client e server sono quasi sempre in formato \textbf{JSON} (JavaScript Object Notation), per la sua leggibilità, compattezza e supporto universale.
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}{I sei principi di REST}
+		\begin{enumerate}
+			\item \textbf{Client-Server}: \\
+			Separazione tra interfaccia utente (client) e logica di business/storage (server). Permette evoluzione indipendente dei due componenti.
+			
+			\item \textbf{Stateless}: \\
+			Ogni richiesta contiene tutte le informazioni necessarie. Il server non mantiene sessioni tra richieste diverse.
+			
+			\item \textbf{Cacheable}: \\
+			Le risposte devono dichiarare se possono essere memorizzate in cache per migliorare le prestazioni.
+			
+			\item \textbf{Interfaccia uniforme}: \\
+			Un'interfaccia standardizzata tra client e server semplifica l'architettura. Include identificazione delle risorse, manipolazione tramite rappresentazioni, messaggi auto-descrittivi e HATEOAS.
+			
+			\item \textbf{Sistema a strati}: \\
+			L'architettura può essere composta da livelli gerarchici. Il client non sa se si connette direttamente al server finale o a un intermediario.
+			
+			\item \textbf{Code on Demand} (opzionale): \\
+			Il server può estendere le funzionalità del client inviando codice eseguibile (es. JavaScript).
+		\end{enumerate}
+	\end{frame}
+	
+	\begin{frame}{Stateless vs Stateful}
+		\begin{block}{Stateless (REST)}
+			Ogni richiesta è indipendente e contiene tutte le informazioni necessarie (token, parametri). Il server non conserva informazioni sulla sessione del client.
+			
+			\textbf{Vantaggi}: Scalabilità, semplicità, affidabilità \\
+			\textbf{Svantaggi}: Overhead per inviare informazioni ad ogni richiesta
+		\end{block}
+		
+		\begin{block}{Stateful (tradizionale)}
+			Il server mantiene lo stato della sessione del client (es. via cookie di sessione in PHP). Le richieste successive si basano su questo stato.
+			
+			\textbf{Vantaggi}: Meno dati trasmessi \\
+			\textbf{Svantaggi}: Complessità, difficoltà di scalabilità
+		\end{block}
+	\end{frame}
+	
+	\begin{frame}{Risorse e URI}
+		\begin{itemize}
+			\item Nel paradigma REST, tutto è una \textbf{risorsa}
+			\item Una risorsa è un'entità identificabile: utente, prodotto, ordine, ecc.
+			\item Ogni risorsa è identificata da un \textbf{URI univoco}
+		\end{itemize}
+		
+		\begin{block}{Esempi di URI ben progettati}
+			\texttt{GET /api/books} — Lista di tutti i libri \\
+			\texttt{GET /api/books/5} — Dettaglio del libro con ID 5 \\
+			\texttt{POST /api/books} — Creazione di un nuovo libro \\
+			\texttt{PUT /api/books/5} — Aggiornamento del libro 5 \\
+			\texttt{DELETE /api/books/5} — Eliminazione del libro 5
+		\end{block}
+		
+		\begin{alertblock}{Best Practice}
+			Usa sostantivi plurali per le collezioni, non verbi. \\
+			Evita: \texttt{/getBook}, \texttt{/createBook} \\
+			Preferisci: \texttt{/books} con metodo HTTP appropriato
+		\end{alertblock}
+	\end{frame}
+	
+	\begin{frame}{Metodi HTTP e CRUD}
+		\begin{center}
+			\begin{tabular}{|c|c|l|}
+				\hline
+				\textbf{HTTP} & \textbf{CRUD} & \textbf{Descrizione} \\ \hline
+				GET & Read & Recupera una risorsa o collezione \\
+				POST & Create & Crea una nuova risorsa \\
+				PUT & Update & Aggiorna completamente una risorsa \\
+				PATCH & Update & Aggiorna parzialmente una risorsa \\
+				DELETE & Delete & Elimina una risorsa \\ \hline
+			\end{tabular}
+		\end{center}
+		
+		\vspace{0.5cm}
+		
+		\begin{block}{Idempotenza}
+			\textbf{GET, PUT, DELETE} sono idempotenti: eseguirli più volte produce lo stesso risultato. \\
+			\textbf{POST} non è idempotente: ripeterlo crea risorse multiple.
+		\end{block}
+	\end{frame}
+	
+	\begin{frame}{Codici di stato HTTP}
+		\begin{itemize}
+			\item \textbf{2xx - Successo}
+			\begin{itemize}
+				\item 200 OK — Richiesta completata con successo
+				\item 201 Created — Risorsa creata con successo
+				\item 204 No Content — Successo senza corpo di risposta
+			\end{itemize}
+			
+			\item \textbf{4xx - Errori del client}
+			\begin{itemize}
+				\item 400 Bad Request — Richiesta malformata
+				\item 401 Unauthorized — Autenticazione richiesta
+				\item 403 Forbidden — Accesso negato
+				\item 404 Not Found — Risorsa non trovata
+				\item 405 Method Not Allowed — Metodo HTTP non supportato
+			\end{itemize}
+			
+			\item \textbf{5xx - Errori del server}
+			\begin{itemize}
+				\item 500 Internal Server Error — Errore generico del server
+				\item 503 Service Unavailable — Servizio temporaneamente non disponibile
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}[fragile]{Formato dati: JSON}
+		\textbf{JSON} (JavaScript Object Notation) è il formato standard per lo scambio di dati nelle API REST moderne. È leggero, leggibile dall'uomo e supportato da tutti i linguaggi di programmazione.
+		\begin{itemize}
+			\item Struttura basata su coppie \texttt{chiave: valore}
+			\item Supporta array, oggetti annidati e tipi primitivi (stringhe, numeri, booleani, null)
+			\item Più compatto e semplice rispetto a XML
+			\item Nativo in JavaScript, ma facilmente parsabile anche in PHP (\texttt{json\_encode()}, \texttt{json\_decode()})
+		\end{itemize}
+		
+		\begin{lstlisting}
+			{
+				"Name": "John Wayne",
+				"Work": "Actor",
+				"Age": 52,
+				"Children": ["Lisa", "Thomas", "Knut"]
+			}
+		\end{lstlisting}
+		
+		In una REST API PHP, i dati ricevuti o inviati al client vengono quasi sempre serializzati in JSON.
+	\end{frame}
+	
+	\begin{frame}{Headers HTTP importanti}
+		\begin{itemize}
+			\item \textbf{Content-Type}: Specifica il formato del corpo della richiesta/risposta
+			\begin{itemize}
+				\item \texttt{application/json} — Dati in formato JSON
+				\item \texttt{application/xml} — Dati in formato XML
+				\item \texttt{multipart/form-data} — Upload di file
+			\end{itemize}
+			
+			\item \textbf{Accept}: Il client comunica quale formato preferisce ricevere
+			
+			\item \textbf{Authorization}: Contiene le credenziali per l'autenticazione
+			\begin{itemize}
+				\item \texttt{Bearer <token>} — Token JWT
+				\item \texttt{Basic <credentials>} — Basic Authentication
+			\end{itemize}
+			
+			\item \textbf{Cache-Control}: Gestione della cache
+			
+			\item \textbf{Access-Control-Allow-Origin}: Gestione CORS per richieste cross-origin
+		\end{itemize}
+	\end{frame}
+	
+	% -----------------------------
+	% SEZIONE 3: Implementazione in PHP
+	% -----------------------------
+	
+	\section{Implementazione in PHP}
+	
+	\begin{frame}{Ambiente LAMP}
+		\begin{itemize}
+			\item \textbf{Linux} Sistema operativo
+			\item \textbf{Apache} Web server
+			\item \textbf{MySQL} Database
+			\item \textbf{PHP} Linguaggio lato server
+		\end{itemize}
+		
+		\pause
+		\begin{block}{Alternative locali}
+			XAMPP, WAMP, MAMP
+		\end{block}
+		
+		\begin{block}{Configurazione PHP necessaria}
+			\begin{itemize}
+				\item PDO extension abilitata
+				\item JSON extension abilitata (di default in PHP moderno)
+				\item mod\_rewrite abilitato in Apache (per URL puliti)
+			\end{itemize}
+		\end{block}
+	\end{frame}
+	
+	\begin{frame}{Struttura di una API REST in PHP}
+		\begin{block}{Architettura tipica}
+			\begin{itemize}
+				\item \textbf{config.php}: Configurazione database e costanti
+				\item \textbf{index.php}: Entry point, routing delle richieste
+				\item \textbf{models/}: Classi per interagire con il database
+				\item \textbf{controllers/}: Logica di business
+				\item \textbf{utils/}: Funzioni helper (validazione, sanitizzazione)
+				\item \textbf{.htaccess}: Riscrittura URL per routing
+			\end{itemize}
+		\end{block}
+		
+		\begin{alertblock}{Principio MVC}
+			Separare la logica in Model (dati), View (presentazione) e Controller (business logic) rende il codice più manutenibile e testabile.
+		\end{alertblock}
+	\end{frame}
+	
+	\begin{frame}[fragile]{Database: Tabella BOOK}
+		\begin{lstlisting}[language=SQL]
+			CREATE TABLE BOOK (
+			BookId INT PRIMARY KEY AUTO_INCREMENT,
+			Title VARCHAR(100) NOT NULL,
+			Author VARCHAR(100) NOT NULL,
+			Topic VARCHAR(100) NOT NULL,
+			PublishedYear INT,
+			ISBN VARCHAR(20) UNIQUE,
+			CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+			UpdatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP 
+			ON UPDATE CURRENT_TIMESTAMP
+			);
+		\end{lstlisting}
+		
+		\begin{block}{Best Practice}
+			\begin{itemize}
+				\item Usa chiavi primarie auto-incrementali
+				\item Aggiungi timestamp per tracciare creazione/modifica
+				\item Imposta vincoli appropriati (NOT NULL, UNIQUE)
+			\end{itemize}
+		\end{block}
+	\end{frame}
+	
+	\begin{frame}[fragile]{config.php - Connessione Database}
+		\begin{lstlisting}[language=PHP]
+			<?php
+			define('DB_HOST', 'localhost');
+			define('DB_NAME', 'library_db');
+			define('DB_USER', 'root');
+			define('DB_PASS', '');
+			
+			try {
+				$pdo = new PDO(
+				"mysql:host=" . DB_HOST . ";dbname=" . DB_NAME,
+				DB_USER,
+				DB_PASS,
+				[
+				PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+				PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+				PDO::ATTR_EMULATE_PREPARES => false
+				]
+				);
+			} catch (PDOException $e) {
+				http_response_code(500);
+				echo json_encode([
+				'error' => 'Database connection failed'
+				]);
+				exit;
+			}
+			?>
+		\end{lstlisting}
+	\end{frame}
+	
+	\begin{frame}{PDO vs MySQLi}
+		\begin{block}{PDO (PHP Data Objects)}
+			\begin{itemize}
+				\item Supporta 12 diversi database (MySQL, PostgreSQL, SQLite, ecc.)
+				\item Sintassi orientata agli oggetti
+				\item Prepared statements nativi
+				\item Più portabile e moderno
+				\item \textbf{Raccomandato per nuovi progetti}
+			\end{itemize}
+		\end{block}
+		
+		\begin{block}{MySQLi}
+			\begin{itemize}
+				\item Specifico per MySQL/MariaDB
+				\item Supporta sia OOP che procedurale
+				\item Leggermente più veloce in alcuni scenari
+				\item Meno portabile
+			\end{itemize}
+		\end{block}
+	\end{frame}
+	
+	\begin{frame}[fragile]{Prepared Statements - Sicurezza}
+		\textbf{Problema: SQL Injection}
+		\begin{lstlisting}[language=PHP]
+			// PERICOLOSO - MAI fare cosi!
+			$sql = "SELECT * FROM BOOK WHERE BookId = " . $_GET['id'];
+			$result = $pdo->query($sql);
+		\end{lstlisting}
+		
+		Un attaccante potrebbe inserire: \texttt{id=1 OR 1=1} ed estrarre tutti i dati.
+		
+		\vspace{0.3cm}
+		
+		\textbf{Soluzione: Prepared Statements}
+		\begin{lstlisting}[language=PHP]
+			// SICURO
+			$sql = "SELECT * FROM BOOK WHERE BookId = :id";
+			$stmt = $pdo->prepare($sql);
+			$stmt->bindParam(':id', $_GET['id'], PDO::PARAM_INT);
+			$stmt->execute();
+			$book = $stmt->fetch();
+		\end{lstlisting}
+		
+		I prepared statements separano la logica SQL dai dati, prevenendo l'iniezione di codice malevolo.
+	\end{frame}
+	
+	\begin{frame}[fragile]{Perché le prepared statements prevengono SQL Injection?}
+		\begin{itemize}
+			\item \textbf{Separazione logica}: la query SQL e i dati viaggiano \emph{separatamente} al server SQL.
+			\item Il database \emph{compila} la query prima di ricevere i valori, qualsiasi carattere speciale (\texttt{'}, \texttt{"}, \texttt{;}, \texttt{--}) viene trattato come \emph{dato}, non come sintassi SQL.
+		\end{itemize}
+		
+		\begin{block}{Esempio sicuro con PDO}
+			\begin{lstlisting}[language=PHP,basicstyle=\ttfamily\small]
+				$id = $_GET['id'];
+				$stmt = $pdo->prepare(
+				"SELECT * FROM users WHERE id = ?"
+				);
+				$stmt->execute([$id]);   // il DB non reinterpreta il contenuto
+			\end{lstlisting}
+		\end{block}
+	\end{frame}
+	
+	
+	
+	\begin{frame}[fragile]{Confronto: query “concatenata” vs prepared statement}
+		\begin{columns}[T]
+			\column{0.48\textwidth}
+			\textbf{Codice vulnerabile}
+			\begin{lstlisting}[language=PHP,basicstyle=\ttfamily\scriptsize]
+				$query = "SELECT * FROM users
+				WHERE id = $id";
+				// id = 1 OR 1=1 -- 
+				// restituisce TUTTI gli utenti
+			\end{lstlisting}
+			
+			\column{0.48\textwidth}
+			\textbf{Prepared statement}
+			\begin{lstlisting}[language=PHP,basicstyle=\ttfamily\scriptsize]
+				$stmt = $pdo->prepare(
+				"SELECT * FROM users
+				WHERE id = ?"
+				);
+				$stmt->execute([$id]);
+				// id = 1 OR 1=1 -- 
+				// viene interpretato come
+				// valore letterale
+			\end{lstlisting}
+		\end{columns}
+		
+		\vfill
+		\centering
+		\alert{Mai concatenare input utente nella stringa SQL!}
+	\end{frame}
+	
+	\begin{frame}[fragile]{index.php - Routing Base}
+		\begin{lstlisting}[language=PHP]
+			<?php
+			require_once 'config.php';
+			
+			// Imposta header per JSON
+			header('Content-Type: application/json');
+			header('Access-Control-Allow-Origin: *');
+			header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE');
+			header('Access-Control-Allow-Headers: Content-Type');
+			
+			// Gestisci preflight request
+			if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+				http_response_code(200);
+				exit;
+			}
+			
+			$method = $_SERVER['REQUEST_METHOD'];
+			$request = explode('/', trim($_SERVER['PATH_INFO'] ?? '', '/'));
+			$resource = $request[0] ?? null;
+			$id = $request[1] ?? null;
+			
+			// Router
+			if ($resource === 'books') {
+				require_once 'controllers/BookController.php';
+				$controller = new BookController($pdo);
+				$controller->handleRequest($method, $id);
+			} else {
+				http_response_code(404);
+				echo json_encode(['error' => 'Resource not found']);
+			}
+			?>
+		\end{lstlisting}
+	\end{frame}
+	
+\begin{frame}[fragile]{Cosa fa \texttt{index.php} in un'API REST PHP?}
+	\begin{itemize}
+		\item \textbf{Entry-point unico}: ogni richiesta HTTP (\texttt{GET}, \texttt{POST}, \texttt{PUT}, \texttt{DELETE}) entra da questo file.
+		\item \textbf{Bootstrap}: carica la configurazione (connessione DB, autoloader, costanti).
+		\item \textbf{Normalizza la comunicazione}: imposta header CORS e \texttt{Content-Type} JSON.
+		\item \textbf{Routing semplice}: analizza \texttt{PATH\_INFO} per capire la risorsa (\texttt{books}) e l'eventuale ID.
+	\end{itemize}
+	
+	\begin{block}{Esempio di chiamata}
+		\begin{verbatim}
+			GET /index.php/books/123
+		\end{verbatim}
+		
+		\begin{lstlisting}[language=PHP,basicstyle=\ttfamily\small]
+			$resource = 'books';
+			$id       = '123';
+			// → carica il controller books e restituisce il libro 123 in JSON
+		\end{lstlisting}
+	\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{CORS: Cross-Origin Resource Sharing}
+	\begin{itemize}
+		\item \textbf{Problema di base}: per motivi di sicurezza, un browser blocca le richieste AJAX verso domini diversi da quello di origine (Same-Origin Policy).
+		\item \textbf{CORS}: meccanismo che consente a un server di dichiarare quali origini esterne sono autorizzate ad accedere alle sue risorse.
+		\item \textbf{Chi decide}: non il client, ma il \textbf{server}, tramite specifici header HTTP.
+	\end{itemize}
+	
+	\begin{block}{Header CORS più comuni}
+		\begin{lstlisting}[basicstyle=\ttfamily\small]
+			Access-Control-Allow-Origin: *
+			Access-Control-Allow-Methods: GET, POST, PUT, DELETE
+			Access-Control-Allow-Headers: Content-Type, Authorization
+		\end{lstlisting}
+	\end{block}
+	
+	\begin{itemize}
+		\item \textbf{Preflight}: per alcune richieste il browser invia prima una richiesta \texttt{OPTIONS}.
+		\item \textbf{Nota pratica}: senza CORS correttamente configurato, un'API REST funziona via curl ma non dal browser.
+	\end{itemize}
+\end{frame}
+
+	
+	\begin{frame}[fragile]{BookController.php - Struttura}
+		\begin{lstlisting}[language=PHP]
+			<?php
+			class BookController {
+				private $pdo;
+				
+				public function __construct($pdo) {
+					$this->pdo = $pdo;
+				}
+				
+				public function handleRequest($method, $id) {
+					switch($method) {
+						case 'GET':
+						$id ? $this->getOne($id) : $this->getAll();
+						break;
+						case 'POST':
+						$this->create();
+						break;
+						case 'PUT':
+						$this->update($id);
+						break;
+						case 'DELETE':
+						$this->delete($id);
+						break;
+						default:
+						http_response_code(405);
+						echo json_encode(['error' => 'Method not allowed']);
+					}
+				}
+			}
+			?>
+		\end{lstlisting}
+	\end{frame}
+	
+
+\begin{frame}[fragile]{BookController.php: a cosa serve}
+	\begin{itemize}
+		\item \textbf{Controller REST}: gestisce tutte le richieste HTTP relative alla risorsa \texttt{books}.
+		\item \textbf{Punto di smistamento}: decide quale operazione eseguire in base al metodo HTTP ricevuto.
+		\item \textbf{Separazione dei ruoli}: isola la logica applicativa dal routing e dall’accesso diretto al database.
+	\end{itemize}
+	
+
+	\begin{itemize}
+		\item \textbf{Idea chiave}: ogni metodo HTTP corrisponde a un’operazione CRUD.
+		\item \textbf{Vantaggio}: codice più leggibile, estendibile e coerente con lo stile REST.
+	\end{itemize}
+\end{frame}
+
+
+	\begin{frame}[fragile]{GET - Recuperare tutti i libri}
+		\begin{lstlisting}[language=PHP]
+			private function getAll() {
+				try {
+					$sql = "SELECT * FROM BOOK ORDER BY CreatedAt DESC";
+					$stmt = $this->pdo->query($sql);
+					$books = $stmt->fetchAll();
+					
+					http_response_code(200);
+					echo json_encode([
+					'success' => true,
+					'count' => count($books),
+					'data' => $books
+					]);
+				} catch (PDOException $e) {
+					http_response_code(500);
+					echo json_encode([
+					'error' => 'Database error'
+					]);
+				}
+			}
+		\end{lstlisting}
+	\end{frame}
+	
+	\begin{frame}[fragile]{GET - Recuperare un singolo libro}
+		\begin{lstlisting}[language=PHP]
+			private function getOne($id) {
+				if (!$id || !is_numeric($id)) {
+					http_response_code(400);
+					echo json_encode(['error' => 'Invalid ID']);
+					return;
+				}
+				
+				try {
+					$sql = "SELECT * FROM BOOK WHERE BookId = :id";
+					$stmt = $this->pdo->prepare($sql);
+					$stmt->execute(['id' => $id]);
+					$book = $stmt->fetch();
+					
+					if ($book) {
+						http_response_code(200);
+						echo json_encode(['success' => true, 'data' => $book]);
+					} else {
+						http_response_code(404);
+						echo json_encode(['error' => 'Book not found']);
+					}
+				} catch (PDOException $e) {
+					http_response_code(500);
+					echo json_encode(['error' => 'Database error']);
+				}
+			}
+		\end{lstlisting}
+	\end{frame}
+	
+	\begin{frame}[fragile]{POST - Creare un nuovo libro}
+		\begin{lstlisting}[language=PHP]
+			private function create() {
+				$data = json_decode(file_get_contents('php://input'), true);
+				
+				if (!$data || !isset($data['Title'], $data['Author'])) {
+					http_response_code(400);
+					echo json_encode(['error' => 'Missing required fields']);
+					return;
+				}
+				
+				try {
+					$sql = "INSERT INTO BOOK (Title, Author, Topic) 
+					VALUES (:title, :author, :topic)";
+					$stmt = $this->pdo->prepare($sql);
+					$stmt->execute([
+					'title' => $data['Title'],
+					'author' => $data['Author'],
+					'topic' => $data['Topic'] ?? null
+					]);
+					
+					http_response_code(201);
+					echo json_encode([
+					'success' => true,
+					'id' => $this->pdo->lastInsertId()
+					]);
+				} catch (PDOException $e) {
+					http_response_code(500);
+					echo json_encode(['error' => 'Creation failed']);
+				}
+			}
+		\end{lstlisting}
+	\end{frame}
+	
+	\begin{frame}[fragile]{PUT - Aggiornare un libro}
+		\begin{lstlisting}[language=PHP]
+			private function update($id) {
+				if (!$id || !is_numeric($id)) {
+					http_response_code(400);
+					echo json_encode(['error' => 'Invalid ID']);
+					return;
+				}
+				
+				$data = json_decode(file_get_contents('php://input'), true);
+				
+				try {
+					$sql = "UPDATE BOOK SET 
+					Title = :title,
+					Author = :author,
+					Topic = :topic
+					WHERE BookId = :id";
+					$stmt = $this->pdo->prepare($sql);
+					$stmt->execute([
+					'title' => $data['Title'],
+					'author' => $data['Author'],
+					'topic' => $data['Topic'],
+					'id' => $id
+					]);
+					
+					http_response_code(200);
+					echo json_encode(['success' => true]);
+				} catch (PDOException $e) {
+					http_response_code(500);
+					echo json_encode(['error' => 'Update failed']);
+				}
+			}
+		\end{lstlisting}
+	\end{frame}
+	
+	\begin{frame}[fragile]{DELETE - Eliminare un libro}
+		\begin{lstlisting}[language=PHP]
+			private function delete($id) {
+				if (!$id || !is_numeric($id)) {
+					http_response_code(400);
+					echo json_encode(['error' => 'Invalid ID']);
+					return;
+				}
+				
+				try {
+					$sql = "DELETE FROM BOOK WHERE BookId = :id";
+					$stmt = $this->pdo->prepare($sql);
+					$stmt->execute(['id' => $id]);
+					
+					if ($stmt->rowCount() > 0) {
+						http_response_code(200);
+						echo json_encode(['success' => true]);
+					} else {
+						http_response_code(404);
+						echo json_encode(['error' => 'Book not found']);
+					}
+				} catch (PDOException $e) {
+					http_response_code(500);
+					echo json_encode(['error' => 'Deletion failed']);
+				}
+			}
+		\end{lstlisting}
+	\end{frame}
+	
+	% -----------------------------
+	% SEZIONE 4: Validazione e Sicurezza
+	% -----------------------------
+	
+	\section{Validazione e Sicurezza}
+	
+	\begin{frame}{Validazione dei dati}
+		\begin{alertblock}{Principio fondamentale}
+			\textbf{Never trust user input!} \\
+			Tutti i dati provenienti dal client devono essere validati e sanitizzati.
+		\end{alertblock}
+		
+		\begin{block}{Tipologie di validazione}
+			\begin{itemize}
+				\item \textbf{Tipo}: Verificare che un campo sia numerico, stringa, email, ecc.
+				\item \textbf{Formato}: Controllare pattern (es. regex per email, telefono)
+				\item \textbf{Lunghezza}: Limiti minimi e massimi per stringhe
+				\item \textbf{Range}: Valori numerici entro intervalli accettabili
+				\item \textbf{Obbligatorietà}: Verificare presenza di campi richiesti
+				\item \textbf{Business logic}: Regole specifiche dell'applicazione
+			\end{itemize}
+		\end{block}
+	\end{frame}
+	
+	\begin{frame}[fragile]{Esempio di validazione}
+		\begin{lstlisting}[language=PHP]
+			<?php
+			function validateBook($data) {
+				$errors = [];
+				
+				// Validazione Title
+				if (empty($data['Title'])) {
+					$errors[] = 'Title is required';
+				} elseif (strlen($data['Title']) > 100) {
+					$errors[] = 'Title too long (max 100 chars)';
+				}
+				
+				// Validazione Author
+				if (empty($data['Author'])) {
+					$errors[] = 'Author is required';
+				}
+				
+				// Validazione Year (opzionale)
+				if (isset($data['PublishedYear'])) {
+					$year = intval($data['PublishedYear']);
+					if ($year < 1000 || $year > date('Y')) {
+						$errors[] = 'Invalid publication year';
+					}
+				}
+				
+				return $errors;
+			}
+			?>
+		\end{lstlisting}
+	\end{frame}
+	
+	\begin{frame}{Sanitizzazione dei dati}
+		\begin{block}{Funzioni PHP per sanitizzare}
+			\begin{itemize}
+				\item \texttt{filter\_var()}: Filtra variabili con filtri specifici
+				\item \texttt{htmlspecialchars()}: Converte caratteri speciali HTML
+				\item \texttt{strip\_tags()}: Rimuove tag HTML/PHP
+				\item \texttt{trim()}: Rimuove spazi bianchi iniziali/finali
+			\end{itemize}
+		\end{block}
+		
+		\begin{alertblock}{Attenzione}
+			La sanitizzazione NON sostituisce i prepared statements per le query SQL. Usa sempre prepared statements per prevenire SQL injection.
+		\end{alertblock}
+	\end{frame}
+	
+	\begin{frame}[fragile]{Sanitizzazione - Esempio}
+		\begin{lstlisting}[language=PHP]
+			<?php
+			function sanitizeBook($data) {
+				return [
+				'Title' => trim(strip_tags($data['Title'] ?? '')),
+				'Author' => trim(strip_tags($data['Author'] ?? '')),
+				'Topic' => trim(strip_tags($data['Topic'] ?? '')),
+				'PublishedYear' => filter_var(
+				$data['PublishedYear'] ?? null,
+				FILTER_VALIDATE_INT
+				),
+				'ISBN' => preg_replace(
+				'/[^0-9-]/', 
+				'', 
+				$data['ISBN'] ?? ''
+				)
+				];
+			}
+			?>
+		\end{lstlisting}
+		\end{frame}
+			
+			\begin{frame}{Autenticazione e Autorizzazione}
+				\begin{block}{Autenticazione}
+					Verifica l'identità dell'utente: "Chi sei?"
+					\begin{itemize}
+						\item Basic Authentication (username/password in header)
+						\item Token-based (JWT - JSON Web Token)
+						\item OAuth 2.0 (delegazione autenticazione a terze parti)
+						\item API Keys
+					\end{itemize}
+				\end{block}
+				
+				\begin{block}{Autorizzazione}
+					Verifica i permessi dell'utente: "Cosa puoi fare?"
+					\begin{itemize}
+						\item Role-based (RBAC): admin, user, guest
+						\item Permission-based: fine-grained permissions
+						\item Resource-based: accesso a specifiche risorse
+					\end{itemize}
+				\end{block}
+			\end{frame}
+			
+			\begin{frame}{JWT - JSON Web Token}
+				\begin{itemize}
+					\item Standard per creare token di accesso sicuri
+					\item Struttura: \texttt{Header.Payload.Signature}
+					\item \textbf{Header}: Tipo di token e algoritmo di firma
+					\item \textbf{Payload}: Dati dell'utente (claims)
+					\item \textbf{Signature}: Firma crittografica per verificare autenticità
+				\end{itemize}
+				
+				\begin{block}{Vantaggi JWT}
+					\begin{itemize}
+						\item Stateless: nessuna sessione server-side
+						\item Self-contained: contiene tutte le info necessarie
+						\item Scalabile: funziona su sistemi distribuiti
+						\item Cross-domain: può essere usato su domini diversi
+					\end{itemize}
+				\end{block}
+				
+				\begin{alertblock}{Sicurezza}
+					Usa sempre HTTPS per trasmettere JWT. Imposta una scadenza ragionevole (es. 1 ora) e implementa il refresh token per sessioni lunghe.
+				\end{alertblock}
+			\end{frame}
+			
+			\section{Best Practices e Conclusioni}
+			
+			\begin{frame}{Best Practices - Nomenclatura}
+				\begin{itemize}
+					\item \textbf{Usa sostantivi per le risorse}: \texttt{/books}, \texttt{/users}
+					\item \textbf{Usa plurali per collezioni}: \texttt{/books} non \texttt{/book}
+					\item \textbf{Usa kebab-case per URI}: \texttt{/book-reviews}
+					\item \textbf{Usa camelCase per JSON}: \texttt{\{"firstName": "John"\}}
+					\item \textbf{Evita verbi negli URI}: Il metodo HTTP indica l'azione
+					\item \textbf{Usa gerarchie logiche}: \texttt{/books/5/reviews}
+					\item \textbf{Versiona l'API}: \texttt{/api/v1/books}
+				\end{itemize}
+				
+				\begin{alertblock}{Coerenza}
+					La coerenza è più importante della convenzione specifica. Scegli uno stile e mantienilo in tutta l'API.
+				\end{alertblock}
+				\end{frame}
+					
+					\begin{frame}{Best Practices - Sicurezza}
+						\begin{enumerate}
+							\item \textbf{Usa sempre HTTPS} in produzione
+							\item \textbf{Valida tutti gli input} lato server
+							\item \textbf{Usa prepared statements} per query SQL
+							\item \textbf{Implementa rate limiting} contro attacchi DDoS
+							\item \textbf{Non esporre informazioni sensibili} nei messaggi di errore
+							\item \textbf{Implementa autenticazione robusta} (JWT, OAuth)
+							\item \textbf{Usa CORS} correttamente
+							\item \textbf{Mantieni aggiornate} le dipendenze PHP
+							\item \textbf{Logga le attività sospette}
+							\item \textbf{Implementa HSTS} (HTTP Strict Transport Security)
+						\end{enumerate}
+						\end{frame}
+							
+							\begin{frame}{Riepilogo}
+								\begin{itemize}
+									\item REST è lo standard per Web API moderne
+									\item PHP con PDO offre strumenti robusti per implementare API
+									\item La sicurezza deve essere prioritaria
+									\item Documentazione e testing sono essenziali
+									\item Segui le best practices per API scalabili e manutenibili
+									\item Monitoring e logging sono cruciali in produzione
+								\end{itemize}
+							\end{frame}
+							
+							\begin{frame}{Prossimi passi}
+								\begin{block}{Approfondimenti consigliati}
+									\begin{itemize}
+										\item Studiare OAuth 2.0 per autenticazione avanzata
+										\item Implementare GraphQL come alternativa a REST
+										\item Esplorare framework PHP moderni (Laravel, Symfony)
+										\item Containerizzare l'API con Docker
+										\item Implementare CI/CD pipeline
+										\item Studiare microservices architecture
+									\end{itemize}
+								\end{block}
+								\end{frame}
+									
+									
+									
+									
+									
+									
+									
+									
+									
+									
+									\begin{frame}{Risorse}
+										\begin{itemize}
+											\item \url{https://www.w3schools.com/php/}
+											\item \url{https://www.w3schools.com/mysql/}
+											\item \url{https://www.php.net/manual/en/book.pdo.php}
+											\item \url{https://restfulapi.net/}
+											\item \url{https://swagger.io/docs/}
+											\item \url{https://jwt.io/}
+											\item \url{https://www.postman.com/api-platform/}
+										\end{itemize}
+										\end{frame}
+										
+										
+										
+										
+											
+											\begin{frame}{Fine}
+												\centering
+												\Huge Domande?
+												
+												\vspace{1cm}
+												
+												\normalsize
+												Grazie per l'attenzione!
+												
+												\vspace{0.5cm}
+												
+												\small
+												Prof. Fedeli Massimo \\
+												IIS Fermi Sacconi Cpia di Ascoli Piceno
+												\end{frame}
+													\end{document}
+													

@@ -1,0 +1,381 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[italian]{babel}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{setspace}
+
+% Impostazioni pagina
+\geometry{margin=2.5cm}
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Sicurezza Web in PHP}
+\lhead{Sanitizzazione, Errori e Injection}
+\rfoot{\thepage}
+
+% Titolo sezioni
+\titleformat{\section}{\large\bfseries\scshape}{\thesection}{1em}{}
+\titleformat{\subsection}{\bfseries}{\thesubsection}{1em}{}
+
+% Formattazione codice
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+	backgroundcolor=\color{backcolour},
+	commentstyle=\color{codegreen},
+	keywordstyle=\color{magenta},
+	numberstyle=\tiny\color{codegray},
+	stringstyle=\color{codepurple},
+	basicstyle=\ttfamily\small,
+	breakatwhitespace=false,
+	breaklines=true,
+	captionpos=b,
+	keepspaces=true,
+	numbers=left,
+	numbersep=5pt,
+	showspaces=false,
+	showstringspaces=false,
+	showtabs=false,
+	tabsize=2,
+	escapeinside={(*@}{@*)}
+}
+
+\lstset{style=mystyle}
+
+% Titolo
+\title{\vspace{-2cm}\textbf{Sanitizzazione dell'Input, Gestione degli Errori e Sicurezza di Base in PHP}}
+\author{Prof. Fedeli Massimo - IIS Fermi Sacconi Cpia}
+\date{\today}
+
+\begin{document}
+	
+	\maketitle
+	
+	\begin{center}
+		\textbf{Documento tecnico per sviluppatori web} \\
+		\vspace{0.3cm}
+		Corso di Sicurezza Informatica – Livello Introduttivo \\
+		\vspace{0.5cm}
+		\textit{Redatto il \today}
+	\end{center}
+	
+	\tableofcontents
+	\newpage
+	
+	\section{Introduzione}
+	
+	La sicurezza delle applicazioni web è una componente fondamentale nello sviluppo software moderno. Con l’aumento delle minacce informatiche, è essenziale che ogni sviluppatore comprenda i rischi legati all’input utente non controllato, alla gestione impropria degli errori e alle vulnerabilità comuni come le \textit{injection} e gli attacchi \textit{Cross-Site Scripting} (XSS).
+	
+	PHP, pur essendo uno dei linguaggi più diffusi per lo sviluppo web, è spesso soggetto a cattive pratiche che possono compromettere la sicurezza di interi sistemi. Questo documento ha l’obiettivo di introdurre concetti chiave relativi alla sanitizzazione dell’input, alla corretta gestione degli errori e alle principali vulnerabilità di sicurezza nel contesto PHP, fornendo esempi pratici e linee guida per scrivere codice sicuro.
+	
+	\section{Sanitizzazione dell’Input}
+	
+	\subsection{Cos’è la sanitizzazione?}
+	
+	La \textbf{sanitizzazione dell’input} consiste nel processo di pulizia, validazione e trasformazione dei dati provenienti dall’esterno (es. form HTML, parametri URL, cookie, header HTTP) prima che vengano utilizzati dall’applicazione. L’obiettivo è prevenire l’inserimento di dati malevoli che potrebbero compromettere la logica dell’applicazione o la sicurezza del sistema.
+	
+	In PHP, ogni dato proveniente da:
+	\begin{itemize}
+		\item \texttt{\$\_GET}
+		\item \texttt{\$\_POST}
+		\item \texttt{\$\_COOKIE}
+		\item \texttt{\$\_REQUEST}
+		\item \texttt{\$\_SERVER}
+	\end{itemize}
+	deve essere considerato \textbf{non affidabile} finché non è stato adeguatamente validato e/o sanificato.
+	
+	\subsection{Validazione vs Sanitizzazione}
+	
+	È importante distinguere tra:
+	\begin{itemize}
+		\item \textbf{Validazione}: verifica che l’input rispetti determinati criteri (es. formato email, lunghezza, tipo numerico).
+		\item \textbf{Sanitizzazione}: modifica l’input per renderlo sicuro (es. rimozione di caratteri speciali, encoding HTML).
+	\end{itemize}
+	
+	Entrambi i passaggi sono complementari e spesso necessari.
+	
+	\subsection{Funzioni utili in PHP}
+	
+	PHP offre diverse funzioni native per la sanitizzazione:
+	
+	\begin{itemize}
+		\item \texttt{filter\_var()}: valida e sanifica variabili con filtri predefiniti.
+		\item \texttt{htmlspecialchars()}: converte caratteri speciali in entità HTML.
+		\item \texttt{trim()}, \texttt{strip\_tags()}: rimuovono spazi bianchi o tag HTML.
+	\end{itemize}
+	
+	\subsubsection{Esempio con \texttt{filter\_var}}
+	
+	\begin{lstlisting}[language=PHP, caption=Esempio di validazione email]
+		$email = $_POST['email'] ?? '';
+		
+		if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+			echo "Email valida: " . htmlspecialchars($email, ENT_QUOTES, 'UTF-8');
+		} else {
+			echo "Email non valida.";
+		}
+	\end{lstlisting}
+	
+	\subsubsection{Esempio con \texttt{htmlspecialchars}}
+	
+	\begin{lstlisting}[language=PHP, caption=Sanitizzazione per output HTML]
+		$user_input = $_GET['comment'] ?? '';
+		$safe_output = htmlspecialchars($user_input, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+		echo "<p>Commento: $safe_output</p>";
+	\end{lstlisting}
+	
+	\subsection{Filtri di input con \texttt{filter\_input}}
+	
+	Una pratica migliore è usare \texttt{filter\_input()} invece di accedere direttamente a \texttt{\$\_GET} o \texttt{\$\_POST}:
+	
+	\begin{lstlisting}[language=PHP, caption=Uso di filter_input]
+		$id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+		if ($id === false || $id < 1) {
+			http_response_code(400);
+			die("ID non valido.");
+		}
+	\end{lstlisting}
+	
+	\textbf{Nota}: A partire da PHP 8.1, \texttt{FILTER\_SANITIZE\_STRING} è deprecato. Si consiglia di usare \texttt{htmlspecialchars()} o librerie esterne come HTML Purifier per contenuti complessi.
+	
+	\section{Gestione degli Errori}
+	
+	\subsection{Perché gestire gli errori in modo sicuro?}
+	
+	Mostrare messaggi di errore dettagliati agli utenti finali può rivelare informazioni sensibili sul sistema (percorsi di file, strutture di database, versioni di software), facilitando attacchi mirati.
+	
+	\subsection{Configurazione iniziale}
+	
+	In ambiente di produzione, è fondamentale disattivare la visualizzazione degli errori:
+	
+	\begin{lstlisting}[language=PHP, caption=Configurazione sicura in php.ini]
+		display_errors = Off
+		log_errors = On
+		error_log = /var/log/php_errors.log
+	\end{lstlisting}
+	
+	Oppure tramite codice (sconsigliato in produzione, ma utile per test):
+	
+	\begin{lstlisting}[language=PHP]
+		ini_set('display_errors', 0);
+		ini_set('log_errors', 1);
+	\end{lstlisting}
+	
+	\subsection{Gestione personalizzata degli errori}
+	
+	È buona pratica implementare un gestore di errori personalizzato:
+	
+	\begin{lstlisting}[language=PHP, caption=Gestore di errori personalizzato]
+		function customErrorHandler($errno, $errstr, $errfile, $errline) {
+			error_log("[$errno] $errstr in $errfile on line $errline");
+			if (!headers_sent()) {
+				http_response_code(500);
+				echo "<h1>Errore interno del server</h1>";
+				exit;
+			}
+		}
+		
+		set_error_handler("customErrorHandler");
+	\end{lstlisting}
+	
+	\subsection{Eccezioni}
+	
+	PHP supporta le eccezioni (\texttt{try/catch}). È consigliabile usarle per gestire errori prevedibili:
+	
+	\begin{lstlisting}[language=PHP, caption=Gestione eccezioni]
+		try {
+			$pdo = new PDO($dsn, $user, $pass);
+		} catch (PDOException $e) {
+			error_log("Connessione DB fallita: " . $e->getMessage());
+			http_response_code(500);
+			die("Servizio temporaneamente non disponibile.");
+		}
+	\end{lstlisting}
+	
+	\section{Concetti di Sicurezza di Base}
+	
+	\subsection{Cross-Site Scripting (XSS)}
+	
+	\subsubsection{Cos’è XSS?}
+	
+	L’attacco \textbf{Cross-Site Scripting} (XSS) si verifica quando un’applicazione include input utente non sanificato in una pagina HTML. Un attaccante può iniettare script JavaScript malevoli che vengono eseguiti nel browser delle vittime.
+	
+	Esistono tre tipi principali:
+	\begin{enumerate}
+		\item \textbf{XSS riflesso}: lo script è incluso nella richiesta (es. URL) e immediatamente restituito.
+		\item \textbf{XSS persistente}: lo script viene salvato nel database e mostrato a tutti gli utenti.
+		\item \textbf{XSS basato su DOM}: la vulnerabilità è lato client (JavaScript).
+	\end{enumerate}
+	
+	\subsubsection{Esempio di XSS riflesso}
+	
+	\begin{lstlisting}[language=PHP, caption=XSS riflesso - codice vulnerabile]
+		// CODICE NON SICURO
+		$search = $_GET['q'];
+		echo "<p>Risultati per: $search</p>";
+	\end{lstlisting}
+	
+	Se un utente visita: \texttt{pagina.php?q=<script>alert('XSS')</script>}, lo script verrà eseguito.
+	
+	\subsubsection{Prevenzione}
+	
+	Usare sempre \texttt{htmlspecialchars()} per qualsiasi output dinamico in HTML:
+	
+	\begin{lstlisting}[language=PHP, caption=Prevenzione XSS]
+		$search = $_GET['q'] ?? '';
+		$safe_search = htmlspecialchars($search, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+		echo "<p>Risultati per: $safe_search</p>";
+	\end{lstlisting}
+	
+	Altre misure:
+	\begin{itemize}
+		\item Usare Content Security Policy (CSP) negli header HTTP.
+		\item Validare l’input (es. solo caratteri alfanumerici per una ricerca).
+	\end{itemize}
+	
+	\subsection{SQL Injection}
+	
+	\subsubsection{Cos’è SQL Injection?}
+	
+	L’\textbf{SQL Injection} avviene quando un attaccante inserisce codice SQL malevolo in un input che viene poi concatenato direttamente in una query. Ciò permette di leggere, modificare o cancellare dati arbitrari.
+	
+	\subsubsection{Esempio vulnerabile}
+	
+	\begin{lstlisting}[language=PHP, caption=SQL Injection - codice pericoloso]
+		$id = $_GET['id'];
+		$query = "SELECT * FROM users WHERE id = $id";
+		$result = mysqli_query($conn, $query);
+	\end{lstlisting}
+	
+	Un attaccante potrebbe usare: \texttt{pagina.php?id=1 OR 1=1 --}, ottenendo tutti gli utenti.
+	
+	\subsubsection{Prevenzione con Prepared Statements}
+	
+	La soluzione più efficace è usare \textbf{prepared statements} con PDO o MySQLi:
+	
+	\begin{lstlisting}[language=PHP, caption=Prevenzione con PDO]
+		$id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+		if ($id === false || $id < 1) {
+			http_response_code(400);
+			die("ID non valido.");
+		}
+		
+		$stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
+		$stmt->execute([$id]);
+		$user = $stmt->fetch();
+	\end{lstlisting}
+	
+	\textbf{Mai} concatenare input utente direttamente nelle query!
+	
+	\subsection{Altre Injection Comuni}
+	
+	Oltre a SQL Injection, esistono altre forme di injection:
+	\begin{itemize}
+		\item \textbf{Command Injection}: esecuzione di comandi di sistema tramite \texttt{exec()}, \texttt{shell\_exec()}, ecc.
+		\item \textbf{LDAP Injection}: manipolazione di query LDAP.
+		\item \textbf{XPath Injection}: attacchi su query XML.
+	\end{itemize}
+	
+	La regola generale è: \textbf{mai fidarsi dell’input utente} e usare API sicure (es. prepared statements, librerie validate).
+	
+	\section{Best Practice Generali}
+	
+	\begin{enumerate}[left=0pt]
+		\item \textbf{Non fidarsi mai dell’input utente}. Trattalo sempre come potenzialmente malevolo.
+		\item \textbf{Sanitizzare in base al contesto}: HTML, SQL, comandi di shell richiedono tecniche diverse.
+		\item \textbf{Usare librerie consolidate}: non reinventare la ruota (es. HTML Purifier per HTML complesso).
+		\item \textbf{Aggiornare PHP e dipendenze}: molte vulnerabilità sono patchate nelle nuove versioni.
+		\item \textbf{Disattivare errori in produzione}.
+		\item \textbf{Usare HTTPS} per proteggere i dati in transito.
+		\item \textbf{Applicare il principio del minimo privilegio}: l’utente DB non deve avere permessi di amministratore.
+	\end{enumerate}
+	
+	\section{Strumenti e Risorse Utili}
+	
+	\begin{itemize}
+		\item \textbf{OWASP Top 10}: \url{https://owasp.org/www-project-top-ten/}
+		\item \textbf{HTML Purifier}: \url{http://htmlpurifier.org/}
+		\item \textbf{PHPStan}: \url{https://phpstan.org/}
+		\item \textbf{ModSecurity}: \url{https://modsecurity.org/}
+	\end{itemize}
+	
+	\section{Conclusioni}
+	
+	La sicurezza web non è un optional. Anche piccole disattenzioni nella gestione dell’input o nella configurazione degli errori possono portare a gravi compromissioni. In PHP, grazie a funzioni native e buone pratiche consolidate, è possibile scrivere applicazioni robuste e sicure.
+	
+	Ricorda: la sicurezza è un processo continuo, non un prodotto finito. Testa regolarmente il tuo codice, mantienilo aggiornato e forma te stesso e il tuo team sulle minacce emergenti.
+	
+	\section*{Appendice A: Esempio Completo di Form Sicuro}
+	
+	\begin{lstlisting}[language=PHP, caption=Form HTML + elaborazione sicura]
+		<!-- form.html -->
+		<form method="post" action="process.php">
+		<label>Email: <input type="email" name="email" required></label>
+		<label>Commento: <textarea name="comment" required></textarea></label>
+		<button type="submit">Invia</button>
+		</form>
+		
+		<?php
+		// process.php
+		$email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
+		$comment = htmlspecialchars(trim($_POST['comment'] ?? ''), ENT_QUOTES, 'UTF-8');
+		
+		if (!$email) {
+			http_response_code(400);
+			die("Email non valida.");
+		}
+		
+		// Salva nel DB con prepared statement
+		$stmt = $pdo->prepare("INSERT INTO comments (email, text) VALUES (?, ?)");
+		$stmt->execute([$email, $comment]);
+		
+		echo "Grazie! Commento inviato.";
+		?>
+	\end{lstlisting}
+	
+	\section*{Appendice B: Configurazione Consigliata per php.ini (Produzione)}
+	
+	\begin{verbatim}
+		; Disabilita visualizzazione errori
+		display_errors = Off
+		display_startup_errors = Off
+		
+		; Abilita logging
+		log_errors = On
+		error_log = /var/log/php_errors.log
+		
+		; Disabilita funzioni pericolose
+		disable_functions = exec,passthru,shell_exec,system,proc_open,popen
+		
+		; Limita upload e memoria
+		upload_max_filesize = 2M
+		post_max_size = 3M
+		memory_limit = 128M
+		
+		; Imposta fuso orario
+		date.timezone = Europe/Rome
+	\end{verbatim}
+	
+	\newpage
+	\section*{Riferimenti Bibliografici}
+	
+	\begin{enumerate}
+		\item OWASP Foundation. \textit{OWASP Top Ten Project}. \url{https://owasp.org/www-project-top-ten/}
+		\item PHP.net. \textit{The PHP Manual – Security}. \url{https://www.php.net/manual/en/security.php}
+		\item Mozilla Developer Network. \textit{Cross-site scripting (XSS)}. \url{https://developer.mozilla.org/en-US/docs/Glossary/Cross-site_scripting}
+		\item Evans, C. (2020). \textit{Web Security for Developers}. No Starch Press.
+	\end{enumerate}
+	
+\end{document}

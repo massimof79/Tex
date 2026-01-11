@@ -1,0 +1,211 @@
+\documentclass{beamer}
+\usetheme{Madrid}
+\usecolortheme{seahorse}
+
+\title{OAuth 2.0: Funzionamento e Applicazioni Pratiche}
+\author{Your Name}
+\date{}
+\setbeamertemplate{navigation symbols}{}
+
+\setbeamerfont{title}{size=\large}
+\setbeamerfont{section title}{size=\large}
+\setbeamerfont{itemize/enumerate body}{size=\small}
+
+\begin{document}
+	
+	% Slide 1: Titolo
+	\begin{frame}
+		\titlepage
+	\end{frame}
+	
+	% Slide 2: Cos'è OAuth 2.0?
+	\begin{frame}{Cos'è OAuth 2.0?}
+		\begin{block}{Definizione}
+			OAuth 2.0 è un protocollo di autorizzazione che consente a un'applicazione di accedere a risorse protette senza esporre le credenziali dell'utente.
+		\end{block}
+		\begin{itemize}
+			\item \textbf{Standardizzazione}: Definito da IETF (RFC 6749)
+			\item \textbf{Obiettivo principale}: Separare l'autorizzazione dall'accesso ai dati
+			\item \textbf{Esempi di utilizzo}: Google, Facebook, Spotify
+		\end{itemize}
+	\end{frame}
+	
+	% Slide 3: Autenticazione vs Autorizzazione
+	\begin{frame}{Autenticazione vs Autorizzazione}
+		\begin{columns}
+			\column{0.5\textwidth}
+			\begin{block}{Autenticazione}
+				Prova l'identità dell'utente (es. password)
+			\end{block}
+			\column{0.5\textwidth}
+			\begin{block}{Autorizzazione}
+				Definisce i permessi sull'accesso a risorse (es. lettura, scrittura)
+			\end{block}
+		\end{columns}
+		\vspace{1em}
+		\begin{alertblock}{Esempio pratico}
+			Google autentica l'utente con il proprio account, poi usa OAuth 2.0 per consentire a un'applicazione di leggere le email senza password
+		\end{alertblock}
+	\end{frame}
+	
+	% Slide 4: Flusso Authorization Code
+	\begin{frame}{Flusso di Autorizzazione: Authorization Code}
+		\begin{block}{Descrizione}
+			Il flusso più sicuro per applicazioni web con server backend
+		\end{block}
+		\begin{itemize}
+			\item \textbf{Passo 1}: Utente reindirizzato al provider (es. Google)
+			\item \textbf{Passo 2}: Utente autentica e concede l'accesso
+			\item \textbf{Passo 3}: Provider emette un \texttt{code} (token di autorizzazione)
+			\item \textbf{Passo 4}: Applicazione scambia il \texttt{code} con un \texttt{access token}
+		\end{itemize}
+		\begin{alertblock}{Sicurezza}
+			Il \texttt{code} non viene mai esposto all’utente finale
+		\end{alertblock}
+	\end{frame}
+	
+	% Slide 5: Access Token
+	\begin{frame}{Token di Accesso}
+		\begin{block}{Caratteristiche}
+			\begin{itemize}
+				\item \textbf{Formato}: JWT (JSON Web Token)
+				\item \textbf{Scadenza}: 1--10 minuti
+				\item \textbf{Utilizzo}: Accedere a risorse protette
+				\item \textbf{Esempio}: \texttt{eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...}
+			\end{itemize}
+		\end{block}
+		\begin{block}{Esempio di utilizzo}
+			\begin{verbatim}
+				GET /api/user
+				Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+			\end{verbatim}
+		\end{block}
+	\end{frame}
+	
+	% Slide 6: Refresh Token
+	\begin{frame}{Token di Refresh}
+		\begin{block}{Funzione}
+			Rinnova il token di accesso senza richiedere nuovamente l'autenticazione
+		\end{block}
+		\begin{itemize}
+			\item \textbf{Scadenza}: 24 ore o più
+			\item \textbf{Utilizzo}: Quando il token di accesso scade
+			\item \textbf{Esempio}: \texttt{refresh\_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...}
+		\end{itemize}
+		\begin{alertblock}{Sicurezza}
+			I refresh token devono essere archiviati in modo sicuro (es. database criptato)
+		\end{alertblock}
+	\end{frame}
+	
+	% Slide 7: PKCE
+	\begin{frame}{PKCE: Proof Key for Code Exchange}
+		\begin{block}{Cos'è PKCE}
+			Protezione per flussi di autorizzazione in contesti non sicuri (es. app mobili)
+		\end{block}
+		\begin{itemize}
+			\item \textbf{Passo 1}: App genera \texttt{code\_verifier}
+			\item \textbf{Passo 2}: Invia \texttt{code\_challenge} (SHA256)
+			\item \textbf{Passo 3}: Provider verifica corrispondenza
+		\end{itemize}
+	\end{frame}
+	
+	% Slide 8: Google OAuth
+	\begin{frame}{Esempio: Google OAuth}
+		\begin{block}{Flusso utilizzato}
+			Authorization Code Flow con PKCE
+		\end{block}
+		\begin{itemize}
+			\item \textbf{1}: Redirect verso Google con \texttt{client\_id}, \texttt{redirect\_uri}
+			\item \textbf{2}: Google richiede consenso
+			\item \textbf{3}: Google emette \texttt{code}
+			\item \textbf{4}: App scambia \texttt{code} con \texttt{access token}
+		\end{itemize}
+		\begin{alertblock}{Sicurezza}
+			Senza PKCE, il \texttt{code} potrebbe essere intercettato
+		\end{alertblock}
+	\end{frame}
+	
+	% Slide 9: Errori comuni
+	\begin{frame}{Errori Comuni}
+		\begin{block}{Criticità}
+			\begin{itemize}
+				\item Non usare HTTPS $\rightarrow$ MITM
+				\item Token troppo longevi
+				\item Assenza di PKCE su mobile
+				\item Refresh token non criptati
+			\end{itemize}
+		\end{block}
+		\begin{block}{Soluzione}
+			\begin{itemize}
+				\item HTTPS obbligatorio
+				\item PKCE sempre su pubblici client
+				\item Scadenze brevi e rotation
+			\end{itemize}
+		\end{block}
+	\end{frame}
+
+				% Slide 11: Spotify OAuth
+				\begin{frame}{Spotify OAuth}
+					\begin{itemize}
+						\item Flusso: Authorization Code
+						\item Scope: lettura playlist, profilo utente
+						\item Token: 15 minuti
+						\item Refresh: disponibile	
+					\end{itemize}
+				\end{frame}
+				
+				% Slide 12: Sicurezza avanzata
+				\begin{frame}{Sicurezza Avanzata}
+					\begin{itemize}
+						\item Access token: 1--10 minuti
+						\item PKCE su tutti i client pubblici
+						\item Refresh token: crittografato e ruotato
+						\item Rate-limit e revocation endpoint
+					\end{itemize}
+				\end{frame}
+				
+				% Slide 13: Confronto flussi
+				\begin{frame}{Confronto tra Flussi OAuth 2.0}
+					\begin{tabular}{|l|c|}
+						\hline
+						\textbf{Flusso} & \textbf{Sicurezza} \\
+						\hline
+						Authorization Code & Alta (con PKCE) \\
+						\hline
+						Implicit Grant & Bassa (deprecato) \\
+						\hline
+						Client Credentials & Media (solo servizi) \\
+						\hline
+					\end{tabular}
+					\vspace{1em}
+					\begin{alertblock}{Raccomandazione}
+						Usa Authorization Code + PKCE per tutte le interazioni utente
+					\end{alertblock}
+				\end{frame}
+				
+				% Slide 14: Riassunto
+				\begin{frame}{Riassunto}
+					\begin{itemize}
+						\item OAuth 2.0 è un protocollo di \emph{autorizzazione}, non autenticazione
+						\item Authorization Code + PKCE è il flusso più sicuro
+						\item Token brevi e refresh sicuri sono essenziali
+						\item HTTPS e scope minimi sono obbligatori
+					\end{itemize}
+				\end{frame}
+				
+				% Slide 15: Domande
+				\begin{frame}
+					\centering
+					\Huge Domande?
+				\end{frame}
+				
+				% Slide 16: Contatti
+				\begin{frame}{Contatti}
+					\begin{itemize}
+						\item \textbf{Email}: \texttt{info@example.com}
+						\item \textbf{GitHub}: \texttt{github.com/example}
+						\item \textbf{Documentazione}: \texttt{docs.example.com}
+					\end{itemize}
+				\end{frame}
+				
+			\end{document}

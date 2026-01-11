@@ -1,0 +1,21 @@
+\frametitle{Sanitizzazione - Esempio}
+\begin{lstlisting}[language=PHP]
+			<?php
+			function sanitizeBook($data) {
+				return [
+				'Title' => trim(strip_tags($data['Title'] ?? '')),
+				'Author' => trim(strip_tags($data['Author'] ?? '')),
+				'Topic' => trim(strip_tags($data['Topic'] ?? '')),
+				'PublishedYear' => filter_var(
+				$data['PublishedYear'] ?? null,
+				FILTER_VALIDATE_INT
+				),
+				'ISBN' => preg_replace(
+				'/[^0-9-]/',
+				'',
+				$data['ISBN'] ?? ''
+				)
+				];
+			}
+			?>
+		\end{lstlisting}
