@@ -1,0 +1,61 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{geometry}
+\geometry{margin=1in}
+
+\title{Database Schema and Query Descriptions \\ UIBK - Music Streaming Service}
+\author{Prof. Fedeli Massimo - IIS Fermi Sacconi Cpia}
+\date{}
+
+\begin{document}
+	
+	\maketitle
+	
+	\section*{Schema Definition}
+	
+	The database contains the following relations:
+	
+	\begin{itemize}
+		\item \textbf{Artist}(\textit{ArtistId}, \textit{Name})
+		\item \textbf{Album}(\textit{AlbumId}, \textit{Title}, \textit{ArtistId})
+		\item \textbf{Track}(\textit{TrackId}, \textit{Name}, \textit{AlbumId}, \textit{GenreId}, \textit{Milliseconds}, \textit{Bytes}, \textit{UnitPrice})
+		\item \textbf{PlaylistContent}(\textit{PlaylistId}, \textit{TrackId})
+		\item \textbf{Playlist}(\textit{PlaylistId}, \textit{Name})
+		\item \textbf{Genre}(\textit{GenreId}, \textit{Name})
+		\item \textbf{Invoice}(\textit{InvoiceId}, \textit{CustomerId}, \textit{InvoiceDate}, \textit{Total})
+		\item \textbf{InvoiceParts}(\textit{InvoicePartId}, \textit{InvoiceId}, \textit{TrackId}, \textit{UnitPrice}, \textit{Quantity})
+		\item \textbf{Customer}(\textit{CustomerId}, \textit{FirstName}, \textit{LastName}, \textit{Address}, \textit{City}, \textit{Country}, \textit{PostalCode}, \textit{Email})
+	\end{itemize}
+	
+	\section*{Queries (Natural Language)}
+	
+	\begin{enumerate}
+		\item Find the name of all artists.
+		\item Find the title of all albums by the artist with ArtistId = 1.
+		\item Find the name of all tracks belonging to the "Rock" genre.
+		\item Find the name of all tracks included in the playlist with PlaylistId = 5.
+		\item Find the name of all customers who have purchased at least one track.
+		\item Find the full name (FirstName + LastName) of all customers residing in Italy.
+		\item Find the total number of tracks in the database.
+		\item Find the name of all playlists that contain tracks of the "Jazz" genre.
+		\item Find the name of all tracks that have been purchased at least once.
+		\item Find the average unit price of all tracks.
+		\item Find the name of all artists who have released at least one album.
+		\item Find the name of all tracks with a duration longer than 300,000 milliseconds.
+		\item Find the name of all customers who made a purchase on 2026-01-11.
+		\item Find the name of all tracks included in any playlist.
+		\item Find the name of all tracks that have never been purchased.
+		\item Find the name of all artists who have not released any album.
+		\item Find the name of all playlists containing more than 10 tracks.
+		\item Find the name of all tracks in the "Classical" genre with a unit price lower than 1.00.
+		\item Find the name of all customers who have spent more than 10 euros in total.
+		\item Find the name of all tracks that belong to albums by Italian artists (assuming an artist is Italian if their name contains "Italy"—for example only).
+		\item Find the name of all tracks purchased by customers residing in Vienna.
+		\item Find the name of all playlists that contain tracks from more than one genre.
+		\item Find the name of all tracks that appear in at least two different playlists.
+		\item Find the name of all customers who have purchased tracks from every genre present in the database.
+		\item Find the name of all tracks that have never been included in any playlist.
+	\end{enumerate}
+	
+\end{document}

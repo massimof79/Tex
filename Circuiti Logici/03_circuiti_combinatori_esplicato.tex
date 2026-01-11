@@ -1,0 +1,1539 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{circuitikz}
+\usepackage{karnaugh-map}
+\usepackage{hyperref}
+\usepackage{float}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows}
+
+\geometry{margin=2.5cm}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{Circuiti Combinatori}
+\fancyhead[R]{\thepage}
+\fancyfoot[C]{Elettronica Digitale - Dispensa Didattica}
+\author{Prof. Fedeli Massimo - Tutti i diritti riservati}
+
+\titleformat{\section}{\Large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\large\bfseries}{\thesubsection}{1em}{}
+
+\begin{document}
+	
+	\begin{titlepage}
+		\centering
+		\vspace*{2cm}
+		{\Huge\bfseries CIRCUITI COMBINATORI\par}
+		\vspace{1cm}
+		{\Large Introduzione all'Elettronica Digitale\par}
+		\vspace{2cm}
+		\vfill
+		{\large \today\par}
+	\end{titlepage}
+	
+	\tableofcontents
+	\newpage
+	
+	\section{Introduzione all'Elettronica Digitale}
+	
+	L'elettronica digitale rappresenta uno dei pilastri fondamentali della tecnologia moderna. Tutti i dispositivi che utilizziamo quotidianamente - smartphone, computer, console per videogiochi - si basano su circuiti digitali. Ma cosa sono esattamente?
+	
+	\subsection{Cosa sono i Circuiti Digitali?}
+	
+	Un circuito digitale è un sistema elettronico che elabora informazioni rappresentate in forma binaria, cioè utilizzando solo due valori: \textbf{0} e \textbf{1}. Questi valori corrispondono a due diversi livelli di tensione:
+	
+	\begin{itemize}
+		\item \textbf{Livello logico "0"}: corrisponde a 0 Volt (tensione bassa)
+		\item \textbf{Livello logico "1"}: corrisponde a +5 Volt (tensione alta)
+	\end{itemize}
+	
+	I circuiti digitali possono essere classificati in due grandi categorie:
+	
+	\begin{enumerate}
+		\item \textbf{Circuiti Combinatori}: l'uscita dipende solo dallo stato presente degli ingressi
+		\item \textbf{Circuiti Sequenziali}: l'uscita dipende sia dagli ingressi attuali che dalla "storia" precedente (hanno memoria)
+	\end{enumerate}
+	
+	In questa dispensa ci concentreremo sui \textit{circuiti combinatori}.
+	
+	\subsection{Tecnologie di Realizzazione}
+	
+	I circuiti digitali vengono realizzati utilizzando principalmente due tipi di transistor:
+	
+	\begin{itemize}
+		\item \textbf{BJT (Bipolar Junction Transistor)}: utilizzati nella famiglia logica TTL (Transistor-Transistor Logic), alimentati a 5V
+		\item \textbf{MOSFET}: utilizzati nella famiglia logica CMOS (Complementary Metal-Oxide-Semiconductor), possono operare con diverse tensioni di alimentazione
+	\end{itemize}
+	
+	Le logiche CMOS sono oggi le più diffuse grazie al loro bassissimo consumo energetico, mentre le logiche TTL sono ormai utilizzate in una piccola fetta del mercato.
+	
+	\subsection{Cosa Studieremo}
+	
+	In questo documento esploreremo i principali circuiti combinatori:
+	\begin{itemize}
+		\item Porte logiche fondamentali
+		\item Codificatori e decodificatori
+		\item Multiplexer e demultiplexer
+		\item Comparatori
+		\item Sommatori binari
+	\end{itemize}
+	
+	\newpage
+	
+	\section{Porte Logiche}
+	
+	Le porte logiche sono i "mattoni" elementari con cui vengono costruiti tutti i circuiti digitali. Ogni porta logica esegue una semplice operazione su uno o più ingressi binari, producendo un'uscita binaria.
+	
+	\subsection{Porte Logiche Fondamentali}
+	
+	\subsubsection{Porta NOT (Invertitore)}
+	
+	La porta NOT è la più semplice: inverte il valore dell'ingresso.
+	
+	\begin{center}
+		\begin{circuitikz}
+			\draw (0,0) node[not port] (not) {};
+			\draw (not.in) -- ++(-1,0) node[left] {A};
+			\draw (not.out) -- ++(1,0) node[right] {Y = $\overline{A}$};
+		\end{circuitikz}
+	\end{center}
+	
+	\begin{table}[H]
+		\centering
+		\begin{tabular}{|c|c|}
+			\hline
+			\textbf{A} & \textbf{Y} \\ \hline
+			0 & 1 \\ \hline
+			1 & 0 \\ \hline
+		\end{tabular}
+		\caption{Porte logiche fondamentali}
+	\end{table}
+	
+	\subsection{Circuiti Integrati TTL Comuni}
+	
+	\begin{table}[H]
+		\centering
+		\small
+		\begin{tabular}{|l|l|p{6cm}|}
+			\hline
+			\textbf{Codice} & \textbf{Tipo} & \textbf{Descrizione} \\ \hline
+			7404 & Porte NOT & 6 invertitori \\ \hline
+			7408 & Porte AND & 4 porte AND a 2 ingressi \\ \hline
+			7432 & Porte OR & 4 porte OR a 2 ingressi \\ \hline
+			7486 & Porte XOR & 4 porte XOR a 2 ingressi \\ \hline
+			74147 & Codificatore & Decimale-BCD con priorità \\ \hline
+			74148 & Codificatore & Ottale-binario (8 a 3) con priorità \\ \hline
+			7442 & Decodificatore & BCD-decimale \\ \hline
+			74138 & Decoder/DMUX & 3 a 8 linee con enable \\ \hline
+			74154 & Decoder/DMUX & 4 a 16 linee \\ \hline
+			7446/7447 & Decoder-driver & BCD a 7 segmenti (anodo comune) \\ \hline
+			7448 & Decoder-driver & BCD a 7 segmenti (catodo comune) \\ \hline
+			74157 & Multiplexer & Quad 2 a 1 \\ \hline
+			74153 & Multiplexer & Doppio 4 a 1 \\ \hline
+			74151 & Multiplexer & 8 a 1 con uscite complementari \\ \hline
+			74150 & Multiplexer & 16 a 1 \\ \hline
+			7485 & Comparatore & 4 bit con uscite A=B, A>B, A<B \\ \hline
+			7482 & Sommatore & 2 bit con ripple carry \\ \hline
+			7483 & Sommatore & 4 bit con fast carry \\ \hline
+		\end{tabular}
+		\caption{Circuiti integrati TTL più comuni}
+	\end{table}
+	
+	\subsection{Corrispondenze TTL-CMOS}
+	
+	\begin{table}[H]
+		\centering
+		\begin{tabular}{|l|l|l|}
+			\hline
+			\textbf{TTL} & \textbf{CMOS (74HC)} & \textbf{CMOS (4000)} \\ \hline
+			7404 & 74HC04 & CD4069 \\ \hline
+			7408 & 74HC08 & CD4081 \\ \hline
+			7432 & 74HC32 & CD4071 \\ \hline
+			74147 & 74HC147 & - \\ \hline
+			74138 & 74HC138 & - \\ \hline
+			7442 & 74HC42 & CD4028 \\ \hline
+			7485 & 74HC85 & - \\ \hline
+			7483 & 74HC83 & CD4008 \\ \hline
+		\end{tabular}
+		\caption{Equivalenze tra famiglie logiche}
+	\end{table}
+	
+	\subsection{Codici Binari Comuni}
+	
+	\begin{table}[H]
+		\centering
+		\begin{tabular}{|c|c|c|c|}
+			\hline
+			\textbf{Decimale} & \textbf{Binario} & \textbf{BCD} & \textbf{Ottale} \\ \hline
+			0 & 0000 & 0000 & 0 \\ \hline
+			1 & 0001 & 0001 & 1 \\ \hline
+			2 & 0010 & 0010 & 2 \\ \hline
+			3 & 0011 & 0011 & 3 \\ \hline
+			4 & 0100 & 0100 & 4 \\ \hline
+			5 & 0101 & 0101 & 5 \\ \hline
+			6 & 0110 & 0110 & 6 \\ \hline
+			7 & 0111 & 0111 & 7 \\ \hline
+			8 & 1000 & 1000 & 10 \\ \hline
+			9 & 1001 & 1001 & 11 \\ \hline
+			10 & 1010 & 0001 0000 & 12 \\ \hline
+			11 & 1011 & 0001 0001 & 13 \\ \hline
+			12 & 1100 & 0001 0010 & 14 \\ \hline
+			13 & 1101 & 0001 0011 & 15 \\ \hline
+			14 & 1110 & 0001 0100 & 16 \\ \hline
+			15 & 1111 & 0001 0101 & 17 \\ \hline
+		\end{tabular}
+		\caption{Sistemi di numerazione comuni}
+	\end{table}
+	
+	\subsection{Leggi di De Morgan}
+	
+	Le leggi di De Morgan sono fondamentali per la semplificazione dei circuiti:
+	
+	\begin{align}
+		\overline{A + B} &= \overline{A} \cdot \overline{B} \\
+		\overline{A \cdot B} &= \overline{A} + \overline{B}
+	\end{align}
+	
+	\textbf{In parole}:
+	\begin{itemize}
+		\item La negazione di un OR è l'AND delle negazioni
+		\item La negazione di un AND è l'OR delle negazioni
+	\end{itemize}
+	
+	\textbf{Esempio applicativo}:
+	\begin{equation}
+		\overline{A + B + C} = \overline{A} \cdot \overline{B} \cdot \overline{C}
+	\end{equation}
+	
+	\subsection{Teoremi dell'Algebra di Boole}
+	
+	\begin{table}[H]
+		\centering
+		\begin{tabular}{|l|c|l|}
+			\hline
+			\textbf{Teorema} & \textbf{Equazione} & \textbf{Nome} \\ \hline
+			Identità & $A \cdot 1 = A$ & Elemento neutro AND \\ \hline
+			& $A + 0 = A$ & Elemento neutro OR \\ \hline
+			Annullamento & $A \cdot 0 = 0$ & \\ \hline
+			& $A + 1 = 1$ & \\ \hline
+			Idempotenza & $A \cdot A = A$ & \\ \hline
+			& $A + A = A$ & \\ \hline
+			Complemento & $A \cdot \overline{A} = 0$ & \\ \hline
+			& $A + \overline{A} = 1$ & \\ \hline
+			Doppia negazione & $\overline{\overline{A}} = A$ & \\ \hline
+			Commutativa & $A \cdot B = B \cdot A$ & \\ \hline
+			& $A + B = B + A$ & \\ \hline
+			Associativa & $(A \cdot B) \cdot C = A \cdot (B \cdot C)$ & \\ \hline
+			& $(A + B) + C = A + (B + C)$ & \\ \hline
+			Distributiva & $A \cdot (B + C) = A \cdot B + A \cdot C$ & \\ \hline
+			& $A + (B \cdot C) = (A + B) \cdot (A + C)$ & \\ \hline
+			Assorbimento & $A + A \cdot B = A$ & \\ \hline
+			& $A \cdot (A + B) = A$ & \\ \hline
+		\end{tabular}
+		\caption{Principali teoremi dell'algebra di Boole}
+	\end{table}
+	
+	\newpage
+	
+	\section{Glossario dei Termini}
+	
+	\begin{description}
+		\item[ALU (Arithmetic Logic Unit):] Unità aritmetico-logica, il "cuore" computazionale di un processore.
+		
+		\item[Attivo alto/basso:] Un segnale è "attivo alto" quando il livello logico attivo è 1 (tensione alta), "attivo basso" quando è 0 (tensione bassa).
+		
+		\item[BCD (Binary Coded Decimal):] Codice decimale codificato in binario, dove ogni cifra decimale è rappresentata da 4 bit.
+		
+		\item[Bit:] Binary digit, la più piccola unità di informazione (0 o 1).
+		
+		\item[BJT (Bipolar Junction Transistor):] Transistor bipolare a giunzione, usato nelle logiche TTL.
+		
+		\item[Carry (Riporto):] Bit che viene trasportato alla posizione successiva in un'operazione aritmetica.
+		
+		\item[Cascata:] Collegamento in serie di più circuiti per espandere le capacità.
+		
+		\item[Chip Select (CS):] Segnale che seleziona/abilita un particolare circuito integrato.
+		
+		\item[CMOS:] Complementary Metal-Oxide-Semiconductor, tecnologia a bassissimo consumo.
+		
+		\item[Codificatore (Encoder):] Circuito che converte informazioni in codice binario.
+		
+		\item[Comparatore:] Circuito che confronta due numeri o parole digitali.
+		
+		\item[Decodificatore (Decoder):] Circuito che converte un codice binario in segnali di controllo.
+		
+		\item[Demultiplexer (DMUX):] Circuito che distribuisce un segnale su più linee di uscita.
+		
+		\item[Display a 7 segmenti:] Dispositivo di visualizzazione composto da 7 LED che formano le cifre.
+		
+		\item[Enable:] Segnale di abilitazione che attiva/disattiva un circuito.
+		
+		\item[Fan-out:] Numero di ingressi che un'uscita può pilotare senza degradare le prestazioni.
+		
+		\item[Full Adder:] Sommatore completo che considera anche il riporto entrante.
+		
+		\item[Half Adder:] Semi-sommatore che non considera il riporto entrante.
+		
+		\item[IC (Integrated Circuit):] Circuito integrato, chip che contiene molti componenti elettronici.
+		
+		\item[LED (Light-Emitting Diode):] Diodo emettitore di luce.
+		
+		\item[Livello logico:] Valore binario rappresentato da un livello di tensione (alto o basso).
+		
+		\item[Look-Ahead Carry:] Tecnica per generare i riporti simultaneamente nei sommatori.
+		
+		\item[LSB (Least Significant Bit):] Bit meno significativo, quello di peso minore.
+		
+		\item[MOSFET:] Metal-Oxide-Semiconductor Field-Effect Transistor, usato nelle logiche CMOS.
+		
+		\item[MSB (Most Significant Bit):] Bit più significativo, quello di peso maggiore.
+		
+		\item[Multiplexer (MUX):] Circuito che seleziona uno tra più ingressi e lo trasferisce all'uscita.
+		
+		\item[Pin-out (Piedinatura):] Disposizione e funzione dei piedini di un circuito integrato.
+		
+		\item[Porta logica:] Circuito elementare che esegue una funzione logica (AND, OR, NOT, ecc.).
+		
+		\item[Priorità:] In un codificatore, determina quale ingresso viene codificato quando più sono attivi.
+		
+		\item[Ripple:] Propagazione sequenziale di un segnale attraverso più stadi.
+		
+		\item[Sommatore:] Circuito che esegue l'addizione di numeri binari.
+		
+		\item[Strobe:] Segnale di sincronizzazione o abilitazione.
+		
+		\item[Tabella di verità:] Tabella che elenca tutte le combinazioni di ingressi e le corrispondenti uscite.
+		
+		\item[Three-state (Tri-state):] Uscita che può assumere tre stati: alto, basso e alta impedenza.
+		
+		\item[Tempo di propagazione:] Tempo necessario per un cambiamento dell'uscita dopo una variazione degli ingressi.
+		
+		\item[TTL:] Transistor-Transistor Logic, famiglia logica basata su transistor bipolari.
+	\end{description}
+	
+	\newpage
+	
+	\section{Conclusioni}
+	
+	\subsection{Cosa Abbiamo Imparato}
+	
+	In questa dispensa abbiamo esplorato il mondo dei \textbf{circuiti combinatori}, i componenti fondamentali dell'elettronica digitale moderna. Abbiamo visto come:
+	
+	\begin{itemize}
+		\item Le \textbf{porte logiche} siano i mattoni elementari di ogni circuito digitale
+		\item I \textbf{codificatori} convertano informazioni in forma binaria compatta
+		\item I \textbf{decodificatori} traducano codici binari in segnali utilizzabili
+		\item I \textbf{multiplexer e demultiplexer} gestiscano efficientemente il flusso dei dati
+		\item I \textbf{comparatori} permettano di confrontare numeri binari
+		\item I \textbf{sommatori} eseguano operazioni aritmetiche fondamentali
+	\end{itemize}
+	
+	\subsection{L'Importanza dei Circuiti Combinatori}
+	
+	I circuiti combinatori sono ovunque nella tecnologia moderna:
+	\begin{itemize}
+		\item Nel tuo smartphone, che gestisce milioni di operazioni al secondo
+		\item Nel computer che stai usando per studiare
+		\item Nelle automobili moderne, nei sistemi di controllo elettronico
+		\item Negli elettrodomestici intelligenti
+		\item Nei sistemi di telecomunicazione
+	\end{itemize}
+	
+	Comprendere questi circuiti significa comprendere i fondamenti della rivoluzione digitale.
+	
+	\subsection{Prossimi Passi}
+	
+	Dopo aver studiato i circuiti combinatori, il percorso naturale prosegue con:
+	
+	\begin{enumerate}
+		\item \textbf{Circuiti Sequenziali}: che introducono il concetto di memoria
+		\begin{itemize}
+			\item Flip-flop e latch
+			\item Registri
+			\item Contatori
+			\item Macchine a stati finiti
+		\end{itemize}
+		
+		\item \textbf{Memorie}: per l'archiviazione dei dati
+		\begin{itemize}
+			\item RAM (Random Access Memory)
+			\item ROM (Read-Only Memory)
+			\item Flash memory
+		\end{itemize}
+		
+		\item \textbf{Microprocessori}: l'integrazione completa
+		\begin{itemize}
+			\item Architettura dei processori
+			\item Set di istruzioni
+			\item Pipeline e parallelismo
+		\end{itemize}
+		
+		\item \textbf{Progettazione digitale avanzata}:
+		\begin{itemize}
+			\item VHDL e Verilog (linguaggi di descrizione hardware)
+			\item FPGA (Field-Programmable Gate Array)
+			\item ASIC (Application-Specific Integrated Circuit)
+		\end{itemize}
+	\end{enumerate}
+	
+	\subsection{Consigli per lo Studio}
+	
+	Per padroneggiare l'elettronica digitale:
+	
+	\begin{enumerate}
+		\item \textbf{Pratica, pratica, pratica}: Disegna circuiti, risolvi esercizi, simula il funzionamento
+		
+		\item \textbf{Costruisci progetti reali}: Usa breadboard e circuiti integrati reali per vedere come funzionano nella pratica
+		
+		\item \textbf{Utilizza software di simulazione}:
+		\begin{itemize}
+			\item Logisim (gratuito, ottimo per iniziare)
+			\item CircuitMaker
+			\item Multisim
+		\end{itemize}
+		
+		\item \textbf{Studia i datasheet}: Impara a leggere le specifiche tecniche dei componenti reali
+		
+		\item \textbf{Collega teoria e pratica}: Ogni concetto teorico ha applicazioni pratiche concrete
+	\end{enumerate}
+	
+	\subsection{Risorse Aggiuntive}
+	
+	Per approfondire:
+	
+	\begin{itemize}
+		\item \textbf{Libri consigliati}:
+		\begin{itemize}
+			\item "Digital Design" di M. Morris Mano
+			\item "Digital Fundamentals" di Thomas L. Floyd
+			\item "Contemporary Logic Design" di Randy H. Katz
+		\end{itemize}
+		
+		\item \textbf{Siti web utili}:
+		\begin{itemize}
+			\item All About Circuits (tutorial gratuiti)
+			\item Electronics Tutorials
+			\item SparkFun Learn
+		\end{itemize}
+		
+		\item \textbf{Video corsi}:
+		\begin{itemize}
+			\item Khan Academy - Electrical Engineering
+			\item MIT OpenCourseWare
+			\item YouTube channels specializzati
+		\end{itemize}
+	\end{itemize}
+	
+	\subsection{Riflessione Finale}
+	
+	L'elettronica digitale è una disciplina affascinante che combina teoria matematica, ingegneria pratica e creatività. Ogni circuito che abbiamo studiato rappresenta una soluzione elegante a un problema specifico.
+	
+	Ricorda che i giganti dell'informatica - da Alan Turing a Steve Wozniak - hanno iniziato proprio da qui, comprendendo i circuiti logici elementari e costruendo su queste basi sistemi sempre più complessi.
+	
+	La tecnologia che usiamo oggi è il risultato dell'applicazione intelligente di questi principi fondamentali. Comprendere i circuiti combinatori significa avere le chiavi per capire, progettare e innovare nel mondo digitale.
+	
+	\vspace{1cm}
+	
+	\textit{Buono studio e buon viaggio nel mondo dell'elettronica digitale!}
+	
+	\vspace{2cm}
+	
+	\hrule
+	
+	\vspace{0.5cm}
+	
+	\textbf{Note per l'Insegnante}
+	
+	Questa dispensa è stata progettata per essere:
+	\begin{itemize}
+		\item Accessibile a studenti di scuola superiore
+		\item Ricca di esempi pratici e analogie
+		\item Progressiva nella difficoltà
+		\item Completa ma non eccessivamente tecnica
+	\end{itemize}
+	
+	Si consiglia di integrare lo studio con:
+	\begin{itemize}
+		\item Esercitazioni pratiche in laboratorio
+		\item Simulazioni al computer
+		\item Progetti di gruppo
+		\item Verifiche progressive della comprensione
+	\end{itemize}
+	
+\end{document}Tabella di verità della porta NOT}
+\end{table}
+
+\subsubsection{Porta AND}
+
+La porta AND produce 1 solo quando \textit{tutti} gli ingressi sono 1.
+
+\begin{center}
+\begin{circuitikz}
+\draw (0,0) node[and port] (and) {};
+\draw (and.in 1) -- ++(-1,0) node[left] {A};
+\draw (and.in 2) -- ++(-1,0) node[left] {B};
+\draw (and.out) -- ++(1,0) node[right] {Y = A $\cdot$ B};
+\end{circuitikz}
+\end{center}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{A} & \textbf{B} & \textbf{Y} \\ \hline
+0 & 0 & 0 \\ \hline
+0 & 1 & 0 \\ \hline
+1 & 0 & 0 \\ \hline
+1 & 1 & 1 \\ \hline
+\end{tabular}
+\caption{Tabella di verità della porta AND}
+\end{table}
+
+\subsubsection{Porta OR}
+
+La porta OR produce 1 quando \textit{almeno uno} degli ingressi è 1.
+
+\begin{center}
+\begin{circuitikz}
+\draw (0,0) node[or port] (or) {};
+\draw (or.in 1) -- ++(-1,0) node[left] {A};
+\draw (or.in 2) -- ++(-1,0) node[left] {B};
+\draw (or.out) -- ++(1,0) node[right] {Y = A + B};
+\end{circuitikz}
+\end{center}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{A} & \textbf{B} & \textbf{Y} \\ \hline
+0 & 0 & 0 \\ \hline
+0 & 1 & 1 \\ \hline
+1 & 0 & 1 \\ \hline
+1 & 1 & 1 \\ \hline
+\end{tabular}
+\caption{Tabella di verità della porta OR}
+\end{table}
+
+\subsubsection{Porte NAND e NOR}
+
+Le porte NAND e NOR sono le versioni "negate" (invertite) delle porte AND e OR:
+
+\begin{itemize}
+\item \textbf{NAND}: Y = $\overline{A \cdot B}$ (NOT-AND)
+\item \textbf{NOR}: Y = $\overline{A + B}$ (NOT-OR)
+\end{itemize}
+
+Queste porte sono particolarmente importanti perché sono \textit{funzionalmente complete}: con sole porte NAND (o sole porte NOR) si può realizzare qualsiasi circuito logico!
+
+\subsubsection{Porta XOR (OR Esclusivo)}
+
+La porta XOR produce 1 quando gli ingressi sono \textit{diversi} tra loro.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{A} & \textbf{B} & \textbf{Y = A $\oplus$ B} \\ \hline
+0 & 0 & 0 \\ \hline
+0 & 1 & 1 \\ \hline
+1 & 0 & 1 \\ \hline
+1 & 1 & 0 \\ \hline
+\end{tabular}
+\caption{Tabella di verità della porta XOR}
+\end{table}
+
+\subsection{Circuiti Integrati Commerciali}
+
+Nella pratica, le porte logiche non vengono costruite singolarmente ma sono disponibili in circuiti integrati che ne contengono diverse. Ad esempio:
+
+\begin{itemize}
+\item \textbf{7404}: contiene 6 porte NOT
+\item \textbf{7408}: contiene 4 porte AND a 2 ingressi
+\item \textbf{7432}: contiene 4 porte OR a 2 ingressi
+\item \textbf{7486}: contiene 4 porte XOR a 2 ingressi
+\end{itemize}
+
+\newpage
+
+\section{Codificatori}
+
+\subsection{Cos'è un Codificatore?}
+
+Un \textbf{codificatore} (encoder) è un circuito che converte un'informazione da un formato all'altro. In particolare, rileva quale tra diverse linee di ingresso è attiva e fornisce sulle linee di uscita il corrispondente codice binario.
+
+\textbf{Esempio pratico}: pensa alla tastiera del tuo computer. Quando premi un tasto, viene attivata una specifica linea. Il codificatore converte questa informazione in un codice binario che il computer può elaborare.
+
+\subsection{Codificatore Ottale-Binario (8 a 3 linee)}
+
+Consideriamo un codificatore con:
+\begin{itemize}
+\item 8 linee di ingresso (numerate da 0 a 7)
+\item 3 linee di uscita (sufficienti per rappresentare i numeri da 0 a 7 in binario)
+\end{itemize}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|c|}
+\hline
+\textbf{Ingresso Attivo} & \textbf{C (MSB)} & \textbf{B} & \textbf{A (LSB)} \\ \hline
+0 & 0 & 0 & 0 \\ \hline
+1 & 0 & 0 & 1 \\ \hline
+2 & 0 & 1 & 0 \\ \hline
+3 & 0 & 1 & 1 \\ \hline
+4 & 1 & 0 & 0 \\ \hline
+5 & 1 & 0 & 1 \\ \hline
+6 & 1 & 1 & 0 \\ \hline
+7 & 1 & 1 & 1 \\ \hline
+\end{tabular}
+\caption{Tabella funzionale del codificatore 8 a 3}
+\end{table}
+
+Dalle osservazioni sulla tabella, possiamo ricavare le equazioni:
+
+\begin{align}
+A &= 1 + 3 + 5 + 7 \\
+B &= 2 + 3 + 6 + 7 \\
+C &= 4 + 5 + 6 + 7
+\end{align}
+
+dove il simbolo "+" indica l'operazione OR logica.
+
+\subsection{Codificatori con Priorità}
+
+\textbf{Problema}: cosa succede se due o più ingressi sono attivi contemporaneamente?
+
+La soluzione consiste nell'assegnare una \textbf{priorità} a ciascun ingresso. In un codificatore con priorità, se più ingressi sono attivi, viene codificato solo quello con priorità più alta.
+
+\textbf{Esempio}: nel codificatore ottale-binario con priorità crescente da 0 a 7:
+\begin{itemize}
+\item Se sono attivi contemporaneamente gli ingressi 3 e 6
+\item L'uscita sarà 110 (codice binario di 6)
+\item Perché 6 ha priorità più alta di 3
+\end{itemize}
+
+\subsection{Codificatori Integrati Commerciali}
+
+\subsubsection{74147 - Codificatore Decimale-BCD}
+
+Caratteristiche:
+\begin{itemize}
+\item 9 ingressi (da 1 a 9, lo 0 coincide con lo stato di riposo)
+\item 4 uscite in codice BCD
+\item Ingressi e uscite attivi bassi (logica negativa)
+\item Con priorità (l'ingresso 9 ha la priorità massima)
+\end{itemize}
+
+\textbf{Nota}: "Attivo basso" significa che il livello logico attivo è rappresentato da una tensione bassa (0V) invece che alta (5V).
+
+\subsubsection{74148 - Codificatore Ottale-Binario}
+
+Caratteristiche:
+\begin{itemize}
+\item 8 ingressi di dati
+\item 3 uscite in codice binario
+\item Linee di controllo aggiuntive:
+\begin{itemize}
+\item \textbf{EI} (Enable Input): abilita/disabilita il chip
+\item \textbf{EO} (Enable Output): indica se il chip è abilitato ma nessun ingresso è attivo
+\item \textbf{GS} (Group Signal): indica se almeno un ingresso è attivo
+\end{itemize}
+\end{itemize}
+
+Queste linee di controllo facilitano il collegamento di più codificatori in cascata per gestire un numero maggiore di ingressi.
+
+\subsection{Codificatori CMOS}
+
+I codificatori CMOS (come il 74HC147 e il 74HC149) offrono gli stessi vantaggi della tecnologia CMOS:
+\begin{itemize}
+\item Consumo energetico ridottissimo (circa 40 µW a riposo)
+\item Maggiore immunità ai disturbi
+\item Ampia gamma di tensioni di alimentazione
+\end{itemize}
+
+\textbf{Confronto}: il 74HC147 consuma 40 µW, mentre il suo equivalente TTL (74147) consuma 225 mW - oltre 5000 volte di più!
+
+\newpage
+
+\section{Decodificatori}
+
+\subsection{Cos'è un Decodificatore?}
+
+Un \textbf{decodificatore} è l'opposto di un codificatore: riceve in ingresso un codice binario e attiva la corrispondente linea di uscita. È come un "traduttore" che converte il linguaggio binario del computer in segnali che possono controllare dispositivi specifici.
+
+\textbf{Esempio pratico}: quando selezioni un canale TV digitale premendo "05" sul telecomando, un decodificatore converte questo codice binario per attivare il canale corretto.
+
+\subsection{Decodificatore BCD-Decimale}
+
+Un decodificatore BCD-decimale converte:
+\begin{itemize}
+\item \textbf{Ingresso}: 4 bit in codice BCD (Binary Coded Decimal)
+\item \textbf{Uscita}: 10 linee (una per ciascuna cifra decimale da 0 a 9)
+\end{itemize}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|c||c|c|c|c|c|c|c|c|c|c|}
+\hline
+\multicolumn{4}{|c||}{\textbf{Ingressi}} & \multicolumn{10}{c|}{\textbf{Uscite}} \\ \hline
+\textbf{D} & \textbf{C} & \textbf{B} & \textbf{A} & \textbf{0} & \textbf{1} & \textbf{2} & \textbf{3} & \textbf{4} & \textbf{5} & \textbf{6} & \textbf{7} & \textbf{8} & \textbf{9} \\ \hline
+0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\ \hline
+0 & 0 & 0 & 1 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\ \hline
+0 & 0 & 1 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\ \hline
+0 & 0 & 1 & 1 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 \\ \hline
+... & ... & ... & ... & ... & ... & ... & ... & ... & ... & ... & ... & ... & ... \\ \hline
+\end{tabular}
+\caption{Tabella parziale di verità del decodificatore BCD-decimale}
+\end{table}
+
+Le equazioni per le uscite sono semplici funzioni AND:
+\begin{align}
+\text{Uscita}_0 &= \overline{D} \cdot \overline{C} \cdot \overline{B} \cdot \overline{A} \\
+\text{Uscita}_1 &= \overline{D} \cdot \overline{C} \cdot \overline{B} \cdot A \\
+\text{Uscita}_2 &= \overline{D} \cdot \overline{C} \cdot B \cdot \overline{A}
+\end{align}
+
+e così via per le altre uscite.
+
+\subsection{Decodificatori Integrati TTL}
+
+\subsubsection{7442 - Decodificatore BCD-Decimale}
+
+Caratteristiche:
+\begin{itemize}
+\item 4 ingressi (D, C, B, A)
+\item 10 uscite (da 0 a 9)
+\item Uscite in logica negativa
+\item Per codici da 10 a 15: tutte le uscite restano alte
+\end{itemize}
+
+\subsubsection{74138 - Decodificatore 3 a 8 linee}
+
+Il 74138 è un decodificatore versatile con:
+\begin{itemize}
+\item 3 ingressi di dati (C, B, A)
+\item 8 uscite
+\item 3 linee di abilitazione (CS1, CS2, CS3)
+\end{itemize}
+
+Il chip è abilitato solo quando:
+\begin{itemize}
+\item CS1 = 1 (alto)
+\item CS2 = 0 (basso)
+\item CS3 = 0 (basso)
+\end{itemize}
+
+\subsubsection{74154 - Decodificatore 4 a 16 linee}
+
+Per applicazioni più complesse:
+\begin{itemize}
+\item 4 ingressi di dati
+\item 16 uscite
+\item 2 linee di abilitazione
+\item 24 piedini totali
+\end{itemize}
+
+\subsection{Decoder-Driver per Display}
+
+Un'applicazione importante dei decodificatori è il pilotaggio dei \textbf{display a 7 segmenti}.
+
+\subsubsection{Display a 7 Segmenti}
+
+Un display a 7 segmenti è composto da 7 LED disposti a forma di "8", etichettati con le lettere a, b, c, d, e, f, g. Accendendo opportunamente questi segmenti si possono visualizzare le cifre da 0 a 9.
+
+\textbf{Esempio}: per visualizzare il numero "5":
+\begin{itemize}
+\item Segmenti accesi: a, f, g, c, d
+\item Segmenti spenti: b, e
+\end{itemize}
+
+\subsubsection{Decoder-Driver BCD-7 Segmenti}
+
+Questi circuiti integrati convertono un codice BCD in ingresso nei segnali necessari per pilotare un display a 7 segmenti.
+
+Esempi di decoder-driver TTL:
+\begin{itemize}
+\item \textbf{7446, 7447}: uscite in logica negativa (per display ad anodo comune)
+\item \textbf{7448, 7449}: uscite in logica positiva (per display a catodo comune)
+\end{itemize}
+
+\textbf{Funzioni aggiuntive}:
+\begin{itemize}
+\item \textbf{LT} (Lamp Test): accende tutti i segmenti per testare il display
+\item \textbf{BI/RBO}: permette di spegnere il display
+\item \textbf{RBI}: elimina gli zeri non significativi nella visualizzazione di più cifre
+\end{itemize}
+
+\textbf{Nota pratica}: quando si collega un decoder-driver a un display, è necessario inserire resistenze di limitazione (tipicamente 150-470 Ω) per proteggere i LED da correnti eccessive.
+
+\newpage
+
+\section{Multiplexer (Selettore)}
+
+\subsection{Cos'è un Multiplexer?}
+
+Un \textbf{multiplexer} (abbreviato MUX) è un circuito che seleziona uno tra più ingressi di dati e lo trasferisce all'uscita. Funziona come un "selettore digitale" o un "interruttore elettronico".
+
+\textbf{Analogia}: immagina un centralino telefonico dove un operatore può collegare una chiamata proveniente da diverse linee in ingresso verso un'unica linea in uscita. Il multiplexer fa la stessa cosa, ma con segnali digitali.
+
+\subsection{Struttura di un Multiplexer}
+
+Un multiplexer è caratterizzato da:
+\begin{itemize}
+\item \textbf{n} linee di ingresso dati
+\item \textbf{m} linee di selezione (dove $n = 2^m$)
+\item \textbf{1} linea di uscita
+\item Linee di abilitazione (enable/strobe)
+\end{itemize}
+
+\subsection{Multiplexer 2 a 1}
+
+Il multiplexer più semplice ha 2 ingressi (D0, D1), 1 linea di selezione (S) e 1 uscita (Y).
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|c|}
+\hline
+\textbf{S} & \textbf{D0} & \textbf{D1} & \textbf{Y} \\ \hline
+0 & 0 & X & 0 \\ \hline
+0 & 1 & X & 1 \\ \hline
+1 & X & 0 & 0 \\ \hline
+1 & X & 1 & 1 \\ \hline
+\end{tabular}
+\caption{Tabella di verità del multiplexer 2 a 1 (X = indifferente)}
+\end{table}
+
+La funzione logica è:
+\begin{equation}
+Y = D_0 \cdot \overline{S} + D_1 \cdot S
+\end{equation}
+
+\textbf{Funzionamento}:
+\begin{itemize}
+\item Quando S = 0: l'uscita Y assume il valore di D0
+\item Quando S = 1: l'uscita Y assume il valore di D1
+\end{itemize}
+
+\subsection{Multiplexer a Più Ingressi}
+
+Con più linee di selezione si possono gestire più ingressi:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|}
+\hline
+\textbf{Linee di selezione (m)} & \textbf{Ingressi dati (n)} \\ \hline
+1 & 2 \\ \hline
+2 & 4 \\ \hline
+3 & 8 \\ \hline
+4 & 16 \\ \hline
+\end{tabular}
+\caption{Relazione tra linee di selezione e ingressi: $n = 2^m$}
+\end{table}
+
+\subsection{Multiplexer Integrati TTL}
+
+\subsubsection{74157 - Quad Multiplexer 2 a 1}
+
+Contiene 4 multiplexer indipendenti 2 a 1 con:
+\begin{itemize}
+\item 8 ingressi dati (2 per ogni multiplexer)
+\item 1 linea di selezione comune
+\item 4 uscite
+\item 1 linea di output enable (OE)
+\end{itemize}
+
+\subsubsection{74153 - Doppio Multiplexer 4 a 1}
+
+Contiene 2 multiplexer indipendenti con:
+\begin{itemize}
+\item 8 ingressi dati totali (4 per ogni multiplexer)
+\item 2 linee di selezione comuni (A1, A0)
+\item 2 uscite
+\item 2 linee di output enable separate
+\end{itemize}
+
+\subsubsection{74151 - Multiplexer 8 a 1}
+
+Un multiplexer completo con:
+\begin{itemize}
+\item 8 ingressi dati (D0-D7)
+\item 3 linee di selezione (A2, A1, A0)
+\item 2 uscite complementari (Y e $\overline{Y}$)
+\item 1 linea di output enable
+\end{itemize}
+
+\subsubsection{74150 - Multiplexer 16 a 1}
+
+Per applicazioni che richiedono molti ingressi:
+\begin{itemize}
+\item 16 ingressi dati
+\item 4 linee di selezione
+\item 1 uscita
+\end{itemize}
+
+\subsection{Applicazioni dei Multiplexer}
+
+I multiplexer trovano impiego in numerosi ambiti:
+
+\begin{enumerate}
+\item \textbf{Trasmissione dati}: per inviare più segnali su un'unica linea
+\item \textbf{Selezione di sorgenti}: per scegliere quale segnale processare
+\item \textbf{Generazione di funzioni logiche}: un multiplexer può implementare qualsiasi funzione logica
+\item \textbf{Controllo di display}: per gestire display multiplexati
+\item \textbf{Sistemi di acquisizione dati}: per campionare più canali in sequenza
+\end{enumerate}
+
+\subsection{Il Concetto di Three-State}
+
+Alcuni multiplexer (come il 74257) hanno uscite \textbf{three-state} (tri-state). Oltre agli stati alto (1) e basso (0), possono assumere uno stato di \textbf{alta impedenza} (Z), che equivale a "scollegare" l'uscita dal circuito.
+
+Questo è utile quando più dispositivi condividono la stessa linea: solo uno alla volta deve essere attivo, mentre gli altri vanno in alta impedenza.
+
+\newpage
+
+\section{Demultiplexer (Distributore)}
+
+\subsection{Cos'è un Demultiplexer?}
+
+Un \textbf{demultiplexer} (abbreviato DMUX) è l'opposto di un multiplexer: riceve dati da un'unica linea di ingresso e li distribuisce su una delle linee di uscita, selezionata tramite ingressi di controllo.
+
+\textbf{Analogia}: è come un distributore automatico che riceve monete (dati) da un'unica fessura e le indirizza verso contenitori diversi a seconda del pulsante premuto (linee di selezione).
+
+\subsection{Struttura di un Demultiplexer}
+
+Un demultiplexer è caratterizzato da:
+\begin{itemize}
+\item \textbf{1} linea di ingresso dati
+\item \textbf{m} linee di selezione (indirizzo)
+\item \textbf{n} linee di uscita (dove $n = 2^m$)
+\end{itemize}
+
+\subsection{Demultiplexer 1 a 4}
+
+Consideriamo un demultiplexer con 1 ingresso dati (D), 2 linee di selezione (A1, A0) e 4 uscite (Y0-Y3).
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c||c|c|c|c|}
+\hline
+\multicolumn{3}{|c||}{\textbf{Ingressi}} & \multicolumn{4}{c|}{\textbf{Uscite}} \\ \hline
+\textbf{A1} & \textbf{A0} & \textbf{D} & \textbf{Y0} & \textbf{Y1} & \textbf{Y2} & \textbf{Y3} \\ \hline
+0 & 0 & 0 & 0 & 0 & 0 & 0 \\ \hline
+0 & 0 & 1 & 1 & 0 & 0 & 0 \\ \hline
+0 & 1 & 0 & 0 & 0 & 0 & 0 \\ \hline
+0 & 1 & 1 & 0 & 1 & 0 & 0 \\ \hline
+1 & 0 & 0 & 0 & 0 & 0 & 0 \\ \hline
+1 & 0 & 1 & 0 & 0 & 1 & 0 \\ \hline
+1 & 1 & 0 & 0 & 0 & 0 & 0 \\ \hline
+1 & 1 & 1 & 0 & 0 & 0 & 1 \\ \hline
+\end{tabular}
+\caption{Tabella di verità del demultiplexer 1 a 4}
+\end{table}
+
+\subsection{Relazione tra Decodificatori e Demultiplexer}
+
+Un demultiplexer è sostanzialmente un \textbf{decodificatore con un ingresso dati aggiuntivo}. Per questo motivo, molti circuiti integrati sono classificati come "decoder/demultiplexer".
+
+\textbf{Differenza chiave}:
+\begin{itemize}
+\item \textbf{Decodificatore}: attiva una linea di uscita in base al codice in ingresso
+\item \textbf{Demultiplexer}: trasferisce il dato di ingresso sulla linea di uscita selezionata
+\end{itemize}
+
+\subsection{Il 74138 come Demultiplexer}
+
+Il 74138, che abbiamo già visto come decodificatore, può essere utilizzato anche come demultiplexer:
+
+\begin{itemize}
+\item \textbf{Ingressi di selezione}: C, B, A (3 bit, 8 combinazioni)
+\item \textbf{Ingresso dati}: G1 (una delle linee di abilitazione)
+\item \textbf{Uscite}: Y0-Y7 (8 linee, attive basse)
+\item \textbf{Abilitazione}: G2A e G2B devono essere bassi
+\end{itemize}
+
+\textbf{Funzionamento}:
+\begin{itemize}
+\item Quando G1 = 1 (alto) e il chip è abilitato: il dato viene trasferito (in forma complementata) all'uscita selezionata
+\item Quando G1 = 0 (basso): tutte le uscite rimangono alte
+\end{itemize}
+
+\subsection{Applicazioni dei Demultiplexer}
+
+\begin{enumerate}
+\item \textbf{Distribuzione dati}: per inviare dati da una sorgente a più destinazioni
+\item \textbf{Espansione indirizzi}: nei sistemi con memoria
+\item \textbf{Selezione dispositivi}: per attivare uno specifico dispositivo tra molti
+\item \textbf{Trasmissione dati}: per ricevere dati multiplexati e separarli
+\end{enumerate}
+
+\newpage
+
+\section{Comparatori}
+
+\subsection{Cos'è un Comparatore?}
+
+Un \textbf{comparatore} è un circuito che confronta due numeri o parole digitali e fornisce informazioni sulla loro relazione: se sono uguali, quale è maggiore, quale è minore.
+
+\textbf{Esempio pratico}: nei videogiochi, un comparatore potrebbe verificare se hai raggiunto il punteggio necessario per passare al livello successivo.
+
+\subsection{Comparatore di Uguaglianza a 1 Bit}
+
+Il comparatore più semplice confronta due singoli bit usando una porta \textbf{EXOR}:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{A} & \textbf{B} & \textbf{E = A $\oplus$ B} \\ \hline
+0 & 0 & 0 (uguali) \\ \hline
+0 & 1 & 1 (diversi) \\ \hline
+1 & 0 & 1 (diversi) \\ \hline
+1 & 1 & 0 (uguali) \\ \hline
+\end{tabular}
+\caption{Comparatore di uguaglianza a 1 bit}
+\end{table}
+
+L'uscita è 0 quando i bit sono uguali. Per ottenere un'uscita attiva alta, si usa una porta EXNOR.
+
+\subsection{Comparatore di Uguaglianza a Più Bit}
+
+Per confrontare parole a più bit (es. A1A0 e B1B0), dobbiamo verificare che tutti i bit corrispondenti siano uguali:
+
+\begin{equation}
+E = (A_1 \oplus B_1) \cdot (A_0 \oplus B_0)
+\end{equation}
+
+Dove $\oplus$ indica EXNOR. L'uscita E vale 1 solo quando:
+\begin{itemize}
+\item A1 = B1 \textbf{E} A0 = B0
+\end{itemize}
+
+\subsection{Comparatore di Grandezza}
+
+Un comparatore completo fornisce tre uscite:
+\begin{itemize}
+\item \textbf{A = B}: i due numeri sono uguali
+\item \textbf{A > B}: A è maggiore di B
+\item \textbf{A < B}: A è minore di B
+\end{itemize}
+
+\subsection{Il Comparatore 7485}
+
+Il 7485 è un comparatore integrato a 4 bit molto utilizzato. Caratteristiche:
+
+\begin{itemize}
+\item \textbf{Ingressi dati}: A3, A2, A1, A0 e B3, B2, B1, B0
+\item \textbf{Uscite}: (A = B), (A > B), (A < B)
+\item \textbf{Ingressi di cascata}: permettono di collegare più 7485 per confrontare parole a 8, 12, 16 bit, ecc.
+\end{itemize}
+
+\textbf{Logica di confronto}:
+\begin{enumerate}
+\item Si confrontano prima i bit più significativi (A3 e B3)
+\item Se A3 > B3, allora A > B (indipendentemente dagli altri bit)
+\item Se A3 = B3, si passa a confrontare A2 e B2
+\item E così via fino ai bit meno significativi
+\end{enumerate}
+
+\subsection{Collegamento in Cascata}
+
+Per confrontare numeri a 8 bit usando due 7485:
+
+\begin{itemize}
+\item Il primo 7485 confronta i 4 bit meno significativi
+\item Le sue uscite vanno agli ingressi di cascata del secondo 7485
+\item Il secondo 7485 confronta i 4 bit più significativi
+\item Le uscite finali provengono dal secondo 7485
+\end{itemize}
+
+\textbf{Nota}: gli ingressi di cascata del primo 7485 devono essere configurati come:
+\begin{itemize}
+\item (A = B) = 1
+\item (A > B) = 0
+\item (A < B) = 0
+\end{itemize}
+
+\newpage
+
+\section{Sommatori}
+
+\subsection{Introduzione ai Sommatori}
+
+I \textbf{sommatori} sono circuiti fondamentali che eseguono l'addizione di numeri binari. Sono alla base delle ALU (Arithmetic Logic Unit) presenti in tutti i processori.
+
+\subsection{Addizione Binaria: Un Ripasso}
+
+Prima di progettare un sommatore, ricordiamo le regole dell'addizione binaria:
+
+\begin{align*}
+0 + 0 &= 0 \\
+0 + 1 &= 1 \\
+1 + 0 &= 1 \\
+1 + 1 &= 10 \text{ (0 con riporto di 1)}
+\end{align*}
+
+\subsection{Semi-Sommatore (Half Adder)}
+
+Il \textbf{semi-sommatore} è il circuito più semplice che somma due bit.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c||c|c|}
+\hline
+\textbf{A} & \textbf{B} & \textbf{S (Somma)} & \textbf{R (Riporto)} \\ \hline
+0 & 0 & 0 & 0 \\ \hline
+0 & 1 & 1 & 0 \\ \hline
+1 & 0 & 1 & 0 \\ \hline
+1 & 1 & 0 & 1 \\ \hline
+\end{tabular}
+\caption{Tabella di verità del semi-sommatore}
+\end{table}
+
+Le equazioni logiche sono:
+\begin{align}
+S &= A \oplus B \quad \text{(XOR)} \\
+R &= A \cdot B \quad \text{(AND)}
+\end{align}
+
+\textbf{Implementazione}: il semi-sommatore può essere realizzato con una porta XOR (per la somma) e una porta AND (per il riporto).
+
+\textbf{Limitazione}: il semi-sommatore non considera un eventuale riporto proveniente da una somma precedente.
+
+\subsection{Sommatore Completo (Full Adder)}
+
+Il \textbf{sommatore completo} risolve questa limitazione aggiungendo un terzo ingresso per il riporto entrante (Ri).
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c||c|c|}
+\hline
+\textbf{A} & \textbf{B} & \textbf{Ri} & \textbf{S} & \textbf{Ru} \\ \hline
+0 & 0 & 0 & 0 & 0 \\ \hline
+0 & 0 & 1 & 1 & 0 \\ \hline
+0 & 1 & 0 & 1 & 0 \\ \hline
+0 & 1 & 1 & 0 & 1 \\ \hline
+1 & 0 & 0 & 1 & 0 \\ \hline
+1 & 0 & 1 & 0 & 1 \\ \hline
+1 & 1 & 0 & 0 & 1 \\ \hline
+1 & 1 & 1 & 1 & 1 \\ \hline
+\end{tabular}
+\caption{Tabella di verità del sommatore completo}
+\end{table}
+
+Dove:
+\begin{itemize}
+\item \textbf{Ri}: riporto entrante (dalla somma precedente)
+\item \textbf{S}: bit di somma
+\item \textbf{Ru}: riporto uscente (per la somma successiva)
+\end{itemize}
+
+Le equazioni logiche sono:
+\begin{align}
+S &= A \oplus B \oplus R_i \\
+R_u &= A \cdot B + (A \oplus B) \cdot R_i
+\end{align}
+
+\textbf{Interpretazione}: 
+\begin{itemize}
+\item La somma S è 1 quando un numero dispari di ingressi è 1
+\item Il riporto Ru è 1 quando almeno due ingressi sono 1
+\end{itemize}
+
+\subsection{Realizzazione con Semi-Sommatori}
+
+Un sommatore completo può essere costruito usando:
+\begin{itemize}
+\item 2 semi-sommatori
+\item 1 porta OR
+\end{itemize}
+
+\textbf{Logica}:
+\begin{enumerate}
+\item Il primo semi-sommatore somma A e B
+\item Il secondo semi-sommatore somma il risultato con Ri
+\item La porta OR combina i due riporti
+\end{enumerate}
+
+\subsection{Sommatore a Più Bit: Ripple Adder}
+
+Per sommare numeri a n bit, si collegano n sommatori completi in cascata, formando un \textbf{ripple adder} ("sommatore ondulato"):
+
+\begin{itemize}
+\item Ogni sommatore elabora una coppia di bit della stessa posizione
+\item Il riporto di ogni sommatore diventa l'ingresso Ri del successivo
+\item Per i bit meno significativi, si può usare un semi-sommatore (Ri = 0)
+\end{itemize}
+
+\textbf{Svantaggio}: il tempo di calcolo dipende dalla propagazione del riporto attraverso tutti gli stadi. Se ogni full adder impiega tempo Tp, il tempo totale sarà $n \cdot T_p$.
+
+\subsection{Sommatori Integrati}
+
+\subsubsection{7482 - Sommatore a 2 Bit}
+
+Caratteristiche:
+\begin{itemize}
+\item Somma due numeri a 2 bit (A2A1 + B2B1)
+\item Ingresso di riporto C0
+\item Uscite: 1, 2, C2 (dove 1 e 2 sono i bit di somma)
+\item Utilizza ripple carry
+\end{itemize}
+
+\textbf{Esempio di utilizzo}: per sommare numeri a 4 bit servono due 7482 collegati in cascata, dove C2 del primo va a C0 del secondo.
+
+\subsubsection{7483 - Sommatore a 4 Bit con Fast Carry}
+
+Il 7483 è più avanzato del 7482:
+
+\begin{itemize}
+\item Somma due numeri a 4 bit
+\item \textbf{Fast carry} (carry veloce): i riporti sono generati simultaneamente
+\item Tempo di propagazione: circa 16 ns (serie standard)
+\item Potenza dissipata: circa 76 mW
+\end{itemize}
+
+\subsection{Tecnica Look-Ahead Carry (LAC)}
+
+La tecnica \textbf{look-ahead carry} (generazione simultanea del riporto) elimina il ritardo causato dalla propagazione del riporto:
+
+\textbf{Principio}:
+\begin{itemize}
+\item Invece di calcolare i riporti in sequenza...
+\item Una rete combinatoria li calcola tutti contemporaneamente
+\item Basandosi direttamente sugli ingressi A e B
+\end{itemize}
+
+\textbf{Vantaggi}:
+\begin{itemize}
+\item Velocità di calcolo molto superiore
+\item Il tempo non dipende dal numero di bit
+\end{itemize}
+
+\textbf{Svantaggi}:
+\begin{itemize}
+\item Maggiore complessità circuitale
+\item Maggior numero di porte logiche necessarie
+\end{itemize}
+
+\subsection{Collegamento in Cascata di Sommatori}
+
+Per sommare numeri a 8, 16 o più bit:
+
+\begin{enumerate}
+\item Si collegano più sommatori a 4 bit (es. 7483) in cascata
+\item Il riporto C4 del primo va a C0 del secondo
+\item Per massimizzare la velocità, si usano generatori LAC (es. 74182)
+\end{enumerate}
+
+\textbf{Esempio pratico}: sommatore a 8 bit
+\begin{itemize}
+\item Primo 7483: somma i 4 bit meno significativi (bit 0-3)
+\item Secondo 7483: somma i 4 bit più significativi (bit 4-7)
+\item C4 del primo connesso a C0 del secondo
+\end{itemize}
+
+\subsection{Sommatori CMOS}
+
+I sommatori CMOS (es. 4008) offrono:
+\begin{itemize}
+\item Consumo energetico ridottissimo
+\item Maggiore immunità ai disturbi
+\item Tempi di propagazione leggermente superiori ai TTL
+\item Ampia gamma di tensioni di alimentazione
+\end{itemize}
+
+\textbf{Confronto}: il 74HC83 (CMOS) ha tp = 330 ns contro i 16 ns del 7483 (TTL), ma consuma molto meno.
+
+\newpage
+
+\section{Riepilogo e Concetti Chiave}
+
+\subsection{Circuiti Combinatori: Definizione}
+
+I circuiti combinatori sono circuiti digitali in cui:
+\begin{itemize}
+\item Le uscite dipendono \textbf{solo} dagli ingressi attuali
+\item Non hanno memoria (a differenza dei circuiti sequenziali)
+\item La stessa combinazione di ingressi produce sempre la stessa uscita
+\end{itemize}
+
+\subsection{Componenti Fondamentali Studiati}
+
+\begin{enumerate}
+\item \textbf{Porte Logiche}: mattoni elementari (AND, OR, NOT, NAND, NOR, XOR)
+
+\item \textbf{Codificatori}: convertono informazioni in codice binario
+\begin{itemize}
+\item Riducono il numero di linee necessarie
+\item Possono avere priorità
+\end{itemize}
+
+\item \textbf{Decodificatori}: convertono codici binari in segnali di controllo
+\begin{itemize}
+\item Decoder-driver per display a 7 segmenti
+\item Utilizzati per selezione di dispositivi
+\end{itemize}
+
+\item \textbf{Multiplexer}: selezionano uno tra più ingressi
+\begin{itemize}
+\item Riducono le linee di trasmissione
+\item Possono implementare funzioni logiche
+\end{itemize}
+
+\item \textbf{Demultiplexer}: distribuiscono dati su più uscite
+\begin{itemize}
+\item Funzione opposta al multiplexer
+\item Strettamente correlati ai decodificatori
+\end{itemize}
+
+\item \textbf{Comparatori}: confrontano numeri binari
+\begin{itemize}
+\item Verificano uguaglianza e grandezza
+\item Collegabili in cascata
+\end{itemize}
+
+\item \textbf{Sommatori}: eseguono addizioni binarie
+\begin{itemize}
+\item Semi-sommatore e sommatore completo
+\item Tecniche fast carry per maggiore velocità
+\end{itemize}
+\end{enumerate}
+
+\subsection{Famiglie Logiche}
+
+\subsubsection{TTL (Transistor-Transistor Logic)}
+
+\textbf{Caratteristiche}:
+\begin{itemize}
+\item Alimentazione: 5V
+\item Livello 0: 0V, Livello 1: +5V
+\item Velocità: elevata (tp tipico: 10-20 ns)
+\item Consumo: relativamente alto (50-250 mW per chip)
+\item Serie: standard, S (Schottky), LS (Low-power Schottky)
+\end{itemize}
+
+\textbf{Sigla esempio}: 7483 (serie standard), 74LS83 (Low-power Schottky)
+
+\subsubsection{CMOS (Complementary Metal-Oxide-Semiconductor)}
+
+\textbf{Caratteristiche}:
+\begin{itemize}
+\item Alimentazione: variabile (3-18V, tipicamente 5V)
+\item Consumo: bassissimo (µW a riposo)
+\item Velocità: buona ma generalmente inferiore a TTL
+\item Immunità ai disturbi: superiore a TTL
+\item Serie: 4000, 74C, 74HC (High-speed), 74HCT (TTL-compatible)
+\end{itemize}
+
+\textbf{Vantaggi CMOS}:
+\begin{itemize}
+\item Consumo energetico ridotto (ideale per dispositivi portatili)
+\item Maggiore densità di integrazione
+\item Tecnologia dominante nell'elettronica moderna
+\end{itemize}
+
+\subsection{Concetti Trasversali}
+
+\subsubsection{Logica Positiva e Negativa}
+
+\begin{itemize}
+\item \textbf{Logica positiva}: 1 = alto, 0 = basso
+\item \textbf{Logica negativa (attivo basso)}: 1 = basso, 0 = alto
+\item Indicata con un cerchietto ($\circ$) o una barra sopra il nome del segnale
+\end{itemize}
+
+\subsubsection{Enable e Strobe}
+
+Segnali di controllo che:
+\begin{itemize}
+\item Abilitano o disabilitano il funzionamento del chip
+\item Consentono il collegamento di più dispositivi
+\item Riducono il consumo quando non necessari
+\end{itemize}
+
+\subsubsection{Three-State (Tri-State)}
+
+Oltre agli stati logici 0 e 1, esiste uno stato di \textbf{alta impedenza} (Z):
+\begin{itemize}
+\item Il dispositivo si "scollega" elettricamente dal circuito
+\item Permette a più dispositivi di condividere la stessa linea
+\item Essenziale nei bus di dati
+\end{itemize}
+
+\subsubsection{Collegamento in Cascata}
+
+Tecnica per espandere le capacità:
+\begin{itemize}
+\item Collegare più chip dello stesso tipo in serie
+\item Utilizzare ingressi/uscite di cascata
+\item Esempi: sommatori a 8+ bit, comparatori a 8+ bit, codificatori con più ingressi
+\end{itemize}
+
+\subsection{Parametri Importanti}
+
+\subsubsection{Tempo di Propagazione (tp)}
+
+Tempo necessario per un cambiamento dell'uscita dopo una variazione degli ingressi:
+\begin{itemize}
+\item TTL standard: 10-30 ns
+\item CMOS: 20-100 ns (serie HC)
+\item Critico per le prestazioni del sistema
+\end{itemize}
+
+\subsubsection{Potenza Dissipata (Pd)}
+
+Energia consumata dal circuito:
+\begin{itemize}
+\item TTL: 50-250 mW per chip
+\item CMOS: µW (a riposo) - mW (in commutazione)
+\item Importante per sistemi portatili e raffreddamento
+\end{itemize}
+
+\subsubsection{Fan-out}
+
+Numero di ingressi che un'uscita può pilotare:
+\begin{itemize}
+\item TTL: tipicamente 10
+\item CMOS: molto elevato (50+)
+\end{itemize}
+
+\subsection{Metodologia di Progetto}
+
+Per progettare un circuito combinatorio:
+
+\begin{enumerate}
+\item \textbf{Definire il problema}: cosa deve fare il circuito?
+
+\item \textbf{Creare la tabella di verità}: elencare tutte le combinazioni di ingressi e le corrispondenti uscite
+
+\item \textbf{Ricavare le equazioni logiche}: utilizzare:
+\begin{itemize}
+\item Forma canonica
+\item Mappe di Karnaugh (per semplificazioni)
+\item Algebra di Boole
+\end{itemize}
+
+\item \textbf{Implementare con porte logiche}: disegnare il circuito
+
+\item \textbf{Ottimizzare}: ridurre il numero di porte, migliorare velocità o consumo
+
+\item \textbf{Verificare}: controllare che il circuito funzioni correttamente
+\end{enumerate}
+
+\subsection{Applicazioni Reali}
+
+I circuiti combinatori sono ovunque:
+
+\begin{itemize}
+\item \textbf{Calcolatrici}: sommatori e ALU
+\item \textbf{Computer}: decodificatori di indirizzi, multiplexer per bus dati
+\item \textbf{Sistemi di controllo}: comparatori per soglie, decoder per attuatori
+\item \textbf{Telecomunicazioni}: multiplexer/demultiplexer per trasmissione dati
+\item \textbf{Display digitali}: decoder-driver per visualizzatori
+\item \textbf{Sistemi embedded}: codificatori per tastiere, decodificatori per LED
+\end{itemize}
+
+\newpage
+
+\section{Esercizi e Problemi}
+
+\subsection{Esercizio 1: Porte Logiche}
+
+Disegnare il circuito logico e la tabella di verità per la funzione:
+\begin{equation}
+Y = A \cdot B + \overline{A} \cdot C
+\end{equation}
+
+\subsection{Esercizio 2: Codificatore}
+
+Progettare un codificatore da 4 a 2 linee. Creare la tabella di verità e ricavare le equazioni per le due uscite.
+
+\subsection{Esercizio 3: Decodificatore}
+
+Un decodificatore 2 a 4 ha ingressi A1, A0 e uscite Y0, Y1, Y2, Y3. Scrivere le equazioni logiche per ciascuna uscita.
+
+\subsection{Esercizio 4: Multiplexer}
+
+Utilizzando un multiplexer 4 a 1, implementare la funzione logica:
+\begin{equation}
+F(A, B) = A \cdot B + \overline{A} \cdot \overline{B}
+\end{equation}
+
+\textit{Suggerimento}: usare A e B come ingressi di selezione.
+
+\subsection{Esercizio 5: Sommatore}
+
+Calcolare il tempo di propagazione totale di un ripple adder a 8 bit, sapendo che ogni full adder ha tp = 15 ns.
+
+\subsection{Esercizio 6: Comparatore}
+
+Due numeri a 3 bit, A = A2A1A0 e B = B2B1B0, devono essere confrontati. Scrivere l'equazione logica per l'uscita "A > B", considerando solo i bit più significativi.
+
+\subsection{Esercizio 7: Applicazione Pratica}
+
+Si vuole realizzare un sistema che:
+\begin{itemize}
+\item Ha 8 sensori di ingresso
+\item Deve identificare quale sensore è attivo
+\item Deve visualizzare il numero del sensore su un display a 7 segmenti
+\end{itemize}
+
+Quali circuiti combinatori sono necessari? Descrivere il collegamento.
+
+\subsection{Soluzioni (Schema)}
+
+\subsubsection{Soluzione Esercizio 1}
+
+La funzione richiede:
+\begin{itemize}
+\item 1 porta AND a 2 ingressi per $A \cdot B$
+\item 1 porta NOT per $\overline{A}$
+\item 1 porta AND a 2 ingressi per $\overline{A} \cdot C$
+\item 1 porta OR a 2 ingressi per sommare i termini
+\end{itemize}
+
+\subsubsection{Soluzione Esercizio 5}
+
+Tempo totale = $8 \times 15\text{ ns} = 120\text{ ns}$
+
+Ogni full adder deve attendere il riporto dal precedente.
+
+\subsubsection{Soluzione Esercizio 7}
+
+Circuiti necessari:
+\begin{enumerate}
+\item \textbf{Codificatore 8 a 3}: converte quale dei sensori è attivo in codice binario a 3 bit
+\item \textbf{Decoder-driver BCD-7 segmenti}: converte il codice binario nei segnali per il display
+\item \textbf{Display a 7 segmenti}: visualizza il numero
+\end{enumerate}
+
+\newpage
+
+\section{Appendice: Tabelle di Riferimento}
+
+\subsection{Tabella Riassuntiva Porte Logiche}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{|l|c|c|c|}
+\hline
+\textbf{Porta} & \textbf{Simbolo} & \textbf{Equazione} & \textbf{Descrizione} \\ \hline
+NOT & $\overline{A}$ & $Y = \overline{A}$ & Inverte l'ingresso \\ \hline
+AND & $A \cdot B$ & $Y = A \cdot B$ & Uscita 1 se tutti gli ingressi sono 1 \\ \hline
+OR & $A + B$ & $Y = A + B$ & Uscita 1 se almeno un ingresso è 1 \\ \hline
+NAND & $\overline{A \cdot B}$ & $Y = \overline{A \cdot B}$ & NOT-AND \\ \hline
+NOR & $\overline{A + B}$ & $Y = \overline{A + B}$ & NOT-OR \\ \hline
+XOR & $A \oplus B$ & $Y = A \oplus B$ & Uscita 1 se gli ingressi sono diversi \\ \hline
+XNOR & $\overline{A \oplus B}$ & $Y = \overline{A \oplus B}$ & Uscita 1 se gli ingressi sono uguali \\ \hline
+\end{tabular}
+\caption{

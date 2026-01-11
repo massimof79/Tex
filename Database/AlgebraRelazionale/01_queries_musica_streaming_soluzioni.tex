@@ -1,0 +1,70 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{geometry}
+\usepackage{amssymb}
+\geometry{margin=1in}
+
+\title{Relational Algebra Solutions \\ UIBK - Music Streaming Service}
+\author{}
+\date{}
+
+\begin{document}
+	
+	\maketitle
+	
+	\section*{Solutions to Queries}
+	
+	\begin{enumerate}
+		\item $\pi_{Name}(Artist)$
+		
+		\item $\pi_{Title}(\sigma_{ArtistId = 1}(Album))$
+		
+		\item $\pi_{Name}(Track \bowtie_{Track.GenreId = Genre.GenreId} \sigma_{Name = 'Rock'}(Genre))$
+		
+		\item $\pi_{Name}(Track \bowtie_{Track.TrackId = PlaylistContent.TrackId} \sigma_{PlaylistId = 5}(PlaylistContent))$
+		
+		\item $\pi_{FirstName, LastName}(Customer \bowtie_{Customer.CustomerId = Invoice.CustomerId} Invoice)$
+		
+		\item $\pi_{FirstName, LastName}(\sigma_{Country = 'Italy'}(Customer))$
+		
+		\item $\rho_{Count}(\gamma_{count(*)}(Track))$
+		
+		\item $\pi_{Playlist.Name}((Playlist \bowtie PlaylistContent) \bowtie_{PlaylistContent.TrackId = Track.TrackId} (Track \bowtie_{Track.GenreId = Genre.GenreId} \sigma_{Name = 'Jazz'}(Genre)))$
+		
+		\item $\pi_{Name}(Track \bowtie_{Track.TrackId = InvoiceParts.TrackId} InvoiceParts)$
+		
+		\item $\gamma_{avg(UnitPrice)}(Track)$
+		
+		\item $\pi_{Artist.Name}(Artist \bowtie_{Artist.ArtistId = Album.ArtistId} Album)$
+		
+		\item $\pi_{Name}(\sigma_{Miliseconds > 300000}(Track))$
+		
+		\item $\pi_{FirstName, LastName}(Customer \bowtie_{Customer.CustomerId = Invoice.CustomerId} \sigma_{InvoiceDate = '2026-01-11'}(Invoice))$
+		
+		\item $\pi_{Name}(Track \bowtie_{Track.TrackId = PlaylistContent.TrackId} PlaylistContent)$
+		
+		\item $\pi_{Name}(Track) - \pi_{Name}(Track \bowtie_{Track.TrackId = InvoiceParts.TrackId} InvoiceParts)$
+		
+		\item $\pi_{Name}(Artist) - \pi_{Artist.Name}(Artist \bowtie_{Artist.ArtistId = Album.ArtistId} Album)$
+		
+		\item $\pi_{Playlist.Name}(\gamma_{PlaylistId, count(TrackId) \rightarrow cnt}(PlaylistContent) \bowtie_{cnt > 10} Playlist)$
+		
+		\item $\pi_{Name}(Track \bowtie_{Track.GenreId = Genre.GenreId} (\sigma_{Name = 'Classical' \land UnitPrice < 1.00}(Genre \bowtie Track)))$
+		
+		\item $\pi_{FirstName, LastName}(Customer \bowtie_{Customer.CustomerId = Invoice.CustomerId} \gamma_{CustomerId, sum(Total) \rightarrow total}(Invoice) \bowtie_{total > 10} Invoice)$
+		
+		\item $\pi_{Track.Name}((Track \bowtie Album) \bowtie_{Album.ArtistId = Artist.ArtistId} \sigma_{Name \text{ LIKE } '\%Italy\%'}(Artist))$
+		
+		\item $\pi_{Track.Name}((Track \bowtie InvoiceParts) \bowtie_{InvoiceParts.InvoiceId = Invoice.InvoiceId} (Invoice \bowtie_{Invoice.CustomerId = Customer.CustomerId} \sigma_{City = 'Vienna'}(Customer)))$
+		
+		\item $\pi_{Playlist.Name}(\gamma_{PlaylistId, count(distinct GenreId) \rightarrow genre_count}((Playlist \bowtie PlaylistContent) \bowtie_{PlaylistContent.TrackId = Track.TrackId} Track) \bowtie_{genre_count > 1} Playlist)$
+		
+		\item $\pi_{Name}(\gamma_{TrackId, count(PlaylistId) \rightarrow pl_count}(PlaylistContent) \bowtie_{pl_count \geq 2} Track)$
+		
+		\item $\pi_{FirstName, LastName}(Customer \bowtie_{Customer.CustomerId = Invoice.CustomerId} (Invoice \bowtie_{Invoice.InvoiceId = InvoiceParts.InvoiceId} InvoiceParts \bowtie_{InvoiceParts.TrackId = Track.TrackId} Track \bowtie_{Track.GenreId = Genre.GenreId} Genre)) \div \pi_{GenreId}(Genre)$
+		
+		\item $\pi_{Name}(Track) - \pi_{Name}(Track \bowtie_{Track.TrackId = PlaylistContent.TrackId} PlaylistContent)$
+	\end{enumerate}
+	
+\end{document}
