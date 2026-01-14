@@ -1,0 +1,101 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[italian]{babel}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+
+\title{Confusione, Diffusione e Teorema di Shannon\large Concetti fondamentali della crittografia moderna}
+\author{Prof. Fedeli Massimo \ IIS Fermi Sacconi CPIA}
+\date{Tutti i diritti riservati}
+
+\begin{document}
+	
+	\maketitle
+	
+	\section{Introduzione}
+	La crittografia è la disciplina che studia i metodi per proteggere le informazioni da accessi non autorizzati. I sistemi crittografici moderni si basano su solidi principi matematici e teorici, tra cui spiccano i concetti di confusione, diffusione e il teorema di Shannon.
+	
+	\section{Il modello di un cifrario}
+	Un sistema di cifratura classico può essere visto come una funzione matematica:
+		
+	\[
+	C = E_K(P)
+	\]
+	
+	Dove:
+	\begin{itemize}
+		\item $P$ è il testo in chiaro (plaintext),
+		\item $K$ è la chiave segreta,
+		\item $C$ è il testo cifrato (ciphertext).
+	\end{itemize}
+	
+	L'obiettivo della cifratura è rendere computazionalmente difficile risalire al testo in chiaro $P$ o alla chiave $K$ partendo dal solo testo cifrato $C$.
+	
+	\section{Il problema dell'analisi crittografica}
+	Un attaccante che tenta di violare un sistema crittografico cerca di sfruttare:
+	\begin{itemize}
+		\item le regolarità del linguaggio naturale,
+		\item la presenza di schemi ripetitivi,
+		\item relazioni semplici tra testo in chiaro e testo cifrato.
+	\end{itemize}
+	
+	La crittografia moderna nasce proprio con l'obiettivo di eliminare o mascherare queste debolezze strutturali.
+	
+	\section{Esempio di analisi crittografica}
+	Supponiamo di intercettare il seguente testo cifrato:
+	
+	[
+	\texttt{XQZZQ XQZZQ XQZZQ}
+	]
+	
+	Un attaccante può ipotizzare che il messaggio originale contenga parole ripetute e che il cifrario utilizzato non sia in grado di nascondere tali ripetizioni. In questo caso, lettere uguali nel testo in chiaro producono lettere uguali nel testo cifrato, rendendo possibile formulare ipotesi sul messaggio originale o sulla chiave.
+	
+	La crittografia moderna contrasta questi attacchi attraverso l'uso sistematico di confusione e diffusione.
+	
+	\section{Confusione}
+	La \textbf{confusione} ha lo scopo di rendere complessa e non intuitiva la relazione tra la chiave segreta e il testo cifrato. In presenza di un alto livello di confusione, anche una piccola variazione della chiave produce un risultato apparentemente imprevedibile.
+	
+	\subsection{Esempio di confusione}
+	Un esempio semplice è il cifrario di Cesare, in cui la sostituzione delle lettere dipende da una chiave numerica. Se la chiave è pari a 3, la lettera A viene cifrata come D e la B come E. Cambiando la chiave, l'intero schema di sostituzione cambia. Nei cifrari moderni, la confusione è ottenuta tramite operazioni non lineari molto più complesse.
+	
+	\section{Diffusione}
+	La \textbf{diffusione} ha lo scopo di distribuire l'informazione del testo in chiaro su molte parti del testo cifrato. In questo modo, una piccola modifica del messaggio originale produce molte modifiche nel testo cifrato.
+	
+	\subsection{Esempio di diffusione}
+	Consideriamo un messaggio binario:
+	[
+	P = 10100010
+	]
+	
+	Dopo un'efficace operazione di diffusione, ogni bit del messaggio originale influenza molti bit del testo cifrato. Questo fenomeno è noto come \emph{effetto valanga}.
+	
+	\section{Confusione e diffusione nei cifrari moderni}
+	Un cifrario sicuro combina sistematicamente confusione e diffusione. Gli algoritmi crittografici moderni, come i cifrari a blocchi, applicano questi principi in più cicli successivi, detti round, aumentando progressivamente la sicurezza.
+	
+	\section{Claude Shannon e la crittografia}
+	Claude Shannon è considerato il padre della teoria dell'informazione. Nel 1949 formulò i principi fondamentali della crittografia moderna, introducendo formalmente i concetti di confusione e diffusione.
+	
+	\section{Il teorema di Shannon}
+	Il teorema di Shannon afferma che la sicurezza di un sistema crittografico deve dipendere esclusivamente dalla segretezza della chiave e non dalla segretezza dell'algoritmo. Questo principio è noto come principio di Kerckhoffs-Shannon.
+	
+	\subsection{Conseguenze}
+	Da questo principio derivano alcune conseguenze fondamentali:
+	\begin{itemize}
+		\item l'algoritmo può essere pubblico,
+		\item la chiave deve essere segreta e sufficientemente lunga,
+		\item la sicurezza non deve basarsi sull'oscurità del metodo.
+	\end{itemize}
+	
+	\section{Sicurezza perfetta}
+	Shannon dimostrò che esiste una condizione di sicurezza perfetta, in cui il testo cifrato non fornisce alcuna informazione sul testo in chiaro. Un esempio teorico è il \emph{one-time pad}, nel quale la chiave è casuale, lunga quanto il messaggio e utilizzata una sola volta.
+	
+	\section{Limiti pratici}
+	Nonostante la sicurezza perfetta sia teoricamente possibile, nella pratica la gestione delle chiavi risulta complessa. Per questo motivo si preferiscono sistemi computazionalmente sicuri, nei quali confusione e diffusione giocano un ruolo centrale.
+	
+	\section{Conclusione}
+	I concetti di confusione, diffusione e il teorema di Shannon costituiscono le fondamenta teoriche della crittografia moderna e sono alla base dei sistemi di sicurezza utilizzati quotidianamente nelle comunicazioni digitali.
+	
+\end{document}
