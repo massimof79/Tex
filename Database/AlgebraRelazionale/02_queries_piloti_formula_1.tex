@@ -1,0 +1,87 @@
+\documentclass[a4paper,11pt]{article}
+
+\usepackage[italian]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\usepackage{enumitem}
+\usepackage{amsmath}
+
+\geometry{margin=2.5cm}
+
+\title{Esercizi di Algebra Relazionale\\Database Formula 1}
+\author{Prof. Fedeli Massimo - IIS Fermi Sacconi Cpia}
+\date{Tutti i diritti riservati}
+
+\begin{document}
+	\maketitle
+	
+	\section*{Schema del database}
+	
+	Il database contiene le seguenti relazioni:
+	
+	\begin{itemize}
+		\item \textbf{circuits}(\underline{circuitId}, name, location, country, lat, lng, alt)
+		\item \textbf{constructors}(\underline{constructorId}, name, nationality)
+		\item \textbf{drivers}(\underline{driverId}, forename, surname, dob, nationality)
+		\item \textbf{seasons}(\underline{year})
+		\item \textbf{status}(\underline{statusId}, status)
+		\item \textbf{gps}(\underline{gpId}, name)
+		\item \textbf{races}(\underline{raceId}, year, round, circuitId, gpId)
+		\item \textbf{results}(\underline{resultId}, raceId, driverId, constructorId, grid, positionOrder, points, statusId)
+	\end{itemize}
+	
+	\newpage
+	\section*{Esercizi}
+	
+	\subsection*{Livello 1 – Selezione e proiezione}
+	
+	\begin{enumerate}[label=\textbf{Q\arabic*.}]
+		\item Elencare il nome e la nazionalità di tutti i piloti.
+		\item Elencare i nomi di tutti i costruttori.
+		\item Elencare i circuiti situati in Italia.
+		\item Elencare i Gran Premi (gp) con il relativo identificativo.
+		\item Elencare gli anni in cui si è svolta almeno una stagione.
+	\end{enumerate}
+	
+	\subsection*{Livello 2 – Selezioni multiple e rinomina}
+	
+	\begin{enumerate}[resume, label=\textbf{Q\arabic*.}]
+		\item Elencare i piloti di nazionalità italiana.
+		\item Elencare i circuiti con altitudine superiore a 500 metri.
+		\item Elencare i risultati con punteggio maggiore di 10 punti.
+		\item Elencare i piloti nati dopo il 1° gennaio 1990.
+		\item Elencare i Gran Premi disputati in una specifica stagione (ad esempio 2020).
+	\end{enumerate}
+	
+	\subsection*{Livello 3 – Join semplici}
+	
+	\begin{enumerate}[resume, label=\textbf{Q\arabic*.}]
+		\item Elencare i piloti che hanno partecipato ad almeno una gara.
+		\item Elencare i nomi dei circuiti in cui si è disputata almeno una gara.
+		\item Elencare per ogni gara l’anno e il nome del Gran Premio.
+		\item Elencare i risultati con il nome e cognome del pilota.
+		\item Elencare i risultati con il nome del costruttore associato.
+	\end{enumerate}
+	
+	\subsection*{Livello 4 – Join multipli e condizioni}
+	
+	\begin{enumerate}[resume, label=\textbf{Q\arabic*.}]
+		\item Elencare i piloti che hanno ottenuto almeno un risultato con posizione finale uguale a 1.
+		\item Elencare le gare disputate su circuiti situati in Francia.
+		\item Elencare i piloti che hanno gareggiato per un costruttore di nazionalità britannica.
+		\item Elencare per ogni gara il circuito e il Gran Premio associato.
+		\item Elencare i piloti che hanno concluso una gara con stato ``Finished''.
+	\end{enumerate}
+	
+	\subsection*{Livello 5 – Query complesse}
+	
+	\begin{enumerate}[resume, label=\textbf{Q\arabic*.}]
+		\item Elencare i piloti che hanno partecipato a gare in più di una stagione.
+		\item Elencare i costruttori che hanno ottenuto almeno una vittoria.
+		\item Elencare i circuiti che hanno ospitato gare in anni diversi.
+		\item Elencare i piloti che non hanno mai ottenuto punti.
+		\item Elencare i piloti che hanno sempre concluso le gare a cui hanno partecipato.
+	\end{enumerate}
+	
+\end{document}

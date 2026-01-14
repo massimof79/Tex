@@ -1,0 +1,189 @@
+\documentclass[10pt]{beamer}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[italian]{babel}
+\usepackage{amsmath}
+\usepackage{graphicx}
+
+% Tema Beamer
+\usetheme{Madrid}
+\usecolortheme{seahorse}
+
+\title{Predizione del Rischio Cardiovascolare}
+\subtitle{Un approccio essenziale con Regressione Logistica}
+\author{Prof. Fedeli Massimo}
+\date{}
+
+\begin{document}
+	
+	%------------------------------------------------
+	\begin{frame}
+		\titlepage
+	\end{frame}
+	
+	%------------------------------------------------
+	\begin{frame}{Obiettivo del sistema}
+		L’algoritmo realizza un sistema di \textbf{Machine Learning supervisionato} per la predizione del rischio cardiovascolare.
+		
+		Obiettivo principale:
+		\begin{itemize}
+			\item classificare ogni paziente come \textbf{sano} o \textbf{a rischio}
+		\end{itemize}
+		
+		Il modello utilizzato è la \textbf{regressione logistica}, scelta per la sua semplicità e interpretabilità.
+	\end{frame}
+	
+	%------------------------------------------------
+	\begin{frame}{Dataset clinico}
+		Il sistema utilizza un dataset di pazienti reali contenente:
+		\begin{itemize}
+			\item dati anagrafici (età, sesso)
+			\item parametri clinici (pressione sanguigna, colesterolo)
+			\item risultati di test diagnostici
+		\end{itemize}
+		
+		I dati sono caricati da una sorgente online e organizzati in un \textbf{DataFrame}.
+	\end{frame}
+	
+	%------------------------------------------------
+	\begin{frame}{Gestione dei valori mancanti}
+		Nel dataset originale sono presenti valori mancanti indicati con un simbolo speciale.
+		
+		La procedura adottata è:
+		\begin{itemize}
+			\item conversione dei simboli in valori nulli
+			\item eliminazione delle osservazioni incomplete
+		\end{itemize}
+		
+		Questa scelta, seppur semplice, è adeguata a una versione didattica dell’algoritmo.
+	\end{frame}
+	
+	%------------------------------------------------
+	\begin{frame}{Definizione della variabile target}
+		La variabile di interesse rappresenta il grado di malattia cardiaca.
+		
+		Nel dataset originale:
+		\begin{itemize}
+			\item il livello di malattia è espresso con più valori interi
+		\end{itemize}
+		
+		L’algoritmo semplifica il problema trasformando il target in:
+		\begin{itemize}
+			\item 0 = assenza di malattia
+			\item 1 = presenza di malattia
+		\end{itemize}
+	\end{frame}
+	
+	%------------------------------------------------
+	\begin{frame}{Classificazione binaria}
+		Questa trasformazione consente di:
+		\begin{itemize}
+			\item ricondurre il problema a una \textbf{classificazione binaria}
+			\item rendere il modello più interpretabile
+			\item utilizzare in modo naturale la regressione logistica
+		\end{itemize}
+		
+		Il focus diventa la stima del rischio, non la gravità clinica.
+	\end{frame}
+	
+	%------------------------------------------------
+	\begin{frame}{Preparazione dei dati}
+		Il dataset viene suddiviso in:
+		\begin{itemize}
+			\item variabili di input (feature cliniche)
+			\item variabile di output (stato di salute)
+		\end{itemize}
+		
+		Successivamente i dati sono separati in:
+		\begin{itemize}
+			\item training set
+			\item test set
+		\end{itemize}
+	\end{frame}
+	
+	%------------------------------------------------
+	\begin{frame}{Suddivisione stratificata}
+		La suddivisione del dataset è \textbf{stratificata}.
+		
+		Questo significa che:
+		\begin{itemize}
+			\item la proporzione tra pazienti sani e malati è mantenuta
+			\item si evitano distorsioni nella valutazione del modello
+		\end{itemize}
+		
+		La valutazione risulta così più affidabile.
+	\end{frame}
+	
+	%------------------------------------------------
+	\begin{frame}{Standardizzazione delle variabili}
+		Le variabili cliniche hanno scale molto diverse:
+		\begin{itemize}
+			\item età in anni
+			\item valori di laboratorio
+			\item indicatori discreti
+		\end{itemize}
+		
+		Prima dell’addestramento viene applicata la \textbf{standardizzazione}.
+	\end{frame}
+	
+	%------------------------------------------------
+	\begin{frame}{Perché standardizzare}
+		La standardizzazione:
+		\begin{itemize}
+			\item centra le variabili sulla media
+			\item imposta deviazione standard unitaria
+			\item rende le feature confrontabili tra loro
+		\end{itemize}
+		
+		Questo passaggio è particolarmente importante per la regressione logistica, sensibile alle differenze di scala.
+	\end{frame}
+	
+	%------------------------------------------------
+	\begin{frame}{Regressione logistica}
+		La regressione logistica è un algoritmo di classificazione che:
+		\begin{itemize}
+			\item stima la probabilità di appartenenza alla classe “a rischio”
+			\item utilizza una funzione sigmoide
+		\end{itemize}
+		
+		Il risultato è una probabilità compresa tra 0 e 1.
+	\end{frame}
+	
+	%------------------------------------------------
+	\begin{frame}{Addestramento del modello}
+		Durante l’addestramento:
+		\begin{itemize}
+			\item il modello apprende dai dati di training
+			\item stima un peso per ciascuna variabile clinica
+		\end{itemize}
+		
+		I pesi rappresentano l’influenza di ogni fattore sul rischio cardiovascolare.
+	\end{frame}
+	
+	%------------------------------------------------
+	\begin{frame}{Valutazione del modello}
+		Il modello viene testato su pazienti mai visti in precedenza.
+		
+		Le previsioni sono confrontate con i valori reali per calcolare:
+		\begin{itemize}
+			\item \textbf{accuratezza}
+		\end{itemize}
+		
+		L’accuratezza indica la percentuale di classificazioni corrette.
+	\end{frame}
+	
+	%------------------------------------------------
+	\begin{frame}{Considerazioni finali}
+		L’accuratezza fornisce una prima valutazione dell’efficacia del sistema.
+		
+		Tuttavia:
+		\begin{itemize}
+			\item non esaurisce tutte le metriche clinicamente rilevanti
+			\item rappresenta un buon punto di partenza didattico
+		\end{itemize}
+		
+		Il modello è semplice, interpretabile e adatto a scopi formativi.
+	\end{frame}
+	
+\end{document}

@@ -1,0 +1,166 @@
+\documentclass[10pt]{beamer}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[italian]{babel}
+\usepackage{amsmath}
+\usepackage{graphicx}
+
+% Tema
+\usetheme{Madrid}
+\usecolortheme{seahorse}
+
+\title{Classificazione del Superamento dell'Esame}
+\subtitle{Un esempio con Albero Decisionale}
+\author{Prof. Fedeli Massimo}
+\date{ }
+
+\begin{document}
+	
+	%------------------------------------------------
+	\begin{frame}
+		\titlepage
+	\end{frame}
+	
+	%------------------------------------------------
+	\begin{frame}{Obiettivo del problema}
+		L’obiettivo è costruire un modello di \textbf{Machine Learning supervisionato} capace di prevedere l’esito di uno studente:
+		\begin{itemize}
+			\item \textbf{Promosso}
+			\item \textbf{Bocciato}
+		\end{itemize}
+		
+		La previsione si basa su tre variabili osservabili:
+		\begin{itemize}
+			\item Ore di studio settimanali
+			\item Percentuale di presenza alle lezioni
+			\item Voto medio annuale
+		\end{itemize}
+	\end{frame}
+	
+	%------------------------------------------------
+	\begin{frame}{Rappresentazione dei dati}
+		Ogni studente è rappresentato come un vettore numerico:
+		\[
+		X = [\text{ore\_studio}, \text{presenza}, \text{voto\_medio}]
+		\]
+		
+		L’etichetta associata è binaria:
+		\begin{itemize}
+			\item 1 = Promosso
+			\item 0 = Bocciato
+		\end{itemize}
+		
+		Il dataset contiene 20 esempi, ciascuno con caratteristiche e risultato noto.
+	\end{frame}
+	
+	%------------------------------------------------
+	\begin{frame}{Tipo di apprendimento}
+		Il problema rientra nell’\textbf{apprendimento supervisionato}:
+		\begin{itemize}
+			\item gli input sono noti
+			\item l’output corretto è fornito durante l’addestramento
+		\end{itemize}
+		
+		Il compito specifico è una \textbf{classificazione binaria}.
+	\end{frame}
+	
+	%------------------------------------------------
+	\begin{frame}{Suddivisione del dataset}
+		I dati vengono divisi in:
+		\begin{itemize}
+			\item \textbf{Training set (80\%)}: utilizzato per addestrare il modello
+			\item \textbf{Test set (20\%)}: utilizzato per valutare le prestazioni
+		\end{itemize}
+		
+		Questa separazione consente di stimare la capacità di generalizzazione del modello.
+	\end{frame}
+	
+	%------------------------------------------------
+	\begin{frame}{Scelta del modello}
+		Il modello utilizzato è un \textbf{Albero Decisionale}.
+		
+		Motivazioni principali:
+		\begin{itemize}
+			\item struttura basata su regole \textit{if--then}
+			\item elevata interpretabilità
+			\item adatto a dataset piccoli
+			\item coerente con il ragionamento umano e didattico
+		\end{itemize}
+	\end{frame}
+	
+	%------------------------------------------------
+	\begin{frame}{Come funziona un albero decisionale}
+		Un albero decisionale:
+		\begin{itemize}
+			\item seleziona la variabile più informativa a ogni nodo
+			\item suddivide i dati tramite soglie
+			\item riduce progressivamente l’impurità dei gruppi
+		\end{itemize}
+		
+		Ogni percorso dalla radice a una foglia rappresenta una regola decisionale.
+	\end{frame}
+	
+	%------------------------------------------------
+	\begin{frame}{Profondità massima dell’albero}
+		Nel modello è impostata una \textbf{profondità massima pari a 3}.
+		
+		Ciò significa:
+		\begin{itemize}
+			\item al massimo tre decisioni consecutive
+			\item modello semplice e leggibile
+			\item controllo del rischio di overfitting
+		\end{itemize}
+	\end{frame}
+	
+	%------------------------------------------------
+	\begin{frame}{Perché profondità 3}
+		Una profondità limitata:
+		\begin{itemize}
+			\item evita di adattarsi eccessivamente ai dati di training
+			\item migliora la generalizzazione
+			\item mantiene il modello coerente con il contesto educativo
+		\end{itemize}
+		
+		Tre livelli sono sufficienti per catturare relazioni significative senza perdere interpretabilità.
+	\end{frame}
+	
+	%------------------------------------------------
+	\begin{frame}{Valutazione del modello}
+		Il modello viene valutato confrontando:
+		\begin{itemize}
+			\item risultato reale
+			\item risultato previsto
+		\end{itemize}
+		
+		La metrica principale utilizzata è:
+		\begin{itemize}
+			\item \textbf{accuratezza} (percentuale di previsioni corrette)
+		\end{itemize}
+	\end{frame}
+	
+	%------------------------------------------------
+	\begin{frame}{Previsione su nuovi dati}
+		Una volta addestrato, il modello può essere utilizzato per:
+		\begin{itemize}
+			\item stimare l’esito di nuovi studenti
+			\item supportare decisioni didattiche
+			\item simulare scenari ipotetici
+		\end{itemize}
+		
+		Il processo decisionale rimane sempre spiegabile e tracciabile.
+	\end{frame}
+	
+	%------------------------------------------------
+	\begin{frame}{Conclusioni}
+		L’albero decisionale rappresenta una scelta:
+		\begin{itemize}
+			\item tecnicamente adeguata
+			\item didatticamente efficace
+			\item facilmente interpretabile
+		\end{itemize}
+		
+		La limitazione della profondità garantisce equilibrio tra semplicità, accuratezza e robustezza del modello.
+	\end{frame}
+	
+\end{document}

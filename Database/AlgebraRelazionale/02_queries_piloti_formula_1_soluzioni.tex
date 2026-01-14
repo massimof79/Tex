@@ -1,0 +1,113 @@
+\documentclass[a4paper,11pt]{article}
+
+\usepackage[italian]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\usepackage{amsmath}
+\usepackage{enumitem}
+
+\geometry{margin=2.5cm}
+
+\title{Soluzioni in Algebra Relazionale\\Database Formula 1}
+\author{Prof. Fedeli Massimo}
+\date{}
+
+\begin{document}
+	\maketitle
+	
+	\section*{Notazione}
+	\begin{itemize}
+		\item $\sigma$ : selezione
+		\item $\pi$ : proiezione
+		\item $\bowtie$ : join naturale o condizionato
+		\item $-$ : differenza insiemistica
+	\end{itemize}
+	
+	\section*{Soluzioni}
+	
+	\subsection*{Livello 1}
+	
+	\begin{enumerate}[label=\textbf{Q\arabic*.}]
+		\item $\pi_{forename, surname, nationality}(drivers)$
+		\item $\pi_{name}(constructors)$
+		\item $\pi_{name}(\sigma_{country='Italy'}(circuits))$
+		\item $\pi_{gpId, name}(gps)$
+		\item $\pi_{year}(seasons)$
+	\end{enumerate}
+	
+	\subsection*{Livello 2}
+	
+	\begin{enumerate}[resume, label=\textbf{Q\arabic*.}]
+		\item $\pi_{forename, surname}(\sigma_{nationality='Italian'}(drivers))$
+		\item $\pi_{name}(\sigma_{alt > 500}(circuits))$
+		\item $\sigma_{points > 10}(results)$
+		\item $\pi_{forename, surname}(\sigma_{dob > '1990-01-01'}(drivers))$
+		\item $\pi_{raceId}(\sigma_{year = 2020}(races))$
+	\end{enumerate}
+	
+	\subsection*{Livello 3}
+	
+	\begin{enumerate}[resume, label=\textbf{Q\arabic*.}]
+		\item $\pi_{driverId, forename, surname}(drivers \bowtie results)$
+		
+		\item $\pi_{name}(circuits \bowtie races)$
+		
+		\item $\pi_{year, name}(races \bowtie gps)$
+		
+		\item $\pi_{forename, surname, raceId, points}
+		(drivers \bowtie results)$
+		
+		\item $\pi_{name, raceId, points}
+		(constructors \bowtie results)$
+	\end{enumerate}
+	
+	\subsection*{Livello 4}
+	
+	\begin{enumerate}[resume, label=\textbf{Q\arabic*.}]
+		\item $\pi_{forename, surname}
+		(\sigma_{positionOrder = 1}(drivers \bowtie results))$
+		
+		\item $\pi_{raceId}
+		((races \bowtie circuits)
+		\bowtie \sigma_{country='France'}(circuits))$
+		
+		\item $\pi_{forename, surname}
+		((drivers \bowtie results)
+		\bowtie \sigma_{nationality='British'}(constructors))$
+		
+		\item $\pi_{raceId, name, location}
+		((races \bowtie circuits) \bowtie gps)$
+		
+		\item $\pi_{forename, surname}
+		((drivers \bowtie results)
+		\bowtie \sigma_{status='Finished'}(status))$
+	\end{enumerate}
+	
+	\subsection*{Livello 5}
+	
+	\begin{enumerate}[resume, label=\textbf{Q\arabic*.}]
+		\item $\pi_{driverId}(results \bowtie races)
+		- \pi_{driverId}
+		(\sigma_{year = y}(results \bowtie races))$
+		
+		(dove $y$ è una stagione fissata)
+		
+		\item $\pi_{name}
+		(\sigma_{positionOrder = 1}
+		(constructors \bowtie results))$
+		
+		\item $\pi_{circuitId}(races)
+		- \pi_{circuitId}
+		(\sigma_{year = y}(races))$
+		
+		\item $\pi_{driverId}(drivers)
+		- \pi_{driverId}(\sigma_{points > 0}(results))$
+		
+		\item $\pi_{driverId}(results)
+		- \pi_{driverId}
+		((results \bowtie status)
+		\sigma_{status \neq 'Finished'})$
+	\end{enumerate}
+	
+\end{document}

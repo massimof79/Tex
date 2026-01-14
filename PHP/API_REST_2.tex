@@ -11,6 +11,10 @@
 \usepackage{graphicx}
 \usepackage{tikz}
 \usepackage{url}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{listings}
+\usepackage{xcolor}
 \usetikzlibrary{arrows.meta, positioning, shapes.geometric}
 
 % Stile per il codice
@@ -50,10 +54,7 @@
 	
 	\frame{\titlepage}
 	
-	% -----------------------------
-	% INDICE
-	% -----------------------------
-	
+
 	\begin{frame}{Indice}
 		\tableofcontents
 	\end{frame}
@@ -64,7 +65,7 @@
 	
 	\section{Introduzione alle API}
 	
-	\begin{frame}{Cos'è un'API?}
+	\begin{frame}{Cos'è un API?}
 		\begin{itemize}
 			\item \textbf{API} = \textit{Application Programming Interface} \\
 			È un'interfaccia software che definisce le regole con cui due componenti software possono interagire.
@@ -86,20 +87,60 @@
 		\end{itemize}
 	\end{frame}
 	
-	\begin{frame}{Web API}
-		\begin{center}
-			\begin{tikzpicture}[node distance=1.5cm]
-				\node (client) [draw, rectangle] {Client};
-				\node (api) [draw, rectangle, right of=client, xshift=2cm] {API Web};
-				\node (db) [draw, cylinder, shape border rotate=90, aspect=0.3, below of=api, yshift=-1cm] {Database};
-				
-				\draw[->, thick] (client) -- node[above]{HTTP Request} (api);
-				\draw[->, thick] (api) -- node[right]{Query} (db);
-				\draw[->, thick] (db) -- node[left]{Dati} (api);
-				\draw[->, thick] (api) -- node[below]{HTTP Response} (client);
-			\end{tikzpicture}
-		\end{center}
+	\begin{frame}{Cos'è GraphQL?}
+		\begin{itemize}
+			\item \textbf{GraphQL} è un linguaggio di query sviluppato da Facebook per le API.
+			\item Consente ai client di richiedere \textbf{solo i dati necessari}, riducendo over-fetching e under-fetching.
+			\item Fornisce un’unica endpoint (es. \texttt{/graphql}) per interrogare o modificare i dati.
+			\item Schema-typed: il server definisce un \textbf{schema} che descrive tutti i dati disponibili.
+		\end{itemize}
+		
+		\vspace{0.3cm}
+		\textbf{Vantaggi principali:}
+		\begin{itemize}
+			\item Flessibilità nelle richieste
+			\item Documentazione automatica (introspezione)
+			\item Evoluzione dell’API senza versioning
+		\end{itemize}
 	\end{frame}
+	
+
+	
+	\begin{frame}{Cosa sono i verbi HTTP?}
+		I \textbf{verbi HTTP} (o \textit{metodi}) indicano l’azione che il client vuole eseguire su una risorsa nel protocollo HTTP.
+		
+		\vspace{0.4cm}
+		I principali verbi sono:
+		\begin{itemize}
+			\item \texttt{GET} – richiede dati da una risorsa (lettura)
+			\item \texttt{POST} – invia dati per creare una nuova risorsa
+			\item \texttt{PUT} – aggiorna completamente una risorsa esistente
+			\item \texttt{PATCH} – aggiorna parzialmente una risorsa
+			\item \texttt{DELETE} – elimina una risorsa
+		\end{itemize}
+		
+		\vspace{0.3cm}
+		\textbf{Caratteristiche chiave:}
+		\begin{itemize}
+			\item \textit{Idempotenza}: applicare più volte lo stesso verbo ha lo stesso effetto (es. \texttt{GET}, \texttt{PUT}, \texttt{DELETE})
+			\item \textit{Sicurezza}: un verbo è “sicuro” se non modifica lo stato del server (solo \texttt{GET} e \texttt{HEAD})
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}{Confronto tra i verbi principali}
+	
+		\vspace{0.2cm}
+		\begin{exampleblock}{Esempio REST}
+			\begin{itemize}
+				\item \texttt{GET /users} → elenco utenti
+				\item \texttt{POST /users} → crea nuovo utente
+				\item \texttt{PUT /users/5} → sostituisce l utente 5
+				\item \texttt{DELETE /users/5} → cancella l utente 5
+			\end{itemize}
+		\end{exampleblock}
+	\end{frame}
+	
+
 	
 	\begin{frame}{Perché non connettersi direttamente al database?}
 		\begin{itemize}
@@ -192,6 +233,23 @@
 			\textbf{Svantaggi}: Complessità, difficoltà di scalabilità
 		\end{block}
 	\end{frame}
+	
+	\begin{frame}{Stateful vs Stateless — Il principio di REST}
+		\begin{block}{\textbf{Stateless (senza stato)}}
+			\begin{itemize}
+				\item Ogni richiesta del client al server deve contenere \textbf{tutte le informazioni necessarie} per elaborarla.
+				\item Il server \textbf{non memorizza lo stato della sessione} tra una richiesta e l’altra.
+				\item Esempio: REST API — ogni chiamata è autonoma (es. con token di autenticazione nell’header).
+			\end{itemize}
+			…\vspace{0.3cm}
+			\begin{alertblock}{Perché REST è stateless?}
+				\begin{itemize}
+					\item Migliore scalabilità (nessun dato di sessione da gestire)
+					\item Maggiore affidabilità e semplificazione del server
+					\item Ogni richiesta è indipendente → più facile da testare e cacheare
+				\end{itemize}
+			\end{alertblock}
+		\end{frame}
 	
 	\begin{frame}{Risorse e URI}
 		\begin{itemize}

@@ -1,0 +1,349 @@
+\textbackslash{}documentclass[10pt]\{beamer\}
+
+\% -------------------------------------------------
+\% Pacchetti base
+\% -------------------------------------------------
+\textbackslash{}usepackage[utf8]\{inputenc\}
+\textbackslash{}usepackage[T1]\{fontenc\}
+\textbackslash{}usepackage[italian]\{babel\}
+
+\textbackslash{}usepackage\{listings\}
+\textbackslash{}usepackage\{xcolor\}
+\textbackslash{}usepackage\{graphicx\}
+\textbackslash{}usepackage\{tikz\}
+\textbackslash{}usepackage\{hyperref\}
+
+\textbackslash{}usetikzlibrary\{shapes,arrows,positioning\}
+
+\% -------------------------------------------------
+\% Tema Beamer
+\% -------------------------------------------------
+\textbackslash{}usetheme\{Madrid\}
+\textbackslash{}usecolortheme\{seahorse\}
+
+\% -------------------------------------------------
+\% Impostazioni per il codice PHP
+\% -------------------------------------------------
+\% -------------------------------------------------
+\% LISTINGS: configurazione PHP a prova di studente
+\% -------------------------------------------------
+\textbackslash{}lstdefinestyle\{php\}\{
+language=PHP,
+basicstyle=\textbackslash{}ttfamily\textbackslash{}small,
+keywordstyle=\textbackslash{}color\{blue\}\textbackslash{}bfseries,
+commentstyle=\textbackslash{}color\{green!50!black\}\textbackslash{}itshape,
+stringstyle=\textbackslash{}color\{red!70!black\},
+showstringspaces=false,
+breaklines=true,
+breakatwhitespace=true,
+frame=single,
+backgroundcolor=\textbackslash{}color\{gray!5\},
+numbers=left,
+numberstyle=\textbackslash{}tiny\textbackslash{}color\{gray\},
+stepnumber=1,
+tabsize=2,
+keepspaces=true,
+columns=fullflexible,
+mathescape=false,      \% ignora \$
+texcl=false,           \% ignora commenti TeX
+escapeinside=\{(*@\}\{@*)\} \% eventuale escape manuale
+\}
+
+
+
+\textbackslash{}title\{Funzioni del Linguaggio PHP\}
+\textbackslash{}subtitle\{Guida per studenti del quinto anno\}
+\textbackslash{}author\{Prof. Fedeli Massimo\textbackslash{}\textbackslash{}IIS E. Fermi -- Sacconi Ceci\textbackslash{}\textbackslash{}Ascoli Piceno\}
+\textbackslash{}date\{Tutti i diritti riservati\}
+
+\% -------------------------------------------------
+\% Documento
+\% -------------------------------------------------
+\textbackslash{}begin\{document\}
+
+\textbackslash{}begin\{frame\}
+\textbackslash{}titlepage
+\textbackslash{}end\{frame\}
+
+\% -----------------------------------
+\% SLIDE 1: Introduzione
+\% -----------------------------------
+\textbackslash{}begin\{frame\}\{Benvenuti nel mondo di PHP\}
+PHP è come una cassetta degli attrezzi per sviluppatori web: contiene tutto ciò che serve per costruire siti dinamici e interattivi.
+
+\textbackslash{}vspace\{0.5cm\}
+
+Oggi esploreremo insieme le \textbackslash{}textbf\{funzioni predefinite\} di PHP, strumenti già pronti che ci risparmiano ore di lavoro e ci permettono di concentrarci sulla logica dell’applicazione.
+
+\textbackslash{}vspace\{0.5cm\}
+
+\textbackslash{}begin\{center\}
+\textbackslash{}textit\{``Perché reinventare la ruota quando PHP ce l’ha già pronta?''\}
+\textbackslash{}end\{center\}
+\textbackslash{}end\{frame\}
+
+\% -----------------------------------
+\% SLIDE 2: Librerie e Funzioni
+\% -----------------------------------
+\textbackslash{}begin\{frame\}\{Il tesoro nascosto: le librerie PHP\}
+Immaginate di dover scrivere da zero il codice per ordinare una lista di nomi o per calcolare quanti giorni mancano al vostro compleanno. Sarebbe lungo e complicato.
+
+\textbackslash{}vspace\{0.3cm\}
+
+PHP mette a disposizione \textbackslash{}textbf\{migliaia di funzioni\} pronte all’uso per:
+\textbackslash{}begin\{itemize\}
+\textbackslash{}item Gestire variabili e verificarne l’esistenza
+\textbackslash{}item Manipolare array
+\textbackslash{}item Elaborare stringhe di testo
+\textbackslash{}item Eseguire calcoli matematici
+\textbackslash{}item Gestire date e orari
+\textbackslash{}item Interagire con file, database e immagini
+\textbackslash{}end\{itemize\}
+
+\textbackslash{}vspace\{0.3cm\}
+
+Il nostro compito è imparare a conoscerle e usarle correttamente.
+\textbackslash{}end\{frame\}
+
+\% -----------------------------------
+\% SLIDE 3: Variabili
+\% -----------------------------------
+\textbackslash{}begin\{frame\}\{Tenere sotto controllo le variabili\}
+PHP fornisce alcune funzioni fondamentali:
+
+\textbackslash{}begin\{itemize\}
+\textbackslash{}item \textbackslash{}texttt\{isset(\textbackslash{}\$var)\} – verifica se la variabile esiste
+\textbackslash{}item \textbackslash{}texttt\{empty(\textbackslash{}\$var)\} – verifica se è vuota
+\textbackslash{}item \textbackslash{}texttt\{unset(\textbackslash{}\$var)\} – elimina la variabile
+\textbackslash{}end\{itemize\}
+
+\textbackslash{}begin\{lstlisting\}
+\$nome = ``Mario'';
+if (isset(\$nome)) \{
+echo ``Benvenuto, \$nome!'';
+\} else \{
+echo ``Nome non definito!'';
+\}
+\textbackslash{}end\{lstlisting\}
+\textbackslash{}end\{frame\}
+
+\% -----------------------------------
+\% SLIDE 4: Operatore ??
+\% -----------------------------------
+\textbackslash{}begin\{frame\}\{L’operatore ?? (null coalescing)\}
+Prima di PHP 7:
+
+\textbackslash{}begin\{lstlisting\}
+\$utente = isset(\$\_GET['nome']) ? \$\_GET['nome'] : 'Ospite';
+\textbackslash{}end\{lstlisting\}
+
+Con PHP 7 e successivi:
+
+\textbackslash{}begin\{lstlisting\}
+\$utente = \$\_GET['nome'] ?? 'Ospite';
+\textbackslash{}end\{lstlisting\}
+\textbackslash{}end\{frame\}
+
+\% -----------------------------------
+\% SLIDE 5: Array
+\% -----------------------------------
+\textbackslash{}begin\{frame\}\{Gli array\}
+Un array è un contenitore che può memorizzare più valori.
+
+\textbackslash{}begin\{itemize\}
+\textbackslash{}item \textbackslash{}texttt\{count()\}
+\textbackslash{}item \textbackslash{}texttt\{array\textbackslash{}\_push()\}
+\textbackslash{}item \textbackslash{}texttt\{sort()\}
+\textbackslash{}item \textbackslash{}texttt\{array\textbackslash{}\_keys()\}, \textbackslash{}texttt\{array\textbackslash{}\_values()\}
+\textbackslash{}end\{itemize\}
+\textbackslash{}end\{frame\}
+
+\% -----------------------------------
+\% SLIDE 6: Array – Esempio
+\% -----------------------------------
+\textbackslash{}begin\{frame\}\{Esempio di array\}
+\textbackslash{}begin\{lstlisting\}
+\$frutti = [``mela'', ``banana'', ``arancia''];
+array\_push(\$frutti, ``kiwi'');
+sort(\$frutti);
+print\_r(\$frutti);
+\textbackslash{}end\{lstlisting\}
+\textbackslash{}end\{frame\}
+
+\% -----------------------------------
+\% SLIDE 7: Array associativi
+\% -----------------------------------
+\textbackslash{}begin\{frame\}\{Array associativi\}
+\textbackslash{}begin\{lstlisting\}
+\$persona = [
+``nome'' => ``Luca'',
+``eta'' => 17,
+``classe'' => ``5B'',
+``citta'' => ``Ascoli Piceno''
+];
+
+echo ``Ciao '' . \$persona[``nome''] . ``!'';
+\textbackslash{}end\{lstlisting\}
+\textbackslash{}end\{frame\}
+
+\% -----------------------------------
+\% SLIDE 8: Date e ora
+\% -----------------------------------
+\textbackslash{}begin\{frame\}\{Gestire date e orari\}
+\textbackslash{}begin\{itemize\}
+\textbackslash{}item \textbackslash{}texttt\{date()\}
+\textbackslash{}item \textbackslash{}texttt\{time()\}
+\textbackslash{}item \textbackslash{}texttt\{strtotime()\}
+\textbackslash{}end\{itemize\}
+\textbackslash{}end\{frame\}
+
+\% -----------------------------------
+\% SLIDE 9: Date – Esempi
+\% -----------------------------------
+\textbackslash{}begin\{frame\}\{Esempi di formattazione\}
+\textbackslash{}begin\{lstlisting\}
+echo date(``d/m/Y'');
+echo date(``H:i:s'');
+\textbackslash{}end\{lstlisting\}
+\textbackslash{}end\{frame\}
+
+\% -----------------------------------
+\% SLIDE 10: Calcolo età
+\% -----------------------------------
+\textbackslash{}begin\{frame\}\{Calcolo dell’età\}
+\textbackslash{}begin\{lstlisting\}
+\$data\_nascita = ``2008-05-20'';
+\$oggi = new DateTime();
+\$nascita = new DateTime(\$data\_nascita);
+\$eta = \$oggi->diff(\$nascita)->y;
+echo ``Hai \$eta anni.'';
+\textbackslash{}end\{lstlisting\}
+\textbackslash{}end\{frame\}
+
+\% -----------------------------------
+\% SLIDE 11: Stringhe
+\% -----------------------------------
+\textbackslash{}begin\{frame\}\{Funzioni per le stringhe\}
+\textbackslash{}begin\{itemize\}
+\textbackslash{}item \textbackslash{}texttt\{strlen()\}
+\textbackslash{}item \textbackslash{}texttt\{strpos()\}
+\textbackslash{}item \textbackslash{}texttt\{str\textbackslash{}\_replace()\}
+\textbackslash{}item \textbackslash{}texttt\{strtolower()\}, \textbackslash{}texttt\{strtoupper()\}
+\textbackslash{}item \textbackslash{}texttt\{trim()\}
+\textbackslash{}item \textbackslash{}texttt\{substr()\}
+\textbackslash{}end\{itemize\}
+\textbackslash{}end\{frame\}
+
+\% -----------------------------------
+\% SLIDE 12: Stringhe – Esempio
+\% -----------------------------------
+\textbackslash{}begin\{frame\}\{Pulizia del testo\}
+\textbackslash{}begin\{lstlisting\}
+\$testo = ``  Benvenuti su PHP!  '';
+\$testo = trim(\$testo);
+\$testo = strtolower(\$testo);
+echo strlen(\$testo);
+\textbackslash{}end\{lstlisting\}
+\textbackslash{}end\{frame\}
+
+\% -----------------------------------
+\% SLIDE 13: Sicurezza
+\% -----------------------------------
+\textbackslash{}begin\{frame\}\{Protezione da XSS\}
+\textbackslash{}begin\{lstlisting\}
+\$input = ``<script>alert('Attacco');</script>'';
+echo htmlspecialchars(\$input);
+\textbackslash{}end\{lstlisting\}
+
+\textbackslash{}begin\{alertblock\}\{Regola fondamentale\}
+Non fidarti mai dell’input dell’utente.
+\textbackslash{}end\{alertblock\}
+\textbackslash{}end\{frame\}
+
+\% -----------------------------------
+\% SLIDE 14: Concatenazione
+\% -----------------------------------
+\textbackslash{}begin\{frame\}\{Concatenazione di stringhe\}
+\textbackslash{}begin\{lstlisting\}
+\$nome = ``Giulia'';
+echo ``Ciao, '' . \$nome . ``!'';
+echo ``Ciao, \$nome!'';
+\textbackslash{}end\{lstlisting\}
+\textbackslash{}end\{frame\}
+
+\% -----------------------------------
+\% SLIDE 15: Numeri
+\% -----------------------------------
+\textbackslash{}begin\{frame\}\{Funzioni matematiche\}
+\textbackslash{}begin\{itemize\}
+\textbackslash{}item \textbackslash{}texttt\{round()\}
+\textbackslash{}item \textbackslash{}texttt\{floor()\}
+\textbackslash{}item \textbackslash{}texttt\{ceil()\}
+\textbackslash{}item \textbackslash{}texttt\{rand()\}
+\textbackslash{}item \textbackslash{}texttt\{sqrt()\}
+\textbackslash{}item \textbackslash{}texttt\{number\textbackslash{}\_format()\}
+\textbackslash{}end\{itemize\}
+\textbackslash{}end\{frame\}
+
+\% -----------------------------------
+\% SLIDE 16: Numeri – Esempio
+\% -----------------------------------
+\textbackslash{}begin\{frame\}\{Esempio numerico\}
+\textbackslash{}begin\{lstlisting\}
+\$valore = 3.789;
+echo number\_format(\$valore, 2, ',', '.');
+\textbackslash{}end\{lstlisting\}
+\textbackslash{}end\{frame\}
+
+\% -----------------------------------
+\% SLIDE 17: Conversione tipi
+\% -----------------------------------
+\textbackslash{}begin\{frame\}\{Conversione dei tipi\}
+\textbackslash{}begin\{lstlisting\}
+\$numero = ``123'';
+\$intero = (int)\$numero;
+echo \$intero + 10;
+\textbackslash{}end\{lstlisting\}
+\textbackslash{}end\{frame\}
+
+\% -----------------------------------
+\% SLIDE 18: Esercizio
+\% -----------------------------------
+\textbackslash{}begin\{frame\}\{Esercizio completo\}
+\textbackslash{}begin\{lstlisting\}
+\$nome = \$\_GET['nome'] ?? 'Anonimo';
+\$anno = \$\_GET['anno'] ?? 2008;
+\$eta = date('Y') - \$anno;
+echo ``Ciao \$nome, hai circa \$eta anni.'';
+\textbackslash{}end\{lstlisting\}
+\textbackslash{}end\{frame\}
+
+\% -----------------------------------
+\% SLIDE 19: Conclusione
+\% -----------------------------------
+\textbackslash{}begin\{frame\}\{Conclusione\}
+\textbackslash{}begin\{itemize\}
+\textbackslash{}item Variabili
+\textbackslash{}item Array
+\textbackslash{}item Stringhe
+\textbackslash{}item Date
+\textbackslash{}item Sicurezza
+\textbackslash{}end\{itemize\}
+
+\textbackslash{}begin\{center\}
+\textbackslash{}Large Pratica costante = competenza reale
+\textbackslash{}end\{center\}
+\textbackslash{}end\{frame\}
+
+\% -----------------------------------
+\% SLIDE 20: Risorse
+\% -----------------------------------
+\textbackslash{}begin\{frame\}\{Risorse utili\}
+\textbackslash{}begin\{itemize\}
+\textbackslash{}item \textbackslash{}url\{https://www.php.net/manual/it/\}
+\textbackslash{}item \textbackslash{}url\{https://www.w3schools.com/php/\}
+\textbackslash{}item \textbackslash{}url\{https://phptherightway.com/\}
+\textbackslash{}end\{itemize\}
+\textbackslash{}end\{frame\}
+
+\textbackslash{}end\{document\}

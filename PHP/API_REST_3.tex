@@ -1,4 +1,4 @@
-\documentclass[10pt]{beamer}
+.\documentclass[10pt]{beamer}
 \usetheme{Madrid}
 \usecolortheme{seahorse}
 
@@ -24,9 +24,9 @@
 
 \title{Introduzione alle API REST, MVC e Sicurezza Web}
 \subtitle{Per studenti della scuola secondaria di secondo grado}
-\author{Prof. Fedeli Massimo}
+\author{Prof. [Il tuo nome]}
 \date{\today}
-\institute{IIS Fermi Sacconi Cpia}
+\institute{Scuola Secondaria di II Grado}
 
 \begin{document}
 	
@@ -115,7 +115,16 @@
 			\item I dati sono spesso in formato \textbf{JSON}
 		\end{itemize}
 		
-	
+		\pause
+		\bigskip
+		Esempio di risposta:
+		\begin{lstlisting}
+			{
+				"nome": "Mario",
+				"cognome": "Rossi",
+				"eta": 17
+			}
+		\end{lstlisting}
 	\end{frame}
 	
 	\begin{frame}{REST: uno stile per le Web API}
@@ -195,7 +204,7 @@
 	\end{frame}
 	
 	\begin{frame}{Esempio di richiesta POST (Create)}
-		\begin{lstlisting}[language=json,caption={Richiesta per creare un nuovo libro}]
+		\begin{lstlisting}[caption={Richiesta per creare un nuovo libro}]
 			POST /libri
 			Content-Type: application/json
 			
@@ -209,7 +218,7 @@
 		\pause
 		\bigskip
 		Il server risponde con:
-		\begin{lstlisting}[language=json]
+		\begin{lstlisting}
 			{
 				"id": 101,
 				"titolo": "Dune",
@@ -361,7 +370,7 @@
 		\pause
 		\bigskip
 		Esempio SOAP (semplificato):
-		\begin{lstlisting}[language=xml]
+		\begin{lstlisting}
 			<soap:Envelope>
 			<soap:Body>
 			<GetUser><id>123</id></GetUser>

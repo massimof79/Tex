@@ -1,0 +1,130 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[italian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\usepackage{amsmath}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{enumitem}
+
+\geometry{margin=2.5cm}
+\title{Introduzione agli Array e all'Ordinamento Naïve}
+\author{Prof. Fedeli Massimo - IIS Fermi Sacconi Cpia}
+\date{}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+	backgroundcolor=\color{backcolour},
+	commentstyle=\color{codegreen},
+	keywordstyle=\color{magenta},
+	numberstyle=\tiny\color{codegray},
+	stringstyle=\color{codepurple},
+	basicstyle=\ttfamily\footnotesize,
+	breakatwhitespace=false,
+	breaklines=true,
+	captionpos=b,
+	keepspaces=true,
+	numbers=left,
+	numbersep=5pt,
+	showspaces=false,
+	showstringspaces=false,
+	showtabs=false,
+	tabsize=2
+}
+
+\lstset{style=mystyle}
+
+\begin{document}
+	
+	\maketitle
+	
+	\section*{Cos’è un array?}
+	
+	Immagina di dover memorizzare i voti di una classe in informatica: ad esempio, i voti di cinque studenti sono 7, 5, 9, 6, 8. Potresti usare cinque variabili diverse, tipo \texttt{voto1}, \texttt{voto2}, ecc., ma questo diventa scomodo se i voti sono centinaia.  
+	
+	Un \textbf{array} (in italiano “vettore” o “tabella”) è una struttura dati che permette di conservare molti valori dello stesso tipo in un’unica variabile, accessibili tramite un \textbf{indice}.  
+	
+	In pratica, un array è come una fila di cassetti numerati: ogni cassetto contiene un valore, e puoi aprire il cassetto numero 0, 1, 2, ecc. per leggere o modificare il contenuto.
+	
+	\subsection*{Esempio pratico}
+	
+	Supponiamo di avere un array chiamato \texttt{voti} con i seguenti elementi:
+	
+	\begin{center}
+		\begin{tabular}{|c|c|c|c|c|c|}
+			\hline
+			Indice & 0 & 1 & 2 & 3 & 4 \\
+			\hline
+			Valore & 7 & 5 & 9 & 6 & 8 \\
+			\hline
+		\end{tabular}
+	\end{center}
+	
+	Per accedere al terzo voto (cioè al numero 9), scriviamo \texttt{voti[2]}, perché in informatica si parte a contare da zero!
+	
+	Gli array sono utili perché:
+	\begin{itemize}[left=0pt]
+		\item Consentono di gestire tanti dati con un solo nome.
+		\item Permettono di scorrere tutti gli elementi con un ciclo (\texttt{for}).
+		\item Sono la base per molti algoritmi, come quelli di ricerca e ordinamento.
+	\end{itemize}
+	
+	\section*{Ordinamento “naïve” (o “a forza bruta”)}
+	
+	A volte vogliamo riordinare i valori di un array, ad esempio dal più piccolo al più grande (ordine crescente). Esistono tanti algoritmi per farlo; uno dei più semplici — anche se non il più efficiente — è l’\textbf{ordinamento naïve}, detto anche “ordinamento per confronto esaustivo”.
+	
+	L’idea è questa: confrontiamo ogni elemento con tutti gli altri, e ogni volta che troviamo un elemento più piccolo, li scambiamo di posto.
+	
+	\subsection*{Come funziona passo dopo passo}
+	
+	Prendiamo l’array: \texttt{[7, 5, 9, 6, 8]}.
+	
+	\begin{enumerate}[left=0pt]
+		\item Partiamo dal primo elemento (7) e lo confrontiamo con tutti gli altri.
+		\item Se troviamo un numero più piccolo (es. 5), lo scambiamo con 7.
+		\item Ora l’array diventa \texttt{[5, 7, 9, 6, 8]}.
+		\item Poi passiamo al secondo elemento (7) e lo confrontiamo con i successivi (9, 6, 8).
+		\item Troviamo 6, che è più piccolo: scambiamo → \texttt{[5, 6, 9, 7, 8]}.
+		\item Continuiamo così fino alla fine.
+	\end{enumerate}
+	
+	Questo metodo assomiglia molto al famoso \textbf{Bubble Sort} (ordinamento a bolle), ma è ancora più diretto: non sfrutta alcuna ottimizzazione.
+	
+	\subsection*{Codice di esempio in Python}
+	
+	Ecco una versione semplice dell’algoritmo in Python:
+	
+	\begin{lstlisting}[language=Python, caption={Ordinamento naïve in Python}]
+		def ordina_naive(arr):
+		n = len(arr)
+		for i in range(n):
+		for j in range(i + 1, n):
+		if arr[i] > arr[j]:
+		# Scambia arr[i] e arr[j]
+		arr[i], arr[j] = arr[j], arr[i]
+		return arr
+		
+		# Esempio d'uso
+		voti = [7, 5, 9, 6, 8]
+		ordinati = ordina_naive(voti)
+		print(ordinati)  # Stampa: [5, 6, 7, 8, 9]
+	\end{lstlisting}
+	
+	\subsection*{Perché “naïve”?}
+	
+	Il termine “naïve” (ingenuo) indica che l’algoritmo fa il minimo indispensabile senza cercare scorciatoie. È facile da capire, ma non è veloce per array grandi: infatti, con $n$ elementi, deve fare circa $n^2$ confronti. Per 1000 numeri, servono quasi un milione di operazioni!
+	
+	Tuttavia, è un ottimo punto di partenza per imparare a ragionare sugli algoritmi.
+	
+	\section*{Conclusione}
+	
+	Gli array sono una delle strutture dati fondamentali in informatica: ti permettono di organizzare tanti dati in modo ordinato e accessibile. L’ordinamento naïve, pur essendo lento, è un algoritmo semplice che aiuta a comprendere come si possono manipolare gli array per ottenere risultati utili, come elenchi ordinati.
+	
+	Man mano che proseguirai nello studio dell’informatica, incontrerai algoritmi più efficienti (come il \textit{Merge Sort} o il \textit{Quick Sort}), ma ricorda: ogni grande edificio comincia dalle fondamenta!
+	
+\end{document}
