@@ -1,0 +1,477 @@
+%-----------------------------------------------------------
+% Circuiti Aritmetici Digitali – beamer replica
+%-----------------------------------------------------------
+\documentclass[aspectratio=169,xcolor={dvipsnames}]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[italian]{babel}
+\usepackage{booktabs,array,amsmath,amssymb}
+\usepackage{tikz}
+\usepackage{circuitikz}
+\usetikzlibrary{calc,positioning,arrows.meta}
+\usetheme{Madrid}
+\usecolortheme{crane}
+\setbeamertemplate{navigation symbols}{}
+
+\title{Circuiti Aritmetici Digitali}
+\subtitle{Sommatore e Comparatore}
+\author{Prof Fedeli Massimo}
+\date{\today}
+
+\begin{document}
+	
+	\begin{frame}
+		\titlepage
+	\end{frame}
+	
+	%-----------------------------------------------------------
+	\section{Fondamenti}
+	\begin{frame}{Circuiti Combinatori}
+		\begin{block}{Definizione}
+			Reti logiche in cui le uscite dipendono \textbf{solo} dai valori degli ingressi allo stesso istante:
+			\[
+			Y = f(X_1,X_2,\dots ,X_n)
+			\]
+		\end{block}
+		\begin{center}
+			\begin{tikzpicture}[scale=1.2]
+				\node[draw,minimum width=2.5cm,minimum height=1.2cm,rounded corners] (c) at (0,0) {CIRCUITO\\COMBINATORIO};
+				\foreach \i in {1,2,3} {
+					\draw[-{Stealth}] (-3,1.5-\i*0.6) -- (c.west) node[pos=0,left]{$X_\i$};
+				}
+				\node at (-3,1.5-4*0.6) {\vdots};
+				\foreach \j in {1,2,3} {
+					\draw[-{Stealth}] (c.east) -- (3,1.5-\j*0.6) node[pos=1,right]{$Y_\j$};
+				}
+				\node at (3,1.5-4*0.6) {\vdots};
+				\node[above left] at (c.north west) {$n$ ingressi};
+				\node[above right] at (c.north east) {$m$ uscite};
+			\end{tikzpicture}
+		\end{center}
+	\end{frame}
+	
+	\begin{frame}{Sistema Binario}
+		\begin{center}
+			\renewcommand{\arraystretch}{1.4}
+			\begin{tabular}{ccc}
+				\toprule
+				Addendi & Risultato & Carry\\
+				\midrule
+				0 + 0 = 0 & No carry\\
+				0 + 1 = 1 & No carry\\
+				1 + 0 = 1 & No carry\\
+				1 + 1 = 10 & Carry = 1\\
+				\bottomrule
+			\end{tabular}
+		\end{center}
+	\end{frame}
+	
+	%-----------------------------------------------------------
+	\section{Half Adder}
+	\begin{frame}{Half Adder – Definizione}
+		Circuito combinatorio che somma due bit \textbf{senza} ricevere riporto in ingresso.
+		\begin{columns}
+			\column{0.5\linewidth}
+			\textbf{Ingressi:}
+			\begin{itemize}
+				\item A: primo bit
+				\item B: secondo bit
+			\end{itemize}
+			\textbf{Uscite:}
+			\begin{itemize}
+				\item S: Somma (A ⊕ B)
+				\item C: Carry (A · B)
+			\end{itemize}
+			\column{0.5\linewidth}
+			\begin{center}
+				\begin{circuitikz}[scale=1]
+					\ctikzset{logic ports=ieee}
+					\node[and port] (and) at (2,0) {};
+					\node[xor port] (xor) at (2,2) {};
+					\draw
+					(0,2.5) node[left]{A} -- (xor.in 1)
+					(0,1.5) node[left]{B} -- (xor.in 2)
+					(xor.out) node[right]{S}
+					(0,0.5) -- (and.in 1)
+					(0,-0.5) -- (and.in 2)
+					(and.out) node[right]{C};
+					\draw (0,2.5) -- (0,-0.5);
+				\end{circuitikz}
+			\end{center}
+		\end{columns}
+	\end{frame}
+	
+	
+	
+	\begin{frame}{Half Adder – Ricavare le Funzioni Logiche}
+		\begin{columns}[T]
+			%--------------------- Colonna sinistra: tabella
+			\column{0.45\linewidth}
+			\begin{center}
+				\renewcommand{\arraystretch}{1.4}
+				\begin{tabular}{cccc}
+					\toprule
+					A & B & S & C\\
+					\midrule
+					0 & 0 & 0 & 0\\
+					0 & 1 & 1 & 0\\
+					1 & 0 & 1 & 0\\
+					1 & 1 & 0 & 1\\
+					\bottomrule
+				\end{tabular}
+			\end{center}
+			
+			%--------------------- Colonna destra: minimizzazione
+			\column{0.55\linewidth}
+			\textbf{1. Osserviamo S (Somma):}
+			\begin{itemize}
+				\item S=1 quando A≠B
+				\item È l'\textcolor{red}{XOR}:
+			\end{itemize}
+			\[
+			\boxed{S = A \oplus B}
+			\]
+			
+			\textbf{2. Osserviamo C (Carry):}
+			\begin{itemize}
+				\item C=1 solo quando A=1 \textbf{e} B=1
+				\item È l'\textcolor{red}{AND}:
+			\end{itemize}
+			\[
+			\boxed{C = A \cdot B}
+			\]
+		\end{columns}
+		
+		\vspace{0.8em}
+		\begin{block}{Risultato finale}
+			Con \textbf{una porta XOR} e \textbf{una porta AND} realizziamo l’Half Adder!
+		\end{block}
+	\end{frame}
+	
+	\begin{frame}{Half Adder – Dal Cartiglio al Circuito}
+		\begin{columns}[T]
+			%--------------------- Colonna sinistra: equazioni
+			\column{0.5\linewidth}
+			\textbf{Funzioni ricavate:}
+			\[
+			\boxed{S = A \oplus B}
+			\quad
+			\boxed{C = A \cdot B}
+			\]
+			
+			\textbf{Mappa porte:}
+			\begin{itemize}
+				\item 1 porta XOR → genera S
+				\item 1 porta AND → genera C
+			\end{itemize}
+			
+			\textbf{Collegamento:}
+			\begin{itemize}
+				\item stessi ingressi A, B
+				\item uscite separate
+			\end{itemize}
+			\column{0.5\linewidth}
+			%--------------------- Colonna destra: schema circuitale
+			\begin{center}
+				\begin{circuitikz}[scale=1.1]
+					\ctikzset{logic ports=ieee}
+					
+					% ingressi
+					\node (a) at (0,2) {\texttt{A}};
+					\node (b) at (0,0) {\texttt{B}};
+					
+					% porte
+					\node[xor port] (xor) at (3,2) {};
+					\node[and port] (and) at (3,0) {};
+					
+					% connessioni
+					\draw (a.east) -| (xor.in 1);
+					\draw (a.east) -| (and.in 1);
+					\draw (b.east) -| (xor.in 2);
+					\draw (b.east) -| (and.in 2);
+					
+					% uscite
+					\draw (xor.out) -- ++(0.7,0) node[right]{\textcolor{blue}{\texttt{S}}};
+					\draw (and.out) -- ++(0.7,0) node[right]{\textcolor{red}{\texttt{C}}};
+				\end{circuitikz}
+			\end{center}
+		\end{columns}
+		
+		\vfill
+		\begin{block}{In sintesi}
+			Disegniamo le porte richieste dalle equazioni, colleghiamo gli stessi segnali di ingresso e portiamo fuori le uscite: il circuito è fatto!
+		\end{block}
+	\end{frame}
+	
+	\begin{frame}{Full Adder – Come Funziona}
+		\begin{columns}[T]
+			%--------------------- Colonna sinistra: specifiche
+			\column{0.5\linewidth}
+			\textbf{Ingressi}
+			\begin{itemize}
+				\item A, B: i due bit da sommare
+				\item $C_{\text{in}}$: riporto \emph{in ingresso}
+			\end{itemize}
+			
+			\textbf{Uscite}
+			\begin{itemize}
+				\item S: somma (modulo 2)
+				\item $C_{\text{out}}$: riporto \emph{in uscita}
+			\end{itemize}
+			
+			\textbf{Equazioni}
+			\[
+			\boxed{S = A \oplus B \oplus C_{\text{in}}}
+			\]
+			\[
+			\boxed{C_{\text{out}} = AB + C_{\text{in}}(A \oplus B)}
+			\]
+			
+			\column{0.5\linewidth}
+				\vfill
+		\begin{block}{Chiave di lettura}
+			Il Full Adder \emph{include} l’eventuale riporto proveniente dal bit meno significativo: grazie a ciò possiamo concatenare più Full Adder per ottenere sommatori multi-bit.
+		\end{block}
+			\end{columns}
+		
+
+	\end{frame}
+	%-----------------------------------------------------------
+		\begin{frame}
+		\begin{itemize}
+				\item Il full adder (sommatore completo) è un circuito logico fondamentale dell’elettronica digitale che serve a sommare due bit tenendo conto del riporto in ingresso.
+					\item Più precisamente, il full adder prende in input tre segnali binari: il primo bit, il secondo bit e il riporto proveniente dalla somma precedente. In uscita produce due risultati: il bit di somma e il nuovo riporto verso lo stadio successivo.				
+					\item Questa caratteristica lo rende essenziale per costruire sommatore a più bit, come quelli presenti nelle ALU dei processori. Collegando in cascata più full adder, è possibile sommare numeri binari di qualsiasi lunghezza, propagando correttamente il riporto da un bit all’altro.
+					\item In sintesi, il full adder serve a eseguire la somma binaria in modo completo e scalabile, ed è uno dei mattoni di base dell’aritmetica digitale.	
+	\end{itemize}	contenuto...
+	\end{frame}
+	
+	\begin{frame}{Full Adder – Tabella di Verità}
+		\begin{center}
+			\renewcommand{\arraystretch}{1.2}
+			\begin{tabular}{ccccc}
+				\toprule
+				A & B & $C_{\text{in}}$ & S & $C_{\text{out}}$\\
+				\midrule
+				0 & 0 & 0 & 0 & 0\\
+				0 & 0 & 1 & 1 & 0\\
+				0 & 1 & 0 & 1 & 0\\
+				0 & 1 & 1 & 0 & 1\\
+				1 & 0 & 0 & 1 & 0\\
+				1 & 0 & 1 & 0 & 1\\
+				1 & 1 & 0 & 0 & 1\\
+				1 & 1 & 1 & 1 & 1\\
+				\bottomrule
+			\end{tabular}
+		\end{center}
+		La colonna S contiene la somma modulo 2 di A,B,C.  Se la somma determina il resto questo viene messo nella colonna Cout.
+	\end{frame}
+	
+	\begin{frame}{Full Adder – Dal Cartiglio al Circuito}
+		\begin{columns}[T]
+			\column{0.5\linewidth}
+			\textbf{Equazioni minimise}
+			\[
+			\boxed{S = A \oplus B \oplus C_{\text{in}}}
+			\]
+			\[
+			\boxed{C_{\text{out}} = AB + C_{\text{in}}(A \oplus B)}
+			\]
+			
+			\textbf{Mappa porte}
+			\begin{itemize}
+				\item 2 XOR (per S)
+				\item 2 AND + 1 OR (per $C_{\text{out}}$)
+			\end{itemize}
+			
+			\textbf{Procedura}
+			\begin{enumerate}
+				\item Disegnare i blocchi richiesti
+				\item Collegare A e B ai primi XOR/AND
+				\item Portare $C_{\text{in}}$ al secondo XOR e al secondo AND
+				\item Unire le uscite degli AND con l’OR
+			\end{enumerate}
+			
+			\column{0.5\linewidth}
+			\begin{center}
+				\begin{circuitikz}[scale=0.9]
+					\ctikzset{logic ports=ieee}
+					
+					% XOR
+					\node[xor port] (x1) at (1.5,3) {};
+					\node[xor port] (x2) at (4,3) {};
+					
+					% AND
+					\node[and port] (a1) at (1.5,1) {};
+					\node[and port] (a2) at (4,1) {};
+					
+					% OR
+					\node[or port]  (o)  at (6.5,1) {};
+					
+					% ingressi
+					\draw (x1.in 1) node[left]{A};
+					\draw (x1.in 2) node[left]{B};
+					\draw (0,2.2) node[left]{$C_{\text{in}}$} -| (x2.in 2);
+					
+					% collegamenti
+					\draw (x1.out) -- (x2.in 1);
+					\draw (x1.out) |- (a2.in 1);
+					\draw (0,2.2) |- (a2.in 2);
+					
+					\draw (x1.in 1) |- (a1.in 1);
+					\draw (x1.in 2) |- (a1.in 2);
+					
+					\draw (a1.out) -| (o.in 1);
+					\draw (a2.out) -| (o.in 2);
+					
+					% uscite
+					\draw (x2.out) -- ++(0.7,0) node[right]{\textcolor{blue}{S}};
+					\draw (o.out)  -- ++(0.7,0) node[right]{\textcolor{red}{$C_{\text{out}}$}};
+				\end{circuitikz}
+			\end{center}
+		\end{columns}
+		
+		\vfill
+		\begin{block}{In sintesi}
+			Dalle equazioni minimizzate → identifichiamo porte e connessioni → disegnamo il circuito gate-level.
+		\end{block}
+	\end{frame}
+	
+	\begin{frame}{Full Adder – Schema Gate-Level}
+		\begin{center}
+			\begin{circuitikz}[scale=1.1]
+				\ctikzset{logic ports=ieee}
+				
+				% ----- XOR -----
+				\node[xor port] (x1) at (1.5,3.5) {};
+				\node[xor port] (x2) at (4.5,3.5) {};
+				
+				% ----- AND -----
+				\node[and port] (a1) at (1.5,1.5) {};
+				\node[and port] (a2) at (4.5,1.5) {};
+				
+				% ----- OR ------
+				\node[or port]  (o)  at (7,1.5) {};
+				
+				% ----- ingressi -----
+				\draw (x1.in 1) node[left]{A};
+				\draw (x1.in 2) node[left]{B};
+				\draw (0,2.5) node[left]{$C_{\text{in}}$} -| (x2.in 2);
+				
+				% ----- collegamenti interni -----
+				\draw (x1.out) -- node[above,midway]{$A\oplus B$} (x2.in 1);
+				\draw (x1.out) |- (a2.in 1);
+				\draw (0,2.5) |- (a2.in 2);
+				
+				\draw (x1.in 1) |- (a1.in 1);
+				\draw (x1.in 2) |- (a1.in 2);
+				
+				\draw (a1.out) -| (o.in 1);
+				\draw (a2.out) -| (o.in 2);
+				
+				% ----- uscite -----
+				\draw (x2.out) -- ++(0.8,0) node[right]{\textcolor{blue}{S}};
+				\draw (o.out)  -- ++(0.8,0) node[right]{\textcolor{red}{$C_{\text{out}}$}};
+			\end{circuitikz}
+		\end{center}
+		
+		\vfill
+		\begin{block}{Riepilogo}
+			5 porte logiche realizzano il Full Adder: 2 XOR, 2 AND, 1 OR.  
+			Identico schema si ripete per ogni bit in un sommatore multi-bit.
+		\end{block}
+	\end{frame}
+	%-----------------------------------------------------------
+	\section{Comparatore}
+	\begin{frame}{Comparatore Binario – 1 bit}
+		Confronta due bit e restituisce tre uscite:
+		\begin{itemize}
+			\item $A > B$
+			\item $A = B$
+			\item $A < B$
+		\end{itemize}
+		\begin{center}
+			\renewcommand{\arraystretch}{1.2}
+			\begin{tabular}{ccccc}
+				\toprule
+				A & B & $A>B$ & $A=B$ & $A<B$\\
+				\midrule
+				0 & 0 & 0 & 1 & 0\\
+				0 & 1 & 0 & 0 & 1\\
+				1 & 0 & 1 & 0 & 0\\
+				1 & 1 & 0 & 1 & 0\\
+				\bottomrule
+			\end{tabular}
+		\end{center}
+		\begin{align*}
+			A = B &\;\Rightarrow\; \overline{A \oplus B}\\
+			A > B &\;\Rightarrow\; A \cdot \overline{B}\\
+			A < B &\;\Rightarrow\; \overline{A} \cdot B
+		\end{align*}
+	\end{frame}
+	
+	\begin{frame}{Comparatore a 4 bit – Algoritmo}
+		Confronto partendo dal MSB:
+		\begin{enumerate}
+			\item Confronta $A_3$ con $B_3$
+			\item Se diversi $\rightarrow$ risultato definito
+			\item Se uguali $\rightarrow$ passa al bit successivo
+		\end{enumerate}
+		\textbf{Esempio:}
+		\[
+		\begin{array}{c}
+			1011\;(11_{10})\\
+			1001\;(9_{10})
+		\end{array}
+		\;\Rightarrow\;
+		A > B
+		\]
+	\end{frame}
+	
+	\begin{frame}{Cascata di Comparatori}
+		\begin{center}
+			\begin{tikzpicture}[scale=0.9]
+				\node[draw,minimum width=2.2cm,minimum height=1cm,rounded corners] (c4) at (0,0) {74LS85\\4 bit};
+				\node[draw,minimum width=2.2cm,minimum height=1cm,rounded corners] (c4b) at (0,-2) {74LS85\\4 bit};
+				\draw[-{Stealth}] (-3,0.5) -- node[left]{A[7..4]} (c4.west);
+				\draw[-{Stealth}] (-3,0) -- node[left]{B[7..4]} (c4.west);
+				\draw[-{Stealth}] (-3,-1.5) -- node[left]{A[3..0]} (c4b.west);
+				\draw[-{Stealth}] (-3,-2) -- node[left]{B[3..0]} (c4b.west);
+				\draw[-{Stealth}] (c4b.east) -- (3,-2) node[right]{$>$, $=$, $<$};
+				\draw[-{Stealth}] (c4.east) -- (3,0) node[right]{$>$, $=$, $<$};
+				\draw (c4.south) -- (0,-0.5) |- (c4b.north west);
+			\end{tikzpicture}
+		\end{center}
+ 	\end{frame}
+	
+	%-----------------------------------------------------------
+	\section{Applicazioni}
+	\begin{frame}{Prestazioni ed Evoluzione}
+		\begin{columns}
+			\column{0.5\linewidth}
+			\textbf{Prestazioni tipiche}
+			\begin{itemize}
+				\item Ritardo: 10–50 ns
+				\item Potenza: 10–100 mW
+				\item Frequenza: fino a 100 MHz
+			\end{itemize}
+			\column{0.5\linewidth}
+			\textbf{Evoluzione dimensionale}
+			\begin{itemize}
+				\item TTL: 10 µm
+				\item CMOS: 1 µm
+				\item Moderna: 7 nm
+			\end{itemize}
+		\end{columns}
+	\end{frame}
+	
+	\begin{frame}{Conclusioni}
+		\begin{center}
+			\Large
+			I circuiti sommatori e comparatori sono i \textbf{pilastri} dell’aritmetica digitale.\\
+			Dal semplice \emph{half adder} ai moderni sistemi a 32/64 bit, questi blocchi fondamentali hanno abilitato la rivoluzione digitale.
+		\end{center}
+	\end{frame}
+	
+\end{document}
+%-----------------------------------------------------------

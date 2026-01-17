@@ -486,7 +486,16 @@
 		In questo caso si impone che nome e cognome singolarmente abbiano sempre valori diversi.
 	\end{frame}
 	
-	\section{Chiavi Esterne (Foreign Key)}
+	
+	
+	
+	\section{Politiche di reazione - Chiavi Esterne (Foreign Key)}
+
+	\begin{frame}{Politiche di reazione}
+	\begin{center}
+			Politiche di reazione
+	\end{center}
+	\end{frame}
 	
 	\begin{frame}{Vincoli Interrelazionali - Foreign Key}
 		I vincoli interrelazionali sono quelli esistenti tra due differenti tabelle (relazioni) e riguardano le chiavi esterne.
@@ -514,6 +523,8 @@
 		Ci sono due notazioni che permettono di definire questo vincolo e utilizzano le clausole \texttt{REFERENCES} e \texttt{FOREIGN KEY}:
 		\begin{itemize}
 			\item A seconda del caso, il vincolo di integrità referenziale riguarda uno o più di un attributo delle tabelle interne
+			\item Per impostare le politiche di reazione su un database esistente, è necessario prima individuare le tabelle esterne (quelle con esistenza propria) e le tabelle interne ovvero quelle con le chiavi esterne.
+			\item le politiche di reazione devono essere inserite nelle tabelle interne.
 		\end{itemize}
 	\end{frame}
 	

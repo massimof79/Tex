@@ -1,0 +1,53 @@
+\documentclass{article}
+\usepackage[margin=4cm]{geometry}   % <--- aggiunto
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{enumitem}
+\usepackage{amsmath}
+
+\title{Verifica scritta di informatica - Classe 4 AIQ}
+\author{Prof. Fedeli Massimo}
+\date{Mercoledì 21 Gennaio 2026}
+
+\title{Verifica scritta di informatica - Classe 4 AIQ}
+\author{Prof Fedeli Massimo}
+\date{Mercoledì 21 Gennaio 2026}
+\begin{document}
+	\maketitle
+\begin{flushleft}
+		\textbf{Compito A - Cognome e Nome}: 
+\end{flushleft}
+								
+
+	
+	\section*{Descrizione del Sistema}
+	
+	Un ospedale è organizzato in vari reparti, ognuno caratterizzato da un \textbf{nome} e un \textbf{codice identificativo}.
+	
+	Il personale medico dell'ospedale comprende \textit{medici specialisti}, \textit{infermieri}, \textit{tecnici di laboratorio} e \textit{medici di base}, tutti identificati da: codice dipendente,nome, cognome, data di assunzione.
+		
+	Ogni reparto occupa almeno una \textbf{struttura}, caratterizzata da:  padiglione, ala, piano,	capienza massima (numero posti letto), codice edificio, anno di costruzione.
+	
+	Alcune strutture possono essere condivise tra più reparti (ad esempio le sale operatorie o i laboratori).
+	
+	I \textbf{medici specialisti} sono caratterizzati dalla loro \textit{specializzazione} (cardiologia, ortopedia, neurologia, ecc.) e possono operare in uno o più reparti. (Specializzazione)
+	
+	Gli \textbf{infermieri} sono assegnati a un solo reparto e sono caratterizzati dal \textit{turno prevalente} (mattina, pomeriggio, notte).
+	
+	I \textbf{tecnici di laboratorio} gestiscono uno o più \textbf{esami diagnostici}.
+	
+	Gli \textbf{esami} sono caratterizzati da: codice, descrizione, stato (attivo / in fase di sperimentazione).
+	Gli esami con stato ``attivo'' vengono eseguiti in almeno un reparto dell'ospedale, mentre quelli in fase di sperimentazione sono ancora in fase di validazione.
+	
+	\section*{Svolgimento}
+		\begin{itemize}[noitemsep]
+		\item Realizzare lo schema concettuale definitivo spiegando come è stata effettuata la ristrutturazione qualora sia stata necessaria. 4 pt
+		\item Scrivere lo schema logico mettendo bene in evidenza chiavi primarie e chiavi esterne. 1 pt 
+		\item Scrivere il codice SQL DDL.  3.5 pt
+		\item Scrivere le opportune politiche di reazione motivando la scelta.  1.5 pt
+	\end{itemize}
+	
+	
+	\vspace{2cm}
+
+\end{document}
