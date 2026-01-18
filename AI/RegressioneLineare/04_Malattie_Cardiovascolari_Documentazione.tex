@@ -1,0 +1,164 @@
+\documentclass[12pt]{article}
+\usepackage[italian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\usepackage{hyperref}
+
+\definecolor{codegray}{gray}{0.95}
+\definecolor{keywordcolor}{blue!60!black}
+\definecolor{stringcolor}{red!70!black}
+\definecolor{commentcolor}{green!50!black}
+
+\lstset{
+	backgroundcolor=\color{codegray},
+	basicstyle=\ttfamily\small,
+	keywordstyle=\color{keywordcolor}\bfseries,
+	stringstyle=\color{stringcolor},
+	commentstyle=\color{commentcolor},
+	frame=single,
+	breaklines=true,
+	language=Python,
+	numbers=left,
+	numberstyle=\tiny,
+	stepnumber=1,
+	numbersep=5pt,
+	captionpos=b
+}
+
+\title{Il mio primo intelligente: un dottore che impara dai dati}
+\author{Prof. Fedeli Massimo}
+\date{}
+
+\begin{document}
+	
+	\maketitle
+	
+	\section*{Introduzione}
+	Immagina di avere un foglio Excel con le cartelle cliniche di 300 pazienti: età, pressione, colesterolo, ecc.  
+	Il nostro obiettivo è \textbf{insegnare al computer a riconoscere} se un nuovo paziente è sano o a rischio di infarto, \textbf{senza scrivergli regole}, ma facendogli \textbf{imparare} dai casi passati.
+	
+	\section*{1. I dati: il ``libro'' delle cartelle cliniche}
+	Scarichiamo un file dal web che contiene 14 colonne:
+	\begin{center}
+		\begin{tabular}{ll}
+			age    & età (anni) \\
+			sex    & sesso (0 = donna, 1 = uomo) \\
+			cp     & tipo di dolore al petto \\
+			trestbps & pressione a riposo \\
+			chol   & colesterolo \\
+			fbs    & glicemia a digiuno \\
+			...    & ... \\
+			target & grado di malattia (0 = sano, 1-4 = malato)
+		\end{tabular}
+	\end{center}
+	
+	Alcune celle hanno il simbolo ``?'' al posto del numero: sono \textbf{dati mancanti}.  
+	Il computer non può lavorare con i buchi, quindi \textbf{cancelliamo le righe incomplete}:
+	\begin{lstlisting}
+		df = df.dropna()
+	\end{lstlisting}
+	
+	\section*{2. Trasformiamo il problema in ``sì o no''}
+	Nel file originale ci sono 5 livelli di malattia. Noi vogliamo solo due risposte:
+	\begin{itemize}
+		\item 0 = \textbf{sano}
+		\item 1 = \textbf{malato}
+	\end{itemize}
+	Convertiamo quindi tutti i valori 1-4 in 1:
+	\begin{lstlisting}
+		df['target'] = (df['target'] > 0).astype(int)
+	\end{lstlisting}
+	
+	\section*{3. Dividiamo la classe e gli esercizi}
+	\begin{itemize}
+		\item \textbf{X} = tutte le colonne tranne ``target'' (le \emph{feature})
+		\item \textbf{y} = solo la colonna ``target'' (la \emph{classe})
+	\end{itemize}
+	Ora spacchiamo il foglio in due:
+	\begin{itemize}
+		\item \textbf{Training set} (80 \%) = foglio su cui il computer \textbf{studia}
+		\item \textbf{Test set} (20 \%) = foglio su cui \textbf{interroghiamo} il computer
+	\end{itemize}
+	\begin{lstlisting}
+		X_train, X_test, y_train, y_test = train_test_split(
+		X, y, test_size=0.2, random_state=42, stratify=y)
+	\end{lstlisting}
+	L'opzione \texttt{stratify} fa sì che in entrambi i fogli ci sia la stessa percentuale di sani e malati.
+	
+	\section*{4. Standardizzare: mettere tutti ``sulla stessa riga''}
+	Le colonne hanno unità diverse: età (0-100), colesterolo (100-600), ecc.  
+	Per non far vincere il ``più grande'', \textbf{centriamo e rimpiccioliamo} tutti i numeri:
+	\begin{itemize}
+		\item media = 0
+		\item deviazione standard = 1
+	\end{itemize}
+	\begin{lstlisting}
+		scaler = StandardScaler()
+		X_train = scaler.fit_transform(X_train)  # impara la media e la scala
+		X_test  = scaler.transform(X_test)     # applica la stessa trasformazione
+	\end{lstlisting}
+	Importante: impariamo la media e la scala \textbf{solo sul training}, altrimenti ``bariamo''.
+	
+	\section*{5. L'apprendimento: il computer fa i compiti}
+	Usiamo un algoritmo chiamato \textbf{Regressione Logistica}.  
+	Non è una retta, ma una \textbf{curva a S} che restituisce una \textbf{probabilità}:
+	\begin{center}
+		$P(\text{malato}) = \sigma(w_1 x_1 + w_2 x_2 + \dots + w_n x_n)$
+	\end{center}
+	$\sigma$ è la funzione logistica; $w_i$ sono i ``pesi'' che il computer aggiusta per avvicinarsi alla risposta corretta.
+	\begin{lstlisting}
+		model = LogisticRegression(max_iter=1000)
+		model.fit(X_train, y_train)
+	\end{lstlisting}
+	
+	\section*{6. L'interrogazione: quanto è bravo?}
+	Facciamo rispondere il computer sul foglio che \textbf{non ha mai visto}:
+	\begin{lstlisting}
+		y_pred = model.predict(X_test)
+		accuracy = accuracy_score(y_test, y_pred)
+	\end{lstlisting}
+	L'accuratezza è la percentuale di risposte esatte.  
+	Un valore tipico con questi dati è $\approx 85$\,\%.  
+	Non è perfetto, ma è \textbf{meglio di un lancio di moneta}!
+	
+	\section*{7. Prova con un nuovo paziente}
+	Creiamo un paziente immaginario:
+	\begin{lstlisting}
+		paziente = {'age':60, 'sex':1, 'cp':0, 'trestbps':150,
+			'chol':250, 'fbs':1, 'restecg':1, 'thalach':130,
+			'exang':1, 'oldpeak':2.3, 'slope':1, 'ca':1, 'thal':3}
+	\end{lstlisting}
+	Lo standardizziamo con la stessa ``scheda'' usata prima e chiediamo la previsione:
+	\begin{lstlisting}
+		paziente_scaled = scaler.transform(pd.DataFrame([paziente]))
+		rischio = model.predict_proba(paziente_scaled)[0][1]
+	\end{lstlisting}
+	Il computer dice: ``C'è un 73\,\% di probabilità che questo paziente sia a rischio.''
+	
+	\section*{8. Cosa abbiamo imparato?}
+	\begin{itemize}
+		\item Il computer \textbf{non} ha bisogno di regole scritte a mano: impara \emph{da solo} dai dati.
+		\item I dati vanno \textbf{puliti} (no buchi) e \textbf{preparati} (scale simili).
+		\item \textbf{Mai valutare} sullo stesso foglio su cui si è studiato: si ``barerebbe''.
+		\item L'accuratezza è una \textbf{prima misura}, ma in medicina servono anche altri controlli (sensibilità, specificità, ecc.).
+	\end{itemize}
+	
+	\section*{9. Provaci tu!}
+	\begin{enumerate}
+		\item Cambia il paziente di esempio: più giovane, donna, colesterolo basso...  
+		\item Osserva come cambia la probabilità.
+		\item Prova a modificare \texttt{test\_size} o \texttt{random\_state}: l'accuratezza cambia?
+	\end{enumerate}
+	
+	\bigskip
+	\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=Link utili]
+		\centering
+		\url{https://archive.ics.uci.edu/ml/datasets/heart+Disease} (dataset)\\
+		\url{https://scikit-learn.org} (documentazione di scikit-learn)
+	\end{tcolorbox}
+	
+\end{document}
