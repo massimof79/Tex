@@ -1,0 +1,410 @@
+\documentclass{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Tema
+\usetheme{Madrid}
+\usecolortheme{seahorse}
+
+% Colori personalizzati
+\definecolor{darkblue}{RGB}{0,82,155}
+\definecolor{lightblue}{RGB}{100,149,237}
+\definecolor{red}{RGB}{220,20,60}
+
+% Titolo
+\title[Cybersecurity e NIS2]{La Cybersecurity nell'era dell'Intelligenza Artificiale:\\La Direttiva NIS 2}
+\subtitle{Una nuova frontiera per la protezione europea}
+\author{Prof. Fedeli Massimo}
+\institute{IIS Fermi Sacconi Cpia}
+\date{\today}
+
+\begin{document}
+	
+	% Slide 1 - Titolo
+	\begin{frame}
+		\titlepage
+		\begin{center}
+		\end{center}
+	\end{frame}
+	
+	% Slide 2 - Agenda
+	\begin{frame}{Agenda}
+		\tableofcontents
+	\end{frame}
+	
+	% Slide 3 - Introduzione
+	\section{Introduzione}
+	\begin{frame}{Il Panorama delle Minacce Informatiche}
+		\begin{columns}
+			\column{0.6\textwidth}
+			\begin{itemize}
+				\item Crescita esponenziale degli attacchi
+				\item Aumento di complessità e impatto
+				\item Target: aziende, PA, infrastrutture critiche
+				\item Nuove tecnologie = nuove vulnerabilità
+			\end{itemize}
+			\column{0.4\textwidth}
+			\begin{tikzpicture}
+			\includegraphics[width=0.4\textwidth]{threats.png}
+			\end{tikzpicture}
+		\end{columns}
+	\end{frame}
+	
+	% Slide 4 - Ransomware
+	\section{Tipologie di Attacchi}
+	\begin{frame}{Ransomware}
+		\begin{block}{Definizione}				
+			\draw[->, thick, red] (0,2) -- (1,3);
+			\draw[->, thick, red] (0.5,1.5) -- (1.5,2.5);
+			\draw[->, thick, red] (1,1) -- (2,2);
+			Malware che cifra i dati richiedendo un riscatto per la decrittazione
+		\end{block}
+		\begin{columns}
+			\column{0.5\textwidth}
+			\textbf{Caratteristiche:}
+			\begin{itemize}
+				\item Richiesta in criptovaluta
+				\item Blocco totale dei dati
+				\item Tempi di recupero lunghi
+			\end{itemize}
+			\column{0.5\textwidth}
+			\textbf{Caso Irlanda 2021:}
+			\begin{itemize}
+				\item Sistema sanitario nazionale
+				\item Ospedali bloccati per giorni
+				\item Interruzione servizi essenziali
+			\end{itemize}
+		\end{columns}
+		\begin{center}
+			\includegraphics[width=0.4\textwidth]{ransomware.png}
+		\end{center}
+	\end{frame}
+	
+	% Slide 5 - Phishing
+	\begin{frame}{Phishing}
+		\begin{alertblock}{Tecnica di ingegneria sociale}
+			Email fraudolente che imitano comunicazioni ufficiali
+		\end{alertblock}
+		\begin{columns}
+			\column{0.6\textwidth}
+			\includegraphics[width=\textwidth]{phishing.png}
+			\column{0.4\textwidth}
+			\textbf{Obiettivi:}
+			\begin{itemize}
+				\item Credenziali di accesso
+				\item Dati bancari
+				\item Informazioni sensibili
+			\end{itemize}
+		\end{columns}
+		\textbf{Esempio:} Email apparentemente dall'IT interno richiede aggiornamento password urgente
+	\end{frame}
+	
+	% Slide 6 - DDoS
+	\begin{frame}{DDoS - Distributed Denial of Service}
+		\begin{block}{Obiettivo}
+			Sovraccaricare un servizio online con richieste massive
+		\end{block}
+		\begin{columns}
+			\column{0.5\textwidth}
+			\textbf{Metodo:}
+			\begin{itemize}
+				\item Botnet di migliaia di dispositivi
+				\item Richieste simultanee
+				\item Blocco del servizio
+			\end{itemize}
+			\column{0.5\textwidth}
+			\textbf{Conseguenze:}
+			\begin{itemize}
+				\item Inaccessibilità ore/giorni
+				\item Perdite economiche
+				\item Danno reputazionale
+			\end{itemize}
+		\end{columns}
+		\begin{center}
+			\includegraphics[width=0.5\textwidth]{ddos.png}
+		\end{center}
+	\end{frame}
+	
+	% Slide 7 - Supply Chain Attack
+	\begin{frame}{Supply Chain Attack}
+		\begin{exampleblock}{Strategia}
+			Attacco al fornitore per propagarsi all'organizzazione principale
+		\end{exampleblock}
+		\textbf{Caso SolarWinds 2020:}
+		\begin{itemize}
+			\item Software di gestione IT compromesso
+			\item Migliaia di clienti infettati
+			\item Agenzie governative coinvolte
+		\end{itemize}
+		\begin{center}
+
+		\end{center}
+	\end{frame}
+	
+	% Slide 8 - IA nelle minacce
+	\section{Intelligenza Artificiale e Cybersecurity}
+	\begin{frame}{Il Ruolo dell'IA nelle Minacce}
+		\begin{columns}
+			\column{0.6\textwidth}
+			\textbf{Automazione degli attacchi:}
+			\begin{itemize}
+				\item Phishing personalizzato
+				\item Imitazione stili di scrittura
+				\item Analisi vulnerabilità real-time
+			\end{itemize}
+			\column{0.4\textwidth}
+		
+		\end{columns}
+		\textbf{Botnet intelligenti:}
+		\begin{itemize}
+			\item Adattamento dinamico
+			\item Elusione rilevamento
+			\item Selezione bersagli redditizi
+		\end{itemize}
+	\end{frame}
+	
+	% Slide 9 - Introduzione NIS2
+	\section{La Direttiva NIS 2}
+	\begin{frame}{Perché NIS 2?}
+		\begin{alertblock}{Problematiche NIS 1 (2016)}
+			\begin{itemize}
+				\item Applicazione disomogenea
+				\item Ambito troppo ristretto
+				\item Requisiti generici
+				\item Monitoraggio inefficace
+			\end{itemize}
+		\end{alertblock}
+		\textbf{Fattori acceleranti:}
+		\begin{itemize}
+			\item Pandemia e smart working
+			\item Guerra in Ucraina
+			\item Aumento supply chain attacks
+		\end{itemize}
+	\end{frame}
+	
+	% Slide 10 - Timeline NIS2
+	\begin{frame}{Timeline NIS 2}
+		\begin{tikzpicture}
+			\draw[->, thick] (0,0) -- (12,0);
+			\draw[->, thick] (0,0) -- (0,3);
+			
+			\node at (2,1) [rectangle, fill=lightblue, text=white] {Dic 2022};
+			\node at (2,0.3) {\tiny Approvazione};
+			
+			\node at (6,1) [rectangle, fill=darkblue, text=white] {Gen 2023};
+			\node at (6,0.3) {\tiny Entrata in vigore};
+			
+			\node at (10,1) [rectangle, fill=red, text=white] {Ott 2024};
+			\node at (10,0.3) {\tiny Recepimento};
+			
+			\draw[thick, dashed] (2,0) -- (2,2);
+			\draw[thick, dashed] (6,0) -- (6,2);
+			\draw[thick, dashed] (10,0) -- (10,2);
+		\end{tikzpicture}
+		
+		\textbf{Obiettivo:} Rafforzare resilienza sistemi informatici europei
+	\end{frame}
+	
+	% Slide 11 - Novità NIS2
+	\begin{frame}{Principali Novità di NIS 2}
+		\begin{enumerate}
+			\item \textbf{Ampliamento settori:}
+			\begin{itemize}
+				\item PA centrale e locale
+				\item Acque reflue e rifiuti
+				\item Spazio e satelliti
+				\item Poste e corriere
+				\item Produzione critica (microchip, farmaci)
+			\end{itemize}
+			\item \textbf{Obblighi di sicurezza specifici}
+			\item \textbf{Notifica tempestiva incidenti}
+			\item \textbf{Responsabilità dirigenziale}
+			\item \textbf{Sanzioni severe}
+		\end{enumerate}
+	\end{frame}
+	
+	% Slide 12 - Obblighi Sicurezza
+	\begin{frame}{Obblighi di Sicurezza Informatica}
+		\begin{block}{Misure obbligatorie}
+			\begin{itemize}
+				\item Analisi rischi e vulnerabilità
+				\item Gestione e risposta incidenti
+				\item Continuità operativa e piani di ripristino
+				\item Sicurezza supply chain
+				\item Crittografia e controllo accessi
+				\item Formazione del personale
+			\end{itemize}
+		\end{block}
+		\begin{center}
+
+		\end{center}
+	\end{frame}
+	
+	% Slide 13 - Notifica Incidenti
+	\begin{frame}{Notifica degli Incidenti}
+		\begin{alertblock}{Tempistiche obbligatorie}
+			\begin{description}
+				\item[24h] Prima segnalazione
+				\item[72h] Relazione tecnica dettagliata
+				\item[30 giorni] Relazione finale
+			\end{description}
+		\end{alertblock}
+		\textbf{Esempio:} Ospedale colpito da malware $\rightarrow$ informare immediatamente ACN
+		\begin{center}
+
+		\end{center}
+	\end{frame}
+	
+	% Slide 14 - Responsabilità
+	\begin{frame}{Responsabilità e Sanzioni}
+		\begin{columns}
+			\column{0.5\textwidth}
+			\textbf{Responsabilità dirigenziale:}
+			\begin{itemize}
+				\item Approvazione misure sicurezza
+				\item Formazione specifica
+				\item Responsabilità per negligenza
+			\end{itemize}
+			\column{0.5\textwidth}
+			\textbf{Sanzioni:}
+			\begin{itemize}
+				\item 10M€ o 2\% fatturato (essenziali)
+				\item 7M€ o 1.4\% fatturato (altri)
+			\end{itemize}
+		\end{columns}
+		\begin{center}
+
+		\end{center}
+	\end{frame}
+	
+	% Slide 15 - ACN
+	\section{Implementazione in Italia}
+	\begin{frame}{L'Agenzia per la Cybersicurezza Nazionale (ACN)}
+		\begin{block}{Istituita nel 2021}
+			Ente pubblico per la protezione e rafforzamento sicurezza cibernetica italiana
+		\end{block}
+		\textbf{Principali compiti:}
+		\begin{itemize}
+			\item Strategia nazionale cybersicurezza
+			\item Coordinamento risposta incidenti
+			\item Supporto tecnico-operativo
+			\item Gestione notifiche NIS 2
+			\item Promozione cultura cybersecurity
+			\item Vigilanza e sanzioni
+		\end{itemize}
+	\end{frame}
+	
+	% Slide 16 - Recepimento Italia
+	\begin{frame}{Recepimento in Italia}
+		\begin{exampleblock}{Decreto Legislativo 138/2024}
+			4 settembre 2024 - Entrato in vigore 16 ottobre 2024
+		\end{exampleblock}
+		\textbf{Adempimenti principali:}
+		\begin{itemize}
+			\item Registrazione piattaforma ACN
+			\item Fornitura informazioni organizzazione
+			\item Comunicazione servizi offerti
+			\item Adempimento entro 28 febbraio 2025
+		\end{itemize}
+	\end{frame}
+	
+	% Slide 17 - Obblighi Imprese
+	\begin{frame}{Obblighi per le Imprese}
+		\begin{columns}
+			\column{0.6\textwidth}
+			\textbf{Ambito applicazione:}
+			\begin{itemize}
+				\item Settori ad alta criticità
+				\item Aziende 50+ dipendenti
+				\item Fatturato > 10M€
+				\item Servizi essenziali
+			\end{itemize}
+			\column{0.4\textwidth}
+
+		\end{columns}
+	\end{frame}
+	
+	% Slide 18 - Adempimenti Imprese
+	\begin{frame}{Adempimenti Obbligatori per le Imprese}
+		\begin{enumerate}
+			\item Registrazione ACN entro 28/02/2025
+			\item Misure gestione rischio
+			\item Notifica incidenti entro 72h
+			\item Designazione responsabile cybersecurity
+			\item Formazione continua personale
+			\item Gestione supply chain
+			\item Supervisione organi direttivi
+		\end{enumerate}
+	\end{frame}
+	
+	% Slide 19 - Benefici Cittadini
+	\section{Benefici per i Cittadini}
+	\begin{frame}{Benefici Concreti per i Cittadini}
+		\begin{columns}
+			\column{0.5\textwidth}
+			\includegraphics[width=\textwidth]{citizens.png}
+			\column{0.5\textwidth}
+			\textbf{Vantaggi:}
+			\begin{itemize}
+				\item Maggiore continuità servizi
+				\item Protezione dati personali
+				\item Fiducia servizi digitali
+				\item Prevenzione truffe
+				\item Risposte rapide incidenti
+			\end{itemize}
+		\end{columns}
+	\end{frame}
+	
+	% Slide 20 - Esempi Benefici
+	\begin{frame}{Esempi di Benefici per i Cittadini}
+		\begin{exampleblock}{Servizi Sanitari}
+			Riduzione rischi interruzione appuntamenti e cure urgenti per attacchi ransomware
+		\end{exampleblock}
+		\begin{exampleblock}{Servizi Bancari}
+			Maggiore sicurezza home banking e protezione dati finanziari
+		\end{exampleblock}
+		\begin{exampleblock}{PA Digitale}
+			Fiducia nell'utilizzo servizi online (fascicolo sanitario, portale PA)
+		\end{exampleblock}
+	\end{frame}
+	
+	% Slide 21 - Conclusioni
+	\section{Conclusioni}
+	\begin{frame}{Conclusioni}
+		\begin{block}{NIS 2: Un passo fondamentale}
+			Verso un'Europa più sicura digitalmente
+		\end{block}
+		\textbf{Imperativo per le organizzazioni:}
+		\begin{itemize}
+			\item Prepararsi a nuove responsabilità
+			\item Adottare misure sicurezza adeguate
+			\item Contribuire ecosistema digitale resiliente
+		\end{itemize}
+		\begin{center}
+
+		\end{center}
+		\textbf{Obiettivo finale:} Cybersicurezza condivisa tra pubblico e privato
+	\end{frame}
+	
+	% Slide 22 - Riferimenti
+	\begin{frame}{Riferimenti Bibliografici}
+		\begin{tiny}
+			\begin{itemize}
+				\item Direttiva (UE) 2022/2555 del Parlamento Europeo e del Consiglio
+				\item https://digital-strategy.ec.europa.eu/it/policies/nis2-directive
+				\item https://direttivanis2.eu
+				\item https://www.akamai.com/it/glossary/what-is-nis2
+				\item Decreto Legislativo 4 settembre 2024, n. 138
+				\item https://www.confindustriaemilia.it/flex/files/1/1/2/D.90e6cec33a853f3a4ea7/sicurezza\_informatica.pdf
+			\end{itemize}
+		\end{tiny}
+		\begin{center}
+			\Huge{\textbf{Grazie per l'attenzione!}}
+		\end{center}
+	\end{frame}
+	
+\end{document}

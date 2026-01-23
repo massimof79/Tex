@@ -1,0 +1,100 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[italian]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+
+\title{Circuiti Combinatori \\ Esercizi con Soluzioni}
+\author{Prof. Fedeli Massimo - IIS Fermi Sacconi Cpia}
+\date{}
+
+\begin{document}
+	\maketitle
+	
+	\section*{Esercizi svolti}
+	
+	\subsection*{Esercizio 1}
+	La funzione vale 1 per le combinazioni $01$ e $10$.
+	
+	\[
+	F(A,B) = \overline{A}B + A\overline{B}
+	\]
+	
+	Il circuito è composto da due NOT, due AND e una OR.
+	
+	\subsection*{Esercizio 2}
+	I maxtermini corrispondenti sono:
+	\[
+	(A + B + C)(A + \overline{B} + \overline{C})(\overline{A} + B + \overline{C})
+	\]
+	
+	\subsection*{Esercizio 3}
+	La funzione è:
+	\[
+	F(A,B,C) = \overline{A}BC + A\overline{B}C
+	\]
+	
+	Sono necessarie:
+	\begin{itemize}
+		\item 2 porte NOT
+		\item 2 porte AND a tre ingressi
+		\item 1 porta OR
+	\end{itemize}
+	
+	\subsection*{Esercizio 4}
+	\[
+	F = \overline{A}B + AB + \overline{A}\overline{B}
+	\]
+	\[
+	F = \overline{A}(B + \overline{B}) + AB = \overline{A} + AB
+	\]
+	\[
+	F = \overline{A} + B
+	\]
+	
+	\subsection*{Esercizio 5}
+	La funzione vale 1 solo se $A=1$ e almeno uno tra $B$ e $C$ vale 1.  
+	La tabella di verità si ottiene valutando prima $(B + C)$ e poi il prodotto con $A$.
+	
+	\subsection*{Esercizio 6}
+	La funzione:
+	\[
+	F(A,B) = \overline{A}B + A\overline{B}
+	\]
+	è una XOR.  
+	Può essere realizzata con una sola porta XOR.
+	
+	\subsection*{Esercizio 7}
+	La funzione logica è:
+	\[
+	F(A,B,C) = A(B + C)
+	\]
+	
+	\subsection*{Esercizio 8}
+	\[
+	F = \overline{A}\overline{B}\overline{C}D +
+	\overline{A}\overline{B}CD +
+	\overline{A}BCD +
+	A\overline{B}CD
+	\]
+	
+	\subsection*{Esercizio 9}
+	La funzione realizzata dal circuito è:
+	\[
+	F(A,B,C) = AB + \overline{C}
+	\]
+	
+	\subsection*{Esercizio 10}
+	\[
+	F = \overline{A}BC + ABC + \overline{A}\overline{B}C
+	\]
+	\[
+	F = C(\overline{A}B + AB + \overline{A}\overline{B})
+	\]
+	\[
+	F = C(\overline{A} + B)
+	\]
+	
+\end{document}

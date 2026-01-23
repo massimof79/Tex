@@ -1,0 +1,114 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[italian]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+
+\title{Circuiti Combinatori \\ Esercizi}
+\author{Prof. Fedeli Massimo - IIS Fermi Sacconi Cpia}
+\date{}
+
+\begin{document}
+	\maketitle
+	
+	\section*{Esercizi}
+	
+	\subsection*{Esercizio 1}
+	È data la seguente tabella di verità per la funzione $F(A,B)$:
+	
+	\begin{center}
+		\begin{tabular}{c c c}
+			A & B & F \\
+			0 & 0 & 0 \\
+			0 & 1 & 1 \\
+			1 & 0 & 1 \\
+			1 & 1 & 0 \\
+		\end{tabular}
+	\end{center}
+	
+	\begin{enumerate}
+		\item Scrivere la funzione logica in forma canonica somma di prodotti.
+		\item Disegnare il circuito logico equivalente.
+	\end{enumerate}
+	
+	\subsection*{Esercizio 2}
+	La funzione logica $F(A,B,C)$ vale 0 per le combinazioni:
+	\[
+	000,\;011,\;101
+	\]
+	
+	Scrivere la funzione in forma canonica prodotto di somme.
+	
+	\subsection*{Esercizio 3}
+	Data la funzione:
+	\[
+	F(A,B,C) = \overline{A}BC + A\overline{B}C
+	\]
+	
+	\begin{enumerate}
+		\item Indicare il numero e il tipo di porte logiche necessarie.
+		\item Disegnare il circuito logico equivalente.
+	\end{enumerate}
+	
+	\subsection*{Esercizio 4}
+	Semplificare la seguente funzione logica utilizzando l’algebra di Boole:
+	\[
+	F(A,B) = \overline{A}B + AB + \overline{A}\overline{B}
+	\]
+	
+	\subsection*{Esercizio 5}
+	Data la funzione:
+	\[
+	F(A,B,C) = A(B + C)
+	\]
+	
+	Costruire la tabella di verità completa.
+	
+	\subsection*{Esercizio 6}
+	È data la funzione:
+	\[
+	F(A,B) = \overline{A}B + A\overline{B}
+	\]
+	
+	\begin{enumerate}
+		\item Identificare il tipo di funzione logica.
+		\item Indicare un possibile circuito equivalente.
+	\end{enumerate}
+	
+	\subsection*{Esercizio 7}
+	Un sistema di allarme si attiva se il sensore $A$ è attivo e almeno uno tra i sensori $B$ o $C$ è attivo.
+	
+	\begin{enumerate}
+		\item Scrivere la funzione logica.
+		\item Disegnare il circuito.
+	\end{enumerate}
+	
+	\subsection*{Esercizio 8}
+	Data la funzione:
+	\[
+	F(A,B,C,D) = \Sigma m(1,3,7,11)
+	\]
+	
+	Scrivere la funzione in forma canonica somma di prodotti.
+	
+	\subsection*{Esercizio 9}
+	Un circuito è composto da:
+	\begin{itemize}
+		\item una porta AND con ingressi $A$ e $B$
+		\item una porta NOT sull’ingresso $C$
+		\item una porta OR che unisce le due uscite
+	\end{itemize}
+	
+	Scrivere la funzione logica realizzata.
+	
+	\subsection*{Esercizio 10}
+	Data la funzione:
+	\[
+	F(A,B,C) = \overline{A}BC + ABC + \overline{A}\overline{B}C
+	\]
+	
+	Semplificare la funzione.
+	
+\end{document}
