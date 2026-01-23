@@ -1,0 +1,174 @@
+\documentclass[a4paper,12pt]{article}
+
+\usepackage[italian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{geometry}
+
+\geometry{margin=2.5cm}
+
+\title{Alberi Decisionali\\
+	\large Fondamenti teorici e applicazione a un problema di classificazione}
+\author{Prof. Fedeli Massimo IIS Fermi Sacconi Cpia}
+\date{}
+
+\begin{document}
+	
+	\maketitle
+	
+	\section{Introduzione}
+	
+	Gli alberi decisionali sono modelli di apprendimento supervisionato ampiamente utilizzati in ambito di classificazione e regressione.  
+	La loro diffusione è dovuta principalmente alla semplicità concettuale, all’elevata interpretabilità e alla capacità di modellare relazioni non lineari tra le variabili.
+	
+	In questo documento vengono illustrati:
+	\begin{itemize}
+		\item il funzionamento teorico degli alberi decisionali;
+		\item i criteri di costruzione del modello;
+		\item l’applicazione concreta a un problema di classificazione delle richieste di assistenza tecnica.
+	\end{itemize}
+	
+	\section{L’albero decisionale}
+	
+	Un albero decisionale è una struttura gerarchica composta da:
+	\begin{itemize}
+		\item un nodo radice;
+		\item nodi interni di decisione;
+		\item nodi foglia che rappresentano l’output del modello.
+	\end{itemize}
+	
+	Ogni nodo interno effettua un test su una variabile di input, mentre ogni ramo rappresenta l’esito possibile del test.  
+	Il percorso dalla radice a una foglia costituisce una regola di decisione.
+	
+	\section{Apprendimento supervisionato}
+	
+	Nel contesto dell’apprendimento supervisionato, l’albero decisionale viene addestrato su un insieme di esempi etichettati:
+	\[
+	\{(x_1, y_1), (x_2, y_2), \dots, (x_n, y_n)\}
+	\]
+	dove:
+	\begin{itemize}
+		\item $x_i$ è il vettore delle caratteristiche (feature);
+		\item $y_i$ è la classe associata.
+	\end{itemize}
+	
+	L’obiettivo dell’algoritmo è apprendere una funzione:
+	\[
+	f : X \rightarrow Y
+	\]
+	che consenta di predire correttamente la classe di nuovi esempi non visti.
+	
+	\section{Criteri di suddivisione}
+	
+	Durante la costruzione dell’albero, l’algoritmo seleziona a ogni nodo la variabile che permette la migliore separazione delle classi.
+	
+	I criteri più comuni sono:
+	\begin{itemize}
+		\item Indice di Gini;
+		\item Entropia e Information Gain.
+	\end{itemize}
+	
+	Nel caso dell’indice di Gini, l’impurità di un nodo è definita come:
+	\[
+	G = 1 - \sum_{i=1}^{k} p_i^2
+	\]
+	dove $p_i$ è la probabilità della classe $i$ nel nodo.
+	
+	L’obiettivo è minimizzare l’impurità dei nodi figli.
+	
+	\section{Costruzione e arresto dell’albero}
+	
+	La crescita dell’albero può proseguire fino a ottenere nodi puri, ma questo porta spesso a overfitting.  
+	Per questo motivo vengono introdotti criteri di arresto, tra cui:
+	\begin{itemize}
+		\item profondità massima dell’albero;
+		\item numero minimo di campioni per nodo;
+		\item riduzione minima dell’impurità.
+	\end{itemize}
+	
+	Nel nostro esercizio è stata impostata una profondità massima per favorire l’interpretabilità del modello.
+	
+	\section{Descrizione del problema applicativo}
+	
+	Il problema affrontato consiste nella classificazione automatica delle richieste di assistenza tecnica in base alla loro priorità.
+	
+	Ogni richiesta è descritta dalle seguenti variabili:
+	\begin{itemize}
+		\item Tipo\_problema (software, hardware, rete);
+		\item Numero\_utenti\_coinvolti (1, 2--5, $>5$);
+		\item Impatto\_servizio (basso, medio, alto);
+		\item Urgenza\_dichiarata (bassa, media, alta).
+	\end{itemize}
+	
+	La variabile target è:
+	\begin{itemize}
+		\item Priorità (bassa, media, alta).
+	\end{itemize}
+	
+	Il problema è quindi un problema di classificazione multiclasse.
+	
+	\section{Preparazione dei dati}
+	
+	Poiché gli alberi decisionali implementati nelle librerie di Machine Learning lavorano su dati numerici, le variabili categoriche vengono codificate mediante tecniche di encoding.
+	
+	Nel programma Python sviluppato:
+	\begin{itemize}
+		\item a ciascuna variabile categoriale viene associato un encoder;
+		\item gli encoder vengono salvati insieme al modello;
+		\item in fase di previsione viene applicata esclusivamente la trasformazione.
+	\end{itemize}
+	
+	Questo garantisce coerenza tra fase di addestramento e fase di inferenza.
+	
+	\section{Addestramento del modello}
+	
+	Il dataset viene suddiviso in:
+	\begin{itemize}
+		\item insieme di addestramento;
+		\item insieme di test.
+	\end{itemize}
+	
+	L’albero decisionale viene addestrato sull’insieme di training e valutato sul test set tramite l’accuratezza.
+	
+	Il modello appreso rappresenta una collezione di regole decisionali interpretabili, ad esempio:
+	\begin{quote}
+		Se l’impatto è alto e l’urgenza è alta, allora la priorità è alta.
+	\end{quote}
+	
+	\section{Fase di previsione}
+	
+	In fase di utilizzo, l’utente inserisce i dati di una nuova richiesta.  
+	Il sistema:
+	\begin{enumerate}
+		\item codifica gli input tramite gli encoder salvati;
+		\item applica il modello addestrato;
+		\item restituisce la priorità prevista in forma testuale.
+	\end{enumerate}
+	
+	Questo separa chiaramente la fase di apprendimento dalla fase di utilizzo operativo.
+	
+	\section{Vantaggi e limiti}
+	
+	I principali vantaggi degli alberi decisionali sono:
+	\begin{itemize}
+		\item elevata interpretabilità;
+		\item semplicità concettuale;
+		\item assenza di assunzioni forti sui dati.
+	\end{itemize}
+	
+	I principali limiti includono:
+	\begin{itemize}
+		\item tendenza all’overfitting;
+		\item instabilità rispetto a piccole variazioni dei dati;
+		\item prestazioni inferiori rispetto a modelli ensemble in problemi complessi.
+	\end{itemize}
+	
+	\section{Conclusioni}
+	
+	L’albero decisionale rappresenta una soluzione efficace e didatticamente significativa per il problema analizzato.  
+	L’esercizio consente di collegare teoria, implementazione e interpretazione del modello, fornendo una visione completa del ciclo di vita di un sistema di Machine Learning supervisionato.
+	
+\end{document}

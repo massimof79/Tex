@@ -1,0 +1,359 @@
+\documentclass[a4paper,12pt]{article}
+
+\usepackage[italian]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\usepackage{amsmath}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\geometry{margin=2.5cm}
+
+\title{Query SQL Annidate, EXISTS e Operatori di Raggruppamento}
+\author{Prof. Fedeli Massimo - IIS Fermi Sacconi Cpia}
+\date{}
+
+\lstset{
+	basicstyle=\ttfamily\small,
+	keywordstyle=\color{blue},
+	commentstyle=\color{gray},
+	stringstyle=\color{red},
+	frame=single,
+	breaklines=true,
+	language=SQL
+}
+
+\begin{document}
+	
+	\maketitle
+	\newpage
+
+	\section{Query SQL annidate}
+	Una \textbf{query annidata} (o subquery) è una query SQL scritta all’interno di un’altra query.
+	La subquery è racchiusa tra parentesi tonde ed è valutata prima della query esterna.
+	
+	\section{Schema di esempio}
+	Tabelle utilizzate negli esempi:
+	
+	\subsection*{STUDENTI}
+	id\_studente, nome, classe
+	
+	\subsection*{VOTI}
+	id\_studente, materia, voto
+	
+	\section{Query annidata con IN}
+	Trovare gli studenti che hanno ottenuto almeno un voto pari a 10.
+	
+	\begin{lstlisting}
+		SELECT nome
+		FROM STUDENTI
+		WHERE id_studente IN (
+		SELECT id_studente
+		FROM VOTI
+		WHERE voto = 10
+		);
+	\end{lstlisting}
+	
+	\section{Subquery con valore singolo}
+	Trovare gli studenti con voto superiore alla media.
+	
+	\begin{lstlisting}
+		SELECT nome
+		FROM STUDENTI S
+		JOIN VOTI V ON S.id_studente = V.id_studente
+		WHERE V.voto > (
+		SELECT AVG(voto)
+		FROM VOTI
+		);
+	\end{lstlisting}
+	
+	\section{Operatori ANY e ALL}
+	\texttt{ANY} richiede che la condizione sia vera per almeno un valore,
+	\texttt{ALL} per tutti i valori restituiti dalla subquery.
+	
+	\subsection{Esempio con ANY}
+	\begin{lstlisting}
+		SELECT DISTINCT nome
+		FROM STUDENTI S
+		JOIN VOTI V ON S.id_studente = V.id_studente
+		WHERE V.voto > ANY (
+		SELECT voto
+		FROM VOTI
+		WHERE materia = 'Matematica'
+		);
+	\end{lstlisting}
+	
+	\subsection{Esempio con ALL}
+	\begin{lstlisting}
+		SELECT DISTINCT nome
+		FROM STUDENTI S
+		JOIN VOTI V ON S.id_studente = V.id_studente
+		WHERE V.voto > ALL (
+		SELECT voto
+		FROM VOTI
+		WHERE materia = 'Matematica'
+		);
+	\end{lstlisting}
+	
+	% =====================================================
+	\section{La clausola EXISTS}
+	La clausola \texttt{EXISTS} è utilizzata per verificare se una subquery restituisce
+	\textbf{almeno una riga}.
+	
+	A differenza di altre subquery:
+	\begin{itemize}
+		\item non restituisce valori da confrontare;
+		\item non produce insiemi da analizzare;
+		\item risponde esclusivamente alla domanda: \emph{esiste almeno una riga?}
+	\end{itemize}
+	
+	Se la subquery restituisce almeno una riga, la condizione \texttt{EXISTS} è vera;
+	se non restituisce alcuna riga, la condizione è falsa.
+	
+	\subsection{EXISTS come quantificatore logico}
+	Dal punto di vista logico, \texttt{EXISTS} corrisponde al quantificatore:
+	\begin{center}
+		\emph{esiste almeno un elemento tale che\dots}
+	\end{center}
+	
+	Questo lo rende particolarmente adatto a esprimere condizioni del tipo:
+	\begin{itemize}
+		\item uno studente \emph{ha almeno un voto};
+		\item uno studente \emph{ha almeno un voto insufficiente};
+		\item uno studente \emph{ha almeno un voto in una certa materia}.
+	\end{itemize}
+	
+	\subsection{Subquery correlata}
+	Nella maggior parte dei casi, \texttt{EXISTS} è usato con subquery correlate,
+	cioè subquery che fanno riferimento alla query esterna.
+	
+	\subsection*{Esempio 1: studenti con almeno un voto}
+	\begin{lstlisting}
+		SELECT nome
+		FROM STUDENTI S
+		WHERE EXISTS (
+		SELECT *
+		FROM VOTI V
+		WHERE V.id_studente = S.id_studente
+		);
+	\end{lstlisting}
+	
+	La subquery viene valutata per ogni studente.
+	Se esiste almeno un voto associato, lo studente viene selezionato.
+	
+	\subsection*{Esempio 2: studenti con almeno un voto insufficiente}
+	\begin{lstlisting}
+		SELECT nome
+		FROM STUDENTI S
+		WHERE EXISTS (
+		SELECT *
+		FROM VOTI V
+		WHERE V.id_studente = S.id_studente
+		AND V.voto < 6
+		);
+	\end{lstlisting}
+	
+	La condizione è vera solo se esiste almeno un voto minore di 6.
+	
+	\subsection*{Esempio 3: studenti con almeno un voto di matematica}
+	\begin{lstlisting}
+		SELECT nome
+		FROM STUDENTI S
+		WHERE EXISTS (
+		SELECT *
+		FROM VOTI V
+		WHERE V.id_studente = S.id_studente
+		AND V.materia = 'Matematica'
+		);
+	\end{lstlisting}
+	
+	\subsection{EXISTS vs IN}
+	Dal punto di vista concettuale:
+	
+	\begin{itemize}
+		\item \texttt{IN} confronta un valore con un insieme;
+		\item \texttt{EXISTS} verifica l’esistenza di righe;
+		\item \texttt{EXISTS} non è influenzato da valori \texttt{NULL};
+		\item \texttt{EXISTS} è spesso più efficiente su tabelle di grandi dimensioni.
+	\end{itemize}
+	
+	\subsection{Forma tipica di EXISTS}
+	La struttura tipica è:
+	
+	\begin{verbatim}
+		SELECT ...
+		FROM tabella_esterna T
+		WHERE EXISTS (
+		SELECT *
+		FROM tabella_interna S
+		WHERE condizione_di_collegamento
+		);
+	\end{verbatim}
+	
+	% =====================================================
+% =====================================================
+\section{Operatori di raggruppamento}
+
+Gli operatori di raggruppamento, detti anche \textbf{funzioni di aggregazione},
+permettono di eseguire calcoli su insiemi di righe e di restituire un singolo valore
+per ciascun gruppo.
+
+Essi sono utilizzati frequentemente insieme alla clausola \texttt{GROUP BY},
+ma possono essere impiegati anche senza raggruppamento, quando l’aggregazione
+riguarda l’intera tabella.
+
+Le principali funzioni di aggregazione sono:
+\begin{itemize}
+	\item \texttt{COUNT}
+	\item \texttt{SUM}
+	\item \texttt{AVG}
+	\item \texttt{MIN}
+	\item \texttt{MAX}
+	\item \texttt{STDDEV}
+\end{itemize}
+
+\subsection{COUNT}
+La funzione \texttt{COUNT} restituisce il numero di righe considerate.
+
+\subsubsection*{Conteggio totale delle righe}
+\begin{lstlisting}
+	SELECT COUNT(*)
+	FROM VOTI;
+\end{lstlisting}
+
+Conta il numero totale di record presenti nella tabella \texttt{VOTI}.
+
+\subsubsection*{Conteggio per gruppo}
+\begin{lstlisting}
+	SELECT id_studente, COUNT(*) AS numero_voti
+	FROM VOTI
+	GROUP BY id_studente;
+\end{lstlisting}
+
+In questo caso il numero di voti viene calcolato per ciascuno studente.
+
+\subsection{SUM}
+La funzione \texttt{SUM} calcola la somma dei valori di una colonna numerica.
+
+\subsubsection*{Esempio}
+Calcolare la somma dei voti per ciascuno studente.
+
+\begin{lstlisting}
+	SELECT id_studente, SUM(voto) AS somma_voti
+	FROM VOTI
+	GROUP BY id_studente;
+\end{lstlisting}
+
+\texttt{SUM} è utile quando si vogliono ottenere totali o punteggi complessivi.
+
+\subsection{AVG}
+La funzione \texttt{AVG} calcola la media aritmetica dei valori di una colonna numerica.
+
+\subsubsection*{Media globale}
+\begin{lstlisting}
+	SELECT AVG(voto) AS media_generale
+	FROM VOTI;
+\end{lstlisting}
+
+\subsubsection*{Media per gruppo}
+\begin{lstlisting}
+	SELECT materia, AVG(voto) AS media_materia
+	FROM VOTI
+	GROUP BY materia;
+\end{lstlisting}
+
+Questa funzione è molto utilizzata per valutazioni, statistiche e confronti.
+
+\subsection{MIN}
+La funzione \texttt{MIN} restituisce il valore minimo presente in una colonna.
+
+\subsubsection*{Esempio}
+Trovare il voto minimo per ogni materia.
+
+\begin{lstlisting}
+	SELECT materia, MIN(voto) AS voto_minimo
+	FROM VOTI
+	GROUP BY materia;
+\end{lstlisting}
+
+\subsection{MAX}
+La funzione \texttt{MAX} restituisce il valore massimo presente in una colonna.
+
+\subsubsection*{Esempio}
+Trovare il voto massimo per ogni studente.
+
+\begin{lstlisting}
+	SELECT id_studente, MAX(voto) AS voto_massimo
+	FROM VOTI
+	GROUP BY id_studente;
+\end{lstlisting}
+
+\subsection{STDDEV}
+La funzione \texttt{STDDEV} calcola la \textbf{deviazione standard}, che misura
+la dispersione dei valori rispetto alla media.
+
+\subsubsection*{Significato}
+\begin{itemize}
+	\item valore basso: voti concentrati vicino alla media;
+	\item valore alto: voti molto variabili.
+\end{itemize}
+
+\subsubsection*{Esempio}
+Calcolare la deviazione standard dei voti per ciascuna materia.
+
+\begin{lstlisting}
+	SELECT materia, STDDEV(voto) AS deviazione_standard
+	FROM VOTI
+	GROUP BY materia;
+\end{lstlisting}
+
+La funzione \texttt{STDDEV} è particolarmente utile per analisi statistiche
+e confronti sulla variabilità dei dati.
+
+\subsection{Uso combinato di più funzioni}
+È possibile utilizzare più funzioni di aggregazione nella stessa query.
+
+\subsubsection*{Esempio}
+\begin{lstlisting}
+	SELECT materia,
+	COUNT(*) AS numero_voti,
+	AVG(voto) AS media,
+	MIN(voto) AS minimo,
+	MAX(voto) AS massimo
+	FROM VOTI
+	GROUP BY materia;
+\end{lstlisting}
+
+\subsection{GROUP BY: regola fondamentale}
+Quando si utilizza \texttt{GROUP BY}:
+\begin{itemize}
+	\item tutte le colonne presenti nel \texttt{SELECT} che non sono funzioni
+	di aggregazione devono comparire nel \texttt{GROUP BY};
+	\item ogni riga del risultato rappresenta un gruppo.
+\end{itemize}
+
+\subsection{HAVING e funzioni di aggregazione}
+La clausola \texttt{HAVING} consente di filtrare i gruppi in base ai risultati
+delle funzioni di aggregazione.
+
+\subsubsection*{Esempio}
+Trovare le materie con media dei voti superiore a 7.
+
+\begin{lstlisting}
+	SELECT materia, AVG(voto) AS media
+	FROM VOTI
+	GROUP BY materia
+	HAVING AVG(voto) > 7;
+\end{lstlisting}
+
+\subsection{Errori comuni}
+\begin{itemize}
+	\item usare funzioni di aggregazione nella clausola \texttt{WHERE};
+	\item dimenticare colonne nel \texttt{GROUP BY};
+	\item confondere \texttt{WHERE} e \texttt{HAVING};
+	\item interpretare male il significato dei risultati aggregati.
+\end{itemize}
+
+
+\end{document}
