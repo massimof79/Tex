@@ -1,0 +1,260 @@
+{
+  "entities": [
+    {
+      "id": "entity_docente",
+      "name": "Docente",
+      "type": "entity",
+      "x": 156,
+      "y": 97,
+      "attributes": [
+        {
+          "name": "IDDocente",
+          "key": true
+        },
+        {
+          "name": "Nome"
+        },
+        {
+          "name": "Cognome"
+        },
+        {
+          "name": "Email"
+        },
+        {
+          "name": "Password"
+        }
+      ]
+    },
+    {
+      "id": "entity_studente",
+      "name": "Studente",
+      "type": "entity",
+      "x": 580,
+      "y": 464,
+      "attributes": [
+        {
+          "name": "IDStudente",
+          "key": true
+        },
+        {
+          "name": "Nome"
+        },
+        {
+          "name": "Cognome"
+        },
+        {
+          "name": "Email"
+        },
+        {
+          "name": "Password"
+        },
+        {
+          "name": "monete",
+          "key": false
+        }
+      ]
+    },
+    {
+      "id": "entity_classe",
+      "name": "ClasseVirtuale",
+      "type": "entity",
+      "x": 638,
+      "y": 97,
+      "attributes": [
+        {
+          "name": "IDClasse",
+          "key": true
+        },
+        {
+          "name": "NomeClasse"
+        },
+        {
+          "name": "Materia"
+        },
+        {
+          "name": "CodiceIscrizione"
+        }
+      ],
+      "attributesSide": "top"
+    },
+    {
+      "id": "entity_videogioco",
+      "name": "Videogioco",
+      "type": "entity",
+      "x": 967,
+      "y": 703,
+      "attributes": [
+        {
+          "name": "IDVideogioco",
+          "key": true
+        },
+        {
+          "name": "Titolo"
+        },
+        {
+          "name": "DescrizioneBreve"
+        },
+        {
+          "name": "DescrizioneEstesa"
+        },
+        {
+          "name": "MoneteTotali"
+        }
+      ]
+    },
+    {
+      "id": "entity_argomento",
+      "name": "Argomento",
+      "type": "entity",
+      "x": 1241,
+      "y": 377,
+      "attributes": [
+        {
+          "name": "IDArgomento",
+          "key": true
+        },
+        {
+          "name": "NomeArgomento"
+        }
+      ],
+      "attributesSide": "right"
+    },
+    {
+      "id": "entity_immagine",
+      "name": "ImmagineVideogioco",
+      "type": "entity",
+      "x": 1053,
+      "y": 94,
+      "attributes": [
+        {
+          "name": "IDImmagine",
+          "key": true
+        },
+        {
+          "name": "URL"
+        }
+      ],
+      "attributesSide": "right"
+    },
+    {
+      "id": "entity_1769355217655",
+      "name": "Invito",
+      "type": "entity",
+      "x": 206.79436056175007,
+      "y": 306.76301837825235,
+      "attributesSide": "left",
+      "attributes": [
+        {
+          "name": "codice_iscrizione",
+          "key": false
+        }
+      ]
+    },
+    {
+      "id": "entity_1769355319970",
+      "name": "Link",
+      "type": "entity",
+      "x": 258.23393199540556,
+      "y": 575.8193331864989,
+      "attributesSide": "left",
+      "attributes": [
+        {
+          "name": "id",
+          "key": true
+        },
+        {
+          "name": "link",
+          "key": false
+        },
+        {
+          "name": "nome_gioco",
+          "key": false
+        }
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "id": "rel_docente_classe",
+      "name": "CREA",
+      "from": "entity_docente",
+      "to": "entity_classe",
+      "cardinalityFrom": "1:1",
+      "cardinalityTo": "0:N",
+      "attributes": [],
+      "description": "Un docente crea una o più classi virtuali"
+    },
+    {
+      "id": "rel_studente_classe",
+      "name": "SI_ISCRIVE",
+      "from": "entity_studente",
+      "to": "entity_classe",
+      "cardinalityFrom": "1:1",
+      "cardinalityTo": "0:N",
+      "attributes": [],
+      "description": "Uno studente si iscrive a una o più classi virtuali"
+    },
+    {
+      "id": "rel_classe_videogioco",
+      "name": "INCLUDE",
+      "from": "entity_classe",
+      "to": "entity_videogioco",
+      "cardinalityFrom": "1:1",
+      "cardinalityTo": "1:N",
+      "attributes": [],
+      "description": "Una classe include uno o più videogiochi",
+      "x": 959.5,
+      "y": 429.5
+    },
+    {
+      "id": "rel_videogioco_argomento",
+      "name": "CLASSIFICATO_PER",
+      "from": "entity_videogioco",
+      "to": "entity_argomento",
+      "cardinalityFrom": "1:1",
+      "cardinalityTo": "1:N",
+      "attributes": [],
+      "description": "Un videogioco è classificato per uno o più argomenti"
+    },
+    {
+      "id": "rel_videogioco_immagine",
+      "name": "HA",
+      "from": "entity_videogioco",
+      "to": "entity_immagine",
+      "cardinalityFrom": "1:1",
+      "cardinalityTo": "1:N",
+      "attributes": [],
+      "description": "Un videogioco ha fino a tre immagini"
+    },
+    {
+      "id": "rel_1769355249569",
+      "name": "GENERARE",
+      "from": "entity_docente",
+      "to": "entity_1769355217655",
+      "cardinalityFrom": "0:N",
+      "cardinalityTo": "1:1",
+      "attributes": [],
+      "type": "relation"
+    },
+    {
+      "id": "rel_1769355420122",
+      "name": "Contiene",
+      "from": "entity_1769355217655",
+      "to": "entity_1769355319970",
+      "cardinalityFrom": "1:N",
+      "cardinalityTo": "1:N",
+      "attributes": [],
+      "type": "relation"
+    },
+    {
+      "id": "rel_1769355494550",
+      "name": "SI_RIFERISCE_A",
+      "from": "entity_1769355319970",
+      "to": "entity_videogioco",
+      "cardinalityFrom": "1:1",
+      "cardinalityTo": "1:N",
+      "attributes": [],
+      "type": "relation"
+    }
+  ]
+}

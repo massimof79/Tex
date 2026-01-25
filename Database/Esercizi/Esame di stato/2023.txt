@@ -1,0 +1,18 @@
+Una scuola vuole progettare una piattaforma web per la fruizione di educational games (ovvero videogiochi in ambito educativo), per migliorare l’apprendimento nelle varie materie.
+
+Ciascun docente, una volta completata la registrazione alla piattaforma, può creare una o più classi virtuali(identificate da un nome e una materia di pertinenza: es. 3B, matematica) e aprire l’iscrizione alle singole
+classi ai propri studenti tramite la condivisione del codice iscrizione (link o QR-code).
+
+Nella piattaforma è presente il catalogo dei videogiochi didattici, classificati in base ad un elenco di argomenti prestabiliti (es: triangoli, legge di Ohm, verismo ...): ciascun docente può selezionare uno o più
+videogiochi per includerli in una classe virtuale. 
+
+Per ogni videogioco è presente un titolo, una descrizione breve di massimo 160 caratteri, una descrizione estesa, il numero di “monete virtuali” che si possono
+raccogliere all’interno del gioco e fino a tre immagini sul gioco.
+
+
+Uno studente si iscriverà sulla piattaforma alle classi cui è stato invitato (es: 3B matematica, 3B italiano ...)tramite il relativo codice iscrizione, e all’interno di ciascuna classe troverà i link ai videogiochi didattici
+proposti dal docente. 
+
+Svolgendo ciascun videogioco, lo studente potrà raccogliere sequenzialmente delle monete tramite quiz o attività da completare. Una moneta è un riconoscimento che viene assegnato nel videogioco al raggiungimento di determinati traguardi educativi graduali.
+
+Attraverso il numero di monete, raccolte man mano da uno studente in ciascun videogioco di quella classe, si può determinare una classifica per ciascun gioco e anche una classifica generale comprensiva di tutti i giochi della classe; il docente può quindi seguire l’andamento degli studenti e supportarli individualmente nel completamento della raccolta delle monete.
