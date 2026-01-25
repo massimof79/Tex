@@ -1,0 +1,332 @@
+{
+  "entities": [
+    {
+      "id": "entity_aeroporto",
+      "name": "AEROPORTO",
+      "type": "entity",
+      "x": 1311.5714285714287,
+      "y": 154.42857142857144,
+      "attributes": [
+        {
+          "name": "Id_Aeroporto",
+          "key": true
+        },
+        {
+          "name": "Nome",
+          "key": false
+        },
+        {
+          "name": "Citta",
+          "key": false
+        },
+        {
+          "name": "Paese",
+          "key": false
+        }
+      ],
+      "attributesSide": "right"
+    },
+    {
+      "id": "entity_compagnia",
+      "name": "COMPAGNIA_AEREA",
+      "type": "entity",
+      "x": 452.85714285714283,
+      "y": 215.5714285714286,
+      "attributes": [
+        {
+          "name": "Codice_IATA",
+          "key": true
+        },
+        {
+          "name": "Nome",
+          "key": false
+        },
+        {
+          "name": "Paese_Origine",
+          "key": false
+        },
+        {
+          "name": "Anno_Fondazione",
+          "key": false
+        }
+      ]
+    },
+    {
+      "id": "entity_terminal",
+      "name": "TERMINAL",
+      "type": "entity",
+      "x": 1040.4285714285716,
+      "y": 23.57142857142857,
+      "attributes": [
+        {
+          "name": "Codice_Terminal",
+          "key": true
+        },
+        {
+          "name": "Tipologia",
+          "key": false
+        },
+        {
+          "name": "Anno_Apertura",
+          "key": false
+        },
+        {
+          "name": "Capienza_Massima",
+          "key": false
+        }
+      ]
+    },
+    {
+      "id": "entity_gate",
+      "name": "GATE",
+      "type": "entity",
+      "x": 214,
+      "y": 24,
+      "attributes": [
+        {
+          "name": "Numero_Gate",
+          "key": true
+        },
+        {
+          "name": "Tipo",
+          "key": false
+        },
+        {
+          "name": "Stato_Operativo",
+          "key": false
+        }
+      ]
+    },
+    {
+      "id": "entity_pilota",
+      "name": "PERSONALE",
+      "type": "entity",
+      "x": 848.2857142857143,
+      "y": 276.85714285714283,
+      "attributes": [
+        {
+          "name": "Abilitazione",
+          "key": false
+        },
+        {
+          "name": "Ore_Di_Volo",
+          "key": false
+        },
+        {
+          "name": "CodiceDip",
+          "key": true
+        },
+        {
+          "name": "Nome",
+          "key": false
+        },
+        {
+          "name": "Cognome",
+          "key": false
+        },
+        {
+          "name": "Data_Assunzione",
+          "key": false
+        },
+        {
+          "name": "Tipo",
+          "key": false
+        },
+        {
+          "name": "Anzianità",
+          "key": false
+        }
+      ]
+    },
+    {
+      "id": "entity_settore",
+      "name": "SETTORE_SPAZIO_AEREO",
+      "type": "entity",
+      "x": 1174.1428571428569,
+      "y": 632.7142857142858,
+      "attributes": [
+        {
+          "name": "Codice_Settore",
+          "key": true
+        },
+        {
+          "name": "Descrizione_Geografica",
+          "key": false
+        },
+        {
+          "name": "Livello_Complessita",
+          "key": false
+        }
+      ]
+    },
+    {
+      "id": "entity_aeromobile",
+      "name": "AEROMOBILE",
+      "type": "entity",
+      "x": 859.4285714285713,
+      "y": 535.2857142857143,
+      "attributes": [
+        {
+          "name": "Codice_Modello",
+          "key": true
+        },
+        {
+          "name": "Produttore",
+          "key": false
+        },
+        {
+          "name": "Tipo",
+          "key": false
+        }
+      ],
+      "attributesSide": "right"
+    },
+    {
+      "id": "entity_lingua",
+      "name": "LINGUA",
+      "type": "entity",
+      "x": 1355,
+      "y": 462.1428571428571,
+      "attributes": [
+        {
+          "name": "Nome_Lingua",
+          "key": true
+        }
+      ]
+    },
+    {
+      "id": "entity_1769263217796",
+      "name": "VOLO",
+      "type": "entity",
+      "x": 150.2417224229484,
+      "y": 365.61760662712385,
+      "attributesSide": "left",
+      "attributes": []
+    },
+    {
+      "id": "entity_1769264164996",
+      "name": "PASSEGGERO",
+      "type": "entity",
+      "x": 94.54799939388471,
+      "y": 632.4863258488499,
+      "attributesSide": "left",
+      "attributes": []
+    }
+  ],
+  "relationships": [
+    {
+      "id": "rel_organizza",
+      "name": "ORGANIZZA",
+      "from": "entity_aeroporto",
+      "to": "entity_terminal",
+      "cardinalityFrom": "1:1",
+      "cardinalityTo": "1:N",
+      "attributes": []
+    },
+    {
+      "id": "rel_dispone",
+      "name": "DISPONE",
+      "from": "entity_terminal",
+      "to": "entity_gate",
+      "cardinalityFrom": "1:1",
+      "cardinalityTo": "1:N",
+      "attributes": []
+    },
+    {
+      "id": "rel_utilizza",
+      "name": "UTILIZZA",
+      "from": "entity_compagnia",
+      "to": "entity_gate",
+      "cardinalityFrom": "1:N",
+      "cardinalityTo": "1:N",
+      "attributes": []
+    },
+    {
+      "id": "rel_appartiene",
+      "name": "APPARTIENE",
+      "from": "entity_pilota",
+      "to": "entity_compagnia",
+      "cardinalityFrom": "1:N",
+      "cardinalityTo": "1:1",
+      "attributes": [],
+      "x": 690.4285714285714,
+      "y": 241.35714285714286
+    },
+    {
+      "id": "rel_parla",
+      "name": "PARLA",
+      "from": "entity_pilota",
+      "to": "entity_lingua",
+      "cardinalityFrom": "1:N",
+      "cardinalityTo": "1:N",
+      "attributes": [],
+      "x": 1342.857142857143,
+      "y": 322.5714285714286
+    },
+    {
+      "id": "rel_qualificato",
+      "name": "QUALIFICATO_PER",
+      "from": "entity_pilota",
+      "to": "entity_aeromobile",
+      "cardinalityFrom": "1:N",
+      "cardinalityTo": "1:N",
+      "attributes": [],
+      "x": 908.5714285714284,
+      "y": 449.07142857142856
+    },
+    {
+      "id": "rel_1769263271196",
+      "name": "UTILIZZA",
+      "from": "entity_1769263217796",
+      "to": "entity_aeromobile",
+      "cardinalityFrom": "1:1",
+      "cardinalityTo": "1:N",
+      "attributes": [],
+      "type": "relation",
+      "x": 620.8351469257599,
+      "y": 529.4516604564191
+    },
+    {
+      "id": "rel_1769263316596",
+      "name": "PARTIRE",
+      "from": "entity_1769263217796",
+      "to": "entity_gate",
+      "cardinalityFrom": "1:1",
+      "cardinalityTo": "1:N",
+      "attributes": [],
+      "type": "relation"
+    },
+    {
+      "id": "rel_1769263535132",
+      "name": "GESTISCE",
+      "from": "entity_pilota",
+      "to": "entity_settore",
+      "cardinalityFrom": "1:N",
+      "cardinalityTo": "1:N",
+      "attributes": [],
+      "type": "relation",
+      "x": 1087.4285714285713,
+      "y": 448.5714285714286
+    },
+    {
+      "id": "rel_1769263748187",
+      "name": "ASSEGNAZIONE_A_TERMINAL",
+      "from": "entity_pilota",
+      "to": "entity_terminal",
+      "cardinalityFrom": "1:1",
+      "cardinalityTo": "1:N",
+      "attributes": [],
+      "type": "relation"
+    },
+    {
+      "id": "rel_1769264204738",
+      "name": "PRENOTA",
+      "from": "entity_1769264164996",
+      "to": "entity_1769263217796",
+      "cardinalityFrom": "1:N",
+      "cardinalityTo": "1:N",
+      "attributes": [],
+      "type": "relation"
+    }
+  ]
+}
