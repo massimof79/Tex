@@ -1,0 +1,146 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[italian]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\lstset{
+	basicstyle=\ttfamily\small,
+	keywordstyle=\color{blue},
+	commentstyle=\color{gray},
+	stringstyle=\color{red},
+	frame=single,
+	breaklines=true,
+	showstringspaces=false
+}
+
+\title{Alberi decisionali Gestione intelligente delle richieste di assistenza}
+\author{Prof. Fedeli Massimo}
+\date{}
+
+\begin{document}
+	\maketitle
+	
+	\newpage
+	\section{Introduzione}
+	
+	In questo documento viene illustrato il funzionamento di un \textbf{albero decisionale} attraverso un esempio realistico e vicino all'esperienza quotidiana: la classificazione delle richieste di assistenza tecnica in base alla loro priorità.
+	
+	L'obiettivo è spiegare come un algoritmo di \emph{machine learning} possa supportare decisioni organizzative, rendendole più rapide, coerenti e motivate.
+	
+	\section{Il problema affrontato}
+	
+	In molti contesti, come scuole, aziende o uffici informatici, arrivano quotidianamente richieste di assistenza. Non tutte hanno la stessa importanza: alcune possono attendere, altre richiedono un intervento immediato.
+	
+	Il problema consiste nel determinare automaticamente la \textbf{priorità} di una richiesta sulla base di alcune informazioni fornite dall'utente.
+	
+	Ogni richiesta è descritta tramite quattro caratteristiche:
+	\begin{itemize}
+		\item tipo di problema (software, hardware, rete);
+		\item numero di utenti coinvolti;
+		\item impatto sul servizio;
+		\item urgenza dichiarata.
+	\end{itemize}
+	
+	A queste informazioni è associata un'etichetta, chiamata \emph{Priorità}, che rappresenta la decisione finale da prendere.
+	
+	\section{Classificazione supervisionata}
+	
+	Il problema rientra nella \textbf{classificazione supervisionata}. Il modello viene addestrato su un insieme di esempi per i quali la priorità corretta è già nota.
+	
+	L'algoritmo analizza questi esempi e impara una serie di regole che collegano le caratteristiche della richiesta alla priorità finale.
+	
+	\section{Preparazione dei dati}
+	
+	Il dataset è memorizzato in un file CSV e viene caricato tramite la libreria \texttt{pandas}. Poiché le informazioni sono espresse in forma testuale, è necessario trasformarle in valori numerici prima di poterle utilizzare.
+	
+	Questa operazione viene svolta tramite il \textbf{Label Encoding}. Ogni valore testuale viene sostituito da un numero intero.
+	
+	Ad esempio:
+	\begin{quote}
+		software -- 0, hardware  1,  rete  2
+	\end{quote}
+	
+	Per ogni colonna viene salvato il relativo codificatore, così da poter tradurre correttamente anche i dati inseriti successivamente dall'utente.
+	
+	\section{Suddivisione dei dati}
+	
+	Il dataset viene diviso in due parti:
+	\begin{itemize}
+		\item \textbf{training set} (70\%), utilizzato per addestrare il modello;
+		\item \textbf{test set} (30\%), utilizzato per valutarne le prestazioni.
+	\end{itemize}
+	
+	Questa separazione permette di verificare se l'albero decisionale è in grado di generalizzare, cioè di funzionare correttamente anche su dati mai visti prima.
+	
+	\section{L'albero decisionale}
+	
+	Il modello utilizzato è un \texttt{DecisionTreeClassifier}. Durante l'addestramento, l'albero costruisce una sequenza di decisioni del tipo:
+	\begin{quote}
+		Se l'impatto è alto e l'urgenza è alta, allora la priorità è elevata.
+	\end{quote}
+	
+	A ogni nodo l'algoritmo sceglie la condizione che separa meglio le richieste, riducendo l'\textbf{impurità} dei gruppi ottenuti. In questo caso viene utilizzato il criterio di Gini.
+	
+	\section{Profondità dell'albero}
+	
+	La profondità massima dell'albero è limitata a 4 livelli. Questa scelta evita il fenomeno dell'\textbf{overfitting}, che si verifica quando il modello impara regole troppo specifiche e perde la capacità di generalizzare.
+	
+	Un albero con profondità limitata rappresenta un buon compromesso tra:
+	\begin{itemize}
+		\item capacità di descrivere situazioni diverse;
+		\item semplicità e leggibilità delle decisioni;
+		\item robustezza del modello.
+	\end{itemize}
+	
+	\section{Valutazione del modello}
+	
+	Dopo l'addestramento, il modello viene testato sui dati di test. La prestazione viene misurata tramite l'\textbf{accuratezza}, cioè la percentuale di previsioni corrette.
+	
+	Questo valore fornisce un'indicazione quantitativa dell'affidabilità del sistema.
+	
+	\section{Salvataggio e riutilizzo del modello}
+	
+	Una caratteristica importante del programma è il salvataggio del modello addestrato su file. In questo modo:
+	\begin{itemize}
+		\item l'addestramento non deve essere ripetuto ogni volta;
+		\item il modello può essere utilizzato in momenti diversi;
+		\item il sistema diventa più efficiente.
+	\end{itemize}
+	
+	Insieme al modello vengono salvati anche i codificatori utilizzati per i dati.
+	
+	\section{Previsione di una nuova richiesta}
+	
+	L'utente può inserire manualmente i dati di una nuova richiesta di assistenza. Il programma:
+	\begin{enumerate}
+		\item codifica i valori testuali;
+		\item applica il modello addestrato;
+		\item riconverte il risultato in forma testuale;
+		\item mostra la priorità prevista.
+	\end{enumerate}
+	
+	Questo processo rende evidente come il modello possa essere utilizzato in un contesto reale.
+	
+	\section{Struttura del programma}
+	
+	Il programma è organizzato in funzioni, ciascuna con un compito preciso:
+	\begin{itemize}
+		\item caricamento e preparazione dei dati;
+		\item addestramento del modello;
+		\item previsione della priorità;
+		\item gestione del menù.
+	\end{itemize}
+	
+	Questa struttura migliora la leggibilità del codice e ne facilita la manutenzione.
+	
+	\section{Conclusione}
+	
+	L'albero decisionale si dimostra uno strumento efficace e facilmente interpretabile per la gestione delle priorità nelle richieste di assistenza.
+	
+\end{document}
