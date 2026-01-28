@@ -1,0 +1,210 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[italian]{babel}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\geometry{margin=2.5cm}
+
+\title{Le Virtual LAN (VLAN) \\ Teoria, funzionamento e applicazioni}
+\author{Prof. Fedeli Massimo }
+\date{Tutti i diritti riservati}
+
+\begin{document}
+	
+	\maketitle
+	\newpage
+	
+	\tableofcontents
+
+	
+	\section{Cos'è una VLAN}
+	
+	Una \textbf{Virtual LAN (VLAN)} è una rete locale creata in modo \textbf{logico} e non fisico.  
+	Attraverso le VLAN è possibile suddividere un'unica infrastruttura di rete (switch, cavi, apparati) in più reti separate tra loro, come se esistessero switch distinti, pur utilizzando lo stesso hardware.
+	
+	Lo standard tecnico che permette questa suddivisione è lo \textbf{IEEE 802.1Q}.
+	
+	L'idea fondamentale è semplice:  
+	\begin{quote}
+		\textit{Host collegati allo stesso switch possono appartenere a reti diverse, anche se fisicamente connessi allo stesso dispositivo.}
+	\end{quote}
+	
+	Ogni VLAN si comporta come una LAN indipendente:
+	\begin{itemize}
+		\item il traffico broadcast resta confinato all'interno della VLAN
+		\item i dispositivi di VLAN diverse non possono comunicare direttamente a livello 2
+	\end{itemize}
+	
+	\section{VLAN e modello ISO/OSI}
+	
+	Le VLAN operano a \textbf{Livello 2 (Data Link)} del modello ISO/OSI.  
+	Questo significa che la separazione avviene a livello di frame Ethernet, non a livello IP.
+	
+	La comunicazione tra dispositivi appartenenti a VLAN diverse richiede quindi un dispositivo di \textbf{Livello 3}, cioè:
+	\begin{itemize}
+		\item un router
+		\item oppure uno switch Layer 3
+	\end{itemize}
+	
+	Per questo motivo, nella progettazione delle reti si crea spesso una corrispondenza:
+	\[
+	\textbf{1 VLAN} \longleftrightarrow \textbf{1 sottorete IP}
+	\]
+	
+	\section{Perché usare le VLAN}
+	
+	L'introduzione delle VLAN risponde a tre esigenze fondamentali:
+	
+	\subsection{Riduzione del traffico}
+	Limitando il dominio di broadcast si evita che tutti i dispositivi ricevano traffico non necessario, migliorando le prestazioni.
+	
+	\subsection{Maggiore sicurezza}
+	Le VLAN permettono di isolare gruppi di utenti o servizi (ad esempio studenti, segreteria, server), riducendo il rischio di accessi indesiderati.
+	
+	\subsection{Flessibilità e gestione}
+	Spostare un utente da una rete a un'altra non richiede di cambiare cablaggio: basta modificare la configurazione della porta dello switch.
+	
+	\section{Identificazione delle VLAN}
+	
+	Ogni VLAN è identificata da:
+	
+	\begin{itemize}
+		\item un \textbf{nome descrittivo} (es. VLAN\_DOCENTI)
+		\item un \textbf{VID (VLAN Identifier)}
+	\end{itemize}
+	
+	Il VID è un numero a 12 bit:
+	
+	\[
+	VID \in [1, 4094]
+	\]
+	
+	I valori 0 e 4095 sono riservati dallo standard.
+	
+	\section{Modalità di realizzazione delle VLAN}
+	
+	\subsection{VLAN Port-Based (Access o Untagged)}
+	
+	È la modalità più semplice.  
+	Ogni porta dello switch viene assegnata manualmente a una VLAN.
+	
+	\textbf{Caratteristiche principali:}
+	\begin{itemize}
+		\item una porta appartiene a una sola VLAN
+		\item i frame Ethernet non contengono informazioni aggiuntive (nessun tag)
+		\item i dispositivi collegati non devono conoscere l'esistenza delle VLAN
+	\end{itemize}
+	
+	\textbf{Limite:} l'appartenenza alla VLAN dipende solo dalla porta fisica, quindi chiunque si colleghi a quella porta entra automaticamente nella VLAN.
+	
+	\subsection{VLAN Tagged (802.1Q)}
+	
+	Questa modalità consente di trasportare traffico di \textbf{più VLAN sullo stesso collegamento fisico}.  
+	Per farlo, i frame Ethernet vengono modificati inserendo un \textbf{tag VLAN}.
+	
+	Le porte si distinguono in:
+	
+	\begin{itemize}
+		\item \textbf{Access Port}: traffico di una sola VLAN, frame senza tag
+		\item \textbf{Trunk Port}: traffico di più VLAN, frame con tag 802.1Q
+	\end{itemize}
+	
+	\section{Il Tag 802.1Q}
+	
+	Quando un frame attraversa una porta trunk, lo switch inserisce un campo aggiuntivo di 4 byte nel frame Ethernet.
+	
+	Questo campo contiene:
+	
+	\begin{itemize}
+		\item \textbf{TPID (Tag Protocol Identifier)} = 0x8100
+		\item \textbf{TCI (Tag Control Information)}, che include:
+		\begin{itemize}
+			\item Priorità del traffico (QoS)
+			\item CFI (compatibilità formato MAC)
+			\item VID (identificatore VLAN)
+		\end{itemize}
+	\end{itemize}
+	
+	Grazie al VID, gli switch lungo il percorso sanno a quale VLAN appartiene ogni frame.
+	
+	\section{VLAN Nativa}
+	
+	Su un collegamento trunk esiste una VLAN speciale chiamata \textbf{VLAN nativa}.
+	
+	I frame appartenenti alla VLAN nativa:
+	\begin{itemize}
+		\item viaggiano sul trunk \textbf{senza tag}
+		\item per default corrispondono alla VLAN 1
+	\end{itemize}
+	
+	Per motivi di sicurezza è consigliato:
+	\begin{itemize}
+		\item non usare la VLAN 1 come VLAN nativa
+		\item scegliere una VLAN dedicata non utilizzata per utenti
+	\end{itemize}
+	
+	\section{Porte Ibride}
+	
+	Una \textbf{porta ibrida} può gestire sia traffico tagged sia untagged.
+	
+	Funzionamento:
+	\begin{itemize}
+		\item se arriva un frame senza tag, viene associato alla VLAN PVID della porta
+		\item se arriva un frame con tag, viene associato alla VLAN indicata nel VID
+	\end{itemize}
+	
+	Questa modalità è utile quando convivono dispositivi moderni e dispositivi che non supportano il tagging VLAN.
+	
+	\section{Operazioni svolte dallo switch}
+	
+	Quando un frame entra in uno switch, avvengono tre fasi:
+	
+	\subsection*{Ingress}
+	Lo switch identifica la VLAN di appartenenza del frame (tramite porta o tag).
+	
+	\subsection*{Forwarding}
+	Il frame viene inoltrato solo verso porte appartenenti alla stessa VLAN, usando una tabella MAC separata per ogni VLAN.
+	
+	\subsection*{Egress}
+	Se necessario, lo switch:
+	\begin{itemize}
+		\item aggiunge il tag VLAN (verso trunk)
+		\item rimuove il tag VLAN (verso access port)
+	\end{itemize}
+	
+	\section{VLAN estese su più switch}
+	
+	Le VLAN possono estendersi su più switch grazie ai collegamenti \textbf{trunk}.  
+	Un trunk è un collegamento punto-punto tra due switch che trasporta traffico di più VLAN mediante tagging 802.1Q.
+	
+	\section{Protocollo VTP (Cisco)}
+	
+	Il \textbf{VLAN Trunking Protocol} è un protocollo proprietario Cisco che consente di distribuire automaticamente la configurazione VLAN tra più switch.
+	
+	Modalità operative:
+	\begin{itemize}
+		\item Server (crea e modifica VLAN)
+		\item Client (riceve configurazioni)
+		\item Transparent (propaga ma non modifica)
+	\end{itemize}
+	
+	\section{Inter-VLAN Routing}
+	
+	Poiché le VLAN sono isolate a livello 2, per permettere la comunicazione tra di esse è necessario il routing.
+	
+	Le principali soluzioni sono:
+	\begin{itemize}
+		\item Router tradizionale con più interfacce fisiche
+		\item Router-on-a-stick (una sola interfaccia trunk)
+		\item Switch Layer 3
+	\end{itemize}
+	
+	\section{Conclusione}
+	
+	Le VLAN rappresentano uno strumento fondamentale per la progettazione delle reti moderne.  
+	Consentono segmentazione logica, migliore controllo del traffico, maggiore sicurezza e una gestione molto più flessibile dell'infrastruttura.
+	
+	Comprendere il funzionamento del tagging 802.1Q, delle porte access e trunk e del routing tra VLAN è essenziale per chiunque si occupi di reti.
+	
+\end{document}
