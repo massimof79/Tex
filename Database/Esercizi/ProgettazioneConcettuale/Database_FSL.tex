@@ -1,0 +1,50 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[italian]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+
+\title{Esercizio di Progettazione di un sistema informativo per la \\gestione della "Formazione Scuola--Lavoro"}
+\author{Prof. Fedeli Massimo}
+\date{}
+
+\begin{document}
+	
+	\maketitle
+
+\newpage
+
+	Un istituto tecnico tecnologico intende realizzare un sistema informativo per la gestione delle attività di \textbf{formazione scuola--lavoro (FSL)}. Il sistema deve supportare l’organizzazione delle esperienze formative svolte dagli studenti presso aziende del territorio, la gestione dei tutor coinvolti e il processo di candidatura e assegnazione degli studenti alle esperienze disponibili.
+	
+	L’istituto gestisce più indirizzi di studio e, per ciascun anno scolastico, un elenco di studenti iscritti. Per ogni studente devono essere memorizzati almeno: codice identificativo, nome, cognome, data di nascita, luogo di nascita, codice fiscale, indirizzo di residenza, email istituzionale, classe frequentata, indirizzo di studi. Uno studente può partecipare, nel corso degli anni, a più esperienze di FSL.
+	
+	Le attività di FSL coinvolgono due tipologie di tutor. I tutor scolastici sono docenti dell’istituto. Per ciascun tutor scolastico si vogliono memorizzare: codice docente, nome, cognome, email, dipartimento o area disciplinare di appartenenza, numero massimo di studenti che può seguire contemporaneamente. Ogni esperienza deve avere un tutor scolastico responsabile, ma un tutor può seguire più esperienze, anche nello stesso periodo, purché non superi il limite massimo di studenti assegnati.
+	
+	Le aziende del territorio possono rendersi disponibili ad ospitare studenti. Per ogni azienda devono essere registrati: ragione sociale, partita IVA, sede legale, sede operativa (se diversa), settore di attività, referente aziendale, email e telefono del referente. Un’azienda può pubblicare nel tempo più disponibilità ad ospitare studenti.
+	
+	Ogni disponibilità aziendale rappresenta una proposta concreta di esperienza formativa. Per ciascuna disponibilità devono essere memorizzati: codice della disponibilità, azienda proponente, periodo previsto (data inizio e data fine), numero massimo di studenti ospitabili, descrizione delle attività previste, competenze richieste o preferenziali, eventuale indirizzo di studi consigliato. Una stessa azienda può avere più disponibilità anche nello stesso anno scolastico, con caratteristiche differenti.
+	
+	Gli studenti possono consultare le disponibilità pubblicate e presentare una o più candidature. Per ogni candidatura devono essere registrati: studente candidato, disponibilità scelta, data di candidatura, eventuale lettera di motivazione (testo libero), stato della candidatura (ad esempio: inserita, in valutazione, accettata, rifiutata, ritirata). Uno studente non può candidarsi due volte alla stessa disponibilità, ma può candidarsi a disponibilità diverse.
+	
+	Quando una candidatura viene accettata, si genera una specifica esperienza di FSL. L’esperienza è quindi l’effettiva assegnazione di uno studente a una disponibilità aziendale. Per ogni esperienza devono essere memorizzati: studente assegnato, azienda ospitante, tutor scolastico assegnato, tutor aziendale (nome, cognome, ruolo in azienda, email), periodo effettivo (che può differire leggermente da quello previsto nella disponibilità), numero di ore previste, numero di ore effettivamente svolte, valutazione finale (eventuale punteggio o giudizio), esito (positivo, negativo, interrotto). Ogni esperienza è associata a una e una sola disponibilità originaria, ma una disponibilità può generare più esperienze, fino al numero massimo di posti previsti.
+	
+	Il sistema deve anche permettere di conoscere, per ogni studente, lo storico completo delle esperienze svolte; per ogni tutor scolastico, l’elenco degli studenti seguiti e delle esperienze supervisionate; per ogni azienda, il numero di studenti ospitati nel tempo e le esperienze attivate a partire dalle proprie disponibilità.
+	
+	\bigskip
+	\newpage
+	
+	\textbf{Richieste}
+	
+	Sulla base della descrizione fornita, svolgere le seguenti attività:
+	
+	\begin{enumerate}
+		\item Realizzare lo schema e-r
+		\item Implementare e popolare il database
+		\item Scrivere il codice html + js + php per gestire:		
+			\subitem Autenticazione al sistema
+			\subitem Caricamento dati
+			\subitem Interrogazione dati
+	\end{enumerate}
+	
+\end{document}

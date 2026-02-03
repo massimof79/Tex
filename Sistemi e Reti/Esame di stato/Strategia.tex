@@ -1,0 +1,485 @@
+\documentclass[a4paper,12pt]{article}
+
+\usepackage[italian]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{longtable}
+\usepackage{enumitem}
+\geometry{margin=2.5cm}
+
+\title{Strategia Generale per Affrontare i Temi di Sistemi e Reti all'Esame di Stato}
+\author{Prof. Fedeli Massimo}
+\date{}
+
+\begin{document}
+	
+	\maketitle
+	\newpage
+	\tableofcontents
+	\newpage
+	
+	\section{Introduzione}
+	
+	Questo documento fornisce una strategia operativa passo passo per affrontare in modo efficace la prima e la seconda parte dei temi di Sistemi e Reti dell'Esame di Stato.
+	
+	L'obiettivo non è memorizzare una soluzione specifica, ma acquisire un metodo replicabile, capace di adattarsi a qualsiasi traccia di tipo progettuale riguardante reti, infrastrutture, sicurezza, servizi e basi di dati.
+	
+	\section{Fase 0 – Lettura tecnica della traccia}
+	
+	\subsection{Analisi preliminare}
+	
+	Prima di scrivere qualsiasi cosa:
+	
+	\begin{itemize}
+		\item Leggere l’\textbf{intera traccia }senza soffermarsi sui dettagli
+		\item Individuare il \textbf{contesto applicativo} (azienda, scuola, ente, logistica, sanità, ecc.)
+		\item Evidenziare:
+		\begin{itemize}
+			\item chi sono gli \textbf{attori} del sistema
+			\item quali sono i \textbf{processi} principali
+			\item quali \textbf{richieste tecnologiche} sono esplicite
+			\item quali aspetti di \textbf{sicurezza} o continuità sono richiesti
+		\end{itemize}
+	\end{itemize}
+	
+	\subsection{Classificazione del problema}
+	
+	Quasi tutte le tracce rientrano in uno di questi schemi:
+	
+	\begin{enumerate}
+		\item Sistema informativo distribuito
+		\item Infrastruttura di rete multi-sede
+		\item Sistema web con database
+		\item Sistema di monitoraggio o controllo remoto
+		\item Progetto con requisiti di sicurezza e alta affidabilità
+	\end{enumerate}
+	
+	Individuare lo schema aiuta a richiamare subito le soluzioni architetturali tipiche.
+	
+	\newpage
+	\section{Fase 1 – Definizione del sistema (visione globale)}
+	
+	Questa è probabilmente la parte più importante.
+	
+	\subsection{Descrivere il sistema prima della tecnologia}
+	
+	Iniziare sempre descrivendo cosa deve fare il sistema senza entrare troppo nei dettagli implementativi o tecnici. La descrizione potrebbe essere strutturata come segue:
+	
+	\begin{enumerate}
+		\item Scopo del sistema
+		\item Utenti coinvolti
+		\item Operazioni principali
+		\item Flusso generale delle informazioni
+	\end{enumerate}
+	
+	\subsection{Modello logico-operativo}
+	
+	Spiegare il ciclo di vita delle operazioni principali.
+	Ogni sistema ha sempre un flusso:
+	
+	\begin{center}
+		Input dati → Elaborazione → Memorizzazione → Consultazione → Output/Servizi
+	\end{center}
+	
+	Descrivere questo flusso in modo ordinato per far capire a chi corregge la prova che hai bene chiaro in testa come funzionerà il sistema.
+	
+	\section{Fase 2 – Progettazione dell'infrastruttura}
+	
+In questa sezione dello svolgimento del compito devi passare dalla descrizione della visione generale del sistema alla descrizione dell'architettura tecnica.
+	
+	\subsection{Struttura standard da seguire}
+	
+	Un approccio razionale potrebbe essere quello di suddividere la descrizione dell'architettura in tre livelli:
+	
+	\begin{enumerate}
+		\item Livello utente (client, dispositivi, app)
+		\item Livello rete (LAN, WAN, Internet, VPN)
+		\item Livello server (servizi, database, applicazioni)
+	\end{enumerate}
+	
+	\subsection{Dispositivi degli operatori}
+	
+	Per ogni figura operativa indicare:
+	
+	\begin{itemize}
+		\item tipo di dispositivo
+		\item sistema di connessione
+		\item software utilizzato
+		\item modalità di autenticazione
+	\end{itemize}
+	
+	E' sempre opportuno motivare le scelte. Es. "Si decide di utilizzare un dispositivo palmare con connettività 4g per rendere possibile l'uso in zone non coperte dalla rete wireless lan".
+	\subsection{Comunicazioni}
+	
+	Descrivere sempre:
+	
+	\begin{itemize}
+		\item protocolli applicativi (HTTPS, REST, MQTT, SMTP, ecc.)
+		\item protocolli di trasporto (TCP/UDP)
+		\item sicurezza delle comunicazioni (TLS, VPN)
+	\end{itemize}
+	
+	Questo deve suggerire allo studente di ripassare bene i vari protocolli di rete e i loro impieghi.
+	\newpage
+	\section{Fase 3 – Architettura dei server}
+	
+	\subsection{Separazione dei ruoli}
+	
+	Indicare chiaramente:
+	
+	\begin{itemize}
+		\item Web Server
+		\item Application Server
+		\item Database Server
+		\item Server di backup
+		\item Server di autenticazione (eventuale)
+	\end{itemize}
+	
+	Per ogni server indicare i servizi offerti, il tipo di tecnologie adottata, le caratteristiche hardware. Motivare sempre le scelte in funzione delle prestazioni, del numero di utenti del sistema, di considerazioni legate alla sicurezza, all'usabilità, alla continuità del servizio e dei costi.
+	
+	\subsection{Soluzioni alternative}
+	
+	Quando richiesto, proporre due opzioni:
+	
+	\begin{enumerate}
+		\item Infrastruttura interna (on-premise)
+		\item Infrastruttura cloud
+	\end{enumerate}
+	
+	Per ognuna indicare:
+	
+	\begin{itemize}
+		\item vantaggi
+		\item svantaggi
+		\item scelta motivata finale
+	\end{itemize}
+	
+	\section{Fase 4 – Progettazione della base di dati}
+	
+	Questa parte è quasi sempre presente nei quesiti della seconda parte. E' consigliato sceglie lo svolgimento di questa fase perchè è molto standardizzata e si rischia meno di commettere errori.
+	
+	\subsection{Metodo sicuro}
+	
+	\begin{enumerate}
+		\item Individuare le entità principali
+		\item Individuare le relazioni
+		\item Definire chiavi primarie
+		\item Tradurre in schema logico relazionale
+	\end{enumerate}
+	
+	\subsection{Errore da evitare}
+	
+	Non progettare tabelle scollegate.
+	Ogni tabella deve rappresentare un concetto reale del sistema.
+	
+	\newpage
+	\section{Fase 5 – Servizi applicativi}
+	
+	Qui si descrivono le funzionalità offerte agli utenti.
+	
+	\subsection{Portale web}
+	
+	Indicare:
+	
+	\begin{itemize}
+		\item autenticazione utenti
+		\item pagine disponibili
+		\item interrogazioni al database
+		\item aggiornamento dati
+	\end{itemize}
+	
+	\subsection{API e servizi}
+	
+	Se il sistema prevede app o dispositivi mobili:
+	
+	\begin{itemize}
+		\item API REST
+		\item formato dati (JSON/XML)
+		\item autenticazione token
+	\end{itemize}
+	
+	\section{Fase 6 – Sicurezza}
+	
+	Questa parte è obbligatoria anche se non esplicitamente richiesta.
+	
+	Struttura da seguire:
+	
+	\subsection{Sicurezza dei dati}
+	Cifratura, HTTPS, gestione password, hashing.
+	
+	\subsection{Sicurezza della rete}
+	Firewall, VLAN, VPN, segmentazione.
+	
+	\subsection{Sicurezza degli accessi}
+	Autenticazione, autorizzazione, log attività.
+	
+	\section{Fase 7 – Continuità operativa}
+	
+	Parole chiave da inserire sempre:
+	
+	\begin{itemize}
+		\item Backup
+		\item Ridondanza
+		\item Disaster Recovery
+		\item Fault Tolerance
+		\item Alta disponibilità
+	\end{itemize}
+	
+	Spiegare come il sistema continua a funzionare anche in caso di guasti.
+	
+	\newpage
+	\section{Fase 8 – Monitoraggio e gestione}
+	
+	Sistema professionale = sistema monitorato.
+	
+	Indicare:
+	
+	\begin{itemize}
+		\item monitoraggio server
+		\item monitoraggio rete
+		\item logging centralizzato
+		\item alert automatici
+	\end{itemize}
+	
+	\section{Fase 9 – Struttura consigliata del tema scritto}
+	
+	Ordine ideale:
+	
+	\begin{enumerate}
+		\item Introduzione e contesto
+		\item Descrizione del sistema
+		\item Flusso operativo
+		\item Architettura di rete
+		\item Architettura server
+		\item Database
+		\item Servizi applicativi
+		\item Sicurezza
+		\item Continuità operativa
+		\item Conclusione tecnica
+	\end{enumerate}
+	
+	\section{Fase 10 – Errori gravi da evitare}
+	
+	\begin{itemize}
+		\item Scrivere solo teoria senza applicarla al caso
+		\item Non separare livelli (rete, server, applicazioni)
+		\item Dimenticare la sicurezza
+		\item Dimenticare i backup
+		\item Non proporre alternative quando richiesto
+	\end{itemize}
+	
+	\section{Checklist finale.}
+	
+	Prima di consegnare, verificare:
+	
+	\begin{itemize}
+		\item Ho spiegato cosa fa il sistema?
+		\item Ho descritto i dispositivi?
+		\item Ho spiegato come comunicano?
+		\item Ho progettato i server?
+		\item Ho parlato di sicurezza?
+		\item Ho parlato di backup e continuità?
+		\item Ho usato terminologia tecnica corretta?
+	\end{itemize}
+	
+	
+	\newpage
+	\section{Applicazione guidata della strategia al caso FastDelivery}
+	
+	In questa sezione applichiamo passo per passo il metodo descritto alla traccia relativa alla gestione informatizzata delle spedizioni dell’azienda FastDelivery.
+	
+	\subsection{Fase 0 – Analisi della traccia}
+	
+	\textbf{Contesto:} azienda nazionale di spedizioni con:
+	\begin{itemize}
+		\item Sedi Operative (SO)
+		\item Centri di Smistamento Regionali (CSR)
+		\item Clienti mittenti
+		\item Destinatari
+		\item Trasportatori e magazzinieri
+	\end{itemize}
+	
+	\textbf{Problema principale:} realizzare un sistema informatico per la tracciabilità completa dei pacchi.
+	
+	\textbf{Richieste tecniche implicite:}
+	\begin{itemize}
+		\item Sistema distribuito
+		\item Aggiornamento in tempo reale
+		\item Accesso via web
+		\item Sicurezza dei dati
+		\item Continuità operativa
+	\end{itemize}
+	
+	\subsection{Fase 1 – Definizione del sistema}
+	
+	\subsubsection{Scopo del sistema}
+	Gestire digitalmente l’intero ciclo di vita di una spedizione, dalla richiesta del mittente fino alla consegna al destinatario, garantendo il tracciamento continuo.
+	
+	\subsubsection{Attori del sistema}
+	\begin{itemize}
+		\item Cliente mittente
+		\item Destinatario
+		\item Trasportatore
+		\item Magazziniere
+		\item Sistema centrale aziendale
+	\end{itemize}
+	
+	\subsubsection{Flusso operativo generale}
+	
+	\begin{enumerate}
+		\item Il cliente inserisce una richiesta online
+		\item Il sistema genera un codice di tracciamento
+		\item Il pacco viene ritirato e registrato
+		\item Il pacco transita tra SO e CSR
+		\item Ogni movimento viene registrato
+		\item Il pacco viene consegnato
+		\item Il sistema memorizza l’avvenuta consegna
+	\end{enumerate}
+	
+	\subsection{Fase 2 – Progettazione dell'infrastruttura}
+	
+	\subsubsection{Livello utente}
+	
+	\textbf{Trasportatori}
+	\begin{itemize}
+		\item Palmare industriale
+		\item Scanner barcode
+		\item Connessione 4G/5G
+		\item App di tracciamento
+	\end{itemize}
+	
+	\textbf{Magazzinieri}
+	\begin{itemize}
+		\item PC di magazzino
+		\item Scanner wireless
+		\item Accesso alla rete LAN della sede
+	\end{itemize}
+	
+	\subsubsection{Livello rete}
+	
+	\begin{itemize}
+		\item LAN locali in SO e CSR
+		\item Connessione Internet in fibra
+		\item VPN site-to-site tra sedi
+		\item HTTPS per accesso ai servizi centrali
+	\end{itemize}
+	
+	\subsubsection{Livello server}
+	
+	\begin{itemize}
+		\item Web server per il portale clienti
+		\item Application server per la logica di gestione spedizioni
+		\item Database server centrale
+		\item Server di backup remoto
+	\end{itemize}
+	
+	\subsection{Fase 3 – Architettura dei server}
+	
+	\subsubsection{Soluzione interna}
+	
+	\begin{itemize}
+		\item Data center aziendale
+		\item Server fisici ridondati
+		\item Firewall perimetrale
+	\end{itemize}
+	
+	\textbf{Svantaggi:} costi elevati, manutenzione complessa.
+	
+	\subsubsection{Soluzione cloud}
+	
+	\begin{itemize}
+		\item Server virtuali scalabili
+		\item Database gestito
+		\item Backup automatici
+		\item Alta disponibilità
+	\end{itemize}
+	
+	\textbf{Scelta motivata:} soluzione cloud per scalabilità e continuità del servizio.
+	
+	\subsection{Fase 4 – Progettazione della base di dati}
+	
+	\subsubsection{Entità principali}
+	
+	\begin{itemize}
+		\item Pacco
+		\item Movimento
+		\item Cliente
+		\item Operatore
+		\item Sede
+	\end{itemize}
+	
+	\subsubsection{Relazioni}
+	
+	\begin{itemize}
+		\item Un pacco ha molti movimenti
+		\item Un operatore registra molti movimenti
+		\item Un cliente spedisce molti pacchi
+		\item Una sede impiega molti operatori
+	\end{itemize}
+	
+	\subsection{Fase 5 – Servizi applicativi}
+	
+	\subsubsection{Portale web}
+	
+	Funzionalità:
+	\begin{itemize}
+		\item Inserimento richiesta spedizione
+		\item Consultazione stato spedizione
+		\item Notifiche automatiche
+	\end{itemize}
+	
+	\subsubsection{Servizi per dispositivi mobili}
+	
+	\begin{itemize}
+		\item API REST
+		\item Invio movimenti in tempo reale
+		\item Ricezione ordini di ritiro/consegna
+	\end{itemize}
+	
+	\subsection{Fase 6 – Sicurezza}
+	
+	\begin{itemize}
+		\item HTTPS con TLS
+		\item Autenticazione utenti con password cifrate
+		\item Autenticazione dispositivi tramite token
+		\item VPN tra sedi
+		\item Logging di tutte le operazioni
+	\end{itemize}
+	
+	\subsection{Fase 7 – Continuità operativa}
+	
+	\begin{itemize}
+		\item Database replicato
+		\item Backup giornalieri automatici
+		\item Server ridondati
+		\item Possibilità di lavoro offline temporaneo sui palmari
+	\end{itemize}
+	
+	\subsection{Fase 8 – Monitoraggio}
+	
+	\begin{itemize}
+		\item Monitoraggio stato server
+		\item Monitoraggio traffico rete
+		\item Alert automatici in caso di guasti
+	\end{itemize}
+	
+	\subsection{Conclusione applicativa}
+	
+	Applicando il metodo generale al caso FastDelivery si ottiene una soluzione completa, coerente e strutturata, che copre:
+	
+	\begin{itemize}
+		\item organizzazione operativa
+		\item infrastruttura di rete
+		\item architettura server
+		\item modello dati
+		\item servizi applicativi
+		\item sicurezza
+		\item continuità operativa
+	\end{itemize}
+	
+	Questo dimostra come un approccio metodico consenta di affrontare in modo efficace qualunque tema progettuale di Sistemi e Reti.
+	
+	
+\end{document}

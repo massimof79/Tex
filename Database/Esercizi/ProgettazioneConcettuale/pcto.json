@@ -1,0 +1,367 @@
+{
+  "entities": [
+    {
+      "id": "studente",
+      "name": "STUDENTE",
+      "type": "entity",
+      "x": 494,
+      "y": 267,
+      "attributesSide": "left",
+      "backgroundColor": "#ffffff",
+      "attributes": [
+        {
+          "name": "ID_STUDENTE",
+          "key": true
+        },
+        {
+          "name": "Nome",
+          "key": false
+        },
+        {
+          "name": "Cognome",
+          "key": false
+        },
+        {
+          "name": "DataNascita",
+          "key": false
+        },
+        {
+          "name": "LuogoNascita",
+          "key": false
+        },
+        {
+          "name": "CodiceFiscale",
+          "key": false
+        },
+        {
+          "name": "IndirizzoResidenza",
+          "key": false
+        },
+        {
+          "name": "EmailIstituzionale",
+          "key": false
+        },
+        {
+          "name": "Classe",
+          "key": false
+        },
+        {
+          "name": "IndirizzoStudi",
+          "key": false
+        }
+      ]
+    },
+    {
+      "id": "tutor_scolastico",
+      "name": "TUTOR_SCOLASTICO",
+      "type": "entity",
+      "x": 739,
+      "y": 871,
+      "attributesSide": "left",
+      "backgroundColor": "#ffffff",
+      "attributes": [
+        {
+          "name": "ID_TUTOR_SCOLASTICO",
+          "key": true
+        },
+        {
+          "name": "Nome",
+          "key": false
+        },
+        {
+          "name": "Cognome",
+          "key": false
+        },
+        {
+          "name": "Email",
+          "key": false
+        },
+        {
+          "name": "Dipartimento",
+          "key": false
+        },
+        {
+          "name": "MaxStudentiSeguiti",
+          "key": false
+        }
+      ]
+    },
+    {
+      "id": "azienda",
+      "name": "AZIENDA",
+      "type": "entity",
+      "x": 1304,
+      "y": 124,
+      "attributesSide": "left",
+      "backgroundColor": "#ffffff",
+      "attributes": [
+        {
+          "name": "ID_AZIENDA",
+          "key": true
+        },
+        {
+          "name": "RagioneSociale",
+          "key": false
+        },
+        {
+          "name": "PartitaIVA",
+          "key": false
+        },
+        {
+          "name": "SedeLegale",
+          "key": false
+        },
+        {
+          "name": "SedeOperativa",
+          "key": false
+        },
+        {
+          "name": "SettoreAttivita",
+          "key": false
+        },
+        {
+          "name": "ReferenteAziendale",
+          "key": false
+        },
+        {
+          "name": "EmailReferente",
+          "key": false
+        },
+        {
+          "name": "TelefonoReferente",
+          "key": false
+        }
+      ]
+    },
+    {
+      "id": "tutor_aziendale",
+      "name": "TUTOR_AZIENDALE",
+      "type": "entity",
+      "x": 1352,
+      "y": 646,
+      "attributesSide": "right",
+      "backgroundColor": "#ffffff",
+      "attributes": [
+        {
+          "name": "ID_TUTOR_AZIENDALE",
+          "key": true
+        },
+        {
+          "name": "Nome",
+          "key": false
+        },
+        {
+          "name": "Cognome",
+          "key": false
+        },
+        {
+          "name": "Ruolo",
+          "key": false
+        },
+        {
+          "name": "Email",
+          "key": false
+        }
+      ]
+    },
+    {
+      "id": "disponibilita",
+      "name": "DISPONIBILITA",
+      "type": "entity",
+      "x": 654,
+      "y": 98,
+      "attributesSide": "top",
+      "backgroundColor": "#ffffff",
+      "attributes": [
+        {
+          "name": "ID_DISPONIBILITA",
+          "key": true
+        },
+        {
+          "name": "DataInizio",
+          "key": false
+        },
+        {
+          "name": "DataFine",
+          "key": false
+        },
+        {
+          "name": "NumeroMaxStudenti",
+          "key": false
+        },
+        {
+          "name": "DescrizioneAttivita",
+          "key": false
+        },
+        {
+          "name": "CompetenzeRichieste",
+          "key": false
+        },
+        {
+          "name": "IndirizzoStudiConsigliato",
+          "key": false
+        }
+      ]
+    },
+    {
+      "id": "candidatura",
+      "name": "CANDIDATURA",
+      "type": "entity",
+      "x": 282,
+      "y": 718,
+      "attributesSide": "left",
+      "backgroundColor": "#ffffff",
+      "attributes": [
+        {
+          "name": "ID_CANDIDATURA",
+          "key": true
+        },
+        {
+          "name": "DataCandidatura",
+          "key": false
+        },
+        {
+          "name": "LetteraMotivazionale",
+          "key": false
+        },
+        {
+          "name": "Stato",
+          "key": false
+        }
+      ]
+    },
+    {
+      "id": "esperienza_fsl",
+      "name": "ESPERIENZA_FSL",
+      "type": "entity",
+      "x": 793,
+      "y": 531,
+      "attributesSide": "left",
+      "backgroundColor": "#ffffff",
+      "attributes": [
+        {
+          "name": "ID_ESPERIENZA",
+          "key": true
+        },
+        {
+          "name": "DataInizioEffettiva",
+          "key": false
+        },
+        {
+          "name": "DataFineEffettiva",
+          "key": false
+        },
+        {
+          "name": "OrePreviste",
+          "key": false
+        },
+        {
+          "name": "OreSvolte",
+          "key": false
+        },
+        {
+          "name": "ValutazioneFinale",
+          "key": false
+        },
+        {
+          "name": "Esito",
+          "key": false
+        }
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "id": "pubblica",
+      "name": "PUBBLICA",
+      "from": "azienda",
+      "to": "disponibilita",
+      "cardinalityFrom": "1:1",
+      "cardinalityTo": "0:N",
+      "attributes": [],
+      "type": "relation"
+    },
+    {
+      "id": "presenta",
+      "name": "PRESENTA",
+      "from": "studente",
+      "to": "candidatura",
+      "cardinalityFrom": "1:1",
+      "cardinalityTo": "0:N",
+      "attributes": [],
+      "type": "relation"
+    },
+    {
+      "id": "riguarda",
+      "name": "RIGUARDA",
+      "from": "candidatura",
+      "to": "disponibilita",
+      "cardinalityFrom": "1:1",
+      "cardinalityTo": "0:N",
+      "attributes": [],
+      "type": "relation",
+      "x": 241,
+      "y": 201
+    },
+    {
+      "id": "genera",
+      "name": "GENERA",
+      "from": "candidatura",
+      "to": "esperienza_fsl",
+      "cardinalityFrom": "1:1",
+      "cardinalityTo": "0:1",
+      "attributes": [],
+      "type": "relation"
+    },
+    {
+      "id": "coinvolge_studente",
+      "name": "COINVOLGE",
+      "from": "studente",
+      "to": "esperienza_fsl",
+      "cardinalityFrom": "1:1",
+      "cardinalityTo": "0:N",
+      "attributes": [],
+      "type": "relation"
+    },
+    {
+      "id": "supervisiona",
+      "name": "SUPERVISIONA",
+      "from": "tutor_scolastico",
+      "to": "esperienza_fsl",
+      "cardinalityFrom": "1:1",
+      "cardinalityTo": "0:N",
+      "attributes": [],
+      "type": "relation"
+    },
+    {
+      "id": "segue",
+      "name": "SEGUE",
+      "from": "tutor_aziendale",
+      "to": "esperienza_fsl",
+      "cardinalityFrom": "1:1",
+      "cardinalityTo": "0:N",
+      "attributes": [],
+      "type": "relation"
+    },
+    {
+      "id": "origina",
+      "name": "ORIGINA_DA",
+      "from": "disponibilita",
+      "to": "esperienza_fsl",
+      "cardinalityFrom": "1:1",
+      "cardinalityTo": "0:N",
+      "attributes": [],
+      "type": "relation"
+    },
+    {
+      "id": "lavora_presso",
+      "name": "LAVORA_PRESSO",
+      "from": "azienda",
+      "to": "tutor_aziendale",
+      "cardinalityFrom": "1:1",
+      "cardinalityTo": "0:N",
+      "attributes": [],
+      "type": "relation"
+    }
+  ]
+}
