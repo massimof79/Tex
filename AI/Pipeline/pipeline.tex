@@ -1,0 +1,50 @@
+\section*{Che cos'è una Pipeline nel Machine Learning}
+
+Una \textbf{pipeline}, in ambito machine learning, è una sequenza ordinata di operazioni applicate ai dati, dove l'uscita di un passaggio diventa l'ingresso del successivo. Serve a rendere il processo di analisi ripetibile, ordinato e meno soggetto a errori.
+
+Si può immaginare come una linea di montaggio: il ``prodotto grezzo'' sono i dati, e in ogni stazione avviene una trasformazione precisa fino ad arrivare al modello che produce la previsione finale.
+
+\subsection*{Le fasi principali di una pipeline}
+
+In un problema di classificazione, una pipeline tipica comprende tre fasi fondamentali.
+
+\subsubsection*{1. Preparazione dei dati}
+In questa fase si sistemano i dati prima di usarli nel modello. Alcune operazioni comuni sono:
+\begin{itemize}
+	\item gestione dei valori mancanti;
+	\item trasformazione di dati categorici (parole) in numeri;
+	\item ridimensionamento delle variabili numeriche (scaling).
+\end{itemize}
+
+Questo passaggio è molto importante perché gli algoritmi di machine learning lavorano solo con numeri e possono essere influenzati da grandezze espresse su scale molto diverse.
+
+\subsubsection*{2. Trasformazione dei dati}
+Qui i dati vengono modificati per renderli più adatti all'apprendimento del modello. Per esempio:
+\begin{itemize}
+	\item normalizzazione dei valori;
+	\item standardizzazione;
+	\item creazione di nuove caratteristiche a partire da quelle esistenti.
+\end{itemize}
+
+Queste trasformazioni aiutano il modello a individuare meglio le relazioni presenti nei dati.
+
+\subsubsection*{3. Modello di apprendimento}
+Nell'ultima fase entra in gioco l'algoritmo di machine learning vero e proprio. Il modello impara dai dati di addestramento e poi è in grado di fare previsioni su dati nuovi e mai visti prima.
+
+\subsection*{Perché la pipeline è utile}
+
+Il vantaggio principale di una pipeline è che \textbf{automatizza tutto il processo}. Quando vengono forniti nuovi dati, la pipeline applica esattamente le stesse trasformazioni usate durante l'addestramento, prima di effettuare la previsione.
+
+Questo evita errori molto comuni, come:
+\begin{itemize}
+	\item dimenticare di applicare una trasformazione ai dati di test;
+	\item usare trasformazioni diverse tra dati di addestramento e dati di verifica.
+\end{itemize}
+
+\subsection*{Aspetto pratico}
+
+Nelle principali librerie di machine learning, una pipeline è un oggetto che contiene in ordine tutti i passaggi. Quando si esegue l'addestramento, ogni fase calcola i propri parametri usando solo i dati di training. Quando si fanno previsioni, quegli stessi parametri vengono riutilizzati automaticamente sui nuovi dati.
+
+\subsection*{In sintesi}
+
+Una pipeline è un modo strutturato e sicuro per passare dai dati grezzi alle previsioni di un modello. Riduce gli errori, rende il lavoro più ordinato e garantisce che il processo sia sempre ripetibile. In pratica, si definiscono le regole una sola volta e il sistema le applica correttamente ogni volta.

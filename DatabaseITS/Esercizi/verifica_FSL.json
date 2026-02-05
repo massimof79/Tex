@@ -1,0 +1,266 @@
+{
+  "entities": [
+    {
+      "id": "studente",
+      "name": "STUDENTE",
+      "type": "entity",
+      "x": 363,
+      "y": 771,
+      "attributes": [
+        {
+          "name": "Codice_Studente",
+          "key": true
+        },
+        {
+          "name": "Nome",
+          "key": false
+        },
+        {
+          "name": "Cognome",
+          "key": false
+        },
+        {
+          "name": "Data_Nascita",
+          "key": false
+        },
+        {
+          "name": "Luogo_Nascita",
+          "key": false
+        },
+        {
+          "name": "Codice_Fiscale",
+          "key": false
+        },
+        {
+          "name": "Indirizzo_Residenza",
+          "key": false
+        },
+        {
+          "name": "Email_Istituzionale",
+          "key": false
+        },
+        {
+          "name": "Classe",
+          "key": false
+        },
+        {
+          "name": "Indirizzo_Studi",
+          "key": false
+        }
+      ]
+    },
+    {
+      "id": "tutor_scolastico",
+      "name": "TUTOR_SCOLASTICO",
+      "type": "entity",
+      "x": 500,
+      "y": 80,
+      "attributes": [
+        {
+          "name": "Codice_Docente",
+          "key": true
+        },
+        {
+          "name": "Nome",
+          "key": false
+        },
+        {
+          "name": "Cognome",
+          "key": false
+        },
+        {
+          "name": "Email",
+          "key": false
+        },
+        {
+          "name": "Dipartimento",
+          "key": false
+        },
+        {
+          "name": "Max_Studenti_Contemporanei",
+          "key": false
+        }
+      ]
+    },
+    {
+      "id": "azienda",
+      "name": "AZIENDA",
+      "type": "entity",
+      "x": 956,
+      "y": 101,
+      "attributes": [
+        {
+          "name": "Partita_IVA",
+          "key": true
+        },
+        {
+          "name": "Ragione_Sociale",
+          "key": false
+        },
+        {
+          "name": "Sede_Legale",
+          "key": false
+        },
+        {
+          "name": "Sede_Operativa",
+          "key": false
+        },
+        {
+          "name": "Settore_Attivita",
+          "key": false
+        },
+        {
+          "name": "Referente_Nome",
+          "key": false
+        },
+        {
+          "name": "Referente_Email",
+          "key": false
+        },
+        {
+          "name": "Referente_Telefono",
+          "key": false
+        }
+      ],
+      "attributesSide": "right"
+    },
+    {
+      "id": "disponibilita",
+      "name": "DISPONIBILITA_AZIENDALE",
+      "type": "entity",
+      "x": 1112,
+      "y": 724,
+      "attributes": [
+        {
+          "name": "Codice_Disponibilita",
+          "key": true
+        },
+        {
+          "name": "Data_Inizio_Prevista",
+          "key": false
+        },
+        {
+          "name": "Data_Fine_Prevista",
+          "key": false
+        },
+        {
+          "name": "Max_Studenti_Ospitabili",
+          "key": false
+        },
+        {
+          "name": "Descrizione_Attivita",
+          "key": false
+        },
+        {
+          "name": "Competenze_Richieste",
+          "key": false
+        },
+        {
+          "name": "Indirizzo_Studi_Consigliato",
+          "key": false
+        }
+      ],
+      "attributesSide": "right"
+    },
+    {
+      "id": "esperienza",
+      "name": "ESPERIENZA_FSL",
+      "type": "entity",
+      "x": 509,
+      "y": 449,
+      "attributes": [
+        {
+          "name": "Id_Esperienza",
+          "key": true
+        },
+        {
+          "name": "Data_Inizio_Effettiva",
+          "key": false
+        },
+        {
+          "name": "Data_Fine_Effettiva",
+          "key": false
+        },
+        {
+          "name": "Ore_Previse",
+          "key": false
+        },
+        {
+          "name": "Ore_Svolte",
+          "key": false
+        },
+        {
+          "name": "Valutazione_Finale",
+          "key": false
+        },
+        {
+          "name": "Esito",
+          "key": false
+        },
+        {
+          "name": "Tutor_Aziendale_Nome",
+          "key": false
+        },
+        {
+          "name": "Tutor_Aziendale_Cognome",
+          "key": false
+        },
+        {
+          "name": "Tutor_Aziendale_Ruolo",
+          "key": false
+        },
+        {
+          "name": "Tutor_Aziendale_Email",
+          "key": false
+        }
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "id": "rel_studente_esperienza",
+      "name": "PARTECIPA",
+      "from": "studente",
+      "to": "esperienza",
+      "cardinalityFrom": "1:N",
+      "cardinalityTo": "1:1",
+      "attributes": []
+    },
+    {
+      "id": "rel_tutor_esperienza",
+      "name": "SUPERVISIONA",
+      "from": "tutor_scolastico",
+      "to": "esperienza",
+      "cardinalityFrom": "1:N",
+      "cardinalityTo": "1:1",
+      "attributes": []
+    },
+    {
+      "id": "rel_azienda_disponibilita",
+      "name": "PROPONE",
+      "from": "azienda",
+      "to": "disponibilita",
+      "cardinalityFrom": "1:N",
+      "cardinalityTo": "1:1",
+      "attributes": []
+    },
+    {
+      "id": "rel_disponibilita_esperienza",
+      "name": "GENERA",
+      "from": "disponibilita",
+      "to": "esperienza",
+      "cardinalityFrom": "1:N",
+      "cardinalityTo": "1:1",
+      "attributes": []
+    },
+    {
+      "id": "rel_azienda_esperienza",
+      "name": "OSPITA",
+      "from": "azienda",
+      "to": "esperienza",
+      "cardinalityFrom": "1:N",
+      "cardinalityTo": "1:1",
+      "attributes": []
+    }
+  ]
+}
