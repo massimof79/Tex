@@ -1,0 +1,216 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[italian]{babel}
+\usepackage{amsmath}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+
+\title{Come funziona un Modello di Machine Learning basato su Alberi di Decisione}
+\author{Prof. Fedeli Massimo}
+\date{}
+
+\begin{document}
+	
+	\maketitle
+	
+	\newpage
+	
+	\section*{Introduzione}
+	
+	Un \textbf{albero di decisione} è un tipo di modello di \textit{Machine Learning}, cioè un sistema che impara dai dati per fare previsioni o prendere decisioni.
+	
+	Per capire cos’è, pensiamo ad un gioco di domande a cui si può rispondere solo con \textbf{sì} o \textbf{no}.  
+	Ad esempio:  
+	\textit{“L’animale ha le ali?”} → sì/no  
+	\textit{“Vive in acqua?”} → sì/no  
+	
+	Dopo alcune domande si arriva alla risposta finale.  
+	Un albero di decisione funziona in modo molto simile: fa una serie di domande sui dati finché non arriva a una conclusione.
+	
+	\section*{La struttura dell’albero}
+	
+	Si chiama “albero” perché assomiglia a un albero rovesciato.
+	
+	\begin{itemize}
+		\item \textbf{Radice}: è la prima domanda che il modello fa
+		\item \textbf{Rami}: sono le possibili risposte (ad esempio sì/no)
+		\item \textbf{Nodi}: sono le altre domande che seguono
+		\item \textbf{Foglie}: sono le decisioni finali
+	\end{itemize}
+	
+	Ogni percorso dalla radice a una foglia è come una \textbf{regola}.  
+	Per esempio:  
+	\textit{Se età > 18 e reddito > 1000 → cliente affidabile}
+	
+	\section*{Come impara l’albero}
+	
+	L’albero non nasce già pronto: deve \textbf{imparare} osservando molti esempi già risolti.
+	
+	Immaginiamo di voler insegnare a un sistema a distinguere email normali da email di spam.  
+	Gli mostri tante email già etichettate: “spam” o “non spam”.
+	
+	Il modello prova a fare domande del tipo:
+	\begin{itemize}
+		\item L’email contiene tante parole in maiuscolo?
+		\item Ci sono molti punti esclamativi?
+		\item Contiene parole come “gratis” o “offerta”?
+	\end{itemize}
+	
+	Per ogni domanda possibile, il modello valuta quanto quella domanda riesce a separare bene i casi.
+	
+\section*{L’idea chiave: creare gruppi simili}
+
+Per capire cosa fa davvero un albero di decisione, dobbiamo prima chiarire cosa si intende per \textbf{gruppi}.
+
+Quando parliamo di dati, non stiamo parlando di numeri isolati, ma di un insieme di \textbf{casi} o \textbf{situazioni}.  
+Ogni caso è una riga di informazioni. Per esempio:
+
+\begin{itemize}
+	\item uno studente con età, voti e assenze
+	\item un cliente con età, reddito e storico acquisti
+	\item una email con testo, lunghezza e presenza di certe parole
+\end{itemize}
+
+All’inizio dell’addestramento, \textbf{tutti i casi sono messi insieme in un unico grande gruppo}.  
+Questo gruppo è molto “mischiato”: contiene esempi di tipi diversi (per esempio promossi e bocciati, spam e non spam, clienti affidabili e non affidabili).
+
+\subsection*{Cosa fa l’albero}
+
+L’albero prova a \textbf{dividere questo grande gruppo in sottogruppi più piccoli}.  
+Ogni divisione avviene facendo una domanda su una caratteristica dei dati.
+
+Esempio con studenti:
+\begin{quote}
+	“Il numero di assenze è maggiore di 10?”
+\end{quote}
+
+Dopo la domanda otteniamo due gruppi:
+\begin{itemize}
+	\item Gruppo 1: studenti con poche assenze
+	\item Gruppo 2: studenti con molte assenze
+\end{itemize}
+
+Questi sono i “gruppi” di cui parliamo: insiemi di casi che hanno qualcosa in comune secondo una certa regola.
+
+\subsection*{Cosa significa “simili”}
+
+Dire che un gruppo è \textbf{simile} o \textbf{omogeneo} significa che al suo interno gli elementi si assomigliano rispetto al risultato che vogliamo prevedere.
+
+Se stiamo cercando di prevedere se uno studente sarà promosso o bocciato:
+
+\begin{itemize}
+	\item Un gruppo con quasi tutti promossi è un gruppo molto omogeneo
+	\item Un gruppo con metà promossi e metà bocciati è poco omogeneo
+\end{itemize}
+
+Quindi “simili” non vuol dire identici in tutto, ma simili \textbf{nel comportamento finale}.
+
+\subsection*{Un’analogia semplice}
+
+Immagina di avere un cesto con frutta mista: mele, banane e arance tutte insieme.
+
+All’inizio è tutto mescolato.  
+Se separi le mele dalle altre, hai creato due gruppi:
+\begin{itemize}
+	\item un gruppo con solo mele (molto omogeneo)
+	\item un gruppo con banane e arance (ancora mescolato)
+\end{itemize}
+
+Poi potresti separare banane e arance, creando gruppi sempre più “puri”.
+
+L’albero di decisione fa la stessa cosa, ma invece di frutta separa dati in base a caratteristiche (età, reddito, parole in un testo, voti, ecc.).
+
+\subsection*{Perché è così importante}
+
+Un gruppo molto mescolato rende difficile prendere una decisione corretta.  
+Un gruppo molto omogeneo rende la decisione più facile e affidabile.
+
+Per questo l’albero continua a dividere i dati in gruppi sempre più simili, finché ogni gruppo contiene casi che portano quasi tutti alla stessa risposta.
+
+Questo è il cuore del funzionamento interno di un albero di decisione.
+
+	\section*{Cos’è il criterio di Gini (spiegato semplice)}
+	
+	L’indice di Gini misura il \textbf{disordine} dentro un gruppo.
+	
+	Possiamo pensarlo così:
+	
+	\begin{itemize}
+		\item Gini = 0 → gruppo perfettamente ordinato (tutti uguali)
+		\item Gini alto → gruppo disordinato (tutti mescolati)
+	\end{itemize}
+	
+	Quindi l’albero cerca sempre di fare domande che rendano i gruppi \textbf{più ordinati possibile}.
+	
+	\section*{La formula del Gini}
+	
+	La formula matematica è:
+	
+	\[
+	Gini = 1 - \sum_{i=1}^{k} p_i^2
+	\]
+	
+	dove:
+	\begin{itemize}
+		\item $k$ è il numero di categorie possibili
+		\item $p_i$ è la percentuale (probabilità) della categoria $i$ nel gruppo
+	\end{itemize}
+	
+	Non è necessario memorizzarla: serve solo a trasformare in un numero quanto un gruppo è mescolato.
+	
+	\section*{Esempio molto intuitivo}
+	
+	Immagina un sacchetto con palline:
+	
+	\begin{itemize}
+		\item 10 palline rosse → gruppo ordinato → Gini = 0
+		\item 5 rosse e 5 blu → gruppo molto mescolato → Gini alto
+	\end{itemize}
+	
+	L’albero cerca di dividere il sacchetto in modo che in ogni nuovo sacchetto le palline abbiano quasi tutte lo stesso colore.
+	
+	\section*{Come sceglie la domanda migliore}
+	
+	Per ogni possibile domanda, l’albero:
+	
+	\begin{enumerate}
+		\item Calcola quanto è disordinato il gruppo prima della divisione
+		\item Divide i dati in due gruppi
+		\item Calcola quanto sono disordinati i nuovi gruppi
+	\end{enumerate}
+	
+	Viene scelta la domanda che riduce di più il disordine totale.
+	
+	Questo procedimento si ripete tante volte, creando nuovi rami, finché:
+	\begin{itemize}
+		\item i gruppi sono quasi puri, oppure
+		\item si decide di fermarsi per non creare un albero troppo grande
+	\end{itemize}
+	
+	\section*{Cosa succede quando deve fare una previsione}
+	
+	Quando arriva un nuovo dato (ad esempio una nuova email), il modello:
+	
+	\begin{itemize}
+		\item parte dalla radice
+		\item risponde alle domande una dopo l’altra
+		\item segue il ramo corrispondente
+		\item arriva a una foglia con la risposta finale
+	\end{itemize}
+	
+	È come seguire un percorso in un quiz a risposta sì/no.
+	
+	\section*{Perché è un modello facile da capire}
+	
+	Gli alberi di decisione sono tra i modelli più semplici da interpretare perché:
+	
+	\begin{itemize}
+		\item assomigliano a un diagramma di flusso
+		\item ogni decisione è una regola chiara
+		\item si può spiegare il risultato seguendo il percorso fatto nell’albero
+	\end{itemize}
+	
+	Per questo sono molto usati quando è importante non solo avere una risposta, ma anche \textbf{capire il motivo}.
+	
+	
+	
+	\end{document}

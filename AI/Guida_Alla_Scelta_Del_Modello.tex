@@ -1,0 +1,142 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[italian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\usepackage{hyperref}
+\geometry{margin=2.5cm}
+
+\title{Guida alla scelta di un modello di Machine Learning}
+\author{Prof. Fedeli Massimo - Tutti i diritti riservati}
+\date{}
+
+\begin{document}
+	
+
+	\maketitle
+		\newpage
+
+		
+		\section{Introduzione}
+		
+		Nel Machine Learning una delle domande più importanti è: \textit{quale modello devo usare per il mio problema?}
+		
+		Non esiste un algoritmo perfetto per ogni situazione. La scelta dipende da:
+		\begin{itemize}
+			\item il tipo di problema
+			\item la quantità di dati
+			\item la complessità delle relazioni nei dati
+			\item la necessità di spiegare le decisioni del modello
+		\end{itemize}
+		
+		In questa guida vediamo \textbf{quali modelli usare}, \textbf{perché usarli}, \textbf{quali librerie Python permettono di implementarli} e un \textbf{esempio concreto} per ciascuno.
+		
+		\section{Problemi di classificazione}
+		
+		Il modello deve assegnare un elemento a una categoria.
+		
+		\subsection{Regressione Logistica}
+		
+		\textbf{Perché usarla:} è semplice, veloce e funziona bene quando le classi sono separabili in modo abbastanza regolare.  
+		\textbf{Quando usarla:} problemi con due classi e relazioni non troppo complesse.  
+		\textbf{Libreria Python:} \texttt{sklearn.linear\_model.LogisticRegression}  
+		
+		\textbf{Esempio concreto:} prevedere se uno studente sarà \textit{promosso} o \textit{non promosso} in base a ore di studio, assenze e media dei voti.
+		
+		\subsection{Albero Decisionale}
+		
+		\textbf{Perché usarlo:} prende decisioni tramite regole semplici del tipo “se... allora...”, quindi è facile da interpretare.  
+		\textbf{Quando usarlo:} quando vuoi un modello comprensibile e i dati hanno relazioni non lineari.  
+		\textbf{Libreria Python:} \texttt{sklearn.tree.DecisionTreeClassifier}  
+		
+		\textbf{Esempio concreto:} stabilire se una richiesta di prestito va accettata o rifiutata in base a reddito, età e storico dei pagamenti.
+		
+		\subsection{Random Forest}
+		
+		\textbf{Perché usarla:} combina molti alberi decisionali, riducendo errori e migliorando l’accuratezza.  
+		\textbf{Quando usarla:} problemi con relazioni complesse e un buon numero di dati.  
+		\textbf{Libreria Python:} \texttt{sklearn.ensemble.RandomForestClassifier}  
+		
+		\textbf{Esempio concreto:} riconoscere il tipo di pianta (specie) a partire da misure di foglie e fiori.
+		
+		
+		\subsection{Reti Neurali}
+		
+		\textbf{Perché usarle:} riescono a modellare relazioni molto complesse.  
+		\textbf{Quando usarle:} immagini, audio, testo o dataset molto grandi.  
+		\textbf{Librerie Python:} \texttt{TensorFlow/Keras}, \texttt{PyTorch}  
+		
+		\textbf{Esempio concreto:} riconoscere se in una foto è presente un cane o un gatto.
+		
+		\section{Problemi di regressione}
+		
+		Il modello deve prevedere un valore numerico continuo.
+		
+		\subsection{Regressione Lineare}
+		
+		\textbf{Perché usarla:} è il modello più semplice e spesso sorprendentemente efficace.  
+		\textbf{Quando usarla:} relazioni quasi lineari tra variabili.  
+		\textbf{Libreria Python:} \texttt{sklearn.linear\_model.LinearRegression}  
+		
+		\textbf{Esempio concreto:} prevedere il prezzo di una casa in base a metri quadrati, numero di stanze e zona.
+		
+		\subsection{Decision Tree Regressor}
+		
+		\textbf{Perché usarlo:} cattura relazioni non lineari senza trasformazioni complicate.  
+		\textbf{Quando usarlo:} dati con soglie e comportamenti “a scalini”.  
+		\textbf{Libreria Python:} \texttt{sklearn.tree.DecisionTreeRegressor}  
+		
+		\textbf{Esempio concreto:} stimare il tempo di consegna di un pacco in base a distanza, traffico e tipo di spedizione.
+		
+		\subsection{Random Forest Regressor}
+		
+		\textbf{Perché usarlo:} più stabile e preciso di un singolo albero.  
+		\textbf{Libreria Python:} \texttt{sklearn.ensemble.RandomForestRegressor}  
+		
+		\textbf{Esempio concreto:} prevedere il consumo elettrico di un edificio in base a temperatura esterna, numero di persone presenti e orario.
+		
+		\subsection{Gradient Boosting Regressor}
+		
+		\textbf{Perché usarlo:} spesso tra i modelli più accurati per dati tabellari.  
+		\textbf{Librerie Python:} \texttt{xgboost.XGBRegressor}, \texttt{lightgbm.LGBMRegressor}  
+		
+		\textbf{Esempio concreto:} prevedere il punteggio finale di uno studente usando molte variabili (voti, assenze, partecipazione, studio a casa).
+		
+		\subsection{Reti Neurali per regressione}
+		
+		\textbf{Perché usarle:} utili con grandi quantità di dati e relazioni molto complesse.  
+		\textbf{Librerie Python:} \texttt{TensorFlow/Keras}, \texttt{PyTorch}  
+		
+		\textbf{Esempio concreto:} prevedere l’andamento futuro della temperatura usando dati meteorologici storici molto dettagliati.
+		
+		\section{Problemi di clustering}
+		
+		\subsection{k-Means}
+		
+		\textbf{Perché usarlo:} semplice e veloce.  
+		\textbf{Quando usarlo:} gruppi abbastanza compatti e simili tra loro.  
+		\textbf{Libreria Python:} \texttt{sklearn.cluster.KMeans}  
+		
+		\textbf{Esempio concreto:} suddividere clienti di un negozio in gruppi in base a quanto spendono e quanto spesso acquistano.
+		
+		\subsection{DBSCAN}
+		
+		\textbf{Perché usarlo:} trova gruppi di forma irregolare e individua dati anomali.  
+		\textbf{Quando usarlo:} dati con densità variabile.  
+		\textbf{Libreria Python:} \texttt{sklearn.cluster.DBSCAN}  
+		
+		\textbf{Esempio concreto:} individuare gruppi di sensori che registrano valori simili e isolare quelli che funzionano in modo anomalo.
+		
+		\section{Strategia pratica consigliata}
+		
+		\begin{enumerate}
+			\item Parti sempre da un modello semplice con \texttt{scikit-learn}.
+			\item Valuta le prestazioni.
+			\item Passa a Random Forest se serve maggiore accuratezza.
+			\item Usa reti neurali solo quando il problema è davvero complesso o i dati sono moltissimi.
+		\end{enumerate}
+		
+		\section{Conclusione}
+		
+		Scegliere il modello giusto significa adattare lo strumento al problema. Un buon progetto di Machine Learning non parte dal modello più complicato, ma dalla comprensione dei dati e dell’obiettivo.
+		
+	\end{document}
