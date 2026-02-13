@@ -1,0 +1,159 @@
+{
+  "entities": [
+    {
+      "id": "entity_1770392481906",
+      "name": "CLIENTI",
+      "type": "entity",
+      "x": 581.8616910393138,
+      "y": 683.4681536746818,
+      "attributesSide": "right",
+      "backgroundColor": "#ffffff",
+      "attributes": [
+        {
+          "name": "codice_cliente",
+          "key": true
+        },
+        {
+          "name": "nome",
+          "key": false
+        },
+        {
+          "name": "cognome",
+          "key": false
+        },
+        {
+          "name": "data_nascita",
+          "key": false
+        }
+      ]
+    },
+    {
+      "id": "entity_1770392482559",
+      "name": "ABBONAMENTO",
+      "type": "entity",
+      "x": 1058.8899622556992,
+      "y": 331.3295337635426,
+      "attributesSide": "left",
+      "backgroundColor": "#ffffff",
+      "attributes": [
+        {
+          "name": "Data_inizio",
+          "key": false
+        },
+        {
+          "name": "Data_fine",
+          "key": false
+        },
+        {
+          "name": "Stato",
+          "key": false
+        }
+      ]
+    },
+    {
+      "id": "entity_1770392483181",
+      "name": "PALESTRA",
+      "type": "entity",
+      "x": 513.318017944609,
+      "y": 59.59426492526197,
+      "attributesSide": "left",
+      "backgroundColor": "#ffffff",
+      "attributes": []
+    },
+    {
+      "id": "entity_1770393137462",
+      "name": "CORSI",
+      "type": "entity",
+      "x": 64.93168740670535,
+      "y": 209.24531048197605,
+      "attributesSide": "left",
+      "backgroundColor": "#ffffff",
+      "attributes": []
+    },
+    {
+      "id": "entity_1770393513396",
+      "name": "ISTRUTTORE",
+      "type": "entity",
+      "x": 174.80878950394936,
+      "y": 623.626202825718,
+      "attributesSide": "left",
+      "backgroundColor": "#ffffff",
+      "attributes": [
+        {
+          "name": "codice_istruttore",
+          "key": true
+        },
+        {
+          "name": "nome",
+          "key": false
+        },
+        {
+          "name": "cognome",
+          "key": false
+        },
+        {
+          "name": "specializzazione_principale",
+          "key": false
+        },
+        {
+          "name": "anni_esperienza",
+          "key": false
+        }
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "id": "rel_1770392891127",
+      "name": "PUO'_SOTTOSCRIVERE",
+      "from": "entity_1770392481906",
+      "to": "entity_1770392482559",
+      "cardinalityFrom": "1:N",
+      "cardinalityTo": "1:1",
+      "attributes": [],
+      "type": "relation",
+      "x": 801.0008266475065,
+      "y": 598.0238437191122
+    },
+    {
+      "id": "rel_1770393328273",
+      "name": "GESTISCE",
+      "from": "entity_1770392483181",
+      "to": "entity_1770392481906",
+      "cardinalityFrom": "1:N",
+      "cardinalityTo": "0:N",
+      "attributes": [],
+      "type": "relation"
+    },
+    {
+      "id": "rel_1770393491926",
+      "name": "ORGANIZZA",
+      "from": "entity_1770392483181",
+      "to": "entity_1770393137462",
+      "cardinalityFrom": "1:N",
+      "cardinalityTo": "1:1",
+      "attributes": [],
+      "type": "relation"
+    },
+    {
+      "id": "rel_1770393664756",
+      "name": "TENUTI_DA",
+      "from": "entity_1770393137462",
+      "to": "entity_1770393513396",
+      "cardinalityFrom": "1:1",
+      "cardinalityTo": "1:N",
+      "attributes": [],
+      "type": "relation"
+    },
+    {
+      "id": "rel_1770393850080",
+      "name": "POSSONO_ISCRIVERSI",
+      "from": "entity_1770392481906",
+      "to": "entity_1770393137462",
+      "cardinalityFrom": "1:N",
+      "cardinalityTo": "1:N",
+      "attributes": [],
+      "type": "relation"
+    }
+  ]
+}

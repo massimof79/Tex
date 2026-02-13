@@ -1,0 +1,337 @@
+{
+  "entities": [
+    {
+      "id": "entity_1770391979728",
+      "name": "TUTOR SCOLASTICI",
+      "type": "entity",
+      "x": 1207.763821152635,
+      "y": 108.75925471468162,
+      "attributesSide": "left",
+      "backgroundColor": "#ffffff",
+      "attributes": [
+        {
+          "name": "codice_docente",
+          "key": true
+        },
+        {
+          "name": "nome",
+          "key": false
+        },
+        {
+          "name": "cognome",
+          "key": false
+        },
+        {
+          "name": "email",
+          "key": false
+        },
+        {
+          "name": "area_appartenenza",
+          "key": false
+        },
+        {
+          "name": "num_studenti",
+          "key": false
+        }
+      ]
+    },
+    {
+      "id": "entity_1770391981062",
+      "name": "ESPERIENZE",
+      "type": "entity",
+      "x": 989.0525831379935,
+      "y": 285.04787700028544,
+      "attributesSide": "left",
+      "backgroundColor": "#ffffff",
+      "attributes": [
+        {
+          "name": "cod_studente_ass",
+          "key": true
+        },
+        {
+          "name": "par_IVA_azienda_ospitante",
+          "key": false
+        },
+        {
+          "name": "cod_tutor_scolastico",
+          "key": false
+        },
+        {
+          "name": "cod_tutor_aziendale",
+          "key": false
+        },
+        {
+          "name": "periodo_effettivo",
+          "key": false
+        },
+        {
+          "name": "ore_previste",
+          "key": false
+        },
+        {
+          "name": "ore_effettive",
+          "key": false
+        },
+        {
+          "name": "valutazione",
+          "key": false
+        },
+        {
+          "name": "esito",
+          "key": false
+        }
+      ]
+    },
+    {
+      "id": "entity_1770391981473",
+      "name": "TUTOR AZIENDALI",
+      "type": "entity",
+      "x": 923.174162301807,
+      "y": 41.23663458211877,
+      "attributesSide": "left",
+      "backgroundColor": "#ffffff",
+      "attributes": [
+        {
+          "name": "codice_tutor",
+          "key": true
+        },
+        {
+          "name": "nome",
+          "key": false
+        },
+        {
+          "name": "cognome",
+          "key": false
+        },
+        {
+          "name": "email",
+          "key": false
+        },
+        {
+          "name": "ruolo_aziendale",
+          "key": false
+        }
+      ]
+    },
+    {
+      "id": "entity_1770391981780",
+      "name": "AZIENDA",
+      "type": "entity",
+      "x": 484.52765438169126,
+      "y": 281.9685190489602,
+      "attributesSide": "left",
+      "backgroundColor": "#ffffff",
+      "attributes": [
+        {
+          "name": "partita_IVA",
+          "key": true
+        },
+        {
+          "name": "rag_soc.",
+          "key": false
+        },
+        {
+          "name": "sede_legale",
+          "key": false
+        },
+        {
+          "name": "sede_operativa",
+          "key": false
+        },
+        {
+          "name": "sett_attività",
+          "key": false
+        },
+        {
+          "name": "referente",
+          "key": false
+        },
+        {
+          "name": "email",
+          "key": false
+        },
+        {
+          "name": "tel_referente",
+          "key": false
+        }
+      ]
+    },
+    {
+      "id": "entity_1770391981992",
+      "name": "DISPONIBILTA'",
+      "type": "entity",
+      "x": 812.2203653392212,
+      "y": 379.16219795062807,
+      "attributesSide": "left",
+      "backgroundColor": "#ffffff",
+      "attributes": [
+        {
+          "name": "codice_ID",
+          "key": true
+        },
+        {
+          "name": "azienda",
+          "key": false
+        },
+        {
+          "name": "data_inizio",
+          "key": false
+        },
+        {
+          "name": "data_fine",
+          "key": false
+        },
+        {
+          "name": "massimale_studenti",
+          "key": false
+        },
+        {
+          "name": "descr_attività",
+          "key": false
+        },
+        {
+          "name": "indirizzo_studi_consigliato",
+          "key": false
+        }
+      ]
+    },
+    {
+      "id": "entity_1770391983588",
+      "name": "STUDENTI",
+      "type": "entity",
+      "x": 692.5782654205091,
+      "y": 115.35394608117477,
+      "attributesSide": "left",
+      "backgroundColor": "#ffffff",
+      "attributes": [
+        {
+          "name": "cod_id",
+          "key": true
+        },
+        {
+          "name": "nome",
+          "key": false
+        },
+        {
+          "name": "cognome",
+          "key": false
+        },
+        {
+          "name": "data_nascita",
+          "key": false
+        },
+        {
+          "name": "indirizzo_residenza",
+          "key": false
+        },
+        {
+          "name": "email",
+          "key": false
+        },
+        {
+          "name": "classe",
+          "key": false
+        },
+        {
+          "name": "indirizzo_di_studi",
+          "key": false
+        }
+      ]
+    },
+    {
+      "id": "entity_1770393187293",
+      "name": "COMPETENZE",
+      "type": "entity",
+      "x": 233.99010507515584,
+      "y": 81.83027159177198,
+      "attributesSide": "left",
+      "backgroundColor": "#ffffff",
+      "attributes": [
+        {
+          "name": "codice_esperienza",
+          "key": true
+        },
+        {
+          "name": "preferenziale",
+          "key": false
+        },
+        {
+          "name": "richiesta",
+          "key": false
+        }
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "id": "rel_1770393273510",
+      "name": "PARTECIPAZIONE",
+      "from": "entity_1770391983588",
+      "to": "entity_1770391981062",
+      "cardinalityFrom": "1:N",
+      "cardinalityTo": "1:N",
+      "attributes": [],
+      "type": "relation"
+    },
+    {
+      "id": "rel_1770393471626",
+      "name": "ASSEGNAZIONE",
+      "from": "entity_1770391981062",
+      "to": "entity_1770391979728",
+      "cardinalityFrom": "1:1",
+      "cardinalityTo": "1:N",
+      "attributes": [],
+      "type": "relation"
+    },
+    {
+      "id": "rel_1770393531725",
+      "name": "ASSEGNAZIONE",
+      "from": "entity_1770391981062",
+      "to": "entity_1770391981473",
+      "cardinalityFrom": "1:1",
+      "cardinalityTo": "1:N",
+      "attributes": [],
+      "type": "relation"
+    },
+    {
+      "id": "rel_1770393691286",
+      "name": "OSPITA",
+      "from": "entity_1770391981780",
+      "to": "entity_1770391983588",
+      "cardinalityFrom": "1:N",
+      "cardinalityTo": "1:1",
+      "attributes": [],
+      "type": "relation"
+    },
+    {
+      "id": "rel_1770393736800",
+      "name": "REQUISITI",
+      "from": "entity_1770393187293",
+      "to": "entity_1770391983588",
+      "cardinalityFrom": "1:N",
+      "cardinalityTo": "0:N",
+      "attributes": [],
+      "type": "relation"
+    },
+    {
+      "id": "rel_1770393808787",
+      "name": "OFFRIRE",
+      "from": "entity_1770391981780",
+      "to": "entity_1770391981992",
+      "cardinalityFrom": "1:N",
+      "cardinalityTo": "1:1",
+      "attributes": [],
+      "type": "relation"
+    },
+    {
+      "id": "rel_1770393952224",
+      "name": "ASSOCIATA",
+      "from": "entity_1770391981062",
+      "to": "entity_1770391981992",
+      "cardinalityFrom": "1:1",
+      "cardinalityTo": "1:N",
+      "attributes": [],
+      "type": "relation"
+    }
+  ]
+}

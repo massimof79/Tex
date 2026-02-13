@@ -1,0 +1,378 @@
+{
+  "entities": [
+    {
+      "id": "entity_1770392006313",
+      "name": "AZIENDA",
+      "type": "entity",
+      "x": 839.8300807257209,
+      "y": 177.04197908522883,
+      "attributesSide": "right",
+      "backgroundColor": "#ffffff",
+      "attributes": [
+        {
+          "name": "Partita_IVA",
+          "key": true
+        },
+        {
+          "name": "Ragione_Sociale",
+          "key": false
+        },
+        {
+          "name": "Via_Leg",
+          "key": false
+        },
+        {
+          "name": "Città_Leg",
+          "key": false
+        },
+        {
+          "name": "CAP_Leg",
+          "key": false
+        },
+        {
+          "name": "Via_Op",
+          "key": false
+        },
+        {
+          "name": "Città_Op",
+          "key": false
+        },
+        {
+          "name": "CAP_Op",
+          "key": false
+        },
+        {
+          "name": "Settore",
+          "key": false
+        },
+        {
+          "name": "Ref_Aziendale",
+          "key": false
+        },
+        {
+          "name": "Email",
+          "key": false
+        },
+        {
+          "name": "Telefono_Ref",
+          "key": false
+        }
+      ]
+    },
+    {
+      "id": "entity_1770392008960",
+      "name": "STUDENTE",
+      "type": "entity",
+      "x": 178.19063210116934,
+      "y": 179.85936835357126,
+      "attributesSide": "left",
+      "backgroundColor": "#ffffff",
+      "attributes": [
+        {
+          "name": "Codice_Id",
+          "key": true
+        },
+        {
+          "name": "Nome",
+          "key": false
+        },
+        {
+          "name": "Cognome",
+          "key": false
+        },
+        {
+          "name": "Data_Nascita",
+          "key": false
+        },
+        {
+          "name": "Luogo_Nascita",
+          "key": false
+        },
+        {
+          "name": "Codice_Fiscale",
+          "key": false
+        },
+        {
+          "name": "Email",
+          "key": false
+        },
+        {
+          "name": "Classe",
+          "key": false
+        },
+        {
+          "name": "Via",
+          "key": false
+        },
+        {
+          "name": "CAP",
+          "key": false
+        },
+        {
+          "name": "Città",
+          "key": false
+        },
+        {
+          "name": "Scuola",
+          "key": false
+        },
+        {
+          "name": "Corso",
+          "key": false
+        }
+      ]
+    },
+    {
+      "id": "entity_1770392090296",
+      "name": "TUTOR_SCOLASTICO",
+      "type": "entity",
+      "x": 184.95593415236988,
+      "y": 480.512781581692,
+      "attributesSide": "left",
+      "backgroundColor": "#ffffff",
+      "attributes": [
+        {
+          "name": "Codice_Doc",
+          "key": true
+        },
+        {
+          "name": "Nome",
+          "key": false
+        },
+        {
+          "name": "Cognome",
+          "key": false
+        },
+        {
+          "name": "Email",
+          "key": false
+        },
+        {
+          "name": "Dipartimento",
+          "key": false
+        },
+        {
+          "name": "Area_Discipl",
+          "key": false
+        },
+        {
+          "name": "Num_Max_Stud",
+          "key": false
+        }
+      ]
+    },
+    {
+      "id": "entity_1770392120872",
+      "name": "PROPOSTA_AZIEND",
+      "type": "entity",
+      "x": 513.6723206118334,
+      "y": 91.70835998097687,
+      "attributesSide": "top",
+      "backgroundColor": "#ffffff",
+      "attributes": [
+        {
+          "name": "Codice_Id",
+          "key": true
+        },
+        {
+          "name": "Aziend_Prop",
+          "key": false
+        },
+        {
+          "name": "Data_Inizio",
+          "key": false
+        },
+        {
+          "name": "Data_Fine",
+          "key": false
+        },
+        {
+          "name": "Num_Max_Stud",
+          "key": false
+        },
+        {
+          "name": "Descriz_Attività",
+          "key": false
+        },
+        {
+          "name": "Comp_Richieste",
+          "key": false
+        },
+        {
+          "name": "Comp_Pref",
+          "key": false
+        },
+        {
+          "name": "Ind_Studi",
+          "key": false
+        }
+      ]
+    },
+    {
+      "id": "entity_1770392162008",
+      "name": "ESPERIENZA",
+      "type": "entity",
+      "x": 531.2560432902037,
+      "y": 453.9464344556591,
+      "attributesSide": "bottom",
+      "backgroundColor": "#ffffff",
+      "attributes": [
+        {
+          "name": "Studente_Ass",
+          "key": false
+        },
+        {
+          "name": "Azienda_Osp",
+          "key": false
+        },
+        {
+          "name": "Tutor_Sco_Ass",
+          "key": false
+        },
+        {
+          "name": "Tutor_Aziend",
+          "key": false
+        },
+        {
+          "name": "Periodo_Effet",
+          "key": false
+        },
+        {
+          "name": "Num_Ore_Prev",
+          "key": false
+        },
+        {
+          "name": "Num_Ore_Svolte",
+          "key": false
+        },
+        {
+          "name": "Valutazione_Finale",
+          "key": false
+        },
+        {
+          "name": "Esito",
+          "key": false
+        }
+      ]
+    },
+    {
+      "id": "entity_1770392195767",
+      "name": "TUTOR_AZIEND",
+      "type": "entity",
+      "x": 905.8114645648728,
+      "y": 358.0374905585455,
+      "attributesSide": "right",
+      "backgroundColor": "#ffffff",
+      "attributes": [
+        {
+          "name": "Nome",
+          "key": false
+        },
+        {
+          "name": "Cognome",
+          "key": false
+        },
+        {
+          "name": "Ruolo",
+          "key": false
+        },
+        {
+          "name": "Email",
+          "key": true
+        }
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "id": "rel_1770392327255",
+      "name": "Stud_Tutor",
+      "from": "entity_1770392090296",
+      "to": "entity_1770392008960",
+      "cardinalityFrom": "1:1",
+      "cardinalityTo": "1:1",
+      "attributes": [],
+      "type": "relation"
+    },
+    {
+      "id": "rel_1770392375847",
+      "name": "Esp_Tutor",
+      "from": "entity_1770392162008",
+      "to": "entity_1770392090296",
+      "cardinalityFrom": "1:1",
+      "cardinalityTo": "1:N",
+      "attributes": [],
+      "type": "relation",
+      "x": 437.1059887212868,
+      "y": 489.22960801867555
+    },
+    {
+      "id": "rel_1770392426959",
+      "name": "Esp_TutAz",
+      "from": "entity_1770392195767",
+      "to": "entity_1770392162008",
+      "cardinalityFrom": "1:1",
+      "cardinalityTo": "1:1",
+      "attributes": [],
+      "type": "relation",
+      "x": 804.5337539275383,
+      "y": 427.9919625071023
+    },
+    {
+      "id": "rel_1770392495743",
+      "name": "Esp_Azienda",
+      "from": "entity_1770392006313",
+      "to": "entity_1770392162008",
+      "cardinalityFrom": "1:N",
+      "cardinalityTo": "1:1",
+      "attributes": [],
+      "type": "relation",
+      "x": 775.5430620079624,
+      "y": 343.49420677044395
+    },
+    {
+      "id": "rel_1770392694277",
+      "name": "Proposta_Esper",
+      "from": "entity_1770392120872",
+      "to": "entity_1770392162008",
+      "cardinalityFrom": "1:1",
+      "cardinalityTo": "1:1",
+      "attributes": [],
+      "type": "relation",
+      "x": 624.4641819510185,
+      "y": 294.82739721831797
+    },
+    {
+      "id": "rel_1770392752005",
+      "name": "Stud_Esp",
+      "from": "entity_1770392008960",
+      "to": "entity_1770392162008",
+      "cardinalityFrom": "1:N",
+      "cardinalityTo": "1:N",
+      "attributes": [],
+      "type": "relation"
+    },
+    {
+      "id": "rel_1770392837405",
+      "name": "Prop_Stud",
+      "from": "entity_1770392120872",
+      "to": "entity_1770392008960",
+      "cardinalityFrom": "1:N",
+      "cardinalityTo": "1:1",
+      "attributes": [],
+      "type": "relation",
+      "x": 396.9314763565013,
+      "y": 142.78386416727406
+    },
+    {
+      "id": "rel_1770392877573",
+      "name": "Prop_Az",
+      "from": "entity_1770392006313",
+      "to": "entity_1770392120872",
+      "cardinalityFrom": "1:N",
+      "cardinalityTo": "1:1",
+      "attributes": [],
+      "type": "relation"
+    }
+  ]
+}

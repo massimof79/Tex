@@ -1,0 +1,245 @@
+{
+  "entities": [
+    {
+      "id": "prodotto",
+      "name": "STUDENTE",
+      "type": "entity",
+      "x": 255,
+      "y": 112,
+      "attributesSide": "left",
+      "backgroundColor": "#ffffff",
+      "attributes": [
+        {
+          "name": "Codice_id",
+          "key": true
+        },
+        {
+          "name": "Nome",
+          "key": false
+        },
+        {
+          "name": "Cognome",
+          "key": false
+        },
+        {
+          "name": "Data_nascita",
+          "key": false
+        },
+        {
+          "name": "Luogo_nascita",
+          "key": false
+        },
+        {
+          "name": "Codice fiscale",
+          "key": false
+        },
+        {
+          "name": "Indirizzo_residenza",
+          "key": false
+        },
+        {
+          "name": "Email_istituzionale",
+          "key": false
+        },
+        {
+          "name": "Classe_frequentata",
+          "key": false
+        },
+        {
+          "name": "Indirizzo_studi",
+          "key": false
+        }
+      ]
+    },
+    {
+      "id": "entity_1770393485235",
+      "name": "TUTOR SCOLASTICO",
+      "type": "entity",
+      "x": 119.88676647369425,
+      "y": 249.58032560285307,
+      "attributesSide": "left",
+      "backgroundColor": "#ffffff",
+      "attributes": [
+        {
+          "name": "Codice_docente",
+          "key": true
+        },
+        {
+          "name": "Nome",
+          "key": false
+        },
+        {
+          "name": "Cognome",
+          "key": false
+        },
+        {
+          "name": "Email",
+          "key": false
+        },
+        {
+          "name": "Dipartimento",
+          "key": false
+        },
+        {
+          "name": "Numero_max_studenti",
+          "key": false
+        }
+      ]
+    },
+    {
+      "id": "entity_1770393525341",
+      "name": "AZIENDA",
+      "type": "entity",
+      "x": 398.4879435250539,
+      "y": 579.4599087657809,
+      "attributesSide": "left",
+      "backgroundColor": "#ffffff",
+      "attributes": [
+        {
+          "name": "Ragione sociale",
+          "key": false
+        },
+        {
+          "name": "Partita IVA",
+          "key": true
+        },
+        {
+          "name": "Sede_legale",
+          "key": false
+        },
+        {
+          "name": "Settore_attività_prevalente",
+          "key": false
+        },
+        {
+          "name": "Referente_aziendale",
+          "key": false
+        },
+        {
+          "name": "Email",
+          "key": false
+        },
+        {
+          "name": "Telefono",
+          "key": false
+        }
+      ]
+    },
+    {
+      "id": "entity_1770393569869",
+      "name": "DISPONIBILITA'",
+      "type": "entity",
+      "x": 462.20538200988983,
+      "y": 117.86286783684045,
+      "attributesSide": "right",
+      "backgroundColor": "#ffffff",
+      "attributes": [
+        {
+          "name": "Codice_id",
+          "key": true
+        },
+        {
+          "name": "Azienda proponente",
+          "key": false
+        },
+        {
+          "name": "Data_inizio",
+          "key": false
+        },
+        {
+          "name": "Data_fine",
+          "key": false
+        },
+        {
+          "name": "Numero_max_studenti_ospitabili",
+          "key": false
+        },
+        {
+          "name": "Descrizione_attività",
+          "key": false
+        },
+        {
+          "name": "Competenze_richieste",
+          "key": false
+        },
+        {
+          "name": "Indirizzo_studi_consigliato",
+          "key": false
+        }
+      ]
+    },
+    {
+      "id": "entity_1770393604786",
+      "name": "ESPERIENZA",
+      "type": "entity",
+      "x": 445.2822049344194,
+      "y": 394.38750798211674,
+      "attributesSide": "left",
+      "backgroundColor": "#ffffff",
+      "attributes": [
+        {
+          "name": "Studente_assegnato",
+          "key": false
+        },
+        {
+          "name": "Azienda_ospitante",
+          "key": false
+        },
+        {
+          "name": "Tutor_scolastico_assegnato",
+          "key": false
+        },
+        {
+          "name": "Tutor aziendale",
+          "key": false
+        },
+        {
+          "name": "Periodo effetrivo",
+          "key": false
+        }
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "id": "rel_1770394928305",
+      "name": "PARTECIPA",
+      "from": "prodotto",
+      "to": "entity_1770393604786",
+      "cardinalityFrom": "1:N",
+      "cardinalityTo": "1:N",
+      "attributes": [],
+      "type": "relation"
+    },
+    {
+      "id": "rel_1770394970901",
+      "name": "APPARTIENE",
+      "from": "entity_1770393604786",
+      "to": "entity_1770393485235",
+      "cardinalityFrom": "1:1",
+      "cardinalityTo": "1:N",
+      "attributes": [],
+      "type": "relation"
+    },
+    {
+      "id": "rel_1770395021398",
+      "name": "OFFRE",
+      "from": "entity_1770393525341",
+      "to": "entity_1770393604786",
+      "cardinalityFrom": "1:N",
+      "cardinalityTo": "1:1",
+      "attributes": [],
+      "type": "relation"
+    },
+    {
+      "id": "rel_1770395097504",
+      "name": "E' ASSOCIATA",
+      "from": "entity_1770393604786",
+      "to": "entity_1770393569869",
+      "cardinalityFrom": "1:1",
+      "cardinalityTo": "1:N",
+      "attributes": [],
+      "type": "relation"
+    }
+  ]
+}

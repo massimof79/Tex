@@ -1,0 +1,239 @@
+\documentclass[a4paper,12pt]{article}
+
+\usepackage[italian]{babel}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+
+\title{Come Funzionano le Foreste Casuali: Struttura Interna e Logica di Apprendimento}
+\author{Prof. Fedeli Massimo}
+\date{}
+
+\begin{document}
+	
+	\maketitle
+	\newpage 
+	\section{Introduzione}
+	
+
+	\section{Dal singolo albero alla foresta}
+	
+	Un albero decisionale prende decisioni tramite una sequenza di regole.
+	
+	Ad esempio:
+	
+	\begin{itemize}
+		\item Temperatura > 15°C?
+		\item C'è vento?
+	\end{itemize}
+	
+	Ogni nodo divide i dati in due gruppi.
+	
+	L'obiettivo è rendere ogni gruppo il più omogeneo possibile.
+	
+	Questo processo è chiamato:\newline
+	\textbf{partizionamento dello spazio delle feature}.
+	
+	\section{Il problema dell'instabilità}
+	
+Piccoli cambiamenti nei dati possono produrre alberi completamente diversi.
+	
+	Questo accade perché:
+	
+	\begin{itemize}
+		\item ogni nodo dipende dai dati disponibili
+		\item ogni divisione influenza tutte le successive
+	\end{itemize}
+	
+	Di conseguenza:
+	
+	\textbf{un albero decisionale ha alta varianza}
+	
+	Cioè è molto sensibile ai dati di training.
+	
+	\section{Overfitting}
+	
+	Se lasciamo crescere completamente l'albero:
+	
+	\begin{itemize}
+		\item imparerà perfettamente i dati
+		\item ma anche il rumore
+	\end{itemize}
+	
+	Questo produce regioni decisionali molto frastagliate.
+	
+	Il modello diventa preciso sui dati visti ma incapace di generalizzare.
+	
+	\section{L'idea della foresta}
+	
+	La soluzione non è costruire un albero migliore.
+	
+	È costruire molti alberi diversi.
+	
+	Una foresta casuale è quindi:
+	
+	\begin{center}
+		Un insieme di alberi che apprendono in modo indipendente
+	\end{center}
+	
+	La decisione finale nasce dalla loro combinazione.
+	
+	\section{Cosa succede durante l'addestramento}
+	
+	Il funzionamento interno può essere diviso in quattro fasi fondamentali.
+	
+	\subsection{1. Campionamento Bootstrap}
+	
+	Per ogni albero viene creato un nuovo dataset.
+	
+	Questo avviene estraendo casualmente dati con reinserimento.
+	
+	Se il dataset originale ha 100 esempi:
+	
+	ogni albero riceve un nuovo dataset di 100 esempi, ma con duplicati.
+	
+	Alcuni dati non verranno utilizzati.
+	
+	Questo genera alberi diversi.
+	
+	\subsection{2. Costruzione indipendente degli alberi}
+	
+	Ogni albero viene addestrato separatamente.
+	
+	Non esiste comunicazione tra gli alberi.
+	
+	Ogni albero cerca la migliore divisione locale dei dati.
+	
+	\section{Come un albero divide i dati}
+	
+	Ogni nodo deve scegliere:
+	
+	\begin{itemize}
+		\item quale feature usare
+		\item quale soglia scegliere
+	\end{itemize}
+	
+	La scelta si basa sulla riduzione dell'impurità.
+	
+	\subsection{Indice di Gini}
+	
+	L'impurità è misurata tramite:
+	
+
+	Dove $p_i$ è la proporzione della classe $i$.
+	
+	Se tutte le osservazioni appartengono alla stessa classe:
+	
+	[
+	G = 0
+	]
+	
+	Il nodo è puro.
+	
+	L'albero sceglie la divisione che riduce maggiormente il Gini.
+	
+	\section{3. La casualità nelle feature}
+	
+	Qui nasce la vera differenza rispetto agli alberi classici.
+	
+	In ogni nodo:
+	
+	non vengono considerate tutte le feature.
+	
+	Solo un sottoinsieme casuale.
+	
+	Questo significa che due alberi:
+	
+	\begin{itemize}
+		\item vedono dati diversi
+		\item considerano variabili diverse
+	\end{itemize}
+	
+	Anche se partono dallo stesso dataset.
+	
+	\section{4. Crescita completa}
+	
+	Gli alberi nella foresta:
+	
+	\begin{itemize}
+		\item non vengono potati
+		\item crescono profondamente
+	\end{itemize}
+	
+	Ogni albero diventa altamente specializzato.
+	
+	\section{Perché la foresta funziona}
+	
+	Ogni albero commette errori.
+	
+	Ma non gli stessi errori.
+	
+	La casualità introduce:
+	
+	\begin{itemize}
+		\item decorrelazione
+	\end{itemize}
+	
+	Gli errori non sono sincronizzati.
+	
+	\section{Aggregazione delle decisioni}
+	
+	Dopo l'addestramento:
+	
+	ogni albero produce una previsione.
+	
+	\subsection{Classificazione}
+	
+	Si usa la maggioranza.
+	
+	\subsection{Regressione}
+	
+	Si usa la media.
+	
+	Questo riduce la varianza del modello.
+	
+	\section{Interpretazione geometrica}
+	
+	Ogni albero suddivide lo spazio delle feature in regioni.
+	
+	Una foresta costruisce molte suddivisioni diverse.
+	
+	La decisione finale è la combinazione di queste partizioni.
+	
+	Il risultato è una superficie decisionale più stabile.
+	
+	\section{Ruolo del numero di alberi}
+	
+	Aumentando il numero di alberi:
+	
+	\begin{itemize}
+		\item diminuisce la varianza
+		\item aumenta la stabilità
+	\end{itemize}
+	
+	Ma aumenta il costo computazionale.
+	
+	\section{Bagging}
+	
+	Come spiegato nel documento , questo processo prende il nome di:
+	
+	\textbf{Bootstrap Aggregation}
+	
+	Bagging significa:
+	
+	\begin{itemize}
+		\item addestrare più modelli su dati diversi
+		\item aggregare le loro decisioni
+	\end{itemize}
+	
+	\section{Perché riduce l'overfitting}
+	
+	Un singolo albero apprende il rumore.
+	
+	La media di molti alberi riduce l'effetto del rumore.
+	
+
+	
+\end{document}

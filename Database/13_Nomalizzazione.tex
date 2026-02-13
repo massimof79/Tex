@@ -1,0 +1,603 @@
+\documentclass[aspectratio=169]{beamer}
+\usetheme{Madrid}
+\usecolortheme{default}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[italian]{babel}
+
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,calc}
+
+\usepackage{listings}
+\usepackage{xcolor}
+
+\lstdefinelanguage{SQL}{
+	keywords={CREATE,TABLE,PRIMARY,KEY,FOREIGN,REFERENCES,INT,VARCHAR,DATE,NOT,NULL,DEFAULT,UNIQUE,INDEX,ON,SELECT,FROM,WHERE,JOIN,LEFT,RIGHT,INNER,OUTER,GROUP,BY,COUNT,SUM,AS,INSERT,INTO,VALUES,UPDATE,SET,DELETE,VIEW,MATERIALIZED},
+	sensitive=false,
+	morecomment=[l]{--},
+	morestring=[b]'
+}
+
+\lstset{
+	language=SQL,
+	basicstyle=\ttfamily\small,
+	keywordstyle=\bfseries,
+	commentstyle=\itshape,
+	stringstyle=\ttfamily,
+	showstringspaces=false,
+	breaklines=true,
+	frame=single
+}
+
+\title{Normalizzazione nei DBMS}
+\subtitle{Dai concetti base alle forme normali avanzate, con esempi SQL}
+\author{Prof. Fedeli Massimo}
+\date{}
+
+\begin{document}
+	
+	% 1
+	\begin{frame}
+		\titlepage
+	\end{frame}
+	
+	% 2
+	\begin{frame}{Obiettivi della lezione}
+		Al termine saprai:
+		\begin{itemize}
+			\item spiegare perché la normalizzazione riduce ridondanza e anomalie
+			\item riconoscere chiavi e dipendenze funzionali in una tabella
+			\item trasformare dati disordinati in 1NF, 2NF e 3NF con decomposizioni corrette
+			\item capire quando servono BCNF, 4NF, 5NF e 6NF
+			\item valutare il compromesso prestazioni: normalizzazione vs denormalizzazione
+		\end{itemize}
+	\end{frame}
+	
+	% 3
+	\begin{frame}{Perché normalizzare}
+		La normalizzazione organizza i dati in modo che ogni informazione viva in un solo posto, secondo regole formali (forme normali).
+		\vspace{2mm}
+		
+		Benefici tipici:
+		\begin{itemize}
+			\item meno ridondanza, meno incongruenze
+			\item integrità referenziale più semplice (vincoli e chiavi esterne)
+			\item eliminazione delle anomalie di inserimento, modifica, cancellazione
+			\item schema più manutenibile quando il progetto cresce
+		\end{itemize}
+	\end{frame}
+	
+	% 4
+	\begin{frame}{Il problema: un esempio di caos (tabella larga)}
+		Immagina una tabella ordini con prodotti in lista nello stesso campo.
+		\begin{lstlisting}
+			CREATE TABLE ordini_bad (
+			order_id INT,
+			customer_name VARCHAR(100),
+			products VARCHAR(500),     -- "Laptop,Mouse,Monitor"
+			quantities VARCHAR(50)     -- "1,2,1"
+			);
+		\end{lstlisting}
+		
+		Domande che diventano un incubo:
+		\begin{itemize}
+			\item quali ordini contengono "Laptop"?
+			\item quante "Mouse" sono state vendute in totale?
+		\end{itemize}
+	\end{frame}
+	
+	% 5
+	\begin{frame}{Illustrazione: dove nascono le anomalie}
+		\centering
+		\begin{tikzpicture}[
+			node distance=8mm,
+			box/.style={draw, rounded corners, align=left, inner sep=6pt, text width=0.86\linewidth}
+			]
+			\node[box] (ins) {Anomalia di inserimento: per registrare un nuovo prodotto devi creare stringhe e combinazioni fittizie.};
+			\node[box, below=of ins] (upd) {Anomalia di aggiornamento: cambiare un dato ripetuto implica molte righe e rischi di dimenticanze.};
+			\node[box, below=of upd] (del) {Anomalia di cancellazione: eliminare un ordine potrebbe cancellare anche l'unica occorrenza di un'informazione utile.};
+			
+			\draw[-{Latex[length=3mm]}] (ins.south) -- (upd.north);
+			\draw[-{Latex[length=3mm]}] (upd.south) -- (del.north);
+		\end{tikzpicture}
+	\end{frame}
+	
+	% 6
+	\begin{frame}{Concetti chiave: le chiavi}
+		Le chiavi sono la base del modello relazionale.
+		\begin{itemize}
+			\item Chiave primaria (PK): identifica univocamente ogni riga, non nulla e non duplicata.
+			\item Chiave candidata: qualsiasi attributo (o insieme) che potrebbe essere PK.
+			\item Chiave esterna (FK): collega tabelle, referenziando una PK (o chiave candidata).
+		\end{itemize}
+		
+		\begin{lstlisting}
+			CREATE TABLE customers (
+			customer_id INT PRIMARY KEY,
+			email VARCHAR(255) UNIQUE,
+			name VARCHAR(100)
+			);
+			
+			CREATE TABLE orders (
+			order_id INT PRIMARY KEY,
+			customer_id INT,
+			order_date DATE,
+			FOREIGN KEY (customer_id) REFERENCES customers(customer_id)
+			);
+		\end{lstlisting}
+	\end{frame}
+	
+	% 7
+	\begin{frame}{Dipendenze funzionali: l'idea matematica}
+		Una dipendenza funzionale A $\rightarrow$ B significa: noto A, determino B in modo univoco.
+		
+		Esempi tipici:
+		\begin{itemize}
+			\item customer\_id $\rightarrow$ email, name
+			\item CAP $\rightarrow$ città, provincia (dipende dal contesto e qualità dei dati)
+		\end{itemize}
+		
+		\centering
+		\begin{tikzpicture}[
+			n/.style={draw, rounded corners, inner sep=5pt},
+			>=Latex
+			]
+			\node[n] (a) {customer\_id};
+			\node[n, right=18mm of a] (b1) {email};
+			\node[n, below=8mm of b1] (b2) {name};
+			
+			\draw[->] (a) -- (b1);
+			\draw[->] (a) -- (b2);
+		\end{tikzpicture}
+		
+		\vspace{2mm}
+		La normalizzazione usa le dipendenze per decidere cosa separare.
+	\end{frame}
+	
+	% 8
+	\begin{frame}{Decomposizione: due requisiti da non violare}
+		Quando spezzi una tabella in più tabelle, vuoi due proprietà:
+		\begin{itemize}
+			\item Decomposizione senza perdita: facendo join ottieni esattamente i dati originali (nessuna informazione persa o inventata).
+			\item Preservazione delle dipendenze: le regole (dipendenze) restano verificabili con vincoli e chiavi sulle nuove tabelle.
+		\end{itemize}
+		
+		\centering
+		\begin{tikzpicture}[
+			box/.style={draw, rounded corners, inner sep=6pt, text width=0.34\linewidth, align=center},
+			>=Latex
+			]
+			\node[box] (t0) {Tabella iniziale};
+			\node[box, right=10mm of t0] (t1) {Tabelle normalizzate};
+			
+			\draw[->] (t0) -- node[above]{decomposizione} (t1);
+			\draw[<-] (t0.south) to[out=-120,in=-60] node[below]{join ricostruttivo} (t1.south);
+		\end{tikzpicture}
+	\end{frame}
+	
+	% 9
+	\begin{frame}{Processo passo-passo: panorama}
+		In pratica, si procede a livelli:
+		\begin{itemize}
+			\item 1NF: valori atomici, niente liste o gruppi ripetuti
+			\item 2NF: niente dipendenze parziali (con PK composta)
+			\item 3NF: niente dipendenze transitive tra non-chiavi
+			\item BCNF, 4NF, 5NF, 6NF: casi speciali e scenari avanzati
+		\end{itemize}
+		
+		Regola operativa: non saltare i passaggi. Ogni forma normale presuppone la precedente.
+	\end{frame}
+	
+	% 10
+	\begin{frame}{Prima Forma Normale (1NF): valori atomici}
+		Violazione tipica: attributi multi-valore in un campo.
+		\begin{lstlisting}
+			CREATE TABLE ordini_bad (
+			order_id INT,
+			customer_name VARCHAR(100),
+			products VARCHAR(500),    -- lista
+			quantities VARCHAR(50)    -- lista
+			);
+		\end{lstlisting}
+		
+		Correzione 1NF: una riga per ogni elemento ripetuto.
+		\begin{lstlisting}
+			CREATE TABLE ordini_1nf (
+			order_id INT,
+			customer_name VARCHAR(100),
+			product VARCHAR(100),
+			quantity INT
+			);
+		\end{lstlisting}
+	\end{frame}
+	
+	% 11
+	\begin{frame}{Illustrazione 1NF: da liste a righe}
+		\centering
+		\begin{tikzpicture}[
+			>=Latex,
+			tab/.style={draw, rounded corners, inner sep=6pt, align=left, text width=0.42\linewidth}
+			]
+			\node[tab] (bad) {
+				\textbf{Prima (non 1NF)}\\
+				order\_id=10\\
+				products="Laptop,Mouse"\\
+				quantities="1,2"
+			};
+			
+			\node[tab, right=10mm of bad] (good) {
+				\textbf{Dopo (1NF)}\\
+				(10, Laptop, 1)\\
+				(10, Mouse, 2)
+			};
+			
+			\draw[->] (bad) -- node[above]{espansione} (good);
+		\end{tikzpicture}
+		
+		\vspace{2mm}
+		Ora query e aggregazioni funzionano senza parsing di stringhe.
+	\end{frame}
+	
+	% 12
+	\begin{frame}{Seconda Forma Normale (2NF): niente dipendenze parziali}
+		Caso classico: chiave primaria composta.
+		\vspace{1mm}
+		
+		Se la PK è (order\_id, product), allora ogni attributo non chiave deve dipendere da entrambi, non solo da una parte.
+		\begin{lstlisting}
+			CREATE TABLE ordini_1nf (
+			order_id INT,
+			customer_name VARCHAR(100), -- dipende solo da order_id
+			product VARCHAR(100),
+			quantity INT,
+			PRIMARY KEY (order_id, product)
+			);
+		\end{lstlisting}
+		Problema: customer\_name dipende solo da order\_id, quindi si ripete per ogni prodotto dell'ordine.
+	\end{frame}
+	
+	% 13
+	\begin{frame}{2NF: decomposizione corretta}
+		Spezzi in:
+		\begin{itemize}
+			\item tabella testata ordine (dipende da order\_id)
+			\item tabella righe ordine (dipende da order\_id e product)
+		\end{itemize}
+		
+		\begin{lstlisting}
+			CREATE TABLE orders (
+			order_id INT PRIMARY KEY,
+			customer_name VARCHAR(100)
+			);
+			
+			CREATE TABLE order_items (
+			order_id INT,
+			product VARCHAR(100),
+			quantity INT,
+			PRIMARY KEY (order_id, product),
+			FOREIGN KEY (order_id) REFERENCES orders(order_id)
+			);
+		\end{lstlisting}
+		Ridondanza eliminata: il nome cliente compare una volta sola per ordine.
+	\end{frame}
+	
+	% 14
+	\begin{frame}{Terza Forma Normale (3NF): niente dipendenze transitive}
+		Dipendenza transitiva: PK $\rightarrow$ A e A $\rightarrow$ B, quindi PK $\rightarrow$ B indirettamente.
+		
+		Esempio: se metti dettagli geografici nell'ordine, si ripetono.
+		\begin{lstlisting}
+			CREATE TABLE orders_2nf (
+			order_id INT PRIMARY KEY,
+			customer_name VARCHAR(100),
+			customer_city VARCHAR(50),
+			customer_state VARCHAR(50),
+			customer_zip VARCHAR(10)
+			);
+		\end{lstlisting}
+		
+		Se city $\rightarrow$ state e zip, allora state e zip non dovrebbero stare in una tabella legata all'ordine.
+	\end{frame}
+	
+	% 15
+	\begin{frame}{3NF: separare entità e riferimenti}
+		Strategia: sposta i dettagli in tabelle dedicate e usa chiavi esterne.
+		\begin{lstlisting}
+			CREATE TABLE cities (
+			city_id INT PRIMARY KEY,
+			city_name VARCHAR(50),
+			state VARCHAR(50),
+			zip VARCHAR(10)
+			);
+			
+			CREATE TABLE customers (
+			customer_id INT PRIMARY KEY,
+			customer_name VARCHAR(100),
+			city_id INT,
+			FOREIGN KEY (city_id) REFERENCES cities(city_id)
+			);
+			
+			CREATE TABLE orders (
+			order_id INT PRIMARY KEY,
+			customer_id INT,
+			order_date DATE,
+			FOREIGN KEY (customer_id) REFERENCES customers(customer_id)
+			);
+		\end{lstlisting}
+		
+		Risultato: l'informazione geografica vive in un punto solo.
+	\end{frame}
+	
+	% 16
+	\begin{frame}{Illustrazione 3NF: schema finale (semplificato)}
+		\centering
+		\begin{tikzpicture}[
+			ent/.style={draw, rounded corners, inner sep=6pt, align=left, text width=0.28\linewidth},
+			rel/.style={-Latex, thick}
+			]
+			\node[ent] (cities) {\textbf{cities}\\ city\_id (PK)\\ city\_name\\ state\\ zip};
+			\node[ent, right=12mm of cities] (customers) {\textbf{customers}\\ customer\_id (PK)\\ customer\_name\\ city\_id (FK)};
+			\node[ent, right=12mm of customers] (orders) {\textbf{orders}\\ order\_id (PK)\\ customer\_id (FK)\\ order\_date};
+			
+			\draw[rel] (customers.west) -- node[above]{FK} (cities.east);
+			\draw[rel] (orders.west) -- node[above]{FK} (customers.east);
+		\end{tikzpicture}
+		
+		\vspace{2mm}
+		Tipicamente 3NF (o BCNF) basta per la maggior parte dei sistemi transazionali.
+	\end{frame}
+	
+	% 17
+	\begin{frame}{BCNF: quando 3NF non basta}
+		BCNF rafforza 3NF: ogni determinante deve essere una superchiave.
+		
+		Caso tipico: chiavi candidate sovrapposte.
+		\begin{lstlisting}
+			CREATE TABLE course_instructors (
+			student_id INT,
+			course VARCHAR(50),
+			instructor VARCHAR(50),
+			PRIMARY KEY (student_id, course)
+			);
+		\end{lstlisting}
+		
+		Se valgono:
+		\begin{itemize}
+			\item course $\rightarrow$ instructor
+			\item instructor $\rightarrow$ course
+		\end{itemize}
+		allora course determina instructor senza essere superchiave nella tabella: violazione BCNF.
+	\end{frame}
+	
+	% 18
+	\begin{frame}{BCNF: decomposizione}
+		\begin{lstlisting}
+			CREATE TABLE course_assignments (
+			course VARCHAR(50) PRIMARY KEY,
+			instructor VARCHAR(50) UNIQUE
+			);
+			
+			CREATE TABLE student_enrollments (
+			student_id INT,
+			course VARCHAR(50),
+			PRIMARY KEY (student_id, course),
+			FOREIGN KEY (course) REFERENCES course_assignments(course)
+			);
+		\end{lstlisting}
+		
+		Vantaggio pratico: puoi inserire un docente per un corso anche senza iscrizioni di studenti.
+	\end{frame}
+	
+	% 19
+	\begin{frame}{Quarta Forma Normale (4NF): dipendenze multivalore}
+		4NF elimina esplosioni combinatorie quando hai due insiemi indipendenti di valori.
+		
+		Esempio: uno studente ha più competenze e più hobby, indipendenti tra loro.
+		\begin{lstlisting}
+			CREATE TABLE student_info (
+			student_id INT,
+			skill VARCHAR(50),
+			hobby VARCHAR(50),
+			PRIMARY KEY (student_id, skill, hobby)
+			);
+		\end{lstlisting}
+		
+		Aggiungere una skill richiede righe per ogni hobby: prodotto cartesiano.
+	\end{frame}
+	
+	% 20
+	\begin{frame}{4NF: soluzione}
+		Separi le relazioni indipendenti:
+		\begin{lstlisting}
+			CREATE TABLE student_skills (
+			student_id INT,
+			skill VARCHAR(50),
+			PRIMARY KEY (student_id, skill)
+			);
+			
+			CREATE TABLE student_hobbies (
+			student_id INT,
+			hobby VARCHAR(50),
+			PRIMARY KEY (student_id, hobby)
+			);
+		\end{lstlisting}
+		
+		\centering
+		\begin{tikzpicture}[>=Latex, node distance=10mm]
+			\node[draw, rounded corners, inner sep=6pt] (s) {student\_id};
+			\node[draw, rounded corners, inner sep=6pt, above right=of s] (sk) {skill};
+			\node[draw, rounded corners, inner sep=6pt, below right=of s] (hb) {hobby};
+			\draw[->] (s) -- (sk);
+			\draw[->] (s) -- (hb);
+		\end{tikzpicture}
+		
+		\vspace{2mm}
+		Ora puoi aggiornare skill e hobby in modo indipendente.
+	\end{frame}
+	
+	% 21
+	\begin{frame}{Quinta Forma Normale (5NF): join dependency}
+		5NF gestisce casi in cui la ricostruzione corretta richiede join di tre o più tabelle.
+		
+		Esempio classico: fornitore, pezzo, progetto.
+		\begin{lstlisting}
+			CREATE TABLE supplier_part_project (
+			supplier_id INT,
+			part_id INT,
+			project_id INT,
+			PRIMARY KEY (supplier_id, part_id, project_id)
+			);
+		\end{lstlisting}
+		
+		Se la regola di business implica vincoli separati a coppie, la tabella ternaria può introdurre ridondanza o combinazioni non desiderate.
+	\end{frame}
+	
+	% 22
+	\begin{frame}{5NF: decomposizione in relazioni binarie}
+		\begin{lstlisting}
+			CREATE TABLE supplier_parts (
+			supplier_id INT,
+			part_id INT,
+			PRIMARY KEY (supplier_id, part_id)
+			);
+			
+			CREATE TABLE supplier_projects (
+			supplier_id INT,
+			project_id INT,
+			PRIMARY KEY (supplier_id, project_id)
+			);
+			
+			CREATE TABLE project_parts (
+			project_id INT,
+			part_id INT,
+			PRIMARY KEY (project_id, part_id)
+			);
+		\end{lstlisting}
+		
+		Ricostruzione valida: join di tutte e tre le tabelle, che incorpora la regola di business nello schema.
+	\end{frame}
+	
+	% 23
+	\begin{frame}{Sesta Forma Normale (6NF): normalizzazione estrema e temporalità}
+		6NF è rara nei sistemi OLTP tradizionali: è utile per dati temporali e data warehouse con attributi che cambiano indipendentemente.
+		
+		Esempio: tracciare la validità nel tempo per attributi diversi.
+		\begin{lstlisting}
+			CREATE TABLE customer_names (
+			customer_id INT,
+			name VARCHAR(100),
+			valid_from DATE,
+			valid_to DATE,
+			PRIMARY KEY (customer_id, valid_from)
+			);
+			
+			CREATE TABLE customer_addresses (
+			customer_id INT,
+			address VARCHAR(200),
+			valid_from DATE,
+			valid_to DATE,
+			PRIMARY KEY (customer_id, valid_from)
+			);
+		\end{lstlisting}
+		
+		Pro: storia precisa per attributo. Contro: query più complesse e molti join.
+	\end{frame}
+	
+	% 24
+	\begin{frame}{Pro e contro della normalizzazione}
+		Vantaggi:
+		\begin{itemize}
+			\item riduce ridondanza e incongruenze
+			\item aggiornamenti più sicuri (una sola sorgente di verità)
+			\item integrità referenziale naturale con vincoli FK
+			\item collaborazione più semplice: "dove sta il dato" è chiaro
+		\end{itemize}
+		
+		Svantaggi:
+		\begin{itemize}
+			\item query più lunghe (molti join)
+			\item possibili costi prestazionali nei carichi di lettura pesanti
+			\item rischio di iper-normalizzazione: complessità senza benefici reali
+		\end{itemize}
+	\end{frame}
+	
+	% 25
+	\begin{frame}{Prestazioni: OLTP vs OLAP e tecniche di ottimizzazione}
+		OLTP (transazionale): spesso beneficia di schema normalizzato per concorrenza e scritture affidabili.
+		\vspace{1mm}
+		
+		OLAP (analitico): spesso preferisce dati pre-aggregati o denormalizzati per letture massive.
+		\vspace{2mm}
+		
+		Tecniche per ridurre il costo dei join:
+		\begin{itemize}
+			\item indicizzare sempre le chiavi esterne
+			\item indici composti per filtri frequenti (es. cliente e data)
+			\item viste materializzate per report ricorrenti
+			\item read replicas per separare analytics dalle scritture
+		\end{itemize}
+		
+		\begin{lstlisting}
+			CREATE INDEX idx_orders_customer_id ON orders(customer_id);
+			CREATE INDEX idx_orders_customer_date ON orders(customer_id, order_date);
+		\end{lstlisting}
+	\end{frame}
+	
+	% 26
+	\begin{frame}{Denormalizzazione: quando ha senso rompere le regole}
+		Denormalizzare e duplicare dati puo essere una scelta strategica quando:
+		\begin{itemize}
+			\item il sistema e fortemente read-heavy e i join sono il collo di bottiglia
+			\item servono dashboard in tempo reale con latenze molto basse
+			\item la logica di business tollera duplicazioni controllate
+		\end{itemize}
+		
+		Tecniche tipiche:
+		\begin{itemize}
+			\item valori calcolati memorizzati (totali, contatori)
+			\item gerarchie appiattite (percorso categoria)
+			\item copie di attributi "freddi" e stabili (nome cliente sull'ordine)
+		\end{itemize}
+		
+		Regola pratica: prima normalizza, poi denormalizza dove misuri un problema reale.
+	\end{frame}
+	
+	% 27
+	\begin{frame}{Esempio pratico: join in schema normalizzato}
+		Domanda: elenco ordini con nome cliente e dettagli geografici.
+		\begin{lstlisting}
+			SELECT
+			o.order_id,
+			o.order_date,
+			c.customer_name,
+			ci.city_name,
+			ci.state,
+			ci.zip
+			FROM orders o
+			JOIN customers c ON c.customer_id = o.customer_id
+			JOIN cities ci ON ci.city_id = c.city_id
+			WHERE o.order_date >= '2026-01-01';
+		\end{lstlisting}
+		
+		Questa complessita e il prezzo della coerenza. Con indici adeguati, i join restano efficienti nella maggior parte dei casi.
+	\end{frame}
+	
+	% 28
+	\begin{frame}{Riepilogo e checklist operativa}
+		Checklist veloce:
+		\begin{itemize}
+			\item 1NF: campi atomici, niente liste o ripetizioni nello stesso attributo
+			\item 2NF: se PK composta, ogni non-chiave dipende dall'intera PK
+			\item 3NF: niente dipendenze transitive tra non-chiavi
+			\item BCNF: ogni determinante e' superchiave
+			\item 4NF: separa insiemi indipendenti (multi-valore)
+			\item 5NF: decomponi join dependency complesse (spesso ternarie)
+			\item 6NF: utile quasi solo con temporalita' e requisiti speciali
+		\end{itemize}
+		
+		Conclusione: la normalizzazione e' un metodo, non una religione. La prestazione si ottiene misurando e ottimizzando, non indovinando.
+	\end{frame}
+	
+\end{document}

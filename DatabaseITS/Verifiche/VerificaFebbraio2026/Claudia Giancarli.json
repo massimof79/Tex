@@ -1,0 +1,175 @@
+{
+  "entities": [
+    {
+      "id": "entity_1770391556221",
+      "name": "CLIENTI",
+      "type": "entity",
+      "x": 412.4423232636643,
+      "y": 482.6563711094286,
+      "attributesSide": "left",
+      "backgroundColor": "#ffffff",
+      "attributes": [
+        {
+          "name": "CODICE CLIENTE",
+          "key": true
+        },
+        {
+          "name": "NOME",
+          "key": false
+        },
+        {
+          "name": "COGNOME",
+          "key": false
+        },
+        {
+          "name": "DATA-NASCITA",
+          "key": false
+        },
+        {
+          "name": "TELEFONO",
+          "key": false
+        },
+        {
+          "name": "E-MAIL",
+          "key": false
+        }
+      ]
+    },
+    {
+      "id": "entity_1770391623585",
+      "name": "CORSO",
+      "type": "entity",
+      "x": 944.3308290620241,
+      "y": 291.50484052658715,
+      "attributesSide": "right",
+      "backgroundColor": "#ffffff",
+      "attributes": [
+        {
+          "name": "CODICE CORSO",
+          "key": true
+        },
+        {
+          "name": "NOME",
+          "key": false
+        },
+        {
+          "name": "DESCIZIONE",
+          "key": false
+        },
+        {
+          "name": "NUMERO PARTECIPANTI",
+          "key": false
+        },
+        {
+          "name": "LIVELLO DIFFICOLTA'",
+          "key": false
+        }
+      ]
+    },
+    {
+      "id": "entity_1770391641542",
+      "name": "ISTRUTTORI",
+      "type": "entity",
+      "x": 93.15268435052553,
+      "y": 396.15472055023184,
+      "attributesSide": "left",
+      "backgroundColor": "#ffffff",
+      "attributes": [
+        {
+          "name": "CODICE ISTRUTTORE",
+          "key": true
+        },
+        {
+          "name": "NOME",
+          "key": false
+        },
+        {
+          "name": "COGNOME",
+          "key": false
+        },
+        {
+          "name": "SPECIALIZZAZIONE",
+          "key": false
+        },
+        {
+          "name": "ANNI_ESPERIENZA",
+          "key": false
+        }
+      ]
+    },
+    {
+      "id": "entity_1770391667537",
+      "name": "PALESTRA",
+      "type": "entity",
+      "x": 466.413859634923,
+      "y": 6.9459703740095335,
+      "attributesSide": "left",
+      "backgroundColor": "#ffffff",
+      "attributes": [
+        {
+          "name": "ISTRUTTORI",
+          "key": false
+        },
+        {
+          "name": "CORSI",
+          "key": false
+        },
+        {
+          "name": "CLIENTI",
+          "key": false
+        }
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "id": "rel_1770391981026",
+      "name": "ISCRIZIONE",
+      "from": "entity_1770391556221",
+      "to": "entity_1770391623585",
+      "cardinalityFrom": "1:1",
+      "cardinalityTo": "0:N",
+      "attributes": [
+        "MODALITA'",
+        "ABBONAMENTO"
+      ],
+      "type": "relation"
+    },
+    {
+      "id": "rel_1770392181368",
+      "name": "LAVORA",
+      "from": "entity_1770391667537",
+      "to": "entity_1770391641542",
+      "cardinalityFrom": "1:N",
+      "cardinalityTo": "1:1",
+      "attributes": [],
+      "type": "relation",
+      "x": 293.7832719927243,
+      "y": 267.5503454621207
+    },
+    {
+      "id": "rel_1770392557228",
+      "name": "ORGANIZZA",
+      "from": "entity_1770391667537",
+      "to": "entity_1770391623585",
+      "cardinalityFrom": "1:N",
+      "cardinalityTo": "1:1",
+      "attributes": [],
+      "type": "relation",
+      "x": 751.3723443484736,
+      "y": 185.72540545029835
+    },
+    {
+      "id": "rel_1770392945404",
+      "name": "tiene",
+      "from": "entity_1770391641542",
+      "to": "entity_1770391623585",
+      "cardinalityFrom": "1:1",
+      "cardinalityTo": "1:N",
+      "attributes": [],
+      "type": "relation",
+      "x": 587.7417567062748,
+      "y": 288.8297805384095
+    }
+  ]
+}

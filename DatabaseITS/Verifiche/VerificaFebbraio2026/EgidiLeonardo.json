@@ -1,0 +1,279 @@
+{
+  "entities": [
+    {
+      "id": "entity_1770390039361",
+      "name": "Tutor",
+      "type": "entity",
+      "x": 60.45681880228604,
+      "y": 347.23986869541176,
+      "attributesSide": "left",
+      "backgroundColor": "#ffffff",
+      "attributes": [
+        {
+          "name": "codice",
+          "key": true
+        },
+        {
+          "name": "nome",
+          "key": false
+        },
+        {
+          "name": "cognome",
+          "key": false
+        },
+        {
+          "name": "email",
+          "key": false
+        },
+        {
+          "name": "dipartimento",
+          "key": false
+        },
+        {
+          "name": "numero_massimo_studenti",
+          "key": false
+        }
+      ]
+    },
+    {
+      "id": "entity_1770390046304",
+      "name": "Studente",
+      "type": "entity",
+      "x": 527.4638784050627,
+      "y": 92.46576989969265,
+      "attributesSide": "right",
+      "backgroundColor": "#ffffff",
+      "attributes": [
+        {
+          "name": "codice_matricola",
+          "key": true
+        },
+        {
+          "name": "nome",
+          "key": false
+        },
+        {
+          "name": "cognome",
+          "key": false
+        },
+        {
+          "name": "data_di_nascita",
+          "key": false
+        },
+        {
+          "name": "luogo_di_nascita",
+          "key": false
+        },
+        {
+          "name": "codice_fiscale",
+          "key": false
+        },
+        {
+          "name": "indirizzo",
+          "key": false
+        },
+        {
+          "name": "email",
+          "key": false
+        },
+        {
+          "name": "classe",
+          "key": false
+        },
+        {
+          "name": "indirizzo_studi",
+          "key": false
+        }
+      ]
+    },
+    {
+      "id": "entity_1770390247094",
+      "name": "Azienda",
+      "type": "entity",
+      "x": 1080.3333361755672,
+      "y": 75.78205397275727,
+      "attributesSide": "left",
+      "backgroundColor": "#ffffff",
+      "attributes": [
+        {
+          "name": "partita_iva",
+          "key": true
+        },
+        {
+          "name": "ragione_sociale",
+          "key": false
+        },
+        {
+          "name": "sede_legale",
+          "key": false
+        },
+        {
+          "name": "sede_operativa",
+          "key": false
+        },
+        {
+          "name": "settore_attivita",
+          "key": false
+        },
+        {
+          "name": "referente_nome",
+          "key": false
+        },
+        {
+          "name": "referente_email",
+          "key": false
+        },
+        {
+          "name": "referente_telefono",
+          "key": false
+        }
+      ]
+    },
+    {
+      "id": "entity_1770390538629",
+      "name": "Disponibiltà",
+      "type": "entity",
+      "x": 1138.4438331475208,
+      "y": 344.0129495461104,
+      "attributesSide": "left",
+      "backgroundColor": "#ffffff",
+      "attributes": [
+        {
+          "name": "codice",
+          "key": true
+        },
+        {
+          "name": "data_inizio",
+          "key": false
+        },
+        {
+          "name": "data_fine",
+          "key": false
+        },
+        {
+          "name": "numero_massimo_studenti",
+          "key": false
+        },
+        {
+          "name": "descrizione_attivita",
+          "key": false
+        },
+        {
+          "name": "competenze_richieste",
+          "key": false
+        },
+        {
+          "name": "indirizzo_studi_consigliato",
+          "key": false
+        }
+      ]
+    },
+    {
+      "id": "entity_1770390545827",
+      "name": "Esperienza",
+      "type": "entity",
+      "x": 597.2109169684123,
+      "y": 346.26587955592305,
+      "attributesSide": "left",
+      "backgroundColor": "#ffffff",
+      "attributes": [
+        {
+          "name": "codice",
+          "key": true
+        },
+        {
+          "name": "periodo_inizio",
+          "key": false
+        },
+        {
+          "name": "periodo_fine",
+          "key": false
+        },
+        {
+          "name": "ore_previste",
+          "key": false
+        },
+        {
+          "name": "ore_svolte",
+          "key": false
+        },
+        {
+          "name": "valutazione_finale",
+          "key": false
+        },
+        {
+          "name": "esito",
+          "key": false
+        },
+        {
+          "name": "tutor_aziendale_nome",
+          "key": false
+        },
+        {
+          "name": "tutor_aziendale_cognome",
+          "key": false
+        },
+        {
+          "name": "tutor_aziendale_ruolo",
+          "key": false
+        },
+        {
+          "name": "tutor_aziendale_email",
+          "key": false
+        }
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "id": "rel_1770390898291",
+      "name": "PARTECIPA",
+      "from": "entity_1770390046304",
+      "to": "entity_1770390545827",
+      "cardinalityFrom": "1:1",
+      "cardinalityTo": "1:N",
+      "attributes": [],
+      "type": "relation"
+    },
+    {
+      "id": "rel_1770390932831",
+      "name": "SUPERVISIONA",
+      "from": "entity_1770390039361",
+      "to": "entity_1770390545827",
+      "cardinalityFrom": "1:N",
+      "cardinalityTo": "1:N",
+      "attributes": [],
+      "type": "relation"
+    },
+    {
+      "id": "rel_1770391140812",
+      "name": "PROPONE",
+      "from": "entity_1770390247094",
+      "to": "entity_1770390538629",
+      "cardinalityFrom": "1:N",
+      "cardinalityTo": "1:1",
+      "attributes": [],
+      "type": "relation"
+    },
+    {
+      "id": "rel_1770391176529",
+      "name": "GENERA",
+      "from": "entity_1770390538629",
+      "to": "entity_1770390545827",
+      "cardinalityFrom": "1:N",
+      "cardinalityTo": "1:1",
+      "attributes": [],
+      "type": "relation"
+    },
+    {
+      "id": "rel_1770391224630",
+      "name": "OSPITA",
+      "from": "entity_1770390247094",
+      "to": "entity_1770390545827",
+      "cardinalityFrom": "1:N",
+      "cardinalityTo": "1:1",
+      "attributes": [],
+      "type": "relation"
+    }
+  ]
+}

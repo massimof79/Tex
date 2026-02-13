@@ -1,0 +1,291 @@
+{
+  "entities": [
+    {
+      "id": "e1",
+      "name": "STUDENTE",
+      "type": "entity",
+      "x": 185,
+      "y": 255,
+      "attributes": [
+        {
+          "name": "Cod_Identificativo",
+          "key": true
+        },
+        {
+          "name": "Nome",
+          "key": false
+        },
+        {
+          "name": "Cognome",
+          "key": false
+        },
+        {
+          "name": "Data_Nascita",
+          "key": false
+        },
+        {
+          "name": "CF",
+          "key": false
+        },
+        {
+          "name": "Indirizzo",
+          "key": false
+        },
+        {
+          "name": "CAP",
+          "key": false
+        },
+        {
+          "name": "Citta",
+          "key": false
+        },
+        {
+          "name": "Email_Inst",
+          "key": false
+        },
+        {
+          "name": "Classe",
+          "key": false
+        }
+      ]
+    },
+    {
+      "id": "e2",
+      "name": "TUTOR_SCOL",
+      "type": "entity",
+      "x": 705,
+      "y": 60,
+      "attributes": [
+        {
+          "name": "Cod_Docente",
+          "key": true
+        },
+        {
+          "name": "Cognome",
+          "key": false
+        },
+        {
+          "name": "Nome",
+          "key": false
+        },
+        {
+          "name": "Email",
+          "key": false
+        },
+        {
+          "name": "Dipartimento",
+          "key": false
+        }
+      ]
+    },
+    {
+      "id": "e3",
+      "name": "AZIENDA",
+      "type": "entity",
+      "x": 75,
+      "y": 508,
+      "attributes": [
+        {
+          "name": "Partita_Iva",
+          "key": true
+        },
+        {
+          "name": "Ragione_Sociale",
+          "key": false
+        },
+        {
+          "name": "Sede_Legale",
+          "key": false
+        },
+        {
+          "name": "Sede_Operativa",
+          "key": false
+        },
+        {
+          "name": "Referente",
+          "key": false
+        },
+        {
+          "name": "Email_Ref",
+          "key": false
+        }
+      ]
+    },
+    {
+      "id": "e4",
+      "name": "DISPONIBILITA",
+      "type": "entity",
+      "x": 745,
+      "y": 511,
+      "attributes": [
+        {
+          "name": "Cod_Id",
+          "key": true
+        },
+        {
+          "name": "Data_Inizio",
+          "key": false
+        },
+        {
+          "name": "Data_Fine",
+          "key": false
+        },
+        {
+          "name": "Num_Max_Stud",
+          "key": false
+        },
+        {
+          "name": "Descrizione",
+          "key": false
+        }
+      ]
+    },
+    {
+      "id": "e5",
+      "name": "TUTOR_AZ",
+      "type": "entity",
+      "x": 190,
+      "y": 344,
+      "attributes": [
+        {
+          "name": "Cod_Tutor",
+          "key": true
+        },
+        {
+          "name": "Nome",
+          "key": false
+        },
+        {
+          "name": "Cognome",
+          "key": false
+        },
+        {
+          "name": "Ruolo",
+          "key": false
+        },
+        {
+          "name": "Email",
+          "key": false
+        }
+      ]
+    },
+    {
+      "id": "e6",
+      "name": "COMPETENZE",
+      "type": "entity",
+      "x": 675,
+      "y": 233,
+      "attributes": [
+        {
+          "name": "Id_Competenza",
+          "key": true
+        },
+        {
+          "name": "Nome_Comp",
+          "key": false
+        },
+        {
+          "name": "Livello",
+          "key": false
+        }
+      ]
+    },
+    {
+      "id": "e7",
+      "name": "ESPERIENZA",
+      "type": "entity",
+      "x": 267,
+      "y": 73,
+      "attributes": [
+        {
+          "name": "Id_Esperienza",
+          "key": true
+        },
+        {
+          "name": "Ore_Svolte",
+          "key": false
+        },
+        {
+          "name": "Valutazione",
+          "key": false
+        },
+        {
+          "name": "Esito",
+          "key": false
+        }
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "id": "r1",
+      "name": "SVOLGE",
+      "from": "e1",
+      "to": "e7",
+      "cardinalityFrom": "0:N",
+      "cardinalityTo": "1:1",
+      "x": 284.5,
+      "y": 181
+    },
+    {
+      "id": "r2",
+      "name": "COORDINA",
+      "from": "e2",
+      "to": "e7",
+      "cardinalityFrom": "0:N",
+      "cardinalityTo": "1:1",
+      "x": 523,
+      "y": 135.5
+    },
+    {
+      "id": "r3",
+      "name": "AFFIANCA",
+      "from": "e5",
+      "to": "e7",
+      "cardinalityFrom": "0:N",
+      "cardinalityTo": "1:1",
+      "x": 436.5,
+      "y": 317
+    },
+    {
+      "id": "r4",
+      "name": "OFFRE",
+      "from": "e3",
+      "to": "e4",
+      "cardinalityFrom": "1:N",
+      "cardinalityTo": "1:1",
+      "x": 490,
+      "y": 504.5
+    },
+    {
+      "id": "r5",
+      "name": "LAVORA_IN",
+      "from": "e5",
+      "to": "e3",
+      "cardinalityFrom": "1:1",
+      "cardinalityTo": "1:N",
+      "x": 371.5,
+      "y": 463
+    },
+    {
+      "id": "r6",
+      "name": "BASATA_SU",
+      "from": "e4",
+      "to": "e7",
+      "cardinalityFrom": "0:N",
+      "cardinalityTo": "1:1",
+      "x": 589,
+      "y": 357.5
+    },
+    {
+      "id": "r7",
+      "name": "RICHIEDE",
+      "from": "e4",
+      "to": "e6",
+      "cardinalityFrom": "1:N",
+      "cardinalityTo": "1:N",
+      "x": 785,
+      "y": 396
+    }
+  ]
+}

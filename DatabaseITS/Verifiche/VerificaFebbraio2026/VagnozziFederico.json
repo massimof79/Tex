@@ -1,0 +1,328 @@
+{
+  "entities": [
+    {
+      "id": "entity_1770389799992",
+      "name": "STUDENTE",
+      "type": "entity",
+      "x": 189.1492353765891,
+      "y": 61.78522226121743,
+      "attributesSide": "left",
+      "backgroundColor": "#ffffff",
+      "attributes": [
+        {
+          "name": "codice_studente",
+          "key": true
+        },
+        {
+          "name": "nome",
+          "key": false
+        },
+        {
+          "name": "cognome",
+          "key": false
+        },
+        {
+          "name": "data_nascita",
+          "key": false
+        },
+        {
+          "name": "luogo_nascita",
+          "key": false
+        },
+        {
+          "name": "cod_fisc",
+          "key": false
+        },
+        {
+          "name": "via",
+          "key": false
+        },
+        {
+          "name": "num_civico",
+          "key": false
+        },
+        {
+          "name": "luogo_residenza",
+          "key": false
+        },
+        {
+          "name": "email_istituz",
+          "key": false
+        },
+        {
+          "name": "classe_frequentata",
+          "key": false
+        },
+        {
+          "name": "indirizzo_studi",
+          "key": false
+        }
+      ]
+    },
+    {
+      "id": "entity_1770390172449",
+      "name": "TUTOR_SCOLASTICO",
+      "type": "entity",
+      "x": 636.5462855510441,
+      "y": 52.81494287963369,
+      "attributesSide": "right",
+      "backgroundColor": "#ffffff",
+      "attributes": [
+        {
+          "name": "codice_docente",
+          "key": true
+        },
+        {
+          "name": "nome",
+          "key": false
+        },
+        {
+          "name": "cognome",
+          "key": false
+        },
+        {
+          "name": "email",
+          "key": false
+        },
+        {
+          "name": "dipartimento_appartenenza",
+          "key": false
+        },
+        {
+          "name": "num_studenti",
+          "key": false
+        }
+      ]
+    },
+    {
+      "id": "entity_1770390504274",
+      "name": "AZIENDA",
+      "type": "entity",
+      "x": 747.513529128214,
+      "y": 435.92650466797147,
+      "attributesSide": "right",
+      "backgroundColor": "#ffffff",
+      "attributes": [
+        {
+          "name": "ragione_sociale",
+          "key": false
+        },
+        {
+          "name": "partita_iva",
+          "key": true
+        },
+        {
+          "name": "sede_legale",
+          "key": false
+        },
+        {
+          "name": "sede_operativa",
+          "key": false
+        },
+        {
+          "name": "settore_attivita_prevalente",
+          "key": false
+        },
+        {
+          "name": "referente_aziendale",
+          "key": false
+        },
+        {
+          "name": "email",
+          "key": false
+        },
+        {
+          "name": "num_telefono_referente",
+          "key": false
+        }
+      ]
+    },
+    {
+      "id": "entity_1770391116522",
+      "name": "TUTOR_AZIENDALE",
+      "type": "entity",
+      "x": 872.882639361337,
+      "y": 261.0434001121376,
+      "attributesSide": "right",
+      "backgroundColor": "#ffffff",
+      "attributes": [
+        {
+          "name": "codice_tutor",
+          "key": true
+        },
+        {
+          "name": "nome",
+          "key": false
+        },
+        {
+          "name": "cognome",
+          "key": false
+        },
+        {
+          "name": "email",
+          "key": false
+        },
+        {
+          "name": "ruolo_azienda",
+          "key": false
+        }
+      ]
+    },
+    {
+      "id": "entity_1770391327471",
+      "name": "DISPONIBILITA",
+      "type": "entity",
+      "x": 412.72989136818194,
+      "y": 529.5374149688141,
+      "attributesSide": "left",
+      "backgroundColor": "#ffffff",
+      "attributes": [
+        {
+          "name": "codice_disponibilita",
+          "key": true
+        },
+        {
+          "name": "azienda_proponente",
+          "key": false
+        },
+        {
+          "name": "data_inizio",
+          "key": false
+        },
+        {
+          "name": "data_fine",
+          "key": false
+        },
+        {
+          "name": "num_max_studenti_ospitabili",
+          "key": false
+        },
+        {
+          "name": "descrizione_attivita",
+          "key": false
+        },
+        {
+          "name": "competenze_richieste",
+          "key": false
+        },
+        {
+          "name": "indirizzo_studi_consigliato",
+          "key": false
+        }
+      ]
+    },
+    {
+      "id": "entity_1770391514700",
+      "name": "ESPERIENZA",
+      "type": "entity",
+      "x": 401.4164855295411,
+      "y": 259.8963974877845,
+      "attributesSide": "left",
+      "backgroundColor": "#ffffff",
+      "attributes": [
+        {
+          "name": "codice_esperienza",
+          "key": true
+        },
+        {
+          "name": "periodo_effettivo",
+          "key": false
+        },
+        {
+          "name": "num_ore_previste",
+          "key": false
+        },
+        {
+          "name": "num_ore_svolte",
+          "key": false
+        },
+        {
+          "name": "valutazione_finale",
+          "key": false
+        },
+        {
+          "name": "esito",
+          "key": false
+        }
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "id": "rel_1770392149330",
+      "name": "ST_ASSEGNATO",
+      "from": "entity_1770389799992",
+      "to": "entity_1770391514700",
+      "cardinalityFrom": "1:N",
+      "cardinalityTo": "1:N",
+      "attributes": [
+        "studente_assegnato"
+      ],
+      "type": "relation",
+      "x": 360.7828604530651,
+      "y": 183.84080987450096
+    },
+    {
+      "id": "rel_1770392471176",
+      "name": "TA_ASSEGNATO",
+      "from": "entity_1770391514700",
+      "to": "entity_1770391116522",
+      "cardinalityFrom": "1:N",
+      "cardinalityTo": "1:N",
+      "attributes": [
+        "tutor_aziendale_assegnato"
+      ],
+      "type": "relation",
+      "x": 800.6495624454391,
+      "y": 284.969898799961
+    },
+    {
+      "id": "rel_1770392581546",
+      "name": "ASSOCIATA",
+      "from": "entity_1770391514700",
+      "to": "entity_1770391327471",
+      "cardinalityFrom": "1:1",
+      "cardinalityTo": "1:N",
+      "attributes": [],
+      "type": "relation",
+      "x": 441.0731884488615,
+      "y": 409.7169062282993
+    },
+    {
+      "id": "rel_1770392719255",
+      "name": "TS_ASSEGNATO",
+      "from": "entity_1770391514700",
+      "to": "entity_1770390172449",
+      "cardinalityFrom": "1:1",
+      "cardinalityTo": "1:N",
+      "attributes": [
+        "tutor_scolastico_assegnato"
+      ],
+      "type": "relation",
+      "x": 598.9813855402926,
+      "y": 151.3556701837091
+    },
+    {
+      "id": "rel_1770393055225",
+      "name": "LAVORA",
+      "from": "entity_1770390504274",
+      "to": "entity_1770391116522",
+      "cardinalityFrom": "1:N",
+      "cardinalityTo": "1:1",
+      "attributes": [],
+      "type": "relation"
+    },
+    {
+      "id": "rel_1770393355664",
+      "name": "OSPITANTE",
+      "from": "entity_1770390504274",
+      "to": "entity_1770391327471",
+      "cardinalityFrom": "1:N",
+      "cardinalityTo": "1:1",
+      "attributes": [],
+      "type": "relation",
+      "x": 636.121710248198,
+      "y": 484.23195981839285
+    }
+  ]
+}
