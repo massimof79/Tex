@@ -1,0 +1,202 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[italian]{babel}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+
+\title{Architettura a Microservizi}
+\author{Prof. Fedeli Massimo}
+\date{}
+
+\begin{document}
+	
+	\maketitle
+	\newpage
+	
+	\section{Perché studiare i microservizi}
+	Oggi molte delle applicazioni che utilizziamo quotidianamente (streaming, e-commerce, social, servizi online) sono costruite utilizzando l’architettura a microservizi.
+	
+	Comprendere questo modello significa capire come vengono progettati i sistemi software moderni e scalabili.
+	
+	\section{Dal monolite ai microservizi}
+	Immaginiamo una applicazione per la gestione di una palestra.
+	
+	Un sistema monolitico contiene:
+	
+	\begin{itemize}
+		\item gestione iscrizioni
+		\item gestione pagamenti
+		\item gestione corsi
+		\item gestione certificati medici
+	\end{itemize}
+	
+	Tutto è contenuto in un unico programma.
+	
+	Problemi:
+	\begin{itemize}
+		\item difficile da modificare
+		\item difficile da scalare
+		\item un errore blocca tutto il sistema
+	\end{itemize}
+	
+	\section{La soluzione: microservizi}
+	Si suddivide il sistema in servizi separati:
+	
+	\begin{itemize}
+		\item Servizio Iscrizioni
+		\item Servizio Pagamenti
+		\item Servizio Corsi
+		\item Servizio Certificati
+	\end{itemize}
+	
+	Ogni servizio è indipendente.
+	
+	\section{Cosa è un microservizio}
+	Un microservizio è un programma autonomo che:
+	
+	\begin{itemize}
+		\item svolge una sola funzione
+		\item comunica con altri servizi
+		\item può essere aggiornato senza fermare tutto il sistema
+	\end{itemize}
+	
+	Esempio:
+	Il servizio pagamenti gestisce solo i pagamenti.
+	
+	\section{Architettura generale}
+	Una applicazione a microservizi include:
+	
+	\begin{itemize}
+		\item servizi indipendenti
+		\item API Gateway
+		\item database separati
+		\item comunicazione via rete
+	\end{itemize}
+	
+	\section{API Gateway}
+	È il punto di accesso unico.
+	
+	Esempio:
+	Uno studente accede all'app della palestra.
+	
+	La richiesta passa dall’API Gateway che decide:
+	\begin{itemize}
+		\item quale servizio coinvolgere
+		\item come gestire la risposta
+	\end{itemize}
+	
+	\section{Esempio reale}
+	Sistema di e-commerce:
+	
+	\begin{itemize}
+		\item Servizio Ordini
+		\item Servizio Catalogo
+		\item Servizio Pagamenti
+		\item Servizio Spedizioni
+	\end{itemize}
+	
+	Se aumenta il traffico sugli ordini, si scala solo quel servizio.
+	
+	\section{Autonomia dei servizi}
+	Ogni servizio può:
+	
+	\begin{itemize}
+		\item usare tecnologie diverse
+		\item avere il proprio database
+		\item essere sviluppato da team diversi
+	\end{itemize}
+	
+	\section{Comunicazione tra servizi}
+	Due modalità principali:
+	
+	\subsection{Sincrona}
+	Un servizio chiama direttamente un altro.
+	
+	Esempio:
+	Ordini chiede al servizio pagamenti di verificare il pagamento.
+	
+	\subsection{Asincrona}
+	Un servizio invia un evento.
+	
+	Esempio:
+	Pagamento completato → evento inviato → spedizioni si attiva.
+	
+	\section{Gestione dei dati}
+	Ogni microservizio ha il proprio database.
+	
+	Vantaggi:
+	\begin{itemize}
+		\item maggiore indipendenza
+		\item migliore scalabilità
+	\end{itemize}
+	
+	\section{Problema delle transazioni}
+	Se più servizi collaborano, non si può usare una transazione unica.
+	
+	Soluzione: Saga.
+	
+	Esempio:
+	Ordine → pagamento → spedizione.
+	
+	Se fallisce la spedizione, si annulla il pagamento.
+	
+	\section{Scalabilità}
+	Si può aumentare solo il servizio necessario.
+	
+	Esempio:
+	Durante i saldi aumenta il servizio ordini.
+	
+	\section{Disponibilità}
+	Se un servizio si blocca, gli altri continuano a funzionare.
+	
+	\section{Migrazione dal monolite}
+	Si usa il Pattern Strangler.
+	
+	Passaggi:
+	\begin{itemize}
+		\item si inserisce un API Gateway
+		\item si sostituiscono gradualmente le funzioni
+	\end{itemize}
+	
+	\section{DDD e microservizi}
+	Il Domain Driven Design aiuta a dividere il sistema.
+	
+	Esempio palestra:
+	\begin{itemize}
+		\item dominio clienti
+		\item dominio pagamenti
+		\item dominio corsi
+	\end{itemize}
+	
+	\section{Sfide}
+	\begin{itemize}
+		\item maggiore complessità
+		\item gestione rete
+		\item gestione eventi
+	\end{itemize}
+	
+	\section{Quando usarli}
+	Non sempre sono la soluzione migliore.
+	
+	Sono utili quando:
+	\begin{itemize}
+		\item il sistema cresce
+		\item servono aggiornamenti frequenti
+		\item serve alta disponibilità
+	\end{itemize}
+	
+	\section{Conclusione}
+	I microservizi rappresentano un modello moderno per costruire software scalabile, modulare e aggiornabile.
+	
+	\section{Esercizio per studenti}
+	Progetta un sistema a microservizi per una scuola.
+	
+	Individua:
+	\begin{itemize}
+		\item i servizi
+		\item i dati
+		\item le comunicazioni
+	\end{itemize}
+	
+\end{document}
