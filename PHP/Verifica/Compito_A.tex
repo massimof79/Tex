@@ -1,0 +1,74 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[italian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{setspace}
+\geometry{margin=2.5cm}
+\onehalfspacing
+\title{Verifica di TPSIT -  Classe 4AIQ - Compito A}
+\author{Prof. Fedeli Massimo}
+\date{23/02/2026}
+\begin{document}
+	
+	\maketitle
+	
+	\section*{Contesto}
+	
+Dato il seguente schema di database svolgi a tua scelta l'esercizio 1 o l'esercizio 2
+	
+	\begin{verbatim}
+		ABBBONAMENTI(id PK, nome, tipo, durata_giorni, ingressi)
+		CLIENTI(id PK, cognome, nome, indirizzo, telefono, codice_fiscale,
+		numero_tessera, email, fototessera, data_creazione,
+		data_nascita, luogo_nascita, citta, cap, provincia, note)
+		CORSI(id PK, nome, descrizione, codice_tornello)
+		ISCRIZIONI(id PK, cliente_id FK, data_iscrizione,
+		data_scadenza_iscrizione, certificato_medico,
+		data_scadenza_certificato, file_certificato,
+		corso_id FK, limitazioni_accesso)
+	\end{verbatim}
+	
+	\section*{Esercizio 1}
+	
+	\subsection*{Obiettivo}
+	
+	Realizzare una piccola applicazione web che consenta di inserire un nuovo cliente nella tabella \texttt{CLIENTI} tramite una pagina html (client) e un endpoint PHP (backend) che salvi i dati su MySQL.
+	
+	\subsection*{Vincoli e requisiti tecnici}
+	
+	\begin{itemize}
+		\item Frontend: una pagina index.html con un form e uno script JavaScript. \textbf{3 pt}
+		\item Backend: un file PHP (esempio: \texttt{api\_clienti\_create.php}) che riceve i dati e inserisce la riga nel database. \textbf{3 pt}
+		\item NB. Comunicazione: il client deve inviare i dati al backend usando fetch in POST, in formato JSON.
+		\item NB. Sicurezza: il backend deve usare query parametrizzate (PDO con prepared statements). Vietato concatenare stringhe in SQL.
+	\end{itemize}
+	
+	
+	\section*{Esercizio 2}
+	
+	\subsection*{Obiettivo}
+	
+	Realizzare una piccola applicazione web che consenta di visualizzare l'elenco delle iscrizioni di tutti i clienti, includendo anche le informazioni anagrafiche minime del cliente e, se presente, il corso associato.
+	
+	\subsection*{Vincoli e requisiti tecnici}
+	
+	\begin{itemize}
+		\item Frontend: una pagina HTML (può essere la stessa \texttt{index.html} o una pagina separata, ad esempio \texttt{iscrizioni.html}) che mostri i risultati in una tabella e uno script JavaScript.  \textbf{4 pt}
+		\item Backend: un file PHP (esempio: \texttt{api\_iscrizioni\_list.php}) che legga i dati dal database e restituisca un JSON. \textbf{4 pt}
+		\item N.B. Comunicazione: il client deve richiedere i dati al backend usando \texttt{fetch}  ricevere i dati in formato JSON.
+		\item N.B. Query: il backend deve eseguire una SELECT con JOIN
+		\item Sicurezza: il backend deve usare PDO e prepared statements anche per eventuali parametri di filtro.
+	\end{itemize}
+	
+	\subsection*{Ottimizzazione}
+	
+	Filtrare l'elenco per data di iscrizione e per tipologia di corso usando una select popolata tramite script php. \textbf{2 pt}
+	
+	\begin{itemize}
+		\item Il frontend deve includere uno o due campi data (es. \texttt{data\_da}, \texttt{data\_a}) e un pulsante di ricerca.
+		\item Il backend deve validare le date e applicare il filtro nella clausola WHERE tramite parametri bindati.
+		\item Se i parametri sono assenti, devono essere restituite tutte le iscrizioni.
+	\end{itemize}
+	
+\end{document}

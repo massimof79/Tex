@@ -1,0 +1,98 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[italian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{setspace}
+\geometry{margin=2.5cm}
+\onehalfspacing
+\title{Verifica di TPSIT - 4AIQ - Compito B} 
+\author{Prof. Fedeli Massimo}
+\date{23/02/26}
+\begin{document}
+	
+	\maketitle
+	
+	\section*{Contesto}
+	
+	Hai a disposizione il seguente schema logico svolgi l'esercizio 1 o l'esercizio 2 a tua scelta:
+	
+	\begin{verbatim}
+		BIBLIOTECHE(id PK, nome, citta)
+		UTENTI(id PK, cognome, nome, email, tessera UNIQUE, data_iscrizione)
+		LIBRI(id PK, isbn UNIQUE, titolo, autore, anno, collocazione, biblioteca_id FK)
+		PRESTITI(id PK, utente_id FK, libro_id FK, data_prestito,
+		data_scadenza, data_restituzione)
+	\end{verbatim}
+	
+	\section*{Esercizio 1}
+	
+	\subsection*{Obiettivo}
+	
+	Realizzare una piccola applicazione web che consenta di inserire un nuovo utente
+	nella tabella \texttt{UTENTI} tramite una pagina web (client) e un endpoint PHP
+	(backend) che salvi i dati su MySQL.
+	
+	\subsection*{Vincoli e requisiti tecnici}
+	
+	\begin{itemize}
+		\item Frontend: una pagina \texttt{index.html} con un form e uno script
+		JavaScript. \textbf{3 pt}
+		\item Backend: un file PHP (esempio: \texttt{api\_utenti\_create.php}) che
+		riceva i dati e inserisca la riga nel database. \textbf{3 pt}
+	\end{itemize}
+	
+	Requisiti:
+	\begin{itemize}
+		\item Comunicazione: il client deve inviare i dati al backend usando
+		\texttt{fetch} in POST, in formato JSON.
+		\item Sicurezza: il backend deve usare query parametrizzate (PDO con prepared
+		statements). 
+	\end{itemize}
+	
+	\section*{Esercizio 2}
+	
+	\subsection*{Obiettivo}
+	
+	Realizzare una piccola applicazione web che consenta di visualizzare l'elenco dei
+	prestiti di tutti gli utenti, includendo anche le informazioni minime dell'utente
+	e del libro.
+	
+	\subsection*{Vincoli e requisiti tecnici}
+	
+	\begin{itemize}
+		\item Frontend: una pagina HTML (può essere la stessa \texttt{index.html} o
+		una pagina separata, ad esempio \texttt{prestiti.html}) che mostri i
+		risultati in una tabella e uno script JavaScript. \textbf{4 pt}
+		\item Backend: un file PHP (esempio: \texttt{api\_prestiti\_list.php}) che
+		legga i dati dal database e restituisca un JSON. \textbf{4 pt}
+	\end{itemize}
+	
+	Requisiti:
+	\begin{itemize}
+		\item Comunicazione: il client deve richiedere i dati al backend usando
+		\texttt{fetch} ricevere dati in formato SON.
+		\item Query: il backend deve eseguire una SELECT con JOIN tra:
+		\begin{itemize}
+			\item \texttt{PRESTITI} e \texttt{UTENTI}
+			\item \texttt{PRESTITI} e \texttt{LIBRI}
+			\item \texttt{LIBRI} e \texttt{BIBLIOTECHE}
+		\end{itemize}
+		\item Sicurezza: il backend deve usare PDO e prepared statements anche per
+		eventuali parametri di filtro.
+	\end{itemize}
+	
+	\subsection*{Ottimizzazione}
+	
+	Filtrare l'elenco per intervallo di date del prestito usando una select popolata
+	tramite script PHP. \textbf{2 pt}
+	
+	\begin{itemize}
+		\item Il frontend deve includere due campi data (\texttt{data\_da},
+		\texttt{data\_a}) e un pulsante di ricerca.
+		\item Il backend deve validare le date e applicare il filtro nella clausola
+		WHERE tramite parametri bindati.
+		\item Se i parametri sono assenti, devono essere restituiti tutti i prestiti.
+	\end{itemize}
+	
+\end{document}
