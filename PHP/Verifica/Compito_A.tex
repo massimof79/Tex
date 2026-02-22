@@ -10,12 +10,11 @@
 \author{Prof. Fedeli Massimo}
 \date{23/02/2026}
 \begin{document}
-	
 	\maketitle
-	
-	\section*{Contesto}
-	
-Dato il seguente schema di database svolgi a tua scelta l'esercizio 1 o l'esercizio 2
+	Cognome e Nome: 
+\vspace{1cm  }
+	\section*{Compito}
+    Dato il seguente schema di database svolgi a tua scelta l'esercizio 1 o l'esercizio 2
 	
 	\begin{verbatim}
 		ABBBONAMENTI(id PK, nome, tipo, durata_giorni, ingressi)
@@ -33,7 +32,7 @@ Dato il seguente schema di database svolgi a tua scelta l'esercizio 1 o l'eserci
 	
 	\subsection*{Obiettivo}
 	
-	Realizzare una piccola applicazione web che consenta di inserire un nuovo cliente nella tabella \texttt{CLIENTI} tramite una pagina html (client) e un endpoint PHP (backend) che salvi i dati su MySQL.
+	Realizzare una piccola applicazione web che consenta di inserire un nuovo cliente nella tabella \texttt{CLIENTI} tramite una pagina html (client) e un endpoint PHP (backend) che salvi i dati su MySQL. (Host: 127.0.0.1  DBNAME: Palestra)
 	
 	\subsection*{Vincoli e requisiti tecnici}
 	
@@ -41,7 +40,7 @@ Dato il seguente schema di database svolgi a tua scelta l'esercizio 1 o l'eserci
 		\item Frontend: una pagina index.html con un form e uno script JavaScript. \textbf{3 pt}
 		\item Backend: un file PHP (esempio: \texttt{api\_clienti\_create.php}) che riceve i dati e inserisce la riga nel database. \textbf{3 pt}
 		\item NB. Comunicazione: il client deve inviare i dati al backend usando fetch in POST, in formato JSON.
-		\item NB. Sicurezza: il backend deve usare query parametrizzate (PDO con prepared statements). Vietato concatenare stringhe in SQL.
+		\item NB. Sicurezza: il backend deve usare query parametrizzate (PDO con prepared statements). 
 	\end{itemize}
 	
 	
@@ -49,7 +48,7 @@ Dato il seguente schema di database svolgi a tua scelta l'esercizio 1 o l'eserci
 	
 	\subsection*{Obiettivo}
 	
-	Realizzare una piccola applicazione web che consenta di visualizzare l'elenco delle iscrizioni di tutti i clienti, includendo anche le informazioni anagrafiche minime del cliente e, se presente, il corso associato.
+	Realizzare una piccola applicazione web che consenta di visualizzare l'elenco delle iscrizioni di tutti i clienti, includendo anche le informazioni anagrafiche minime del cliente e, se presente, il corso associato. (Host: 127.0.0.1  DBNAME: Palestra)
 	
 	\subsection*{Vincoli e requisiti tecnici}
 	

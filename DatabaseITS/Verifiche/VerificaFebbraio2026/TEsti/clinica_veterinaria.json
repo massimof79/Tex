@@ -1,0 +1,266 @@
+{
+  "entities": [
+    {
+      "id": "entity_clinica",
+      "name": "Clinica",
+      "type": "entity",
+      "x": 192,
+      "y": 110,
+      "attributes": [
+        {
+          "name": "CodiceClinica",
+          "key": true
+        },
+        {
+          "name": "Nome"
+        },
+        {
+          "name": "Indirizzo"
+        },
+        {
+          "name": "Citta"
+        },
+        {
+          "name": "NumeroSaleVisita"
+        },
+        {
+          "name": "OrarioAperturaSettimanale"
+        }
+      ]
+    },
+    {
+      "id": "entity_veterinario",
+      "name": "Veterinario",
+      "type": "entity",
+      "x": 695,
+      "y": 291,
+      "attributes": [
+        {
+          "name": "CodiceProfessionale",
+          "key": true
+        },
+        {
+          "name": "Nome"
+        },
+        {
+          "name": "Cognome"
+        },
+        {
+          "name": "SpecializzazionePrincipale"
+        },
+        {
+          "name": "AnniEsperienza"
+        }
+      ],
+      "attributesSide": "right"
+    },
+    {
+      "id": "entity_proprietario",
+      "name": "Proprietario",
+      "type": "entity",
+      "x": 176,
+      "y": 611,
+      "attributes": [
+        {
+          "name": "CodiceCliente",
+          "key": true
+        },
+        {
+          "name": "Nome"
+        },
+        {
+          "name": "Cognome"
+        },
+        {
+          "name": "Telefono"
+        },
+        {
+          "name": "Email"
+        }
+      ]
+    },
+    {
+      "id": "entity_animale",
+      "name": "Animale",
+      "type": "entity",
+      "x": 200,
+      "y": 328,
+      "attributes": [
+        {
+          "name": "CodiceAnimale",
+          "key": true
+        },
+        {
+          "name": "Nome"
+        },
+        {
+          "name": "Specie"
+        },
+        {
+          "name": "Razza"
+        },
+        {
+          "name": "Sesso"
+        },
+        {
+          "name": "DataNascita"
+        },
+        {
+          "name": "Microchip"
+        }
+      ]
+    },
+    {
+      "id": "entity_visita",
+      "name": "Visita",
+      "type": "entity",
+      "x": 634,
+      "y": 680,
+      "attributes": [
+        {
+          "name": "CodiceVisita",
+          "key": true
+        },
+        {
+          "name": "Data"
+        },
+        {
+          "name": "Ora"
+        },
+        {
+          "name": "Motivo"
+        },
+        {
+          "name": "Stato"
+        }
+      ]
+    },
+    {
+      "id": "entity_terapia",
+      "name": "Terapia",
+      "type": "entity",
+      "x": 1184,
+      "y": 501,
+      "attributes": [
+        {
+          "name": "CodiceTerapia",
+          "key": true
+        },
+        {
+          "name": "Descrizione"
+        },
+        {
+          "name": "DurataPrevistaGiorni"
+        },
+        {
+          "name": "Tipo"
+        }
+      ],
+      "attributesSide": "right"
+    },
+    {
+      "id": "entity_farmaco",
+      "name": "Farmaco",
+      "type": "entity",
+      "x": 1251,
+      "y": 120,
+      "attributes": [
+        {
+          "name": "CodiceFarmaco",
+          "key": true
+        },
+        {
+          "name": "NomeCommerciale"
+        },
+        {
+          "name": "PrincipioAttivo"
+        },
+        {
+          "name": "FormaSomministrazione"
+        }
+      ],
+      "attributesSide": "right"
+    }
+  ],
+  "relationships": [
+    {
+      "id": "rel_lavora_presso",
+      "name": "LAVORA_PRESSO",
+      "from": "entity_veterinario",
+      "to": "entity_clinica",
+      "cardinalityFrom": "1:1",
+      "cardinalityTo": "0:N",
+      "attributes": []
+    },
+    {
+      "id": "rel_possiede",
+      "name": "POSSIEDE",
+      "from": "entity_proprietario",
+      "to": "entity_animale",
+      "cardinalityFrom": "1:N",
+      "cardinalityTo": "1:1",
+      "attributes": []
+    },
+    {
+      "id": "rel_visita_animale",
+      "name": "RIGUARDA",
+      "from": "entity_visita",
+      "to": "entity_animale",
+      "cardinalityFrom": "1:1",
+      "cardinalityTo": "0:N",
+      "attributes": []
+    },
+    {
+      "id": "rel_visita_veterinario",
+      "name": "SVOLTA_DA",
+      "from": "entity_visita",
+      "to": "entity_veterinario",
+      "cardinalityFrom": "1:1",
+      "cardinalityTo": "0:N",
+      "attributes": []
+    },
+    {
+      "id": "rel_visita_terapia",
+      "name": "PREVEDE",
+      "from": "entity_visita",
+      "to": "entity_terapia",
+      "cardinalityFrom": "1:N",
+      "cardinalityTo": "1:1",
+      "attributes": []
+    },
+    {
+      "id": "rel_terapia_farmaco",
+      "name": "INCLUDE_FARMACO",
+      "from": "entity_terapia",
+      "to": "entity_farmaco",
+      "cardinalityFrom": "0:N",
+      "cardinalityTo": "0:N",
+      "attributes": [
+        {
+          "name": "Dosaggio"
+        },
+        {
+          "name": "FrequenzaSomministrazione"
+        }
+      ]
+    },
+    {
+      "id": "rel_giacenza",
+      "name": "GIACENZA",
+      "from": "entity_clinica",
+      "to": "entity_farmaco",
+      "cardinalityFrom": "0:N",
+      "cardinalityTo": "0:N",
+      "attributes": [
+        {
+          "name": "QuantitaDisponibile"
+        },
+        {
+          "name": "SogliaMinimaRiordino"
+        }
+      ],
+      "x": 767,
+      "y": 83
+    }
+  ]
+}
