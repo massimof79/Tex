@@ -1,0 +1,255 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\title{Il modello K-Nearest Neighbors}
+\author{Prof. Fedeli Massimo}
+\date{}
+\begin{document}
+	
+	\maketitle
+	
+	Il modello \textbf{K-Nearest Neighbors} (KNN) è uno dei metodi più intuitivi dell'apprendimento automatico.
+	
+	L'idea di base è semplice: per fare una previsione su un nuovo dato, il modello osserva i dati già noti che gli somigliano di più.
+	
+	In altre parole:
+	
+	\begin{center}
+		``Dimmi chi ti assomiglia e ti dirò chi sei''
+	\end{center}
+	
+	\section*{Rappresentazione dei dati}
+	
+	Ogni oggetto (ad esempio uno studente) viene descritto tramite alcune caratteristiche dette \textit{feature}.
+	
+	Esempio:
+	
+	\begin{itemize}
+		\item Ore di studio
+		\item Numero di assenze
+	\end{itemize}
+	
+	Possiamo rappresentare ogni studente come un vettore:
+	
+	\[
+	\mathbf{x} = (x_1, x_2)
+	\]
+	
+	dove
+	
+	\[
+	x_1 = \text{ore di studio}, \quad x_2 = \text{assenze}
+	\]
+	
+	Ogni studente diventa quindi un punto nel piano cartesiano.
+	
+	Abbiamo un insieme di dati noti (dataset):
+	
+	\[
+	\mathcal{D} = \{(\mathbf{x}_1,y_1), (\mathbf{x}_2,y_2), \dots, (\mathbf{x}_n,y_n)\}
+	\]
+	
+	dove
+	
+	\begin{itemize}
+		\item $\mathbf{x}_i$ = caratteristiche
+		\item $y_i$ = risultato osservato (voto, esito, ecc.)
+	\end{itemize}
+	
+	\textbf{Esempio numerico.} Supponiamo di avere i seguenti dati su 5 studenti:
+	
+	\begin{center}
+		\begin{tabular}{cccl}
+			\toprule
+			Studente & Ore di studio ($x_1$) & Assenze ($x_2$) & Esito ($y$) \\
+			\midrule
+			$A$ & 8 & 1 & Promosso \\
+			$B$ & 2 & 5 & Bocciato  \\
+			$C$ & 6 & 2 & Promosso  \\
+			$D$ & 1 & 6 & Bocciato  \\
+			$E$ & 7 & 0 & Promosso  \\
+			\bottomrule
+		\end{tabular}
+	\end{center}
+	
+	Arriva ora un nuovo studente:
+	
+	\[
+	\mathbf{x}_{new} = (5,\; 3)
+	\]
+	
+	di cui vogliamo prevedere il risultato.
+	
+	\section*{Misura di somiglianza}
+	
+	Per capire quali dati sono simili a $\mathbf{x}_{new}$ dobbiamo misurare la distanza.
+	
+	La più usata è la distanza euclidea:
+	
+	\[
+	d(\mathbf{x}, \mathbf{z}) =
+	\sqrt{
+		\sum_{j=1}^{m}
+		(x_j - z_j)^2
+	}
+	\]
+	
+	dove $m$ è il numero di caratteristiche.
+	
+	\textbf{Esempio numerico.} Calcoliamo la distanza tra il nuovo studente $\mathbf{x}_{new}=(5,3)$ e ciascuno dei cinque studenti noti:
+	
+	\[
+	d(\mathbf{x}_{new}, A) = \sqrt{(5-8)^2 + (3-1)^2} = \sqrt{9+4} = \sqrt{13} \approx 3{,}61
+	\]
+	\[
+	d(\mathbf{x}_{new}, B) = \sqrt{(5-2)^2 + (3-5)^2} = \sqrt{9+4} = \sqrt{13} \approx 3{,}61
+	\]
+	\[
+	d(\mathbf{x}_{new}, C) = \sqrt{(5-6)^2 + (3-2)^2} = \sqrt{1+1} = \sqrt{2}  \approx 1{,}41
+	\]
+	\[
+	d(\mathbf{x}_{new}, D) = \sqrt{(5-1)^2 + (3-6)^2} = \sqrt{16+9} = \sqrt{25} = 5{,}00
+	\]
+	\[
+	d(\mathbf{x}_{new}, E) = \sqrt{(5-7)^2 + (3-0)^2} = \sqrt{4+9}  = \sqrt{13} \approx 3{,}61
+	\]
+	
+	\section*{I K vicini più prossimi}
+	
+	Si selezionano i $K$ punti con distanza minima da $\mathbf{x}_{new}$.
+	
+	Questo insieme si indica con:
+	
+	\[
+	N_K(\mathbf{x}_{new})
+	\]
+	
+	cioè l'insieme dei $K$ vicini più prossimi.
+	
+	\textbf{Esempio numerico.} Ordiniamo gli studenti per distanza crescente:
+	
+	\begin{center}
+		\begin{tabular}{ccc}
+			\toprule
+			Studente & Distanza & Esito \\
+			\midrule
+			$C$ & $1{,}41$ & Promosso \\
+			$A$ & $3{,}61$ & Promosso \\
+			$B$ & $3{,}61$ & Bocciato  \\
+			$E$ & $3{,}61$ & Promosso  \\
+			$D$ & $5{,}00$ & Bocciato  \\
+			\bottomrule
+		\end{tabular}
+	\end{center}
+	
+	Con $K=3$ i vicini più prossimi sono $C$, $A$ e $B$, quindi:
+	\[
+	N_3(\mathbf{x}_{new}) = \{C,\, A,\, B\}
+	\]
+	
+	\section*{Caso di classificazione}
+	
+	Se il problema è classificare (es: promosso / bocciato), il modello assegna la classe più frequente tra i vicini:
+	
+	\[
+	\hat{y} =
+	\text{mode}
+	\{ y_i \mid \mathbf{x}_i \in N_K(\mathbf{x}_{new}) \}
+	\]
+	
+	cioè la moda delle etichette dei vicini.
+	
+	\textbf{Esempio numerico.} Tra i 3 vicini $\{C, A, B\}$ le etichette sono:
+	\[
+	\{\text{Promosso},\; \text{Promosso},\; \text{Bocciato}\}
+	\]
+	La classe più frequente è \textit{Promosso} (2 voti su 3), quindi:
+	\[
+	\hat{y} = \text{Promosso}
+	\]
+	
+	\section*{Caso di regressione}
+	
+	Se il problema è numerico (es: voto), il modello fa la media:
+	
+	\[
+	\hat{y} =
+	\frac{1}{K}
+	\sum_{\mathbf{x}_i \in N_K(\mathbf{x}_{new})}
+	y_i
+	\]
+	
+	Quindi la previsione è la media dei valori dei vicini.
+	
+	\textbf{Esempio numerico.} Supponiamo ora che $y$ rappresenti il voto in decimi e che i dati siano:
+	
+	\begin{center}
+		\begin{tabular}{ccc}
+			\toprule
+			Studente & $(x_1, x_2)$ & Voto ($y$) \\
+			\midrule
+			$C$ & $(6,\,2)$ & $8$ \\
+			$A$ & $(8,\,1)$ & $9$ \\
+			$B$ & $(2,\,5)$ & $5$ \\
+			\bottomrule
+		\end{tabular}
+	\end{center}
+	
+	Con $K=3$ la previsione per il nuovo studente è:
+	\[
+	\hat{y} = \frac{1}{3}(8 + 9 + 5) = \frac{22}{3} \approx 7{,}33
+	\]
+	
+	\section*{Il ruolo del parametro K}
+	
+	Il valore di $K$ è fondamentale.
+	
+	\begin{itemize}
+		\item $K$ piccolo $\rightarrow$ decisioni molto locali
+		\item $K$ grande $\rightarrow$ decisioni più stabili ma più ``medie''
+	\end{itemize}
+	
+	\textbf{Esempio numerico.} Riprendendo il caso di classificazione con il nuovo studente $(5,3)$:
+	
+	\begin{itemize}
+		\item Con $K=1$: unico vicino è $C$ (Promosso) $\;\Rightarrow\; \hat{y} = \text{Promosso}$
+		\item Con $K=3$: vicini $C$, $A$, $B$ (2 Promosso, 1 Bocciato) $\;\Rightarrow\; \hat{y} = \text{Promosso}$
+		\item Con $K=5$: tutti gli studenti (3 Promosso, 2 Bocciato) $\;\Rightarrow\; \hat{y} = \text{Promosso}$
+	\end{itemize}
+	
+	In questo caso il risultato non cambia, ma con dataset più grandi e confini meno netti la scelta di $K$ può essere determinante.
+	
+	\section*{Idea chiave}
+	
+	A differenza della regressione lineare, KNN non costruisce una funzione del tipo:
+	
+	\[
+	y = f(x)
+	\]
+	
+	ma utilizza direttamente i dati memorizzati.
+	
+	La previsione nasce dal confronto con esempi simili.
+	
+	\begin{center}
+		Il modello non impara una formula. Impara per analogia.
+	\end{center}
+	
+	\section*{Punti di forza}
+	
+	\begin{itemize}
+		\item Facile da capire
+		\item Non richiede ipotesi di linearità
+		\item Si adatta a situazioni complesse
+	\end{itemize}
+	
+	\section*{Limiti}
+	
+	\begin{itemize}
+		\item Può essere lento con molti dati
+		\item Sensibile alla scala delle variabili
+		\item Funziona meno bene con molte dimensioni
+	\end{itemize}
+	
+\end{document}

@@ -1,0 +1,191 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[italian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{setspace}
+\usepackage{amsmath}
+\geometry{margin=2.5cm}
+\onehalfspacing
+
+\title{Soluzioni -- Verifica SQL e Algebra Relazionale (Pizzeria)}
+\author{Prof. Fedeli Massimo}
+\date{}
+\begin{document}
+	\maketitle
+	
+	\section*{Schema logico (richiamo)}
+	\begin{flushleft}
+		CLIENTI(id\_cliente PK, cognome, nome, telefono, indirizzo, email UNIQUE) \\
+		PIZZE(id\_pizza PK, nome UNIQUE, prezzo DECIMAL(6,2), categoria) \\
+		ORDINI(id\_ordine PK, id\_cliente FK$\rightarrow$CLIENTI, data\_ordine DATE, ora\_ordine TIME, tipo, stato) \\
+		RIGHE\_ORDINE(id\_ordine FK$\rightarrow$ORDINI, id\_pizza FK$\rightarrow$PIZZE, quantita INT, prezzo\_unitario DECIMAL(6,2), PK(id\_ordine,id\_pizza)) \\
+		PAGAMENTI(id\_pagamento PK, id\_ordine FK$\rightarrow$ORDINI UNIQUE, data\_pagamento DATE, importo DECIMAL(8,2), metodo, esito)
+	\end{flushleft}
+	
+	\section*{Parte A -- Soluzioni SQL (senza NOT EXISTS)}
+	
+	\subsection*{1)}
+	\begin{verbatim}
+		SELECT nome, prezzo, categoria
+		FROM PIZZE
+		ORDER BY categoria ASC, nome ASC;
+	\end{verbatim}
+	
+	\subsection*{2)}
+	\begin{verbatim}
+		SELECT id_cliente, cognome, nome, indirizzo
+		FROM CLIENTI
+		WHERE indirizzo LIKE '%Via%';
+	\end{verbatim}
+	
+	\subsection*{3)}
+	\begin{verbatim}
+		SELECT id_ordine, data_ordine, ora_ordine, tipo, stato
+		FROM ORDINI
+		WHERE id_cliente = 7
+		ORDER BY data_ordine ASC, ora_ordine ASC;
+	\end{verbatim}
+	
+	\subsection*{4)}
+	\begin{verbatim}
+		SELECT o.id_ordine, c.cognome, c.nome, o.tipo, o.stato
+		FROM ORDINI o
+		JOIN CLIENTI c ON c.id_cliente = o.id_cliente
+		WHERE o.data_ordine >= '2026-02-01' AND o.data_ordine < '2026-03-01'
+		ORDER BY o.data_ordine ASC, o.ora_ordine ASC;
+	\end{verbatim}
+	
+	\subsection*{5) Clienti che non hanno mai effettuato ordini}
+	\begin{verbatim}
+		SELECT c.id_cliente, c.cognome, c.nome
+		FROM CLIENTI c
+		LEFT JOIN ORDINI o ON o.id_cliente = c.id_cliente
+		WHERE o.id_ordine IS NULL
+		ORDER BY c.cognome, c.nome;
+	\end{verbatim}
+	
+	\subsection*{6) Pizze mai ordinate}
+	\begin{verbatim}
+		SELECT p.id_pizza, p.nome
+		FROM PIZZE p
+		LEFT JOIN RIGHE_ORDINE r ON r.id_pizza = p.id_pizza
+		WHERE r.id_pizza IS NULL
+		ORDER BY p.nome;
+	\end{verbatim}
+	
+	\subsection*{7) Totale per ordine}
+	\begin{verbatim}
+		SELECT r.id_ordine,
+		SUM(r.quantita * r.prezzo_unitario) AS totale
+		FROM RIGHE_ORDINE r
+		GROUP BY r.id_ordine
+		ORDER BY totale DESC, r.id_ordine ASC;
+	\end{verbatim}
+	
+	\subsection*{8) Ordini senza pagamento OK}
+	\textit{Versione con LEFT JOIN (robusta rispetto ai NULL):}
+	\begin{verbatim}
+		SELECT o.id_ordine, o.data_ordine, o.ora_ordine, o.tipo, o.stato
+		FROM ORDINI o
+		LEFT JOIN PAGAMENTI p
+		ON p.id_ordine = o.id_ordine AND p.esito = 'OK'
+		WHERE p.id_ordine IS NULL
+		ORDER BY o.data_ordine ASC, o.ora_ordine ASC;
+	\end{verbatim}
+	
+
+	\begin{verbatim}
+		SELECT o.id_ordine, o.data_ordine, o.ora_ordine, o.tipo, o.stato
+		FROM ORDINI o
+		WHERE o.id_ordine NOT IN (
+		SELECT p.id_ordine
+		FROM PAGAMENTI p
+		WHERE p.esito = 'OK'
+		)
+		ORDER BY o.data_ordine ASC, o.ora_ordine ASC;
+	\end{verbatim}
+	
+	\subsection*{9) Spesa totale per cliente (solo pagamenti OK, includere spesa zero)}
+	\begin{verbatim}
+		SELECT c.id_cliente, c.cognome, c.nome,
+		COALESCE(SUM(p.importo), 0) AS spesa_totale
+		FROM CLIENTI c
+		LEFT JOIN ORDINI o ON o.id_cliente = c.id_cliente
+		LEFT JOIN PAGAMENTI p
+		ON p.id_ordine = o.id_ordine AND p.esito = 'OK'
+		GROUP BY c.id_cliente, c.cognome, c.nome
+		ORDER BY spesa_totale DESC, c.cognome ASC, c.nome ASC;
+	\end{verbatim}
+	
+	\subsection*{10) Clienti che hanno ordinato tutte le pizze della categoria ``Classiche'' (query nidificata, senza NOT EXISTS)}
+	\begin{verbatim}
+		SELECT c.id_cliente, c.cognome, c.nome
+		FROM CLIENTI c
+		JOIN ORDINI o ON o.id_cliente = c.id_cliente
+		JOIN RIGHE_ORDINE r ON r.id_ordine = o.id_ordine
+		JOIN PIZZE p ON p.id_pizza = r.id_pizza
+		WHERE p.categoria = 'Classiche'
+		GROUP BY c.id_cliente, c.cognome, c.nome
+		HAVING COUNT(DISTINCT p.id_pizza) = (
+		SELECT COUNT(*)
+		FROM PIZZE
+		WHERE categoria = 'Classiche'
+		)
+		ORDER BY c.cognome, c.nome;
+	\end{verbatim}
+	
+	\section*{Parte B -- Soluzioni in Algebra Relazionale}
+	
+	\subsection*{1) Nomi delle pizze ``Classiche''}
+	\[
+	\pi_{\text{nome}}\big(\sigma_{\text{categoria}='Classiche'}(\text{PIZZE})\big)
+	\]
+	
+	\subsection*{2) Cognome e nome dei clienti che hanno effettuato almeno un ordine}
+	\[
+	\pi_{\text{cognome},\text{nome}}\big(\text{CLIENTI} \Join_{\text{CLIENTI.id\_cliente}=\text{ORDINI.id\_cliente}} \text{ORDINI}\big)
+	\]
+	
+	\subsection*{3) Id degli ordini consegnati nel 2026}
+	\[
+	\pi_{\text{id\_ordine}}
+	\Big(
+	\sigma_{\text{stato}='consegnato' \wedge \text{data\_ordine}\ge '2026\!-\!01\!-\!01' \wedge \text{data\_ordine}\le '2026\!-\!12\!-\!31'}
+	(\text{ORDINI})
+	\Big)
+	\]
+	
+	\subsection*{4) Nomi delle pizze mai ordinate}
+	\[
+	\pi_{\text{nome}}(\text{PIZZE})
+	\ - \
+	\pi_{\text{nome}}\big(\text{PIZZE} \Join_{\text{PIZZE.id\_pizza}=\text{RIGHE\_ORDINE.id\_pizza}} \text{RIGHE\_ORDINE}\big)
+	\]
+	
+	\subsection*{5) Coppie (cliente, id\_ordine) per ordini a domicilio}
+	\[
+	\pi_{\text{CLIENTI.id\_cliente},\text{ORDINI.id\_ordine}}
+	\Big(
+	\sigma_{\text{tipo}='domicilio'}(\text{ORDINI})
+	\Join_{\text{ORDINI.id\_cliente}=\text{CLIENTI.id\_cliente}}
+	\text{CLIENTI}
+	\Big)
+	\]
+	
+	\subsection*{6) Clienti che hanno ordinato tutte le pizze ``Classiche''}
+	Definiamo:
+	\[
+	C \ =\ \pi_{\text{id\_pizza}}\big(\sigma_{\text{categoria}='Classiche'}(\text{PIZZE})\big)
+	\qquad
+	R \ =\ \pi_{\text{id\_cliente},\text{id\_pizza}}
+	\big(
+	\text{ORDINI} \Join_{\text{ORDINI.id\_ordine}=\text{RIGHE\_ORDINE.id\_ordine}} \text{RIGHE\_ORDINE}
+	\big)
+	\]
+	Allora:
+	\[
+	\pi_{\text{id\_cliente}}(R \div C)
+	\]
+	
+\end{document}

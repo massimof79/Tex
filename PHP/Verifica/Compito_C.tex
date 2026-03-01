@@ -1,0 +1,119 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[italian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{setspace}
+\usepackage{eso-pic}
+\usepackage{xcolor}
+
+\geometry{margin=2.5cm}
+\onehalfspacing
+
+% Cambia SOLO questa riga per creare C1, C2, C3
+\newcommand{\VersionCode}{C1}
+
+\AddToShipoutPictureBG{
+	\AtPageCenter{
+		\makebox(0,0){
+			\rotatebox{30}{
+				\textcolor[gray]{0.85}{
+					\fontsize{18}{18}\selectfont
+					\begin{tabular}{cccc}
+						TPSIT 4AIQ \VersionCode\ 02/03/26 & TPSIT 4AIQ \VersionCode\ 02/03/26 & TPSIT 4AIQ \VersionCode\ 02/03/26 & TPSIT 4AIQ \VersionCode\ 02/03/26 \\
+						TPSIT 4AIQ \VersionCode\ 02/03/26 & TPSIT 4AIQ \VersionCode\ 02/03/26 & TPSIT 4AIQ \VersionCode\ 02/03/26 & TPSIT 4AIQ \VersionCode\ 02/03/26 \\
+						TPSIT 4AIQ \VersionCode\ 02/03/26 & TPSIT 4AIQ \VersionCode\ 02/03/26 & TPSIT 4AIQ \VersionCode\ 02/03/26 & TPSIT 4AIQ \VersionCode\ 02/03/26 \\
+						TPSIT 4AIQ \VersionCode\ 02/03/26 & TPSIT 4AIQ \VersionCode\ 02/03/26 & TPSIT 4AIQ \VersionCode\ 02/03/26 & TPSIT 4AIQ \VersionCode\ 02/03/26 \\
+					\end{tabular}
+				}
+			}
+		}
+	}
+}
+
+
+\title{Verifica di TPSIT - 4AIQ - Compito C}
+\author{Prof. Fedeli Massimo}
+\date{02/03/26}
+
+\begin{document}
+
+\maketitle
+Cognome e Nome:
+
+\vspace{0.15cm}
+\noindent\textbf{Codice versione: \VersionCode}
+
+\section*{Compito}
+
+Hai a disposizione il seguente schema logico; svolgi l'esercizio 1 oppure l'esercizio 2 a tua scelta e rispondi alle domande di teoria
+argomentando in modo approfondito:
+
+\begin{verbatim}
+	EVENTI(id PK, titolo, luogo, data_evento, ora_inizio, ora_fine, capienza)
+	PARTECIPANTI(id PK, cognome, nome, email UNIQUE, telefono)
+	BIGLIETTI(id PK, evento_id FK, partecipante_id FK, codice UNIQUE,
+	prezzo, stato ENUM('prenotato','pagato','annullato'),
+	data_acquisto)
+	ACCESSI(id PK, biglietto_id FK, timestamp_accesso, esito ENUM('ok','negato'),
+	motivo)
+\end{verbatim}
+
+\section*{Esercizio 1}
+
+\subsection*{Obiettivo}
+
+Realizzare una piccola applicazione web che consenta di inserire un nuovo partecipante
+nella tabella \texttt{PARTECIPANTI} tramite una pagina web (client) e un endpoint PHP
+(backend) che salvi i dati su MySQL. (Host: 127.0.0.1 \ \ DBNAME: Eventi)
+
+\subsection*{Vincoli e requisiti tecnici}
+
+\begin{itemize}
+	\item Frontend: una pagina \texttt{index.html} con un form e uno script JavaScript. \textbf{2.5 pt}
+	\item Backend: un file PHP (esempio: \texttt{api\_partecipanti\_create.php}) che riceva i dati e inserisca la riga nel database. \textbf{2.5 pt}
+\end{itemize}
+
+Requisiti: 
+\begin{itemize}
+	\item Comunicazione: il client deve inviare i dati al backend usando \texttt{fetch} in POST, in formato JSON.
+	 \item Validazione minima: email obbligatoria e in formato valido; nome e cognome obbligatori; telefono facoltativo.
+	\item Sicurezza: il backend deve usare query parametrizzate (PDO con prepared statements).
+\end{itemize}
+
+\section*{Esercizio 2}
+
+\subsection*{Obiettivo}
+
+Realizzare una piccola applicazione web che consenta di visualizzare l'elenco dei
+biglietti emessi per tutti gli eventi, includendo anche le informazioni minime
+dell'evento e del partecipante, e lo stato del biglietto. (Host: 127.0.0.1 \ \ DBNAME: Eventi)
+
+\subsection*{Vincoli e requisiti tecnici}
+
+\begin{itemize}
+	\item Frontend: una pagina HTML che mostri i risultati in una tabella e uno script JavaScript. \textbf{4 pt}
+	\item Backend: un file PHP (esempio: \texttt{api\_biglietti\_list.php}) che legga i dati dal database e restituisca un JSON. \textbf{4 pt}
+\end{itemize}
+
+Requisiti:
+\begin{itemize}
+	\item Comunicazione: il client deve richiedere i dati al backend usando \texttt{fetch} e ricevere dati in formato JSON.
+	\item Query: il backend deve eseguire una SELECT con JOIN tra:
+	\begin{itemize}
+		\item \texttt{BIGLIETTI} e \texttt{PARTECIPANTI}
+		\item \texttt{BIGLIETTI} e \texttt{EVENTI}
+		\item \texttt{BIGLIETTI} e \texttt{ACCESSI} (LEFT JOIN)
+	\end{itemize}
+	\item Campi minimi da mostrare in tabella: codice biglietto, titolo evento, data\_evento, luogo, nominativo partecipante, email, stato biglietto, data\_acquisto, ultimo \texttt{timestamp\_accesso} ed \texttt{esito}.
+	\item Sicurezza: il backend deve usare PDO e prepared statements anche per eventuali parametri di filtro.
+\end{itemize}
+
+\section*{Domande}
+
+\textbf{Domanda 1 – Cookie}
+Spiega cosa sono i cookie in ambito web, descrivendo a cosa servono, dove vengono memorizzati e come vengono utilizzati dal protocollo HTTP per mantenere informazioni tra richieste successive. Illustra inoltre la differenza tra cookie di sessione e cookie persistenti, indicando almeno un possibile utilizzo pratico di ciascuno.
+\textbf{Domanda 2 – Sessioni}
+Descrivi il meccanismo delle sessioni nelle applicazioni web, spiegando perché sono necessarie e come permettono di mantenere lo stato tra richieste HTTP. Illustra il ruolo del session ID, dove vengono memorizzati i dati di sessione e come avviene il collegamento tra client e server. Indica infine le principali differenze rispetto ai cookie in termini di sicurezza e gestione dei dati.
+
+\end{document}

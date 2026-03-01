@@ -1,0 +1,60 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[italian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{setspace}
+\geometry{margin=2.5cm}
+\onehalfspacing
+
+\title{Verifica scritta di informatica - Classe 4 AIQ - Compito B}
+\author{Prof. Fedeli Massimo}
+\date{}
+\begin{document}
+	\maketitle
+	
+	\textbf{Durata:} 2 ore \\
+	\textbf{Scrivi le interrogazioni SQL e in algebra relazionale richieste}.
+	
+	\section*{Gestione ordini di una pizzeria con consegne}
+	
+	\section*{Schema logico}
+	
+	\begin{flushleft}
+		CLIENTI(id\_cliente PK, cognome, nome, telefono, indirizzo, email) \\
+		PIZZE(id\_pizza PK, nome , prezzo , categoria) \\
+		ORDINI(id\_ordine PK, id\_cliente FK$\rightarrow$CLIENTI, data\_ordine , ora\_ordine , tipo ENUM('asporto','domicilio'), stato ENUM('in\_preparazione','in\_consegna','consegnato','annullato')) \\
+		RIGHE\_ORDINE(id\_ordine FK$\rightarrow$ORDINI, id\_pizza FK$\rightarrow$PIZZE, quantita, prezzo\_unitario , PK(id\_ordine,id\_pizza)) \\
+		PAGAMENTI(id\_pagamento PK, id\_ordine FK$\rightarrow$ORDINI , data\_pagamento , importo , metodo, esito)
+	\end{flushleft}
+	
+	\section*{Parte A -- Query SQL}
+	
+	Scrivere le seguenti interrogazioni in linguaggio SQL.  (Pt. 6)
+	
+	\begin{enumerate}
+		\item Elencare tutte le pizze mostrando nome, prezzo e categoria, ordinate per categoria e poi per nome.
+		\item Elencare i clienti che hanno un indirizzo contenente la stringa ``Via'' (id\_cliente, cognome, nome, indirizzo).
+		\item Mostrare tutti gli ordini effettuati dal cliente con id\_cliente = 7 indicando id\_ordine, data\_ordine, ora\_ordine, tipo e stato.
+		\item Elencare gli ordini effettuati nel mese di febbraio 2026 mostrando: id\_ordine, cliente (cognome e nome), tipo e stato.
+		\item Elencare i clienti che non hanno mai effettuato ordini.
+		\item Elencare le pizze che non sono mai state ordinate.
+		\item Calcolare per ogni ordine l'importo totale (somma di quantita $\times$ prezzo\_unitario) mostrando id\_ordine e totale, ordinando per totale decrescente.
+		\item Elencare gli ordini che non hanno un pagamento con esito positivo (esito = \texttt{'OK'}). 
+		\item Per ciascun cliente calcolare la spesa totale pagata (somma \texttt{importo}) considerando solo pagamenti con esito \texttt{'OK'}. Mostrare anche i clienti con spesa pari a zero.
+		\item Trovare i clienti che hanno ordinato almeno una volta \emph{tutte} le pizze della categoria \texttt{'Classiche'}. 
+	\end{enumerate}
+	
+	\section*{Parte B -- Algebra Relazionale} 
+	
+	Scrivere le seguenti interrogazioni in algebra relazionale (sceglierne 5 tra quelle in elenco). (Pt. 4)
+	
+	\begin{enumerate}
+		\item Nomi delle pizze della categoria \texttt{'Classiche'}.
+		\item Cognome e nome dei clienti che hanno effettuato almeno un ordine.
+		\item Identificativi degli ordini con stato \texttt{'consegnato'} effettuati nel 2026.
+		\item Nomi delle pizze mai ordinate.
+		\item Coppie (cliente, id\_ordine) relative agli ordini di tipo \texttt{'domicilio'}.
+	\end{enumerate}
+	
+\end{document}

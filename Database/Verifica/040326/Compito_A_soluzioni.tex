@@ -1,0 +1,268 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[italian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{setspace}
+\usepackage{amsmath}
+\geometry{margin=2.5cm}
+\onehalfspacing
+
+\title{Soluzioni -- Verifica scritta di informatica - Classe 4 AIQ - Compito A}
+\author{Prof. Fedeli Massimo}
+\date{}
+\begin{document}
+	\maketitle
+	
+	\textbf{Nota:} nelle soluzioni SQL non viene usato \texttt{EXISTS}/\texttt{NOT EXISTS}. Dove serve, si usano \texttt{LEFT JOIN}, \texttt{NOT IN} e/o \texttt{GROUP BY HAVING}. 
+	
+	\section*{Parte A -- Soluzioni SQL}
+	
+	\subsection*{1) Moto attive}
+	\begin{verbatim}
+		SELECT targa, marca, modello, categoria, tariffa_giornaliera
+		FROM MOTO
+		WHERE attiva = TRUE
+		ORDER BY marca ASC, modello ASC;
+	\end{verbatim}
+	
+	\subsection*{2) Clienti registrati nel 2026}
+	\begin{verbatim}
+		SELECT id_cliente, cognome, nome, data_reg
+		FROM CLIENTI
+		WHERE data_reg >= '2026-01-01' AND data_reg < '2027-01-01'
+		ORDER BY data_reg ASC, cognome ASC, nome ASC;
+	\end{verbatim}
+	
+	\subsection*{3) Noleggi del cliente 7}
+	\begin{verbatim}
+		SELECT n.id_noleggio, m.targa, n.data_inizio, n.data_fine
+		FROM NOLEGGI n
+		JOIN MOTO m ON m.id_moto = n.id_moto
+		WHERE n.id_cliente = 7
+		ORDER BY n.data_inizio ASC, n.id_noleggio ASC;
+	\end{verbatim}
+	
+	\subsection*{4) Noleggi iniziati a febbraio 2026 (cliente + moto + periodo)}
+	\begin{verbatim}
+		SELECT n.id_noleggio, c.cognome, c.nome, m.targa, n.data_inizio, n.data_fine
+		FROM NOLEGGI n
+		JOIN CLIENTI c ON c.id_cliente = n.id_cliente
+		JOIN MOTO m ON m.id_moto = n.id_moto
+		WHERE n.data_inizio >= '2026-02-01' AND n.data_inizio < '2026-03-01'
+		ORDER BY n.data_inizio ASC, c.cognome ASC, c.nome ASC;
+	\end{verbatim}
+	
+	\subsection*{5) Moto mai noleggiate}
+	\begin{verbatim}
+		SELECT m.id_moto, m.targa, m.marca, m.modello
+		FROM MOTO m
+		LEFT JOIN NOLEGGI n ON n.id_moto = m.id_moto
+		WHERE n.id_noleggio IS NULL
+		ORDER BY m.marca ASC, m.modello ASC;
+	\end{verbatim}
+	
+	\subsection*{6) Clienti che hanno noleggiato almeno una moto categoria Touring}
+	\begin{verbatim}
+		SELECT DISTINCT c.id_cliente, c.cognome, c.nome
+		FROM CLIENTI c
+		JOIN NOLEGGI n ON n.id_cliente = c.id_cliente
+		JOIN MOTO m ON m.id_moto = n.id_moto
+		WHERE m.categoria = 'Touring'
+		ORDER BY c.cognome ASC, c.nome ASC;
+	\end{verbatim}
+	
+	\subsection*{7) Noleggi senza pagamento con esito positivo}
+	\textit{Soluzione con LEFT JOIN:}
+	\begin{verbatim}
+		SELECT n.id_noleggio, n.id_cliente, n.id_moto, n.data_inizio, n.data_fine
+		FROM NOLEGGI n
+		LEFT JOIN PAGAMENTI p
+		ON p.id_noleggio = n.id_noleggio AND p.esito = 'OK'
+		WHERE p.id_noleggio IS NULL
+		ORDER BY n.data_inizio ASC, n.id_noleggio ASC;
+	\end{verbatim}
+	
+	\textit{Alternativa con NOT IN (ammissibile perché id\_noleggio in PAGAMENTI è FK e non NULL):}
+	\begin{verbatim}
+		SELECT n.id_noleggio, n.id_cliente, n.id_moto, n.data_inizio, n.data_fine
+		FROM NOLEGGI n
+		WHERE n.id_noleggio NOT IN (
+		SELECT p.id_noleggio
+		FROM PAGAMENTI p
+		WHERE p.esito = 'OK'
+		)
+		ORDER BY n.data_inizio ASC, n.id_noleggio ASC;
+	\end{verbatim}
+	
+	\subsection*{8) Numero totale di noleggi per ogni moto}
+	\begin{verbatim}
+		SELECT m.id_moto, m.targa,
+		COUNT(n.id_noleggio) AS num_noleggi
+		FROM MOTO m
+		LEFT JOIN NOLEGGI n ON n.id_moto = m.id_moto
+		GROUP BY m.id_moto, m.targa
+		ORDER BY num_noleggi DESC, m.targa ASC;
+	\end{verbatim}
+	
+	\subsection*{9) Spesa totale per cliente (solo pagamenti OK)}
+	\begin{verbatim}
+		SELECT c.id_cliente, c.cognome, c.nome,
+		COALESCE(SUM(p.importo), 0) AS spesa_totale_ok
+		FROM CLIENTI c
+		LEFT JOIN NOLEGGI n ON n.id_cliente = c.id_cliente
+		LEFT JOIN PAGAMENTI p
+		ON p.id_noleggio = n.id_noleggio AND p.esito = 'OK'
+		GROUP BY c.id_cliente, c.cognome, c.nome
+		ORDER BY spesa_totale_ok DESC, c.cognome ASC, c.nome ASC;
+	\end{verbatim}
+	
+	\subsection*{10) Moto con costo manutenzione totale > media costi manutenzione}
+	\textit{Si calcola prima il costo per intervento includendo i ricambi; poi si somma per moto e si confronta con la media.}
+	\begin{verbatim}
+		SELECT t.id_moto, t.targa, t.costo_tot_manut
+		FROM (
+		SELECT m.id_moto, m.targa,
+		COALESCE(SUM(
+		i.ore_manodopera * i.costo_manodopera_oraria
+		+ COALESCE(ir.tot_ricambi, 0)
+		), 0) AS costo_tot_manut
+		FROM MOTO m
+		LEFT JOIN INTERVENTI i ON i.id_moto = m.id_moto
+		LEFT JOIN (
+		SELECT ir2.id_intervento,
+		SUM(ir2.quantita * r.costo_unitario) AS tot_ricambi
+		FROM INTERVENTI_RICAMBI ir2
+		JOIN RICAMBI r ON r.id_ricambio = ir2.id_ricambio
+		GROUP BY ir2.id_intervento
+		) ir ON ir.id_intervento = i.id_intervento
+		GROUP BY m.id_moto, m.targa
+		) t
+		WHERE t.costo_tot_manut > (
+		SELECT AVG(x.costo_tot_manut)
+		FROM (
+		SELECT m2.id_moto,
+		COALESCE(SUM(
+		i2.ore_manodopera * i2.costo_manodopera_oraria
+		+ COALESCE(ir3.tot_ricambi, 0)
+		), 0) AS costo_tot_manut
+		FROM MOTO m2
+		LEFT JOIN INTERVENTI i2 ON i2.id_moto = m2.id_moto
+		LEFT JOIN (
+		SELECT ir4.id_intervento,
+		SUM(ir4.quantita * r2.costo_unitario) AS tot_ricambi
+		FROM INTERVENTI_RICAMBI ir4
+		JOIN RICAMBI r2 ON r2.id_ricambio = ir4.id_ricambio
+		GROUP BY ir4.id_intervento
+		) ir3 ON ir3.id_intervento = i2.id_intervento
+		GROUP BY m2.id_moto
+		) x
+		)
+		ORDER BY t.costo_tot_manut DESC, t.targa ASC;
+	\end{verbatim}
+	
+	\subsection*{11) Clienti che hanno noleggiato almeno una volta ogni categoria di moto attiva}
+	\textit{Divisione relazionale resa con conteggio categorie distinte e confronto con il totale categorie attive.}
+	\begin{verbatim}
+		SELECT c.id_cliente, c.cognome, c.nome
+		FROM CLIENTI c
+		JOIN NOLEGGI n ON n.id_cliente = c.id_cliente
+		JOIN MOTO m ON m.id_moto = n.id_moto
+		WHERE m.attiva = TRUE
+		GROUP BY c.id_cliente, c.cognome, c.nome
+		HAVING COUNT(DISTINCT m.categoria) = (
+		SELECT COUNT(DISTINCT m2.categoria)
+		FROM MOTO m2
+		WHERE m2.attiva = TRUE
+		)
+		ORDER BY c.cognome ASC, c.nome ASC;
+	\end{verbatim}
+	
+	\subsection*{12) Per ciascun cliente, noleggio più recente}
+	\textit{Soluzione con sottoquery su MAX(data\_inizio) e join. In caso di parità di data, vengono mostrati anche più noleggi.}
+	\begin{verbatim}
+		SELECT c.id_cliente, c.cognome, c.nome,
+		n.id_noleggio, m.targa, n.data_inizio, n.data_fine
+		FROM CLIENTI c
+		JOIN NOLEGGI n ON n.id_cliente = c.id_cliente
+		JOIN MOTO m ON m.id_moto = n.id_moto
+		JOIN (
+		SELECT id_cliente, MAX(data_inizio) AS max_data_inizio
+		FROM NOLEGGI
+		GROUP BY id_cliente
+		) t ON t.id_cliente = n.id_cliente AND t.max_data_inizio = n.data_inizio
+		ORDER BY c.cognome ASC, c.nome ASC, n.id_noleggio ASC;
+	\end{verbatim}
+	
+	\section*{Parte B -- Soluzioni in Algebra Relazionale}
+	
+	\subsection*{1) Targhe delle moto attive di categoria ``Touring''}
+	\[
+	\pi_{\text{targa}}\big(\sigma_{\text{attiva}=TRUE \ \wedge\ \text{categoria}='Touring'}(\text{MOTO})\big)
+	\]
+	
+	\subsection*{2) Cognome e nome dei clienti registrati nel 2026}
+	\[
+	\pi_{\text{cognome},\text{nome}}\Big(
+	\sigma_{\ '2026\!-\!01\!-\!01' \le \text{data\_reg} \ \wedge\ \text{data\_reg} < '2027\!-\!01\!-\!01'}(\text{CLIENTI})
+	\Big)
+	\]
+	
+	\subsection*{3) Targhe delle moto che compaiono in almeno un noleggio}
+	\[
+	\pi_{\text{targa}}\big(\text{MOTO} \Join_{\text{MOTO.id\_moto}=\text{NOLEGGI.id\_moto}} \text{NOLEGGI}\big)
+	\]
+	
+	\subsection*{4) Targhe delle moto mai noleggiate}
+	\[
+	\pi_{\text{targa}}(\text{MOTO})
+	\ -\
+	\pi_{\text{targa}}\big(\text{MOTO} \Join_{\text{MOTO.id\_moto}=\text{NOLEGGI.id\_moto}} \text{NOLEGGI}\big)
+	\]
+	
+	\subsection*{5) Coppie (cliente, targa) per noleggi iniziati a febbraio 2026}
+	\[
+	\pi_{\text{CLIENTI.id\_cliente},\text{MOTO.targa}}
+	\Big(
+	\sigma_{'2026\!-\!02\!-\!01' \le \text{data\_inizio} \ \wedge\ \text{data\_inizio} < '2026\!-\!03\!-\!01'}(\text{NOLEGGI})
+	\Join_{\text{NOLEGGI.id\_cliente}=\text{CLIENTI.id\_cliente}} \text{CLIENTI}
+	\Join_{\text{NOLEGGI.id\_moto}=\text{MOTO.id\_moto}} \text{MOTO}
+	\Big)
+	\]
+	
+	\subsection*{6) Numero di noleggi per ciascuna moto}
+	\[
+	\gamma_{\text{MOTO.id\_moto},\text{MOTO.targa};\ \mathrm{COUNT}(\text{NOLEGGI.id\_noleggio})\rightarrow \text{num\_noleggi}}
+	\big(
+	\text{MOTO} \Join_{\text{MOTO.id\_moto}=\text{NOLEGGI.id\_moto}} \text{NOLEGGI}
+	\big)
+	\]
+	
+	\subsection*{7) Clienti che hanno effettuato almeno un pagamento con esito positivo}
+	\[
+	\pi_{\text{CLIENTI.id\_cliente},\text{CLIENTI.cognome},\text{CLIENTI.nome}}
+	\Big(
+	\text{CLIENTI}
+	\Join_{\text{CLIENTI.id\_cliente}=\text{NOLEGGI.id\_cliente}} \text{NOLEGGI}
+	\Join_{\text{NOLEGGI.id\_noleggio}=\text{PAGAMENTI.id\_noleggio}}
+	\sigma_{\text{esito}='OK'}(\text{PAGAMENTI})
+	\Big)
+	\]
+	
+	\subsection*{8) Clienti che hanno noleggiato tutte le categorie di moto attive}
+	Definiamo:
+	\[
+	C = \pi_{\text{categoria}}\big(\sigma_{\text{attiva}=TRUE}(\text{MOTO})\big)
+	\qquad
+	R = \pi_{\text{id\_cliente},\text{categoria}}
+	\big(
+	\text{NOLEGGI} \Join_{\text{NOLEGGI.id\_moto}=\text{MOTO.id\_moto}}
+	\sigma_{\text{attiva}=TRUE}(\text{MOTO})
+	\big)
+	\]
+	Allora:
+	\[
+	\pi_{\text{id\_cliente}}(R \div C)
+	\]
+	
+\end{document}

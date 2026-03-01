@@ -1,0 +1,63 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[italian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{setspace}
+\geometry{margin=2.5cm}
+\onehalfspacing
+
+\title{Verifica scritta di informatica - Classe 4 AIQ - Compito A}
+\author{Prof. Fedeli Massimo}
+\date{}
+\begin{document}
+	\maketitle
+	
+	\textbf{Durata:} 2 ore \\
+	\textbf{Obiettivo:} scrivere interrogazioni SQL (anche nidificate) e formulare interrogazioni in algebra relazionale.
+	
+	\section*{Schema logico}
+	
+	\begin{flushleft}
+		CLIENTI(id\_cliente PK, cognome, nome, email, telefono, data\_reg ) \\
+		MOTO(id\_moto PK, targa , marca, modello, cilindrata , anno , categoria, tariffa\_giornaliera, attiva ) \\
+		NOLEGGI(id\_noleggio PK, id\_cliente FK$\rightarrow$CLIENTI, id\_moto FK$\rightarrow$MOTO, data\_inizio, data\_fine , km\_inizio , km\_fine , cauzione ) \\
+		PAGAMENTI(id\_pagamento PK, id\_noleggio FK$\rightarrow$NOLEGGI , data\_pagamento , importo , metodo, esito) \\
+		MECCANICI(id\_meccanico PK, cognome, nome, livello) \\
+		INTERVENTI(id\_intervento PK, id\_moto FK$\rightarrow$MOTO, id\_meccanico FK$\rightarrow$MECCANICI, data\_intervento , tipo, ore\_manodopera , costo\_manodopera\_oraria , note) \\
+		RICAMBI(id\_ricambio PK, descrizione, costo\_unitario , giacenza ) \\
+		INTERVENTI\_RICAMBI(id\_intervento FK$\rightarrow$INTERVENTI, id\_ricambio FK$\rightarrow$RICAMBI, quantita , PK(id\_intervento,id\_ricambio))
+	\end{flushleft}
+	
+	\section*{Parte A -- Query SQL}
+	
+	Scrivere le seguenti interrogazioni in linguaggio SQL.
+	
+	\begin{enumerate}
+		\item Mostrare tutti i noleggi effettuati dal cliente con id\_cliente = 7 indicando id\_noleggio, targa, data\_inizio e data\_fine.
+		\item Elencare i noleggi iniziati nel mese di febbraio 2026 mostrando cliente, moto e periodo di noleggio.
+		\item Elencare le moto che non sono mai state noleggiate.
+		\item Elencare i clienti che hanno noleggiato almeno una moto della categoria ``Touring''.
+		\item Elencare i noleggi che non hanno un pagamento con esito positivo.
+		\item Per ogni moto calcolare il numero totale di noleggi effettuati.
+		\item Per ogni cliente calcolare la spesa totale sostenuta considerando solo i pagamenti con esito positivo.
+		\item Elencare le moto il cui costo totale di manutenzione è maggiore del costo medio di manutenzione tra tutte le moto.
+		\item Trovare i clienti che hanno noleggiato almeno una volta ogni categoria di moto attiva.
+		\item Per ciascun cliente mostrare il noleggio più recente effettuato.
+	\end{enumerate}
+	
+	\section*{Parte B -- Algebra Relazionale}
+	
+	Scrivere le seguenti interrogazioni in algebra relazionale. 
+	
+	\begin{enumerate}
+		\item Targhe delle moto attive di categoria ``Touring''.
+		\item Cognome e nome dei clienti registrati nel 2026.
+		\item Targhe delle moto che compaiono in almeno un noleggio.
+		\item Targhe delle moto mai noleggiate.
+		\item Coppie (cliente, targa) relative ai noleggi di febbraio 2026.
+		\item Numero di noleggi per ciascuna moto.
+		\item Clienti che hanno effettuato almeno un pagamento con esito positivo.
+	\end{enumerate}
+	
+\end{document}
