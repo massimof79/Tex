@@ -9,15 +9,10 @@
 	
 	\maketitle
 	
-	Il modello \textbf{K-Nearest Neighbors} (KNN) è uno dei metodi più intuitivi dell'apprendimento automatico.
+	Il modello \textbf{K-Nearest Neighbors} (KNN) è uno dei metodi più semplici dell'apprendimento automatico.
 	
-	L'idea di base è semplice: per fare una previsione su un nuovo dato, il modello osserva i dati già noti che gli somigliano di più.
+	L'idea di base è la seguente: per fare una previsione su un nuovo dato, il modello osserva i dati già noti che gli somigliano di più.
 	
-	In altre parole:
-	
-	\begin{center}
-		``Dimmi chi ti assomiglia e ti dirò chi sei''
-	\end{center}
 	
 	\section*{Rappresentazione dei dati}
 	
@@ -30,7 +25,7 @@
 		\item Numero di assenze
 	\end{itemize}
 	
-	Possiamo rappresentare ogni studente come un vettore:
+	E' possibile rappresentare ogni studente come un vettore:
 	
 	\[
 	\mathbf{x} = (x_1, x_2)
@@ -42,9 +37,9 @@
 	x_1 = \text{ore di studio}, \quad x_2 = \text{assenze}
 	\]
 	
-	Ogni studente diventa quindi un punto nel piano cartesiano.
+	Ogni studente diventa quindi un \textbf{punto nel piano cartesiano}.
 	
-	Abbiamo un insieme di dati noti (dataset):
+	In generale si ha un insieme di dati noti (dataset):
 	
 	\[
 	\mathcal{D} = \{(\mathbf{x}_1,y_1), (\mathbf{x}_2,y_2), \dots, (\mathbf{x}_n,y_n)\}
@@ -53,8 +48,8 @@
 	dove
 	
 	\begin{itemize}
-		\item $\mathbf{x}_i$ = caratteristiche
-		\item $y_i$ = risultato osservato (voto, esito, ecc.)
+		\item $\mathbf{x}_i$ = caratteristiche (features)
+		\item $y_i$ = risultato osservato (voto, esito, ecc.)  - target
 	\end{itemize}
 	
 	\textbf{Esempio numerico.} Supponiamo di avere i seguenti dati su 5 studenti:
@@ -73,7 +68,7 @@
 		\end{tabular}
 	\end{center}
 	
-	Arriva ora un nuovo studente:
+	Ipotizziamo che arrivi un nuovo studente:
 	
 	\[
 	\mathbf{x}_{new} = (5,\; 3)
@@ -85,13 +80,13 @@
 	
 	Per capire quali dati sono simili a $\mathbf{x}_{new}$ dobbiamo misurare la distanza.
 	
-	La più usata è la distanza euclidea:
+	Applichiamo la formula della \textbf{distanza euclidea}:
 	
 	\[
-	d(\mathbf{x}, \mathbf{z}) =
+	d(\mathbf{x}, \mathbf{y}) =
 	\sqrt{
 		\sum_{j=1}^{m}
-		(x_j - z_j)^2
+		(x_j - y_j)^2
 	}
 	\]
 	
@@ -160,6 +155,8 @@
 	
 	cioè la moda delle etichette dei vicini.
 	
+	\textbf{Definizione}. La moda è il valore  che si presenta con la massima frequenza all'interno di un insieme di dati
+	
 	\textbf{Esempio numerico.} Tra i 3 vicini $\{C, A, B\}$ le etichette sono:
 	\[
 	\{\text{Promosso},\; \text{Promosso},\; \text{Bocciato}\}
@@ -220,7 +217,7 @@
 	
 	In questo caso il risultato non cambia, ma con dataset più grandi e confini meno netti la scelta di $K$ può essere determinante.
 	
-	\section*{Idea chiave}
+	\section*{Riflessione}
 	
 	A differenza della regressione lineare, KNN non costruisce una funzione del tipo:
 	
@@ -233,7 +230,7 @@
 	La previsione nasce dal confronto con esempi simili.
 	
 	\begin{center}
-		Il modello non impara una formula. Impara per analogia.
+		Il modello non ricava una formula. Apprende per analogia.
 	\end{center}
 	
 	\section*{Punti di forza}
