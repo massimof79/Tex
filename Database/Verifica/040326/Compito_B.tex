@@ -4,9 +4,9 @@
 \usepackage[T1]{fontenc}
 \usepackage{geometry}
 \usepackage{setspace}
+\usepackage{CJKutf8}
 \geometry{margin=2.5cm}
 \onehalfspacing
-
 \title{Verifica scritta di informatica - Classe 4 AIQ - Compito B}
 \author{Prof. Fedeli Massimo}
 \date{}
@@ -31,29 +31,55 @@
 	\section*{Parte A -- Query SQL}
 	
 	Scrivere le seguenti interrogazioni in linguaggio SQL.  (Pt. 7.5)
-	 (Per ottenere il punteggio massimo è sufficiente svolgere 9 esercizi su 10 a scelta dello studente)
+	(Per ottenere il punteggio massimo è sufficiente svolgere 9 esercizi su 10 a scelta dello studente)
 	\begin{enumerate}
-		\item Elencare tutte le pizze mostrando nome, prezzo e categoria, ordinate per categoria e poi per nome.
-		\item Elencare i clienti che hanno un indirizzo contenente la stringa ``Via'' (id\_cliente, cognome, nome, indirizzo).
-		\item Mostrare tutti gli ordini effettuati dal cliente con id\_cliente = 7 indicando id\_ordine, data\_ordine, ora\_ordine, tipo e stato.
-		\item Elencare gli ordini effettuati nel mese di febbraio 2026 mostrando: id\_ordine, cliente (cognome e nome), tipo e stato.
-		\item Elencare i clienti che non hanno mai effettuato ordini.
-		\item Elencare le pizze che non sono mai state ordinate.
-		\item Calcolare per ogni ordine l'importo totale (somma di quantita $\times$ prezzo\_unitario) mostrando id\_ordine e totale, ordinando per totale decrescente.
-		\item Elencare gli ordini che non hanno un pagamento con esito positivo (esito = \texttt{'OK'}). 
-		\item Per ciascun cliente calcolare la spesa totale pagata (somma \texttt{importo}) considerando solo pagamenti con esito \texttt{'OK'}. Mostrare anche i clienti con spesa pari a zero.
-		\item Trovare i clienti che hanno ordinato almeno una volta \emph{tutte} le pizze della categoria \texttt{'Classiche'}. 
+		\item Elencare tutte le pizze mostrando nome, prezzo e categoria, ordinate per categoria e poi per nome,
+		\begin{CJK}{UTF8}{min}各ピザの注文回数も表示すること。\end{CJK}
+		
+		\item Elencare i clienti che hanno un indirizzo contenente la stringa ``Via'' (id\_cliente, cognome, nome, indirizzo),
+		\begin{CJK}{UTF8}{min}一度も注文していない顧客は除外すること。\end{CJK}
+		
+		\item Mostrare tutti gli ordini effettuati dal cliente con id\_cliente = 7 indicando id\_ordine, data\_ordine, ora\_ordine, tipo e stato,
+		\begin{CJK}{UTF8}{min}注文日の降順に並べて表示すること。\end{CJK}
+		
+		\item Elencare gli ordini effettuati nel mese di febbraio 2026 mostrando: id\_ordine, cliente (cognome e nome), tipo e stato,
+		\begin{CJK}{UTF8}{min}合計金額が20ユーロを超える注文のみを対象とすること。\end{CJK}
+		
+		\item Elencare i clienti che non hanno mai effettuato ordini,
+		\begin{CJK}{UTF8}{min}氏名とメールアドレスも表示すること。\end{CJK}
+		
+		\item Elencare le pizze che non sono mai state ordinate,
+		\begin{CJK}{UTF8}{min}名前、カテゴリおよび価格を表示すること。\end{CJK}
+		
+		\item Calcolare per ogni ordine l'importo totale (somma di quantita $\times$ prezzo\_unitario) mostrando id\_ordine e totale, ordinando per totale decrescente,
+		\begin{CJK}{UTF8}{min}合計が30ユーロを超える注文のみを表示すること。\end{CJK}
+		
+		\item Elencare gli ordini che non hanno un pagamento con esito positivo (esito = \texttt{'OK'}),
+		\begin{CJK}{UTF8}{min}注文番号、顧客名および注文日を表示すること。\end{CJK}
+		
+		\item Per ciascun cliente calcolare la spesa totale pagata (somma \texttt{importo}) considerando solo pagamenti con esito \texttt{'OK'}. Mostrare anche i clienti con spesa pari a zero,
+		\begin{CJK}{UTF8}{min}支払い合計額の降順に並べて表示すること。\end{CJK}
+		
+		\item Trovare i clienti che hanno ordinato almeno una volta \emph{tutte} le pizze della categoria \texttt{'Classiche'},
+		\begin{CJK}{UTF8}{min}顧客番号、氏名およびクラシックピザの注文数を表示すること。\end{CJK}
 	\end{enumerate}
 	
-	\section*{Parte B -- Algebra Relazionale }  (Pt. 2.5)
+	\section*{Parte B -- Algebra Relazionale}  (Pt. 2.5)
 	
 	Scrivere le seguenti interrogazioni in algebra relazionale (sceglierne 5 tra quelle in elenco). (Pt. 4)
 	
 	\begin{enumerate}
-		\item Nomi delle pizze della categoria \texttt{'Classiche'}.
-		\item Cognome e nome dei clienti che hanno effettuato almeno un ordine.
-		\item Identificativi degli ordini con stato \texttt{'consegnato'} effettuati nel 2026.
-		\item Coppie (cliente, id\_ordine) relative agli ordini di tipo \texttt{'domicilio'}.
+		\item Nomi delle pizze della categoria \texttt{'Classiche'},
+		\begin{CJK}{UTF8}{min}すなわち「クラシック」カテゴリに属するピザの名前。\end{CJK}
+		
+		\item Cognome e nome dei clienti che hanno effettuato almeno un ordine,
+		\begin{CJK}{UTF8}{min}すなわち注文記録に少なくとも1件登場する顧客の氏名。\end{CJK}
+		
+		\item Identificativi degli ordini con stato \texttt{'consegnato'} effettuati nel 2026,
+		\begin{CJK}{UTF8}{min}すなわち2026年中に配達完了となった注文の識別子。\end{CJK}
+		
+		\item Coppie (cliente, id\_ordine) relative agli ordini di tipo \texttt{'domicilio'},
+		\begin{CJK}{UTF8}{min}すなわち宅配注文における顧客と注文番号の対応関係。\end{CJK}
 	\end{enumerate}
 	
 \end{document}

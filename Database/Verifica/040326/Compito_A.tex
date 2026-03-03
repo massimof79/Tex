@@ -4,9 +4,9 @@
 \usepackage[T1]{fontenc}
 \usepackage{geometry}
 \usepackage{setspace}
+\usepackage{CJKutf8}
 \geometry{margin=2.5cm}
 \onehalfspacing
-
 \title{Verifica scritta di informatica - Classe 4 AIQ - Compito A}
 \author{Prof. Fedeli Massimo}
 \date{}
@@ -14,7 +14,7 @@
 	\maketitle
 	
 	\textbf{Durata:} 2 ore \\
-	\textbf{Obiettivo:} scrivere interrogazioni SQL (anche nidificate) e formulare interrogazioni in algebra relazionale.
+	\textbf{Obiettivo:} scrivere interrogazioni SQL (anche nidificate) e formulare interrogazioni in algebra relazionale. Tener conto solo del testo in lingua italiana.
 	
 	\section*{Schema logico}
 	
@@ -34,16 +34,35 @@
 	Scrivere le seguenti interrogazioni in linguaggio SQL. (Per ottenere il punteggio massimo è sufficiente svolgere 9 esercizi su 10 a scelta dello studente)
 	
 	\begin{enumerate}
-		\item Mostrare tutti i noleggi effettuati dal cliente con id\_cliente = 7 indicando id\_noleggio, targa, data\_inizio e data\_fine, nome e cognome del cliente.
-		\item Elencare i noleggi iniziati nel mese di febbraio 2026 mostrando cliente, moto e periodo di noleggio.
-		\item Elencare le moto che non sono mai state noleggiate.
-		\item Elencare i clienti che hanno noleggiato almeno una moto della categoria ``Touring''.
-		\item Elencare i noleggi che non hanno un pagamento con esito positivo.
-		\item Per ogni moto calcolare il numero totale di noleggi effettuati.
-		\item Per ogni cliente calcolare la spesa totale sostenuta considerando solo i pagamenti con esito positivo.
-		\item Elencare le moto il cui costo totale di manutenzione è maggiore del costo medio di manutenzione tra tutte le moto.
-		\item Trovare i clienti che hanno noleggiato almeno una volta ogni categoria di moto attiva.
-		\item Per ciascun cliente mostrare il noleggio più recente effettuato.
+		\item Mostrare tutti i noleggi effettuati dal cliente con id\_cliente = 7 indicando id\_noleggio, targa, data\_inizio e data\_fine, nome e cognome del cliente,
+		\begin{CJK}{UTF8}{gbsn}并按租赁开始日期降序排列。\end{CJK}
+		
+		\item Elencare i noleggi iniziati nel mese di febbraio 2026 mostrando cliente, moto e periodo di noleggio,
+		\begin{CJK}{UTF8}{gbsn}仅包括租期超过三天的记录。\end{CJK}
+		
+		\item Elencare le moto che non sono mai state noleggiate,
+		\begin{CJK}{UTF8}{gbsn}显示车牌、品牌和型号。\end{CJK}
+		
+		\item Elencare i clienti che hanno noleggiato almeno una moto della categoria ``Touring'',
+		\begin{CJK}{UTF8}{gbsn}显示客户的姓名和电子邮件地址。\end{CJK}
+		
+		\item Elencare i noleggi che non hanno un pagamento con esito positivo,
+		\begin{CJK}{UTF8}{gbsn}显示租赁编号、客户姓名和开始日期。\end{CJK}
+		
+		\item Per ogni moto calcolare il numero totale di noleggi effettuati,
+		\begin{CJK}{UTF8}{gbsn}仅显示至少有两次租赁记录的摩托车。\end{CJK}
+		
+		\item Per ogni cliente calcolare la spesa totale sostenuta considerando solo i pagamenti con esito positivo,
+		\begin{CJK}{UTF8}{gbsn}并按总金额从高到低排序。\end{CJK}
+		
+		\item Elencare le moto il cui costo totale di manutenzione è maggiore del costo medio di manutenzione tra tutte le moto,
+		\begin{CJK}{UTF8}{gbsn}显示车牌、品牌以及维修总费用。\end{CJK}
+		
+		\item Trovare i clienti che hanno noleggiato almeno una volta ogni categoria di moto attiva,
+		\begin{CJK}{UTF8}{gbsn}显示客户编号、姓名和已覆盖的类别数量。\end{CJK}
+		
+		\item Per ciascun cliente mostrare il noleggio più recente effettuato,
+		\begin{CJK}{UTF8}{gbsn}包括客户姓名、车牌号和最近一次租赁的开始日期。\end{CJK}
 	\end{enumerate}
 	
 	\section*{Parte B -- Algebra Relazionale 2.5 pt}
@@ -51,10 +70,17 @@
 	Scrivere le seguenti interrogazioni in algebra relazionale. 
 	
 	\begin{enumerate}
-		\item Targhe delle moto attive di categoria ``Touring''.
-		\item Cognome e nome dei clienti registrati nel 2026.
-		\item Targhe delle moto che compaiono in almeno un noleggio.
-		\item Coppie (cliente, targa) relative ai noleggi di febbraio 2026.
+		\item Targhe delle moto attive di categoria ``Touring'',
+		\begin{CJK}{UTF8}{gbsn}即状态为启用且类别为"旅行"的摩托车牌照。\end{CJK}
+		
+		\item Cognome e nome dei clienti registrati nel 2026,
+		\begin{CJK}{UTF8}{gbsn}即注册日期在2026年内的所有客户姓名。\end{CJK}
+		
+		\item Targhe delle moto che compaiono in almeno un noleggio,
+		\begin{CJK}{UTF8}{gbsn}即至少出现在一条租赁记录中的摩托车牌照。\end{CJK}
+		
+		\item Coppie (cliente, targa) relative ai noleggi di febbraio 2026,
+		\begin{CJK}{UTF8}{gbsn}即在2026年2月期间发生的所有租赁中的客户与车牌对应关系。\end{CJK}
 	\end{enumerate}
 	
 \end{document}
