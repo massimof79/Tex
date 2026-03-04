@@ -22,209 +22,209 @@
 \definecolor{darkgray}{RGB}{60, 60, 60}
 
 \title{%
-	\textcolor{gaussblue}{\textbf{Distribuzione gaussiana e deviazione standard}}
+  \textcolor{gaussblue}{\textbf{Distribuzione gaussiana e deviazione standard}}
 }
 \author{Prof. Fedeli Massimo}
 \date{IIS Fermi Sacconi Cpia di Ascoli Piceno}
 
 \begin{document}
-	
-	\maketitle
-	\thispagestyle{empty}
-	
-	% ─────────────────────────────────────────────
-	\section{Distribuzione gaussiana}
-	
-	La \textbf{distribuzione gaussiana}, detta anche \textbf{distribuzione normale}, è uno dei modelli statistici più utilizzati per descrivere fenomeni reali. 
-	
-	Il grafico di questa distribuzione ha una caratteristica \emph{forma a campana}. I valori più \textbf{frequenti} si trovano vicino al centro della distribuzione, mentre valori molto piccoli o molto grandi diventano progressivamente meno probabili.
-	
-	\begin{center}
-		\begin{tikzpicture}
-			\begin{axis}[
-				width=10cm, height=6cm,
-				xlabel={$x$},
-				ylabel={$f(x)$},
-				axis lines=left,
-				xtick={-3,-2,-1,0,1,2,3},
-				xticklabels={$\mu{-}3\sigma$, $\mu{-}2\sigma$, $\mu{-}\sigma$, $\mu$,
-					$\mu{+}\sigma$, $\mu{+}2\sigma$, $\mu{+}3\sigma$},
-				ytick=\empty,
-				domain=-3.5:3.5,
-				samples=200,
-				smooth,
-				thick,
-				color=gaussblue,
-				fill=lightblue,
-				fill opacity=0.5,
-				]
-				\addplot [gaussblue, thick, fill=lightblue, fill opacity=0.5]
-				{exp(-x^2/2) / sqrt(2*pi)} \closedcycle;
-			\end{axis}
-		\end{tikzpicture}
-	\end{center}
-	
-	\underline{Molti fenomeni naturali seguono approssimativamente questo modello.} Alcuni esempi sono:
-	
-	\begin{itemize}
-		\item altezza delle persone in una popolazione;
-		\item errori nelle misurazioni scientifiche;
-		\item rumore nei segnali elettronici;
-		\item risultati di test statistici.
-	\end{itemize}
-	
-	La distribuzione gaussiana è descritta da due parametri principali:
-	
-	\begin{itemize}
-		\item \textbf{media} ($\mu$): rappresenta il valore centrale della distribuzione;
-		\item \textbf{deviazione standard} ($\sigma$): misura quanto i valori sono dispersi rispetto alla media.
-	\end{itemize}
-	
-	La distribuzione è \emph{simmetrica} rispetto alla media: valori sopra e sotto la media hanno la stessa probabilità.
-	
-	% ─────────────────────────────────────────────
-	\section{Deviazione standard}
-	
-	La \textbf{deviazione standard} è una misura statistica che indica quanto i dati sono dispersi rispetto alla media.
-	
-	\begin{itemize}
-		\item Se i dati sono molto vicini alla media, la deviazione standard è \emph{piccola}.
-		\item Se i dati sono molto lontani dalla media, la deviazione standard è \emph{grande}.
-	\end{itemize}
-	
-	\subsection{Formula della deviazione standard}
-	
-	Per una popolazione di $N$ valori $x_1, x_2, \ldots, x_N$ con media $\mu$, la deviazione standard è definita come:
-	
-	\[
-	\sigma = \sqrt{\dfrac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2}
-	\]
-	
-	Il calcolo avviene in tre passaggi logici:
-	
-	\begin{enumerate}
-		\item Si calcola la \textbf{media} dei dati.
-		\item Si calcola la \textbf{distanza} di ogni valore dalla media.
-		\item Si fa la media dei \textbf{quadrati} di queste distanze e si calcola la radice quadrata.
-	\end{enumerate}
-	
-	Il quadrato serve a evitare che le differenze positive e negative si annullino tra loro.
-	
-	\subsection{Esempio intuitivo}
-	
-	Consideriamo due gruppi di dati.
-	
-	\begin{center}
-		\begin{tabular}{lcc}
-			\toprule
-			\textbf{Gruppo} & \textbf{Valori} & \textbf{Media} \\
-			\midrule
-			A & $10,\ 11,\ 9,\ 10,\ 10$ & $10$ \\
-			B & $2,\ 18,\ 5,\ 15,\ 10$  & $10$ \\
-			\bottomrule
-		\end{tabular}
-	\end{center}
-	
-	\medskip
-	\noindent\textbf{Calcolo per il Gruppo A} \quad ($\mu = 10$)
-	
-	\begin{center}
-		\begin{tabular}{ccc}
-			\toprule
-			$x_i$ & $x_i - \mu$ & $(x_i - \mu)^2$ \\
-			\midrule
-			$10$ & $0$  & $0$ \\
-			$11$ & $+1$ & $1$ \\
-			$9$  & $-1$ & $1$ \\
-			$10$ & $0$  & $0$ \\
-			$10$ & $0$  & $0$ \\
-			\midrule
-			& \textbf{Somma} & $2$ \\
-			\bottomrule
-		\end{tabular}
-	\end{center}
-	
-	\[
-	\sigma_A = \sqrt{\dfrac{2}{5}} = \sqrt{0{,}4} \approx \mathbf{0{,}63}
-	\]
-	
-	\medskip
-	\noindent\textbf{Calcolo per il Gruppo B} \quad ($\mu = 10$)
-	
-	\begin{center}
-		\begin{tabular}{ccc}
-			\toprule
-			$x_i$ & $x_i - \mu$ & $(x_i - \mu)^2$ \\
-			\midrule
-			$2$  & $-8$ & $64$ \\
-			$18$ & $+8$ & $64$ \\
-			$5$  & $-5$ & $25$ \\
-			$15$ & $+5$ & $25$ \\
-			$10$ & $0$  & $0$  \\
-			\midrule
-			& \textbf{Somma} & $178$ \\
-			\bottomrule
-		\end{tabular}
-	\end{center}
-	
-	\[
-	\sigma_B = \sqrt{\dfrac{178}{5}} = \sqrt{35{,}6} \approx \mathbf{5{,}97}
-	\]
-	
-	\medskip
-	\noindent\textbf{Confronto:}
-	\begin{itemize}
-		\item \textbf{Gruppo A}: $\sigma_A \approx 0{,}63$ — i valori sono molto vicini alla media, la deviazione standard è \emph{piccola}.
-		\item \textbf{Gruppo B}: $\sigma_B \approx 5{,}97$ — i valori sono molto dispersi, la deviazione standard è \emph{grande}.
-	\end{itemize}
-	
-	Pur avendo la stessa media ($\mu = 10$), i due gruppi hanno distribuzioni molto diverse: la deviazione standard cattura esattamente questa differenza.
-	
-	% ─────────────────────────────────────────────
-	\section{Regola 68–95–99{,}7}
-	
-	Una proprietà importante della distribuzione normale è la cosiddetta \textbf{regola empirica}:
-	
-	\begin{itemize}
-		\item circa \textbf{68\%} dei valori si trova nell'intervallo $\mu \pm \sigma$;
-		\item circa \textbf{95\%} dei valori si trova nell'intervallo $\mu \pm 2\sigma$;
-		\item circa \textbf{99{,}7\%} dei valori si trova nell'intervallo $\mu \pm 3\sigma$.
-	\end{itemize}
-	
-	\begin{center}
-		\begin{tikzpicture}
-			\begin{axis}[
-				width=11cm, height=6cm,
-				axis lines=left,
-				xtick={-3,-2,-1,0,1,2,3},
-				xticklabels={$\mu{-}3\sigma$, $\mu{-}2\sigma$, $\mu{-}\sigma$, $\mu$,
-					$\mu{+}\sigma$, $\mu{+}2\sigma$, $\mu{+}3\sigma$},
-				ytick=\empty,
-				domain=-3.5:3.5,
-				samples=200,
-				smooth,
-				]
-				% 99.7% band
-				\addplot [fill=blue!15, draw=none, domain=-3:3] {exp(-x^2/2)/sqrt(2*pi)} \closedcycle;
-				% 95% band
-				\addplot [fill=blue!30, draw=none, domain=-2:2] {exp(-x^2/2)/sqrt(2*pi)} \closedcycle;
-				% 68% band
-				\addplot [fill=blue!55, draw=none, domain=-1:1] {exp(-x^2/2)/sqrt(2*pi)} \closedcycle;
-				% curve
-				\addplot [gaussblue, thick, domain=-3.5:3.5] {exp(-x^2/2)/sqrt(2*pi)};
-				% labels
-				\node at (axis cs:0,0.18) [font=\small\bfseries, white] {68\%};
-				\node at (axis cs:1.5,0.07) [font=\small, gaussblue] {95\%};
-				\node at (axis cs:2.6,0.025) [font=\small, darkgray] {99{,}7\%};
-			\end{axis}
-		\end{tikzpicture}
-	\end{center}
-	
-	Questo significa che la maggior parte dei dati è concentrata vicino alla media.
-	
-	% ─────────────────────────────────────────────
-	\section{Conclusione}
-	
-	La distribuzione gaussiana è un modello fondamentale in statistica. La \textbf{media} indica il centro della distribuzione, mentre la \textbf{deviazione standard} descrive quanto i dati si disperdono attorno a questo valore. Comprendere questi due concetti permette di interpretare correttamente molti fenomeni osservati nel mondo reale.
-	
+
+\maketitle
+\thispagestyle{empty}
+
+% ─────────────────────────────────────────────
+\section{Distribuzione gaussiana}
+
+La \textbf{distribuzione gaussiana}, detta anche \textbf{distribuzione normale}, è uno dei modelli statistici più utilizzati per descrivere fenomeni reali. 
+
+Il grafico di questa distribuzione ha una caratteristica \emph{forma a campana}. I valori più \textbf{frequenti} si trovano vicino al centro della distribuzione, mentre valori molto piccoli o molto grandi diventano progressivamente meno probabili.
+
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+  width=10cm, height=6cm,
+  xlabel={$x$},
+  ylabel={$f(x)$},
+  axis lines=left,
+  xtick={-3,-2,-1,0,1,2,3},
+  xticklabels={$\mu{-}3\sigma$, $\mu{-}2\sigma$, $\mu{-}\sigma$, $\mu$,
+               $\mu{+}\sigma$, $\mu{+}2\sigma$, $\mu{+}3\sigma$},
+  ytick=\empty,
+  domain=-3.5:3.5,
+  samples=200,
+  smooth,
+  thick,
+  color=gaussblue,
+  fill=lightblue,
+  fill opacity=0.5,
+]
+\addplot [gaussblue, thick, fill=lightblue, fill opacity=0.5]
+  {exp(-x^2/2) / sqrt(2*pi)} \closedcycle;
+\end{axis}
+\end{tikzpicture}
+\end{center}
+
+\underline{Molti fenomeni naturali seguono approssimativamente questo modello.} Alcuni esempi sono:
+
+\begin{itemize}
+  \item altezza delle persone in una popolazione;
+  \item errori nelle misurazioni scientifiche;
+  \item rumore nei segnali elettronici;
+  \item risultati di test statistici.
+\end{itemize}
+
+La distribuzione gaussiana è descritta da due parametri principali:
+
+\begin{itemize}
+  \item \textbf{media} ($\mu$): rappresenta il valore centrale della distribuzione;
+  \item \textbf{deviazione standard} ($\sigma$): misura quanto i valori sono dispersi rispetto alla media.
+\end{itemize}
+
+La distribuzione è \emph{simmetrica} rispetto alla media: valori sopra e sotto la media hanno la stessa probabilità.
+
+% ─────────────────────────────────────────────
+\section{Deviazione standard}
+
+La \textbf{deviazione standard} è una misura statistica che indica quanto i dati sono dispersi rispetto alla media.
+
+\begin{itemize}
+  \item Se i dati sono molto vicini alla media, la deviazione standard è \emph{piccola}.
+  \item Se i dati sono molto lontani dalla media, la deviazione standard è \emph{grande}.
+\end{itemize}
+
+\subsection{Formula della deviazione standard}
+
+Per una popolazione di $N$ valori $x_1, x_2, \ldots, x_N$ con media $\mu$, la deviazione standard è definita come:
+
+\[
+  \sigma = \sqrt{\dfrac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2}
+\]
+
+Il calcolo avviene in tre passaggi logici:
+
+\begin{enumerate}
+  \item Si calcola la \textbf{media} dei dati.
+  \item Si calcola la \textbf{distanza} di ogni valore dalla media.
+  \item Si fa la media dei \textbf{quadrati} di queste distanze e si calcola la radice quadrata.
+\end{enumerate}
+
+Il quadrato serve a evitare che le differenze positive e negative si annullino tra loro.
+
+\subsection{Esempio intuitivo}
+
+Consideriamo due gruppi di dati.
+
+\begin{center}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Gruppo} & \textbf{Valori} & \textbf{Media} \\
+\midrule
+A & $10,\ 11,\ 9,\ 10,\ 10$ & $10$ \\
+B & $2,\ 18,\ 5,\ 15,\ 10$  & $10$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\medskip
+\noindent\textbf{Calcolo per il Gruppo A} \quad ($\mu = 10$)
+
+\begin{center}
+\begin{tabular}{ccc}
+\toprule
+$x_i$ & $x_i - \mu$ & $(x_i - \mu)^2$ \\
+\midrule
+$10$ & $0$  & $0$ \\
+$11$ & $+1$ & $1$ \\
+$9$  & $-1$ & $1$ \\
+$10$ & $0$  & $0$ \\
+$10$ & $0$  & $0$ \\
+\midrule
+     & \textbf{Somma} & $2$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\[
+  \sigma_A = \sqrt{\dfrac{2}{5}} = \sqrt{0{,}4} \approx \mathbf{0{,}63}
+\]
+
+\medskip
+\noindent\textbf{Calcolo per il Gruppo B} \quad ($\mu = 10$)
+
+\begin{center}
+\begin{tabular}{ccc}
+\toprule
+$x_i$ & $x_i - \mu$ & $(x_i - \mu)^2$ \\
+\midrule
+$2$  & $-8$ & $64$ \\
+$18$ & $+8$ & $64$ \\
+$5$  & $-5$ & $25$ \\
+$15$ & $+5$ & $25$ \\
+$10$ & $0$  & $0$  \\
+\midrule
+     & \textbf{Somma} & $178$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\[
+  \sigma_B = \sqrt{\dfrac{178}{5}} = \sqrt{35{,}6} \approx \mathbf{5{,}97}
+\]
+
+\medskip
+\noindent\textbf{Confronto:}
+\begin{itemize}
+  \item \textbf{Gruppo A}: $\sigma_A \approx 0{,}63$ — i valori sono molto vicini alla media, la deviazione standard è \emph{piccola}.
+  \item \textbf{Gruppo B}: $\sigma_B \approx 5{,}97$ — i valori sono molto dispersi, la deviazione standard è \emph{grande}.
+\end{itemize}
+
+Pur avendo la stessa media ($\mu = 10$), i due gruppi hanno distribuzioni molto diverse: la deviazione standard cattura esattamente questa differenza.
+
+% ─────────────────────────────────────────────
+\section{Regola 68–95–99{,}7}
+
+Una proprietà importante della distribuzione normale è la cosiddetta \textbf{regola empirica}:
+
+\begin{itemize}
+  \item circa \textbf{68\%} dei valori si trova nell'intervallo $\mu \pm \sigma$;
+  \item circa \textbf{95\%} dei valori si trova nell'intervallo $\mu \pm 2\sigma$;
+  \item circa \textbf{99{,}7\%} dei valori si trova nell'intervallo $\mu \pm 3\sigma$.
+\end{itemize}
+
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+  width=11cm, height=6cm,
+  axis lines=left,
+  xtick={-3,-2,-1,0,1,2,3},
+  xticklabels={$\mu{-}3\sigma$, $\mu{-}2\sigma$, $\mu{-}\sigma$, $\mu$,
+               $\mu{+}\sigma$, $\mu{+}2\sigma$, $\mu{+}3\sigma$},
+  ytick=\empty,
+  domain=-3.5:3.5,
+  samples=200,
+  smooth,
+]
+% 99.7% band
+\addplot [fill=blue!15, draw=none, domain=-3:3] {exp(-x^2/2)/sqrt(2*pi)} \closedcycle;
+% 95% band
+\addplot [fill=blue!30, draw=none, domain=-2:2] {exp(-x^2/2)/sqrt(2*pi)} \closedcycle;
+% 68% band
+\addplot [fill=blue!55, draw=none, domain=-1:1] {exp(-x^2/2)/sqrt(2*pi)} \closedcycle;
+% curve
+\addplot [gaussblue, thick, domain=-3.5:3.5] {exp(-x^2/2)/sqrt(2*pi)};
+% labels
+\node at (axis cs:0,0.18) [font=\small\bfseries, white] {68\%};
+\node at (axis cs:1.5,0.07) [font=\small, gaussblue] {95\%};
+\node at (axis cs:2.6,0.025) [font=\small, darkgray] {99{,}7\%};
+\end{axis}
+\end{tikzpicture}
+\end{center}
+
+Questo significa che la maggior parte dei dati è concentrata vicino alla media.
+
+% ─────────────────────────────────────────────
+\section{Conclusione}
+
+La distribuzione gaussiana è un modello fondamentale in statistica. La \textbf{media} indica il centro della distribuzione, mentre la \textbf{deviazione standard} descrive quanto i dati si disperdono attorno a questo valore. Comprendere questi due concetti permette di interpretare correttamente molti fenomeni osservati nel mondo reale.
+
 \end{document}
