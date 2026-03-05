@@ -1,0 +1,25 @@
+\frametitle{Limitazione sul ``costo''}
+
+In maniera analoga si ragiona se si vuole imporre un \textbf{costo massimo} sui percorsi:
+
+\begin{lstlisting}
+WITH Percorsi(Da, A, TotKm)
+AS (
+  (SELECT From, To, Km
+   FROM Paesi)
+  UNION ALL
+  (SELECT P.Da, S.To, P.TotKm + S.Km
+   FROM Paesi S, Percorsi P
+   WHERE P.A = S.From
+     AND P.Da <> S.To
+     AND P.TotKm + S.Km <= 17)
+)
+
+SELECT *
+FROM Percorsi
+\end{lstlisting}
+
+\begin{block}{Osservazione}
+In generale ci possono essere \textbf{più percorsi} tra 2 siti; va considerato quello a costo minore (problema del \textit{cammino minimo}).
+\end{block}
+

@@ -1,0 +1,1154 @@
+\documentclass[aspectratio=169]{beamer}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+\usepackage[italian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric}
+
+% Colori personalizzati
+\definecolor{sqlblue}{RGB}{0,70,127}
+\definecolor{sqlgray}{RGB}{240,240,240}
+\definecolor{codegreen}{RGB}{0,100,0}
+\definecolor{codekeyword}{RGB}{0,0,180}
+\definecolor{codegray}{RGB}{128,128,128}
+\definecolor{codered}{RGB}{180,0,0}
+
+% Stile listati SQL
+\lstdefinestyle{sqlstyle}{
+  language=SQL,
+  basicstyle=\ttfamily\footnotesize,
+  keywordstyle=\color{codekeyword}\bfseries,
+  commentstyle=\color{codegreen}\itshape,
+  stringstyle=\color{codered},
+  backgroundcolor=\color{sqlgray},
+  frame=single,
+  framerule=0.5pt,
+  rulecolor=\color{sqlblue!40},
+  numbers=none,
+  breaklines=true,
+  showstringspaces=false,
+  tabsize=2,
+  morekeywords={CREATE,VIEW,AS,SELECT,FROM,WHERE,GROUP,BY,HAVING,COUNT,MAX,MIN,AVG,SUM,
+                UPDATE,SET,INSERT,INTO,VALUES,WITH,UNION,ALL,TABLE,DISTINCT,JOIN,ON,
+                LEFT,OUTER,CHECK,OPTION,CASCADED,LOCAL,AND,OR,NOT,IN,AS,RECURSIVE,LATERAL}
+}
+
+\lstset{style=sqlstyle}
+
+% Impostazioni Beamer
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}[frame number]
+\setbeamerfont{frametitle}{size=\large, series=\bfseries}
+\setbeamercolor{frametitle}{bg=sqlblue, fg=white}
+\setbeamercolor{title}{fg=white}
+\setbeamercolor{structure}{fg=sqlblue}
+\setbeamercolor{block title}{bg=sqlblue!80, fg=white}
+\setbeamercolor{block body}{bg=sqlblue!10}
+\setbeamercolor{alerted text}{fg=codered}
+
+\title[SQL: Viste e Table Expressions]{Il linguaggio SQL\\Viste e tabelle derivate}
+\subtitle{Tutti i diritti riservati}
+\author{Prof. Fedeli Massimo - Tutti i diritti riservati}
+\date{2026}
+\institute{Versione elettronica: 04.5.SQL.viste}
+
+% -------------------------------------------------------
+\begin{document}
+
+% SLIDE 1 — Titolo
+\begin{frame}
+  \titlepage
+\end{frame}
+
+% -------------------------------------------------------
+% SLIDE 2 — DB di riferimento
+\begin{frame}{DB di riferimento per gli esempi}
+
+% Tabella Imp — occupa tutta la larghezza
+\textbf{Imp}\\[3pt]
+{\small
+\begin{tabular}{|l|l|l|l|r|}
+  \hline
+  \textbf{CodImp} & \textbf{Nome} & \textbf{Sede} & \textbf{Ruolo} & \textbf{Stipendio}\\
+  \hline
+  E001 & Rossi    & S01 & Analista      & 2000 \\
+  E002 & Verdi    & S01 & Sistemista    & 1500 \\
+  E003 & Bianchi  & S01 & Programmatore & 1000 \\
+  E004 & Gialli   & S03 & Programmatore & 1000 \\
+  E005 & Neri     & S02 & Analista      & 2500 \\
+  E006 & Grigi    & S01 & Sistemista    & 1100 \\
+  E007 & Violetti & S01 & Programmatore & 1000 \\
+  E008 & Aranci   & S02 & Programmatore & 1200 \\
+  \hline
+\end{tabular}
+}
+
+\vspace{8pt}
+% Sedi e Prog affiancate sotto
+\begin{columns}[T]
+\column{0.35\textwidth}
+  \textbf{Sedi}\\[3pt]
+  {\small
+  \begin{tabular}{|l|l|}
+    \hline
+    \textbf{Sede} & \textbf{Città}\\
+    \hline
+    S01 & Bologna \\
+    S02 & Milano  \\
+    S03 & Roma    \\
+    \hline
+  \end{tabular}
+  }
+\column{0.55\textwidth}
+  \textbf{Prog}\\[3pt]
+  {\small
+  \begin{tabular}{|l|l|l|}
+    \hline
+    \textbf{CodProg} & \textbf{Nome} & \textbf{Città}\\
+    \hline
+    P01 & Alpha & Bologna \\
+    P02 & Beta  & Milano  \\
+    \hline
+  \end{tabular}
+  }
+\end{columns}
+
+\end{frame}
+
+% -------------------------------------------------------
+% SLIDE 3 — Definizione di viste
+\begin{frame}[fragile]{Definizione di viste}
+
+\begin{block}{Concetto}
+Mediante l'istruzione \texttt{CREATE VIEW} si definisce una ``tabella virtuale''.\\
+Le tuple della vista sono il risultato di una query calcolata \alert{dinamicamente} ogni volta che si fa riferimento alla vista.
+\end{block}
+
+\vspace{6pt}
+\begin{columns}[T]
+\column{0.55\textwidth}
+\begin{lstlisting}
+CREATE VIEW ProgSedi(CodProg,CodSede)
+AS SELECT P.CodProg, S.Sede
+   FROM Prog P, Sedi S
+   WHERE P.Citta = S.Citta
+
+SELECT *
+FROM ProgSedi
+WHERE CodProg = 'P01'
+\end{lstlisting}
+
+\column{0.40\textwidth}
+\vspace{8pt}
+\textbf{Risultato:}\\[6pt]
+\small
+\begin{tabular}{|l|l|}
+\hline
+\textbf{CodProg} & \textbf{CodSede}\\
+\hline
+P01 & S01 \\
+P01 & S03 \\
+P01 & S02 \\
+\hline
+\end{tabular}
+\end{columns}
+
+\end{frame}
+
+% -------------------------------------------------------
+% SLIDE 4 — Uso delle viste
+\begin{frame}{Uso delle viste}
+
+Le viste possono essere create a vari scopi, tra cui i seguenti:
+
+\begin{itemize}
+  \item Permettere agli utenti di avere una \textbf{visione personalizzata} del DB, che in parte astragga dalla struttura logica del DB stesso
+  \item Far fronte a \textbf{modifiche dello schema logico} che causerebbero la ricompilazione dei programmi applicativi
+  \item \textbf{Semplificare la scrittura} di query complesse
+\end{itemize}
+
+\vspace{6pt}
+\begin{block}{Nota}
+Le viste possono essere usate come meccanismo di \textbf{controllo degli accessi}, fornendo ad ogni classe di utenti solo i privilegi necessari.\\
+\vspace{4pt}
+Nella definizione di una vista si possono usare anche \textbf{altre viste}.
+\end{block}
+
+\end{frame}
+
+% -------------------------------------------------------
+% SLIDE 5 — Indipendenza logica tramite viste
+\begin{frame}[fragile]{Indipendenza logica tramite viste}
+
+\begin{columns}[T]
+\column{0.50\textwidth}
+Si consideri un DB con:\\[4pt]
+\texttt{EsamiSIT(Matr, Cognome, Nome, DataProva, Voto)}
+
+\vspace{8pt}
+Per evitare di ripetere i dati anagrafici, si decide di modificare lo schema, sostituendo alla tabella \texttt{EsamiSIT} due tabelle:
+\begin{itemize}
+  \item \texttt{StudentiSIT(Matr, Cognome, Nome)}
+  \item \texttt{ProveSIT(Matr, DataProva, Voto)}
+\end{itemize}
+
+\column{0.48\textwidth}
+È possibile ripristinare la ``visione originale'':
+\begin{lstlisting}
+CREATE VIEW EsamiSIT
+  (Matr,Cognome,Nome,
+   DataProva,Voto)
+AS SELECT S.*, P.DataProva,
+          P.Voto
+   FROM StudentiSIT S,
+        ProveSIT P
+   WHERE S.Matr = P.Matr
+\end{lstlisting}
+\end{columns}
+
+\end{frame}
+
+% -------------------------------------------------------
+% SLIDE 6 — Query complesse: esempio senza viste
+\begin{frame}[fragile]{Query complesse che usano viste (1)}
+
+\begin{block}{Esempio}
+\textit{La sede che ha il massimo numero di impiegati}
+\end{block}
+
+\vspace{6pt}
+\textbf{Soluzione senza viste:}
+
+\begin{lstlisting}
+SELECT I.Sede
+FROM Imp I
+GROUP BY I.Sede
+HAVING COUNT(*) >= ALL
+       (SELECT COUNT(*)
+        FROM Imp I1
+        GROUP BY I1.Sede)
+\end{lstlisting}
+
+\vspace{4pt}
+$\Rightarrow$ La soluzione è corretta ma \alert{poco leggibile} e non intuitiva.
+
+\end{frame}
+
+% -------------------------------------------------------
+% SLIDE 7 — Query complesse: soluzione con viste
+\begin{frame}[fragile]{Query complesse che usano viste (2)}
+
+\textbf{Soluzione con viste:}
+
+\begin{lstlisting}
+CREATE VIEW NumImp(Sede, NImp)
+AS SELECT Sede, COUNT(*)
+   FROM Imp
+   GROUP BY Sede
+
+SELECT Sede
+FROM NumImp
+WHERE NImp = (SELECT MAX(NImp)
+              FROM NumImp)
+\end{lstlisting}
+
+\begin{block}{Osservazione}
+Questa formulazione permette di trovare ``il MAX dei COUNT(*)'', operazione che \alert{non si può fare} direttamente scrivendo \texttt{MAX(COUNT(*))}.
+\end{block}
+
+\end{frame}
+
+% -------------------------------------------------------
+% SLIDE 8 — Query con più passi di raggruppamento
+\begin{frame}[fragile]{Query complesse che usano viste (3)}
+
+Con le viste è possibile risolvere query che richiedono \textbf{più passi di raggruppamento}:
+
+\begin{block}{Esempio}
+\textit{Per ogni valore (arrotondato) di stipendio medio per sede, il numero delle sedi che pagano tale stipendio medio}
+\end{block}
+
+\vspace{4pt}
+Occorre aggregare prima per sede, poi per valore di stipendio medio:
+
+\begin{lstlisting}
+CREATE VIEW StipSedi(Sede, AvgStip)
+AS SELECT Sede, AVG(Stipendio)
+   FROM Imp
+   GROUP BY Sede
+
+SELECT AvgStip, COUNT(*) AS NumSedi
+FROM StipSedi
+GROUP BY AvgStip
+\end{lstlisting}
+
+\end{frame}
+
+% -------------------------------------------------------
+% SLIDE 9 — Aggiornamento di viste
+\begin{frame}[fragile]{Aggiornamento di viste}
+
+Le viste possono essere utilizzate per le interrogazioni come le normali tabelle del DB, ma per le \alert{operazioni di aggiornamento} sorgono problemi.
+
+\begin{lstlisting}
+CREATE VIEW NumImp(Sede, NImp)
+AS SELECT Sede, COUNT(*)
+   FROM Imp
+   GROUP BY Sede
+
+UPDATE NumImp
+SET NImp = NImp + 1
+WHERE Sede = 'S03'
+\end{lstlisting}
+
+\begin{alertblock}{Problema}
+\textbf{Cosa significa incrementare il numero di impiegati di una sede?} \\
+Non è possibile tradurre questa operazione in un aggiornamento della tabella \texttt{Imp}: \alert{non si può fare!}
+\end{alertblock}
+
+\end{frame}
+
+% -------------------------------------------------------
+% SLIDE 10 — Aggiornabilità di viste (1)
+\begin{frame}{Aggiornabilità di viste (1)}
+
+\begin{block}{Definizione formale}
+Una vista è una funzione che calcola un risultato $r_V$ a partire da un'istanza di database $r$:
+$$r_V = V(r)$$
+L'aggiornamento di una vista (trasformare $r_V$ in $r'_V$) è possibile \textbf{solo se} è univocamente definita la nuova istanza $r'$ del DB — ovvero se la vista è \textbf{invertibile}.
+\end{block}
+
+\vspace{8pt}
+Data la complessità del problema, ogni DBMS definisce quali viste sono aggiornabili.
+
+\vspace{6pt}
+\textbf{Restrizioni comuni} — il blocco più esterno della query di definizione non deve contenere:
+\begin{itemize}
+  \item \texttt{GROUP BY}
+  \item Funzioni aggregate
+  \item \texttt{DISTINCT}
+  \item Join (espliciti o impliciti)
+\end{itemize}
+
+\end{frame}
+
+% -------------------------------------------------------
+% SLIDE 11 — Aggiornabilità di viste (2)
+\begin{frame}[fragile]{Aggiornabilità di viste (2)}
+
+La precisazione riguarda il \textbf{blocco più esterno} della query di definizione.
+
+\vspace{6pt}
+\textbf{Vista non aggiornabile} (join esplicito nel blocco esterno):
+\begin{lstlisting}
+CREATE VIEW ImpBO(CodImp,Nome,Sede,Ruolo,Stipendio)
+AS SELECT I.*
+   FROM Imp I JOIN Sedi S ON (I.Sede = S.Sede)
+   WHERE S.Citta = 'Bologna'
+\end{lstlisting}
+
+\vspace{4pt}
+\textbf{Vista aggiornabile} (join spostato in subquery):
+\begin{lstlisting}
+CREATE VIEW ImpBO(CodImp,Nome,Sede,Ruolo,Stipendio)
+AS SELECT I.*
+   FROM Imp I
+   WHERE I.Sede IN (SELECT S.Sede
+                    FROM Sedi S
+                    WHERE S.Citta = 'Bologna')
+\end{lstlisting}
+
+\vspace{2pt}
+Le due viste sono \textbf{logicamente equivalenti}, ma solo la seconda è aggiornabile.
+
+\end{frame}
+
+% -------------------------------------------------------
+% SLIDE 12 — Viste con CHECK OPTION (1)
+\begin{frame}[fragile]{Viste con CHECK OPTION (1)}
+
+Per le viste aggiornabili si presenta un ulteriore problema. Si consideri:
+
+\begin{lstlisting}
+INSERT INTO ImpBO(CodImp,Nome,Sede,Ruolo,Stipendio)
+VALUES ('E009','Azzurri','S03','Analista',2000)
+\end{lstlisting}
+
+\begin{alertblock}{Problema}
+Il valore di \texttt{Sede} (\texttt{'S03'}) \alert{non rispetta} la specifica della vista \texttt{ImpBO} (solo impiegati di Bologna).
+Una successiva query su \texttt{ImpBO} \textbf{non restituirebbe} la tupla appena inserita!
+\end{alertblock}
+
+\vspace{8pt}
+\begin{block}{Soluzione}
+All'atto della definizione della vista si può specificare la clausola \texttt{WITH CHECK OPTION}, che impone che ogni tupla inserita nella vista sia anche \textbf{restituita dalla sua query di definizione}.
+\end{block}
+
+\end{frame}
+
+% -------------------------------------------------------
+% SLIDE 13 — Viste con CHECK OPTION (2)
+\begin{frame}[fragile]{Viste con CHECK OPTION (2)}
+
+\begin{lstlisting}
+CREATE VIEW ImpBO(CodImp,Nome,Sede,Ruolo,Stipendio)
+AS SELECT I.*
+   FROM Imp I
+   WHERE I.Sede IN (SELECT S.Sede
+                    FROM Sedi S
+                    WHERE S.Citta = 'Bologna')
+WITH CHECK OPTION
+\end{lstlisting}
+
+\vspace{10pt}
+In questo modo l'inserimento:
+
+\begin{lstlisting}
+INSERT INTO ImpBO(CodImp,Nome,Sede,Ruolo,Stipendio)
+VALUES ('E009','Azzurri','S03','Analista',2000)
+\end{lstlisting}
+
+\begin{alertblock}{}
+\centering viene \textbf{impedito} dal DBMS
+\end{alertblock}
+
+\end{frame}
+
+% -------------------------------------------------------
+% SLIDE 14 — Tipi di CHECK OPTION (1)
+\begin{frame}{Tipi di CHECK OPTION (1)}
+
+Si considera il caso in cui una vista \textbf{V1} sia definita in termini di un'altra vista \textbf{V2}.
+
+\vspace{8pt}
+\begin{block}{\texttt{WITH CASCADED CHECK OPTION} (default)}
+Se si crea V1 con \texttt{WITH CHECK OPTION}, il DBMS verifica che la nuova tupla $t$ soddisfi sia la specifica di V1 \textbf{sia quella di V2} (e di tutte le altre viste dipendenti), indipendentemente dal fatto che V2 sia stata definita con \texttt{CHECK OPTION}.\\
+\vspace{4pt}
+È il comportamento di default: equivalente a \texttt{WITH CASCADED CHECK OPTION}.
+\end{block}
+
+\vspace{6pt}
+\begin{block}{\texttt{WITH LOCAL CHECK OPTION}}
+Il DBMS verifica solo che $t$ soddisfi la specifica di V1 e delle sole viste da cui V1 dipende per cui è stata \textbf{esplicitamente} specificata la \texttt{CHECK OPTION}.
+\end{block}
+
+\end{frame}
+
+% -------------------------------------------------------
+% SLIDE 15 — Tipi di CHECK OPTION (2)
+\begin{frame}{Tipi di CHECK OPTION (2)}
+
+\begin{columns}[T]
+\column{0.45\textwidth}
+\textbf{Grafo di dipendenze tra viste:}
+
+\vspace{12pt}
+\begin{tikzpicture}[
+  node distance=1.2cm,
+  box/.style={draw, rectangle, rounded corners=3pt, minimum width=1.4cm, minimum height=0.7cm, fill=sqlblue!15}
+]
+\node[box] (R) {R};
+\node[box, below left=of R] (V1) {V1};
+\node[box, below right=of R] (V2) {V2};
+\node[box, below=of V1] (V3) {V3};
+\node[box, below=of V2] (V4) {V4};
+
+\draw[-{Stealth}] (R) -- (V1);
+\draw[-{Stealth}] (R) -- (V2);
+\draw[-{Stealth}] (V1) -- (V3);
+\draw[-{Stealth}] (V2) -- (V4);
+\draw[-{Stealth}] (V3) -- (V4);
+\end{tikzpicture}
+
+\column{0.52\textwidth}
+\textbf{Viste controllate all'inserimento:}\\[8pt]
+\small
+\begin{tabular}{|l|l|}
+\hline
+\textbf{INSERT INTO} & \textbf{Si controllano\ldots}\\
+\hline
+V1 & -- \\
+V2 & -- \\
+V3 & V1, V3 \\
+V4 & V1, V2, V4 \\
+\hline
+\end{tabular}
+
+\vspace{10pt}
+\footnotesize
+(Assumendo: V3 = LOCAL, V4 = CASCADED, V1 e V2 senza CHECK OPTION)
+\end{columns}
+
+\end{frame}
+
+% -------------------------------------------------------
+% SLIDE 16 — Table expressions (1)
+\begin{frame}[fragile]{Table expressions (1)}
+
+Una delle caratteristiche più interessanti di SQL è la possibilità di usare all'interno della clausola \texttt{FROM} una \textbf{subquery} che definisce dinamicamente una tabella derivata: \textbf{table expression}.
+
+\begin{block}{Esempio}
+\textit{Per ogni sede, lo stipendio massimo e quanti impiegati lo percepiscono}
+\end{block}
+
+\begin{lstlisting}
+SELECT SM.Sede, SM.MaxStip, COUNT(*) AS N
+FROM Imp I,
+     (SELECT Sede, MAX(Stipendio) AS MaxStip
+      FROM Imp
+      GROUP BY Sede) AS SM(Sede, MaxStip)
+WHERE I.Sede = SM.Sede
+  AND I.Stipendio = SM.MaxStip
+GROUP BY SM.Sede, SM.MaxStip
+\end{lstlisting}
+
+\end{frame}
+
+% -------------------------------------------------------
+% SLIDE 17 — Table expressions (2)
+\begin{frame}[fragile]{Table expressions (2)}
+
+Le table expressions possono essere usate per realizzare \textbf{diversi passi di aggregazione}:
+
+\begin{block}{Esempio}
+\textit{Per ogni valore (arrotondato) di stipendio medio per sede, il numero delle sedi che pagano tale stipendio medio}
+\end{block}
+
+\begin{lstlisting}
+SELECT AvgStip, COUNT(*) AS NumSedi
+FROM (SELECT Sede, AVG(Stipendio)
+      FROM Imp
+      GROUP BY Sede) AS StipSedi(Sede, AvgStip)
+GROUP BY AvgStip
+\end{lstlisting}
+
+\vspace{4pt}
+$\Rightarrow$ Equivalente alla soluzione con le viste, ma senza definire una vista persistente.
+
+\end{frame}
+
+% -------------------------------------------------------
+% SLIDE 18 — Table expressions correlate (1)
+\begin{frame}[fragile]{Table expressions correlate (1)}
+
+Una table expression può essere \textbf{correlata} a un'altra tabella presente nella clausola \texttt{FROM}. In DB2 si usa la parola riservata \texttt{TABLE}.
+
+\begin{block}{Esempio}
+\textit{Per ogni sede, la somma degli stipendi pagati agli analisti}
+\end{block}
+
+\begin{lstlisting}
+SELECT S.Sede, Stip.TotStip
+FROM Sedi S,
+     TABLE(SELECT SUM(Stipendio)
+           FROM Imp I
+           WHERE I.Sede = S.Sede
+             AND I.Ruolo = 'Analista') AS Stip(TotStip)
+\end{lstlisting}
+
+\vspace{4pt}
+\begin{block}{Nota}
+Le sedi senza analisti \textbf{compaiono} nell'output con \texttt{TotStip = NULL}. Usando il \texttt{GROUP BY} lo stesso risultato richiederebbe un \texttt{LEFT OUTER JOIN}, con attenzione ai valori nulli.
+\end{block}
+
+\end{frame}
+
+% -------------------------------------------------------
+% SLIDE 19 — Table expressions correlate (2)
+\begin{frame}[fragile]{Table expressions correlate (2)}
+
+\begin{block}{Esempio}
+\textit{Per ogni sede, il numero di analisti e la somma degli stipendi}
+\end{block}
+
+\begin{lstlisting}
+SELECT S.Sede, Stip.NumAn, Stip.TotStip
+FROM Sedi S,
+     TABLE(SELECT COUNT(*), SUM(Stipendio)
+           FROM Imp I
+           WHERE I.Sede = S.Sede
+             AND I.Ruolo = 'Analista')
+     AS Stip(NumAn, TotStip)
+\end{lstlisting}
+
+\vspace{4pt}
+Per le sedi senza analisti: \texttt{NumAn = 0}, \texttt{TotStip = NULL}.
+
+\vspace{4pt}
+Con \texttt{LEFT OUTER JOIN} e \texttt{GROUP BY}, per le sedi senza analisti \texttt{TotStip} è nullo, ma \texttt{COUNT(*)} darebbe \textbf{1} (non 0), perché c'è una tupla nel risultato con valori nulli. Occorre usare \texttt{COUNT(CodImp)}.
+
+\end{frame}
+
+% -------------------------------------------------------
+% SLIDE 20 — Limiti delle table expressions
+\begin{frame}[fragile]{Limiti delle table expressions}
+
+\begin{block}{Esempio}
+\textit{La sede in cui la somma degli stipendi è massima}
+\end{block}
+
+\begin{lstlisting}
+SELECT Sede
+FROM (SELECT Sede, SUM(Stipendio) AS TotStip
+      FROM Imp
+      GROUP BY Sede) AS SediStip
+WHERE TotStip = (SELECT MAX(TotStip)
+                 FROM (SELECT Sede, SUM(Stipendio) AS TotStip
+                       FROM Imp
+                       GROUP BY Sede) AS SediStip2)
+\end{lstlisting}
+
+\begin{alertblock}{Problema}
+Benché la query sia corretta, le due table expressions sono \textbf{identiche}: la stessa subquery viene calcolata \alert{due volte}, portando a inefficienza e scarsa leggibilità.
+\end{alertblock}
+
+\end{frame}
+
+% -------------------------------------------------------
+% SLIDE 21 — Common table expressions
+\begin{frame}[fragile]{Common table expressions}
+
+L'idea alla base delle \textbf{common table expressions} (CTE) è definire una ``vista temporanea'' che può essere usata in una query come se fosse una \texttt{VIEW}.
+
+\begin{lstlisting}
+WITH SediStip(Sede, TotStip)
+AS (SELECT Sede, SUM(Stipendio)
+    FROM Imp
+    GROUP BY Sede)
+
+SELECT Sede
+FROM SediStip
+WHERE TotStip = (SELECT MAX(TotStip)
+                 FROM SediStip)
+\end{lstlisting}
+
+\begin{block}{Sintassi generale}
+La clausola \texttt{WITH} supporta la definizione di \textbf{più CTE}:
+\begin{lstlisting}
+WITH CTE1(...) AS (...),
+     CTE2(...) AS (...)
+SELECT ...
+\end{lstlisting}
+\end{block}
+
+\end{frame}
+
+% -------------------------------------------------------
+% SLIDE 22 — WITH e interrogazioni ricorsive (1)
+\begin{frame}[fragile]{WITH e interrogazioni ricorsive (1)}
+
+\begin{columns}[T]
+\column{0.55\textwidth}
+Si consideri la tabella \texttt{Genitori(Figlio, Genitore)}.
+
+\begin{block}{Esempio}
+\textit{Trova tutti gli antenati (genitori, nonni, bisnonni, \ldots) di una persona}
+\end{block}
+
+La query è \textbf{ricorsiva}: richiede un numero di (self-)join non noto a priori — non è esprimibile con SQL standard.
+
+\vspace{6pt}
+\textbf{La CTE ricorsiva} \texttt{Antenati(Persona, Avo)} è composta da:
+\begin{itemize}
+  \item Una \textbf{subquery base} (non ricorsiva) che inizializza con i dati di \texttt{Genitori}
+  \item Una \textbf{subquery ricorsiva} che aggiunge le coppie risultanti dal join tra \texttt{Genitori} e \texttt{Antenati}
+\end{itemize}
+
+\column{0.42\textwidth}
+\textbf{Genitori:}\\[4pt]
+\small
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Figlio} & \textbf{Genitore}\\
+\hline
+Anna    & Luca   \\
+Luca    & Maria  \\
+Luca    & Giorgio\\
+Giorgio & Lucia  \\
+\hline
+\end{tabular}
+
+\vspace{10pt}
+\textbf{Antenati (risultato):}\\[4pt]
+\small
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Persona} & \textbf{Avo}\\
+\hline
+Anna & Luca    \\
+Luca & Maria   \\
+Luca & Giorgio \\
+Giorgio & Lucia \\
+Anna & Maria   \\
+Anna & Giorgio \\
+Anna & Lucia   \\
+Luca & Lucia   \\
+\hline
+\end{tabular}
+\end{columns}
+
+\end{frame}
+
+% -------------------------------------------------------
+% SLIDE 23 — WITH e interrogazioni ricorsive (2)
+\begin{frame}[fragile]{WITH e interrogazioni ricorsive (2)}
+
+\begin{lstlisting}
+WITH Antenati(Persona, Avo)
+AS (
+  (SELECT Figlio, Genitore   -- subquery base
+   FROM Genitori)
+  UNION ALL
+  (SELECT G.Figlio, A.Avo   -- subquery ricorsiva
+   FROM Genitori G, Antenati A
+   WHERE G.Genitore = A.Persona)
+)
+
+SELECT Avo
+FROM Antenati
+WHERE Persona = 'Anna'
+\end{lstlisting}
+
+\begin{block}{Nota}
+L'uso di \texttt{UNION ALL} garantisce che tutte le tuple vengano propagate ad ogni iterazione, comprese le eventuali duplicate.
+\end{block}
+
+\end{frame}
+
+% -------------------------------------------------------
+% SLIDE 24 — Valutazione della ricorsione
+\begin{frame}[fragile]{WITH e interrogazioni ricorsive (3) — Valutazione}
+
+Ad ogni iterazione il DBMS aggiunge ad \texttt{Antenati} le tuple risultanti dal join tra \texttt{Genitori} e le \textbf{sole tuple aggiunte} all'iterazione precedente (semantica ``delta'').
+
+\vspace{8pt}
+\begin{columns}[T]
+\column{0.42\textwidth}
+\textbf{Iterazione 0 (base):}\\[4pt]
+\small
+\begin{tabular}{|l|l|}
+\hline
+Anna & Luca \\ Luca & Maria \\ Luca & Giorgio \\ Giorgio & Lucia \\
+\hline
+\end{tabular}
+
+\vspace{8pt}
+\textbf{Iterazione 1 (ricorsiva):}\\[4pt]
+\small
+\begin{tabular}{|l|l|}
+\hline
+Anna & Maria \\ Anna & Giorgio \\ Luca & Lucia \\
+\hline
+\end{tabular}
+
+\column{0.42\textwidth}
+\textbf{Iterazione 2 (ricorsiva):}\\[4pt]
+\small
+\begin{tabular}{|l|l|}
+\hline
+Anna & Lucia \\
+\hline
+\end{tabular}
+
+\vspace{8pt}
+\textbf{Iterazione 3:}\\[4pt]
+\small Nessuna nuova tupla $\Rightarrow$ \textbf{STOP}
+
+\vspace{8pt}
+\begin{block}{}
+La terminazione è garantita se il DB è \textbf{aciclico} (DAG).
+\end{block}
+\end{columns}
+
+\end{frame}
+
+% -------------------------------------------------------
+% SLIDE 25 — Tipi notevoli di query ricorsive
+\begin{frame}{Tipi notevoli di query ricorsive}
+
+\begin{block}{Caso base (già visto)}
+DB aciclico (DAG): la terminazione è garantita e non si calcola nessuna informazione sui ``percorsi'' trovati.
+\end{block}
+
+\vspace{8pt}
+\textbf{Percorso}: sequenza di tuple del DB che generano una tupla nel risultato finale (nell'esempio, una specifica ``linea genealogica'').
+
+\vspace{12pt}
+\textbf{Due casi notevoli da esaminare:}
+
+\begin{enumerate}
+  \item \textbf{Query ricorsive con informazione sui percorsi} (lunghezza, costo cumulativo, \ldots)
+  \item \textbf{Condizione di stop} per query ricorsive su DB con \textbf{cicli}
+\end{enumerate}
+
+\end{frame}
+
+% -------------------------------------------------------
+% SLIDE 26 — Informazione sui percorsi (1)
+\begin{frame}{Informazione sui percorsi (1)}
+
+Il caso più semplice prevede l'aggiunta di un'informazione sulla \textbf{lunghezza} (distanza, livello, ecc.) del percorso.
+
+\vspace{8pt}
+\begin{columns}[T]
+\column{0.42\textwidth}
+\textbf{Genitori:}\\[4pt]
+\small
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Figlio} & \textbf{Genitore}\\
+\hline
+Anna & Luca \\ Luca & Maria \\ Luca & Giorgio \\ Giorgio & Lucia \\
+\hline
+\end{tabular}
+
+\column{0.52\textwidth}
+\textbf{Antenati (con lunghezza):}\\[4pt]
+\small
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Persona} & \textbf{Avo} & \textbf{Lungh}\\
+\hline
+Anna & Luca    & 1 \\
+Luca & Maria   & 1 \\
+Luca & Giorgio & 1 \\
+Giorgio & Lucia & 1 \\
+Anna & Maria   & 2 \\
+Anna & Giorgio & 2 \\
+Luca & Lucia   & 2 \\
+Anna & Lucia   & 3 \\
+\hline
+\end{tabular}
+\end{columns}
+
+\end{frame}
+
+% -------------------------------------------------------
+% SLIDE 27 — Informazione sui percorsi (2)
+\begin{frame}[fragile]{Informazione sui percorsi (2)}
+
+La lunghezza parte da \textbf{1} e si incrementa di 1 ad ogni passo ricorsivo:
+
+\begin{lstlisting}
+WITH Antenati(Persona, Avo, Lungh)
+AS (
+  (SELECT Figlio, Genitore, 1  -- caso base
+   FROM Genitori)
+  UNION ALL
+  (SELECT G.Figlio, A.Avo, A.Lungh + 1
+   FROM Genitori G, Antenati A
+   WHERE G.Genitore = A.Persona)
+)
+
+SELECT *
+FROM Antenati
+WHERE Persona = 'Anna'
+\end{lstlisting}
+
+\end{frame}
+
+% -------------------------------------------------------
+% SLIDE 28 — Informazione sui percorsi (3) — BOM
+\begin{frame}{Informazione sui percorsi (3) — Bill of Materials}
+
+In alcuni casi l'informazione sui percorsi è un \textbf{costo cumulativo moltiplicativo}:
+
+\begin{block}{Esempio: relazione PARTI}
+Per ogni parte si conoscono le sotto-parti e le quantità necessarie per assemblarla.\\
+\textit{Si vuole sapere quante unità di una parte servono in totale per costruire un'altra parte.}
+\end{block}
+
+\vspace{8pt}
+\begin{columns}[T]
+\column{0.45\textwidth}
+\textbf{Parti:}\\[4pt]
+\small
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Parte} & \textbf{Subparte} & \textbf{Qta}\\
+\hline
+P1 & P2 & 2 \\
+P1 & P3 & 3 \\
+P2 & P4 & 5 \\
+P3 & P4 & 4 \\
+\hline
+\end{tabular}
+
+\column{0.50\textwidth}
+\vspace{4pt}
+Per costruire P1 occorrono:
+\begin{itemize}
+  \item Percorso P1--P2--P4: $2 \times 5 = 10$ unità di P4
+  \item Percorso P1--P3--P4: $3 \times 4 = 12$ unità di P4
+  \item Totale P4: $10 + 12 = \mathbf{22}$
+\end{itemize}
+\end{columns}
+
+\end{frame}
+
+% -------------------------------------------------------
+% SLIDE 29 — Informazione sui percorsi (4) — BOM schema
+\begin{frame}{Informazione sui percorsi (4) — Schema soluzione}
+
+La soluzione prevede due fasi:
+
+\begin{enumerate}
+  \item \textbf{Ricorsione} per calcolare l'informazione di ogni singolo percorso (prodotto delle quantità):
+    \begin{itemize}
+      \item P1--P2--P4: $2 \times 5 = 10$
+      \item P1--P3--P4: $3 \times 4 = 12$
+    \end{itemize}
+  \item \textbf{Aggregazione} dei risultati dei singoli percorsi sulla vista ricorsiva (\texttt{GROUP BY + SUM})
+\end{enumerate}
+
+\vspace{8pt}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Percorsi (dopo ricorsione):}\\[4pt]
+\small
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Comp.} & \textbf{Comp.} & \textbf{Qty}\\
+\hline
+P1 & P2 & 2 \\
+P1 & P3 & 3 \\
+P2 & P4 & 5 \\
+P3 & P4 & 4 \\
+P1 & P4 & 10 \\
+P1 & P4 & 12 \\
+\hline
+\end{tabular}
+\column{0.48\textwidth}
+\textbf{Risultato finale (dopo GROUP BY):}\\[4pt]
+\small
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Comp.} & \textbf{Comp.} & \textbf{Qt. Totale}\\
+\hline
+P1 & P2 & 2  \\
+P1 & P3 & 3  \\
+P2 & P4 & 5  \\
+P3 & P4 & 4  \\
+P1 & P4 & 22 \\
+\hline
+\end{tabular}
+\end{columns}
+
+\end{frame}
+
+% -------------------------------------------------------
+% SLIDE 30 — Informazione sui percorsi (5) — Query BOM
+\begin{frame}[fragile]{Informazione sui percorsi (5) — Query BOM}
+
+Ad ogni passo si \textbf{moltiplica} la quantità per quella del nodo aggiunto:
+
+\begin{lstlisting}
+WITH Percorsi(Composto, Componente, Qty)
+AS (
+  (SELECT Parte, Subparte, Qta
+   FROM Parti)
+  UNION ALL
+  (SELECT H.Composto, P.Subparte, H.Qty * P.Qta
+   FROM Parti P, Percorsi H
+   WHERE H.Componente = P.Parte)
+)
+
+SELECT Composto, Componente, SUM(Qty) AS QtTotale
+FROM Percorsi
+GROUP BY Composto, Componente
+\end{lstlisting}
+
+\end{frame}
+
+% -------------------------------------------------------
+% SLIDE 31 — Database ciclici
+\begin{frame}{Database ciclici}
+
+Nel caso di DB \textbf{ciclici} occorre prestare particolare attenzione alla terminazione.
+
+\begin{alertblock}{Rischio}
+Senza condizioni di stop, la ricorsione può non terminare mai!
+\end{alertblock}
+
+\vspace{8pt}
+Non disponendo di altri strumenti, occorre inserire nella subquery ricorsiva un \textbf{predicato} che sia falso per tutte le nuove tuple che si andrebbero ad aggiungere, fermando così l'iterazione.
+
+\vspace{8pt}
+\textbf{Casi tipici di condizione di stop:}
+\begin{itemize}
+  \item \textbf{Limitazione sulla lunghezza massima} dei percorsi
+  \item \textbf{Limitazione sul ``costo''} (somma dei pesi degli archi)
+\end{itemize}
+
+\end{frame}
+
+% -------------------------------------------------------
+% SLIDE 32 — Limitazione sulla lunghezza (1)
+\begin{frame}{Limitazione sulla lunghezza dei percorsi (1)}
+
+\begin{columns}[T]
+\column{0.55\textwidth}
+Il grafo contiene un \textbf{ciclo} (ad esempio: A--B--E--A--B--E--A--\ldots).
+
+\vspace{8pt}
+Fissando un \textbf{limite sulla lunghezza} dei percorsi si garantisce che ogni percorso trovato abbia lunghezza finita, quindi l'esecuzione prima o poi termina.
+
+\vspace{8pt}
+\begin{block}{Attenzione}
+Il limite va scelto in modo da includere tutti i percorsi ``interessanti''.
+\end{block}
+
+\column{0.40\textwidth}
+\vspace{10pt}
+\begin{tikzpicture}[
+  node distance=1.3cm,
+  nd/.style={draw, circle, fill=sqlblue!20, minimum size=0.7cm}
+]
+\node[nd] (A) {A};
+\node[nd, below right=of A] (B) {B};
+\node[nd, right=of A] (C) {C};
+\node[nd, below right=of B] (D) {D};
+\node[nd, below left=of B] (E) {E};
+
+\draw[-{Stealth}] (A) -- (B);
+\draw[-{Stealth}] (A) -- (C);
+\draw[-{Stealth}] (B) -- (D);
+\draw[-{Stealth}] (B) -- (E);
+\draw[-{Stealth}] (E) -- (A);
+\end{tikzpicture}
+\end{columns}
+
+\end{frame}
+
+% -------------------------------------------------------
+% SLIDE 33 — Limitazione sulla lunghezza (2)
+\begin{frame}[fragile]{Limitazione sulla lunghezza dei percorsi (2)}
+
+Con limite a \textbf{3} (e condizione anti-ciclo \texttt{P.Da <> S.To}):
+
+\begin{lstlisting}
+WITH Percorsi(Da, A, Lungh)
+AS (
+  (SELECT From, To, 1
+   FROM Siti)
+  UNION ALL
+  (SELECT P.Da, S.To, P.Lungh + 1
+   FROM Siti S, Percorsi P
+   WHERE P.A = S.From
+     AND P.Da <> S.To
+     AND P.Lungh + 1 <= 3)
+)
+
+SELECT *
+FROM Percorsi
+\end{lstlisting}
+
+\vspace{4pt}
+La condizione \texttt{P.Da <> S.To} serve ad evitare di includere un percorso \textbf{inutile} nel risultato (ciclo che torna al punto di partenza).
+
+\end{frame}
+
+% -------------------------------------------------------
+% SLIDE 34 — Limitazione sulla lunghezza (3) — Nota
+\begin{frame}{Limitazione sulla lunghezza dei percorsi (3) — Nota}
+
+\begin{columns}[T]
+\column{0.55\textwidth}
+La condizione \texttt{P.Da <> S.To} serve ad evitare di includere percorsi inutili nel risultato.
+
+\vspace{8pt}
+\begin{alertblock}{Attenzione}
+Benché in alcuni casi particolari possa essere usata come condizione di terminazione, \textbf{nel caso generale non è sufficiente} a garantire la terminazione in DB ciclici.
+\end{alertblock}
+
+\vspace{8pt}
+Il grafo di esempio mostra un caso in cui il ciclo è rilevabile, ma cicli più lunghi o complessi richiedono comunque il limite esplicito sulla lunghezza.
+
+\column{0.40\textwidth}
+\textbf{Siti:}\\[6pt]
+\small
+\begin{tabular}{|l|l|}
+\hline
+\textbf{From} & \textbf{To}\\
+\hline
+A & B \\
+B & C \\
+B & C \\
+C & B \\
+\hline
+\end{tabular}
+
+\vspace{10pt}
+\begin{tikzpicture}[
+  node distance=1.1cm,
+  nd/.style={draw, circle, fill=sqlblue!20, minimum size=0.6cm}
+]
+\node[nd] (A) {A};
+\node[nd, right=of A] (B) {B};
+\node[nd, right=of B] (C) {C};
+\draw[-{Stealth}] (A) -- (B);
+\draw[-{Stealth}, bend left=20] (B) to (C);
+\draw[-{Stealth}, bend left=20] (C) to (B);
+\end{tikzpicture}
+\end{columns}
+
+\end{frame}
+
+% -------------------------------------------------------
+% SLIDE 35 — Limitazione sul costo
+\begin{frame}[fragile]{Limitazione sul ``costo''}
+
+In maniera analoga si ragiona se si vuole imporre un \textbf{costo massimo} sui percorsi:
+
+\begin{lstlisting}
+WITH Percorsi(Da, A, TotKm)
+AS (
+  (SELECT From, To, Km
+   FROM Paesi)
+  UNION ALL
+  (SELECT P.Da, S.To, P.TotKm + S.Km
+   FROM Paesi S, Percorsi P
+   WHERE P.A = S.From
+     AND P.Da <> S.To
+     AND P.TotKm + S.Km <= 17)
+)
+
+SELECT *
+FROM Percorsi
+\end{lstlisting}
+
+\begin{block}{Osservazione}
+In generale ci possono essere \textbf{più percorsi} tra 2 siti; va considerato quello a costo minore (problema del \textit{cammino minimo}).
+\end{block}
+
+\end{frame}
+
+% -------------------------------------------------------
+% SLIDE 36 — Riepilogo
+\begin{frame}{Riepilogo}
+
+\begin{block}{Viste (\texttt{CREATE VIEW})}
+Tabelle virtuali, interrogabili come le tabelle reali. Soggette a limiti per quanto riguarda gli \textbf{aggiornamenti}.
+\end{block}
+
+\begin{block}{Table expressions}
+Subquery che definisce una tabella derivata, utilizzabile nella clausola \texttt{FROM} come una normale tabella.
+\end{block}
+
+\begin{block}{Common table expressions (\texttt{WITH})}
+``Vista temporanea'' usata in una query come se fosse a tutti gli effetti una \texttt{VIEW}. Evita la ridondanza delle table expressions identiche.
+\end{block}
+
+\begin{block}{Query ricorsive (\texttt{WITH RECURSIVE})}
+Mediante CTE è possibile esprimere interrogazioni ricorsive, definendo ``viste temporanee ricorsive'' come unione di una \textbf{subquery base} e una \textbf{subquery ricorsiva}. Richiedono attenzione alla terminazione in DB ciclici.
+\end{block}
+
+\end{frame}
+
+\end{document}
