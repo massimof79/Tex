@@ -1,0 +1,579 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[italian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{setspace}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\geometry{margin=2.5cm}
+\onehalfspacing
+
+\title{Soluzioni con spiegazioni --- Circuiti logici}
+\author{Prof. Fedeli Massimo}
+\date{}
+
+\begin{document}
+	
+	\maketitle
+	
+	Per ogni esercizio si parte dalla tabella di verità, si scrive la funzione in forma canonica come somma di mintermini, poi si procede con la semplificazione tramite le regole dell'algebra di Boole.
+	
+	\section*{Richiami di algebra di Boole}
+	
+	Useremo spesso le seguenti proprietà:
+	
+	\[
+	A+\overline{A}=1
+	\qquad
+	A\cdot \overline{A}=0
+	\]
+	
+	\[
+	A+0=A
+	\qquad
+	A\cdot 1=A
+	\]
+	
+	\[
+	A+A=A
+	\qquad
+	A\cdot A=A
+	\]
+	
+	\[
+	AB+AC=A(B+C)
+	\]
+	
+	\[
+	A+B\overline{A}=A+B
+	\]
+	
+	\[
+	(A+B)(A+C)=A+BC
+	\]
+	
+	\newpage
+	
+	\section*{Esercizio 1}
+	
+	Dalla tabella di verità risulta che $F=1$ per le combinazioni:
+	\[
+	(A,B)=(0,1),(1,1)
+	\]
+	
+	Quindi i mintermini sono $m_1$ e $m_3$ e la funzione canonica è:
+	\[
+	F(A,B)=\overline{A}B+AB
+	\]
+	
+	Raccogliamo $B$:
+	\[
+	F=B(\overline{A}+A)
+	\]
+	
+	Poiché:
+	\[
+	\overline{A}+A=1
+	\]
+	
+	si ottiene:
+	\[
+	F=B\cdot 1=B
+	\]
+	
+	\textbf{Funzione semplificata:}
+	\[
+	\boxed{F=B}
+	\]
+	
+	\textbf{Implementazione del circuito:} l'uscita coincide direttamente con l'ingresso $B$.
+	
+	\bigskip
+	
+	\section*{Esercizio 2}
+	
+	Dalla tabella di verità risulta che $F=1$ per:
+	\[
+	(A,B)=(0,0),(1,1)
+	\]
+	
+	La funzione canonica è:
+	\[
+	F(A,B)=\overline{A}\,\overline{B}+AB
+	\]
+	
+	I due termini non hanno fattori comuni utili e non si possono accorpare con le regole elementari di semplificazione.
+	
+	Questa è la funzione XNOR, cioè la funzione che vale $1$ quando i due ingressi sono uguali.
+	
+	\textbf{Funzione semplificata:}
+	\[
+	\boxed{F=\overline{A}\,\overline{B}+AB}
+	\]
+	
+	\textbf{Implementazione del circuito:} due NOT per ottenere $\overline{A}$ e $\overline{B}$, due AND per i due prodotti, una OR finale.
+	
+	\bigskip
+	
+	\section*{Esercizio 3}
+	
+	Dalla tabella di verità risulta che $F=1$ per:
+	\[
+	(A,B)=(0,1),(1,0)
+	\]
+	
+	La funzione canonica è:
+	\[
+	F(A,B)=\overline{A}B+A\overline{B}
+	\]
+	
+	Anche in questo caso i termini non presentano fattori comuni utili e non ci sono assorbimenti applicabili.
+	
+	Questa è la funzione XOR, cioè vale $1$ quando i due ingressi sono diversi.
+	
+	\textbf{Funzione semplificata:}
+	\[
+	\boxed{F=\overline{A}B+A\overline{B}}
+	\]
+	
+	\textbf{Implementazione del circuito:} due NOT, due AND e una OR finale.
+	
+	\bigskip
+	
+	\section*{Esercizio 4}
+	
+	Dalla tabella di verità risulta che $F=1$ per:
+	\[
+	(A,B)=(0,0),(0,1),(1,1)
+	\]
+	
+	La funzione canonica è:
+	\[
+	F(A,B)=\overline{A}\,\overline{B}+\overline{A}B+AB
+	\]
+	
+	Consideriamo i primi due termini:
+	\[
+	\overline{A}\,\overline{B}+\overline{A}B=\overline{A}(\overline{B}+B)
+	\]
+	
+	Poiché:
+	\[
+	\overline{B}+B=1
+	\]
+	
+	segue:
+	\[
+	\overline{A}(\overline{B}+B)=\overline{A}
+	\]
+	
+	Allora:
+	\[
+	F=\overline{A}+AB
+	\]
+	
+	Ora applichiamo la proprietà:
+	\[
+	X+\overline{X}Y = X+Y
+	\]
+	
+	oppure equivalentemente:
+	\[
+	\overline{A}+AB=(\overline{A}+A)(\overline{A}+B)=1\cdot(\overline{A}+B)=\overline{A}+B
+	\]
+	
+	Quindi:
+	\[
+	F=\overline{A}+B
+	\]
+	
+	\textbf{Funzione semplificata:}
+	\[
+	\boxed{F=\overline{A}+B}
+	\]
+	
+	\textbf{Implementazione del circuito:} una NOT su $A$ e una OR tra $\overline{A}$ e $B$.
+	
+	\bigskip
+	
+	\section*{Esercizio 5}
+	
+	Dalla tabella di verità risulta che $F=1$ per:
+	\[
+	(A,B)=(1,0),(1,1)
+	\]
+	
+	La funzione canonica è:
+	\[
+	F(A,B)=A\overline{B}+AB
+	\]
+	
+	Raccogliamo $A$:
+	\[
+	F=A(\overline{B}+B)
+	\]
+	
+	Poiché:
+	\[
+	\overline{B}+B=1
+	\]
+	
+	si ottiene:
+	\[
+	F=A\cdot 1=A
+	\]
+	
+	\textbf{Funzione semplificata:}
+	\[
+	\boxed{F=A}
+	\]
+	
+	\textbf{Implementazione del circuito:} l'uscita coincide direttamente con l'ingresso $A$.
+	
+	\bigskip
+	
+	\section*{Esercizio 6}
+	
+	Dalla tabella di verità si osserva che $F=1$ ogni volta che $C=1$.
+	
+	La forma canonica è:
+	\[
+	F(A,B,C)=\overline{A}\,\overline{B}C+\overline{A}BC+A\overline{B}C+ABC
+	\]
+	
+	Raccogliamo $C$:
+	\[
+	F=C(\overline{A}\,\overline{B}+\overline{A}B+A\overline{B}+AB)
+	\]
+	
+	Ora raggruppiamo:
+	\[
+	\overline{A}\,\overline{B}+\overline{A}B=\overline{A}(\overline{B}+B)=\overline{A}
+	\]
+	
+	\[
+	A\overline{B}+AB=A(\overline{B}+B)=A
+	\]
+	
+	Quindi:
+	\[
+	F=C(\overline{A}+A)=C\cdot 1=C
+	\]
+	
+	\textbf{Funzione semplificata:}
+	\[
+	\boxed{F=C}
+	\]
+	
+	\textbf{Implementazione del circuito:} l'uscita coincide direttamente con l'ingresso $C$.
+	
+	\bigskip
+	
+	\section*{Esercizio 7}
+	
+	Dalla tabella di verità si osserva che $F=1$ ogni volta che $C=0$.
+	
+	La forma canonica è:
+	\[
+	F(A,B,C)=\overline{A}\,\overline{B}\,\overline{C}+\overline{A}B\overline{C}+A\overline{B}\,\overline{C}+AB\overline{C}
+	\]
+	
+	Raccogliamo $\overline{C}$:
+	\[
+	F=\overline{C}(\overline{A}\,\overline{B}+\overline{A}B+A\overline{B}+AB)
+	\]
+	
+	Come prima:
+	\[
+	\overline{A}\,\overline{B}+\overline{A}B=\overline{A}
+	\qquad
+	A\overline{B}+AB=A
+	\]
+	
+	Allora:
+	\[
+	F=\overline{C}(\overline{A}+A)=\overline{C}\cdot 1=\overline{C}
+	\]
+	
+	\textbf{Funzione semplificata:}
+	\[
+	\boxed{F=\overline{C}}
+	\]
+	
+	\textbf{Implementazione del circuito:} una sola NOT sull'ingresso $C$.
+	
+	\bigskip
+	
+	\section*{Esercizio 8}
+	
+	Dalla tabella di verità risulta che $F=1$ per:
+	\[
+	(A,B,C)=(0,0,1),(0,1,0),(1,0,0),(1,1,1)
+	\]
+	
+	La forma canonica è:
+	\[
+	F(A,B,C)=\overline{A}\,\overline{B}C+\overline{A}B\overline{C}+A\overline{B}\,\overline{C}+ABC
+	\]
+	
+	Questa funzione non presenta raggruppamenti immediati in forma somma di prodotti, perché i mintermini attivi sono isolati: ciascun termine differisce dagli altri in più di una variabile.
+	
+	Per questo motivo, in forma SOP elementare, la funzione resta invariata.
+	
+	Si può però osservare che questa è la funzione di parità dispari su tre variabili, quindi, se si ammette l'operatore XOR:
+	\[
+	F=A\oplus B\oplus C
+	\]
+	
+	\textbf{Funzione semplificata in forma SOP:}
+	\[
+	\boxed{F=\overline{A}\,\overline{B}C+\overline{A}B\overline{C}+A\overline{B}\,\overline{C}+ABC}
+	\]
+	
+	\textbf{Forma alternativa con XOR:}
+	\[
+	\boxed{F=A\oplus B\oplus C}
+	\]
+	
+	\textbf{Implementazione del circuito:}
+	\begin{itemize}
+		\item con porte AND, OR, NOT: quattro AND a tre ingressi, tre NOT, una OR finale;
+		\item con porte XOR: due XOR in cascata.
+	\end{itemize}
+	
+	\bigskip
+	
+	\section*{Esercizio 9}
+	
+	Dalla tabella di verità risulta che $F=1$ per:
+	\[
+	(A,B,C)=(0,0,1),(0,1,0),(0,1,1),(1,0,1),(1,1,0),(1,1,1)
+	\]
+	
+	La forma canonica è:
+	\[
+	F=\overline{A}\,\overline{B}C+\overline{A}B\overline{C}+\overline{A}BC+A\overline{B}C+AB\overline{C}+ABC
+	\]
+	
+	Raggruppiamo i termini con fattore comune:
+	\[
+	\overline{A}B\overline{C}+\overline{A}BC=\overline{A}B(\overline{C}+C)=\overline{A}B
+	\]
+	
+	\[
+	AB\overline{C}+ABC=AB(\overline{C}+C)=AB
+	\]
+	
+	Quindi:
+	\[
+	F=\overline{A}\,\overline{B}C+\overline{A}B+AB+A\overline{B}C
+	\]
+	
+	Ora:
+	\[
+	\overline{A}B+AB=B(\overline{A}+A)=B
+	\]
+	
+	perciò:
+	\[
+	F=\overline{A}\,\overline{B}C+B+A\overline{B}C
+	\]
+	
+	Raggruppiamo i termini rimanenti:
+	\[
+	\overline{A}\,\overline{B}C+A\overline{B}C=\overline{B}C(\overline{A}+A)=\overline{B}C
+	\]
+	
+	Otteniamo:
+	\[
+	F=B+\overline{B}C
+	\]
+	
+	Ora applichiamo la proprietà:
+	\[
+	X+\overline{X}Y=X+Y
+	\]
+	
+	con $X=B$ e $Y=C$, quindi:
+	\[
+	F=B+C
+	\]
+	
+	\textbf{Funzione semplificata:}
+	\[
+	\boxed{F=B+C}
+	\]
+	
+	\textbf{Implementazione del circuito:} una sola OR tra $B$ e $C$.
+	
+	\bigskip
+	
+	\section*{Esercizio 10}
+	
+	Dalla tabella di verità risulta che $F=1$ per:
+	\[
+	(A,B,C)=(0,0,0),(0,1,1),(1,0,1),(1,1,0)
+	\]
+	
+	La forma canonica è:
+	\[
+	F=\overline{A}\,\overline{B}\,\overline{C}+\overline{A}BC+A\overline{B}C+AB\overline{C}
+	\]
+	
+	Anche in questo caso i mintermini risultano isolati e non sono possibili accorpamenti in forma SOP elementare.
+	
+	La funzione rappresenta la parità pari su tre variabili. Se si ammette l'uso di XOR/XNOR, si può scrivere:
+	\[
+	F=\overline{A\oplus B\oplus C}
+	\]
+	
+	\textbf{Funzione semplificata in forma SOP:}
+	\[
+	\boxed{F=\overline{A}\,\overline{B}\,\overline{C}+\overline{A}BC+A\overline{B}C+AB\overline{C}}
+	\]
+	
+	\textbf{Forma alternativa con XOR/XNOR:}
+	\[
+	\boxed{F=\overline{A\oplus B\oplus C}}
+	\]
+	
+	\textbf{Implementazione del circuito:}
+	\begin{itemize}
+		\item con porte AND, OR, NOT: quattro AND a tre ingressi, tre NOT, una OR finale;
+		\item con porte XOR/XNOR: due XOR in cascata e una NOT finale, oppure una XNOR equivalente.
+	\end{itemize}
+	
+	\bigskip
+	
+	\section*{Esercizio 11}
+	
+	La funzione assegnata è:
+	\[
+	F(A,B,C)=A\overline{B}+BC
+	\]
+	
+	I due termini non hanno fattori comuni che consentano una riduzione del numero di letterali.
+	
+	Non si applicano nemmeno proprietà di assorbimento.
+	
+	Quindi la funzione è già minima.
+	
+	\textbf{Funzione semplificata:}
+	\[
+	\boxed{F=A\overline{B}+BC}
+	\]
+	
+	\textbf{Implementazione del circuito:}
+	\begin{itemize}
+		\item una NOT su $B$;
+		\item una AND tra $A$ e $\overline{B}$;
+		\item una AND tra $B$ e $C$;
+		\item una OR finale tra i due risultati.
+	\end{itemize}
+	
+	\bigskip
+	
+	\section*{Esercizio 12}
+	
+	La funzione assegnata è:
+	\[
+	F(A,B,C)=\overline{A}B+\overline{B}C
+	\]
+	
+	I due termini non sono combinabili con raccolta utile o assorbimento.
+	
+	La funzione è già in forma minima SOP.
+	
+	\textbf{Funzione semplificata:}
+	\[
+	\boxed{F=\overline{A}B+\overline{B}C}
+	\]
+	
+	\textbf{Implementazione del circuito:}
+	\begin{itemize}
+		\item una NOT su $A$ e una NOT su $B$;
+		\item una AND tra $\overline{A}$ e $B$;
+		\item una AND tra $\overline{B}$ e $C$;
+		\item una OR finale.
+	\end{itemize}
+	
+	\bigskip
+	
+	\section*{Esercizio 13}
+	
+	La funzione assegnata è:
+	\[
+	F(A,B,C)=AB+\overline{A}C
+	\]
+	
+	Non ci sono fattori comuni che riducano l'espressione e non si applicano assorbimenti.
+	
+	Quindi la funzione è già minima.
+	
+	\textbf{Funzione semplificata:}
+	\[
+	\boxed{F=AB+\overline{A}C}
+	\]
+	
+	\textbf{Implementazione del circuito:}
+	\begin{itemize}
+		\item una NOT su $A$;
+		\item una AND tra $A$ e $B$;
+		\item una AND tra $\overline{A}$ e $C$;
+		\item una OR finale.
+	\end{itemize}
+	
+	\bigskip
+	
+	\section*{Esercizio 14}
+	
+	La funzione assegnata è:
+	\[
+	F(A,B,C)=A+B\overline{C}
+	\]
+	
+	Non si può applicare l'assorbimento, perché il termine $B\overline{C}$ non contiene $A$.
+	
+	Non sono presenti raccolte utili che semplifichino ulteriormente.
+	
+	\textbf{Funzione semplificata:}
+	\[
+	\boxed{F=A+B\overline{C}}
+	\]
+	
+	\textbf{Implementazione del circuito:}
+	\begin{itemize}
+		\item una NOT su $C$;
+		\item una AND tra $B$ e $\overline{C}$;
+		\item una OR tra $A$ e il risultato della AND.
+	\end{itemize}
+	
+	\bigskip
+	
+	\section*{Esercizio 15}
+	
+	La funzione assegnata è:
+	\[
+	F(A,B,C)=\overline{A}B+AC
+	\]
+	
+	Anche in questo caso non ci sono fattori comuni utili né proprietà di assorbimento applicabili.
+	
+	Quindi la funzione è già minima.
+	
+	\textbf{Funzione semplificata:}
+	\[
+	\boxed{F=\overline{A}B+AC}
+	\]
+	
+	\textbf{Implementazione del circuito:}
+	\begin{itemize}
+		\item una NOT su $A$;
+		\item una AND tra $\overline{A}$ e $B$;
+		\item una AND tra $A$ e $C$;
+		\item una OR finale.
+	\end{itemize}
+	
+\end{document}

@@ -1,0 +1,322 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[italian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{setspace}
+\usepackage{amsmath}
+\geometry{margin=2.5cm}
+\onehalfspacing
+
+\title{Soluzioni degli Esercizi sulle Subnet}
+\author{Prof. Fedeli Massimo}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Esercizio 1}
+Dato \textbf{192.168.1.34/24}.
+
+Con il prefisso /24 i primi 24 bit identificano la rete e restano 8 bit per gli host. La subnet mask è quindi \textbf{255.255.255.0}.
+
+L'indirizzo di rete si ottiene azzerando tutti i bit host:
+\[
+192.168.1.34 \rightarrow 192.168.1.0
+\]
+L'indirizzo di broadcast si ottiene ponendo a 1 tutti i bit host:
+\[
+192.168.1.255
+\]
+Il primo host disponibile è \textbf{192.168.1.1}, l'ultimo host disponibile è \textbf{192.168.1.254}.
+
+Gli host utilizzabili sono:
+\[
+2^8 - 2 = 254
+\]
+
+\section*{Esercizio 2}
+Rete \textbf{172.16.8.0/23}.
+
+Il prefisso /23 corrisponde alla subnet mask \textbf{255.255.254.0}. Restano 9 bit per la parte host.
+
+Il blocco nel terzo ottetto vale:
+\[
+256 - 254 = 2
+\]
+Le reti procedono quindi a passi di 2 nel terzo ottetto. La rete data parte da \textbf{172.16.8.0} e termina prima della successiva, cioè \textbf{172.16.10.0}.
+
+Quindi:
+\begin{itemize}
+    \item indirizzo di rete: \textbf{172.16.8.0}
+    \item indirizzo di broadcast: \textbf{172.16.9.255}
+    \item host validi: da \textbf{172.16.8.1} a \textbf{172.16.9.254}
+\end{itemize}
+
+Numero massimo di host:
+\[
+2^9 - 2 = 510
+\]
+
+\section*{Esercizio 3}
+Dato \textbf{10.0.5.129/26}.
+
+La subnet mask di /26 è \textbf{255.255.255.192}. Restano 6 bit per gli host.
+
+La dimensione del blocco nell'ultimo ottetto è:
+\[
+256 - 192 = 64
+\]
+Le subnet dell'ultimo ottetto sono quindi:
+\[
+0, 64, 128, 192
+\]
+L'indirizzo 129 appartiene all'intervallo \textbf{128--191}.
+
+Quindi:
+\begin{itemize}
+    \item rete: \textbf{10.0.5.128}
+    \item broadcast: \textbf{10.0.5.191}
+    \item primo host: \textbf{10.0.5.129}
+    \item ultimo host: \textbf{10.0.5.190}
+\end{itemize}
+
+Dimensione del blocco: \textbf{64 indirizzi}. Host utilizzabili:
+\[
+2^6 - 2 = 62
+\]
+
+\section*{Esercizio 4}
+Rete iniziale \textbf{192.168.10.0/24}, da suddividere in \textbf{4 subnet uguali}.
+
+Per ottenere 4 subnet servono 2 bit in più per la parte di rete, perché:
+\[
+2^2 = 4
+\]
+Il nuovo prefisso è quindi:
+\[
+/24 + 2 = /26
+\]
+La nuova subnet mask è \textbf{255.255.255.192}.
+
+Restano 6 bit per gli host, dunque gli host utilizzabili per subnet sono:
+\[
+2^6 - 2 = 62
+\]
+
+La dimensione del blocco è 64, quindi le quattro subnet sono:
+\begin{itemize}
+    \item \textbf{192.168.10.0/26}
+    \item \textbf{192.168.10.64/26}
+    \item \textbf{192.168.10.128/26}
+    \item \textbf{192.168.10.192/26}
+\end{itemize}
+
+\section*{Esercizio 5}
+Rete iniziale \textbf{192.168.50.0/24}, da dividere in \textbf{8 subnet}.
+
+Per ottenere 8 subnet servono 3 bit aggiuntivi:
+\[
+2^3 = 8
+\]
+Nuovo prefisso:
+\[
+/24 + 3 = /27
+\]
+La nuova subnet mask è \textbf{255.255.255.224}.
+
+La dimensione del blocco è:
+\[
+256 - 224 = 32
+\]
+Ogni subnet contiene 32 indirizzi totali, di cui 30 utilizzabili.
+
+Le prime tre subnet sono:
+\begin{itemize}
+    \item \textbf{192.168.50.0/27}
+    \item \textbf{192.168.50.32/27}
+    \item \textbf{192.168.50.64/27}
+\end{itemize}
+
+La terza subnet va da 192.168.50.64 a 192.168.50.95, quindi il broadcast della terza subnet è:
+\[
+\textbf{192.168.50.95}
+\]
+
+\section*{Esercizio 6}
+Dato \textbf{172.20.10.75/27}.
+
+La subnet mask di /27 è \textbf{255.255.255.224}. La dimensione del blocco è:
+\[
+256 - 224 = 32
+\]
+Le subnet nell'ultimo ottetto sono:
+\[
+0, 32, 64, 96, 128, 160, 192, 224
+\]
+L'indirizzo 75 appartiene all'intervallo \textbf{64--95}.
+
+Quindi:
+\begin{itemize}
+    \item rete: \textbf{172.20.10.64}
+    \item broadcast: \textbf{172.20.10.95}
+    \item host validi: da \textbf{172.20.10.65} a \textbf{172.20.10.94}
+\end{itemize}
+
+\section*{Esercizio 7}
+Rete \textbf{10.1.0.0/16} con almeno \textbf{500 host per subnet}.
+
+Occorre trovare il numero minimo di bit host tali che:
+\[
+2^h - 2 \geq 500
+\]
+Verifichiamo:
+\[
+2^8 - 2 = 254 \quad \text{non basta}
+\]
+\[
+2^9 - 2 = 510 \quad \text{basta}
+\]
+Quindi servono \textbf{9 bit host}.
+
+Il nuovo prefisso è:
+\[
+32 - 9 = /23
+\]
+La nuova subnet mask è \textbf{255.255.254.0}.
+
+Poiché la rete iniziale era /16, sono stati presi 7 bit per creare subnet:
+\[
+23 - 16 = 7
+\]
+Numero massimo di subnet ottenibili:
+\[
+2^7 = 128
+\]
+
+Host utilizzabili per subnet:
+\[
+2^9 - 2 = 510
+\]
+
+\section*{Esercizio 8}
+Dato \textbf{192.168.100.200/28}.
+
+La subnet mask di /28 è \textbf{255.255.255.240}. La dimensione del blocco è:
+\[
+256 - 240 = 16
+\]
+Le subnet dell'ultimo ottetto sono:
+\[
+0, 16, 32, 48, 64, 80, 96, 112, 128, 144, 160, 176, 192, 208, 224, 240
+\]
+L'indirizzo 200 appartiene all'intervallo \textbf{192--207}.
+
+Quindi:
+\begin{itemize}
+    \item rete: \textbf{192.168.100.192}
+    \item broadcast: \textbf{192.168.100.207}
+    \item primo host: \textbf{192.168.100.193}
+    \item ultimo host: \textbf{192.168.100.206}
+\end{itemize}
+
+\section*{Esercizio 9}
+Rete \textbf{192.168.1.0/24}, da suddividere con VLSM per:
+\begin{itemize}
+    \item reparto A: 100 host
+    \item reparto B: 50 host
+    \item reparto C: 20 host
+\end{itemize}
+
+Nel VLSM si assegna prima la subnet più grande.
+
+\subsection*{Reparto A: 100 host}
+Serve il minimo numero di bit host tale che:
+\[
+2^h - 2 \geq 100
+\]
+Con 7 bit si ha:
+\[
+2^7 - 2 = 126
+\]
+Quindi serve una subnet \textbf{/25} con mask \textbf{255.255.255.128}.
+
+Assegniamo:
+\begin{itemize}
+    \item rete: \textbf{192.168.1.0/25}
+    \item host: da \textbf{192.168.1.1} a \textbf{192.168.1.126}
+    \item broadcast: \textbf{192.168.1.127}
+\end{itemize}
+
+\subsection*{Reparto B: 50 host}
+Serve:
+\[
+2^6 - 2 = 62
+\]
+Quindi una subnet \textbf{/26} con mask \textbf{255.255.255.192}.
+
+Lo spazio libero successivo parte da 192.168.1.128:
+\begin{itemize}
+    \item rete: \textbf{192.168.1.128/26}
+    \item host: da \textbf{192.168.1.129} a \textbf{192.168.1.190}
+    \item broadcast: \textbf{192.168.1.191}
+\end{itemize}
+
+\subsection*{Reparto C: 20 host}
+Serve:
+\[
+2^5 - 2 = 30
+\]
+Quindi una subnet \textbf{/27} con mask \textbf{255.255.255.224}.
+
+Lo spazio libero successivo parte da 192.168.1.192:
+\begin{itemize}
+    \item rete: \textbf{192.168.1.192/27}
+    \item host: da \textbf{192.168.1.193} a \textbf{192.168.1.222}
+    \item broadcast: \textbf{192.168.1.223}
+\end{itemize}
+
+\section*{Esercizio 10}
+Rete iniziale \textbf{172.16.0.0/22}. Deve essere suddivisa in subnet da almeno \textbf{60 host}.
+
+Cerchiamo i bit host minimi:
+\[
+2^5 - 2 = 30 \quad \text{non basta}
+\]
+\[
+2^6 - 2 = 62 \quad \text{basta}
+\]
+Servono quindi 6 bit host, dunque il nuovo prefisso è:
+\[
+32 - 6 = /26
+\]
+La nuova subnet mask è \textbf{255.255.255.192}.
+
+La rete iniziale /22 contiene:
+\[
+2^{32-22} = 2^{10} = 1024 \text{ indirizzi}
+\]
+Ogni subnet /26 contiene:
+\[
+2^{32-26} = 2^6 = 64 \text{ indirizzi}
+\]
+Numero totale di subnet ottenibili:
+\[
+1024 / 64 = 16
+\]
+
+Le prime quattro subnet sono:
+\begin{itemize}
+    \item \textbf{172.16.0.0/26}
+    \item \textbf{172.16.0.64/26}
+    \item \textbf{172.16.0.128/26}
+    \item \textbf{172.16.0.192/26}
+\end{itemize}
+
+La quarta subnet va da 172.16.0.192 a 172.16.0.255, quindi il broadcast della quarta subnet è:
+\[
+\textbf{172.16.0.255}
+\]
+
+\end{document}

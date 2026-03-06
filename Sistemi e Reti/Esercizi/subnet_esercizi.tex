@@ -1,0 +1,120 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[italian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{setspace}
+\geometry{margin=2.5cm}
+\onehalfspacing
+
+\title{Esercizi sulle Subnet}
+\author{Prof. Fedeli Massimo}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\textbf{Data:} \underline{\hspace{3cm}}
+
+\vspace{0.5cm}
+
+Svolgere i seguenti esercizi mostrando, quando richiesto, i passaggi essenziali del procedimento.
+
+\section*{Esercizio 1}
+Dato l'indirizzo IP \textbf{192.168.1.34/24}, determina:
+\begin{itemize}
+    \item indirizzo di rete;
+    \item indirizzo di broadcast;
+    \item primo host disponibile;
+    \item ultimo host disponibile;
+    \item numero totale di host utilizzabili.
+\end{itemize}
+
+\section*{Esercizio 2}
+Considera la rete \textbf{172.16.8.0/23}. Determina:
+\begin{itemize}
+    \item subnet mask in formato decimale puntato;
+    \item indirizzo di broadcast;
+    \item intervallo degli host validi;
+    \item numero massimo di host disponibili nella rete.
+\end{itemize}
+
+\section*{Esercizio 3}
+Dato l'indirizzo IP \textbf{10.0.5.129/26}, calcola:
+\begin{itemize}
+    \item indirizzo di rete;
+    \item indirizzo di broadcast;
+    \item primo e ultimo host utilizzabili;
+    \item dimensione del blocco di indirizzi.
+\end{itemize}
+
+\section*{Esercizio 4}
+Una rete \textbf{192.168.10.0/24} deve essere suddivisa in \textbf{4 subnet uguali}. Determina:
+\begin{itemize}
+    \item nuova subnet mask;
+    \item numero di host disponibili per subnet;
+    \item indirizzi di rete delle quattro subnet.
+\end{itemize}
+
+\section*{Esercizio 5}
+La rete \textbf{192.168.50.0/24} deve essere suddivisa in \textbf{8 subnet}. Calcola:
+\begin{itemize}
+    \item nuova subnet mask;
+    \item dimensione di ciascuna subnet;
+    \item indirizzi di rete delle prime tre subnet;
+    \item indirizzo di broadcast della terza subnet.
+\end{itemize}
+
+\section*{Esercizio 6}
+Dato l'indirizzo \textbf{172.20.10.75/27}, determina:
+\begin{itemize}
+    \item subnet mask;
+    \item indirizzo di rete;
+    \item indirizzo di broadcast;
+    \item range degli host validi.
+\end{itemize}
+
+\section*{Esercizio 7}
+Una rete \textbf{10.1.0.0/16} deve supportare \textbf{almeno 500 host per subnet}. Determina:
+\begin{itemize}
+    \item quanti bit devono essere riservati agli host;
+    \item la nuova subnet mask;
+    \item il numero massimo di subnet ottenibili;
+    \item il numero di host disponibili per subnet.
+\end{itemize}
+
+\section*{Esercizio 8}
+Dato l'indirizzo \textbf{192.168.100.200/28}, calcola:
+\begin{itemize}
+    \item dimensione del blocco;
+    \item indirizzo di rete;
+    \item indirizzo di broadcast;
+    \item primo e ultimo host disponibili.
+\end{itemize}
+
+\section*{Esercizio 9}
+Una rete \textbf{192.168.1.0/24} deve essere suddivisa per tre reparti con le seguenti necessità:
+\begin{itemize}
+    \item reparto A: 100 host;
+    \item reparto B: 50 host;
+    \item reparto C: 20 host.
+\end{itemize}
+Progetta le subnet utilizzando \textbf{VLSM} e indica:
+\begin{itemize}
+    \item subnet mask di ciascuna rete;
+    \item indirizzo di rete;
+    \item intervallo host;
+    \item indirizzo di broadcast.
+\end{itemize}
+
+\section*{Esercizio 10}
+Una rete \textbf{172.16.0.0/22} deve essere suddivisa in subnet da \textbf{almeno 60 host}. Determina:
+\begin{itemize}
+    \item nuova subnet mask;
+    \item numero totale di subnet ottenibili;
+    \item indirizzo di rete delle prime quattro subnet;
+    \item broadcast della quarta subnet.
+\end{itemize}
+
+\end{document}

@@ -1,0 +1,73 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[italian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{setspace}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{xcolor}
+\geometry{margin=2.5cm}
+\onehalfspacing
+
+\definecolor{codegray}{rgb}{0.95,0.95,0.95}
+\lstset{
+    backgroundcolor=\color{codegray},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    showstringspaces=false,
+    tabsize=4,
+    language=SQL
+}
+
+\title{Queries SQL}
+\author{Prof. Fedeli Massimo}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Schema logico di riferimento}
+
+\begin{flushleft}
+STUDENTE(\underline{Id\_studente}, Cognome, Nome, Data\_nascita, Luogo\_nascita, CF, citta, CAP, via, n\_civico, Email\_istituzionale, Classe, Indirizzo\_studi) \\
+AZIENDA(\underline{P\_iva}, Ragione\_sociale, Sede\_legale, Sede\_operativa, settore\_attivita, Email\_aziendale, Telefono\_ref) \\
+TUTOR\_SCUOLA(\underline{Codice\_docente}, Cognome, Nome, Email\_istituzionale, Dipartimento\_app, N\_max\_studenti\_seguiti) \\
+TUTOR\_AZIENDA(\underline{Codice\_dipendente}, Cognome, Nome, Email\_aziendale, P\_iva) \\
+COMPETENZE(\underline{nome\_competenza}) \\
+DISPONIBILITA(\underline{Codice\_id}, Data\_inizio, Data\_fine, N\_max\_studenti\_ospitabili, Descrizione\_attivita, Indirizzo\_studi\_consigliato) \\
+AZIENDA\_DISPONIBILITA(\underline{P\_iva, Codice\_id}) \\
+RICHIEDE(\underline{nome\_competenza, Codice\_id}) \\
+ESPERIENZA(\underline{Id\_studente, P\_iva\_azienda\_ospitante, Codice\_docente, Codice\_dipendente, Codice\_id\_disponibilita}, Periodo\_effettivo, N\_ore\_previste, N\_ore\_svolte, Valutazione\_finale, esito)
+\end{flushleft}
+
+
+\section*{Quesiti}\begin{enumerate}[leftmargin=0.8cm,label=\textbf{\arabic*.}]
+\item Elencare cognome, nome, classe ed email istituzionale di tutti gli studenti, ordinati per cognome e nome.
+\item Visualizzare ragione sociale, settore di attività e sede operativa di tutte le aziende con sede operativa a Pesaro.
+\item Mostrare i tutor scolastici che possono seguire almeno 11 studenti.
+\item Elencare le disponibilità con Data fine successiva al 31 maggio 2026, mostrando codice, descrizione attività e numero massimo di studenti ospitabili.
+\item Mostrare gli studenti della classe 5A nati dopo il 1 gennaio 2005.
+\item Elencare per ogni esperienza lo studente, l'azienda ospitante e le ore previste.
+\item Mostrare gli studenti che hanno svolto meno di 100 ore effettive, indicando anche azienda ospitante e ore svolte.
+\item Elencare le aziende con la relativa disponibilità pubblicata, mostrando ragione sociale, descrizione attività e indirizzo di studi consigliato.
+\item Visualizzare per ogni disponibilità le competenze richieste, mostrando codice disponibilità, descrizione attività e nome competenza.
+\item Mostrare per ogni esperienza lo studente, il tutor scolastico e il tutor aziendale associati.
+\item Calcolare quante aziende appartengono a ciascun settore di attività.
+\item Calcolare il numero di studenti per ciascuna classe.
+\item Per ogni azienda ospitante, calcolare il numero di esperienze svolte.
+\item Determinare, per ogni esperienza, il deficit di ore rispetto a quelle previste, mostrando studente, ore previste, ore svolte e differenza.
+\item Calcolare la media delle ore svolte per ciascun esito finale.
+\item Trovare gli studenti che hanno svolto un'esperienza presso un'azienda del settore 'Software'.
+\item Elencare le aziende che non appartengono ai settori 'IT' e 'Software'.
+\item Mostrare le disponibilità il cui numero massimo di studenti ospitabili è maggiore della media complessiva.
+\item Trovare gli studenti che hanno svolto un numero di ore superiore alla media delle ore svolte da tutti gli studenti.
+\item Elencare i tutor scolastici che non risultano assegnati ad alcuna esperienza.
+\item Determinare il settore di attività con il maggior numero di aziende.
+\item Trovare l'azienda o le aziende che ospitano studenti con il numero massimo di ore svolte.
+\item Per ogni settore di attività, calcolare la media delle ore svolte dagli studenti ospitati dalle aziende di quel settore.
+\item Elencare le disponibilità associate ad aziende del settore 'AI' oppure 'Security', mostrando azienda, attività e competenza richiesta.
+\item Trovare gli studenti che hanno svolto meno ore del corrispondente valore medio delle esperienze della loro stessa classe.\end{enumerate}
+\end{document}

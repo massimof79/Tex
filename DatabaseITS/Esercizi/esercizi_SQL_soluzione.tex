@@ -1,0 +1,263 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[italian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{setspace}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{xcolor}
+\geometry{margin=2.5cm}
+\onehalfspacing
+
+\definecolor{codegray}{rgb}{0.95,0.95,0.95}
+\lstset{
+    backgroundcolor=\color{codegray},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    showstringspaces=false,
+    tabsize=4,
+    language=SQL
+}
+
+\title{25 query SQL di difficoltà crescente - Soluzioni}
+\author{Prof. Fedeli Massimo}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Schema logico di riferimento}
+
+\begin{flushleft}
+STUDENTE(\underline{Id\_studente}, Cognome, Nome, Data\_nascita, Luogo\_nascita, CF, citta, CAP, via, n\_civico, Email\_istituzionale, Classe, Indirizzo\_studi) \\
+AZIENDA(\underline{P\_iva}, Ragione\_sociale, Sede\_legale, Sede\_operativa, settore\_attivita, Email\_aziendale, Telefono\_ref) \\
+TUTOR\_SCUOLA(\underline{Codice\_docente}, Cognome, Nome, Email\_istituzionale, Dipartimento\_app, N\_max\_studenti\_seguiti) \\
+TUTOR\_AZIENDA(\underline{Codice\_dipendente}, Cognome, Nome, Email\_aziendale, P\_iva) \\
+COMPETENZE(\underline{nome\_competenza}) \\
+DISPONIBILITA(\underline{Codice\_id}, Data\_inizio, Data\_fine, N\_max\_studenti\_ospitabili, Descrizione\_attivita, Indirizzo\_studi\_consigliato) \\
+AZIENDA\_DISPONIBILITA(\underline{P\_iva, Codice\_id}) \\
+RICHIEDE(\underline{nome\_competenza, Codice\_id}) \\
+ESPERIENZA(\underline{Id\_studente, P\_iva\_azienda\_ospitante, Codice\_docente, Codice\_dipendente, Codice\_id\_disponibilita}, Periodo\_effettivo, N\_ore\_previste, N\_ore\_svolte, Valutazione\_finale, esito)
+\end{flushleft}
+
+
+\section*{Soluzioni}\subsection*{Query 1}Elencare cognome, nome, classe ed email istituzionale di tutti gli studenti, ordinati per cognome e nome.
+\begin{lstlisting}
+SELECT Cognome, Nome, Classe, Email_istituzionale
+FROM STUDENTE
+ORDER BY Cognome, Nome;
+\end{lstlisting}
+\subsection*{Query 2}Visualizzare ragione sociale, settore di attività e sede operativa di tutte le aziende con sede operativa a Pesaro.
+\begin{lstlisting}
+SELECT Ragione_sociale, settore_attivita, Sede_operativa
+FROM AZIENDA
+WHERE Sede_operativa = 'Pesaro';
+\end{lstlisting}
+\subsection*{Query 3}Mostrare i tutor scolastici che possono seguire almeno 11 studenti.
+\begin{lstlisting}
+SELECT Codice_docente, Cognome, Nome, N_max_studenti_seguiti
+FROM TUTOR_SCUOLA
+WHERE N_max_studenti_seguiti >= 11;
+\end{lstlisting}
+\subsection*{Query 4}Elencare le disponibilità con Data\_fine successiva al 31 maggio 2026, mostrando codice, descrizione attività e numero massimo di studenti ospitabili.
+\begin{lstlisting}
+SELECT Codice_id, Descrizione_attivita, N_max_studenti_ospitabili, Data_fine
+FROM DISPONIBILITA
+WHERE Data_fine > '2026-05-31';
+\end{lstlisting}
+\subsection*{Query 5}Mostrare gli studenti della classe 5A nati dopo il 1 gennaio 2005.
+\begin{lstlisting}
+SELECT Id_studente, Cognome, Nome, Data_nascita
+FROM STUDENTE
+WHERE Classe = '5A' AND Data_nascita > '2005-01-01';
+\end{lstlisting}
+\subsection*{Query 6}Elencare per ogni esperienza lo studente, l'azienda ospitante e le ore previste.
+\begin{lstlisting}
+SELECT s.Cognome, s.Nome, a.Ragione_sociale, e.N_ore_previste
+FROM ESPERIENZA e
+JOIN STUDENTE s ON e.Id_studente = s.Id_studente
+JOIN AZIENDA a ON e.P_iva_azienda_ospitante = a.P_iva
+ORDER BY s.Cognome, s.Nome;
+\end{lstlisting}
+\subsection*{Query 7}Mostrare gli studenti che hanno svolto meno di 100 ore effettive, indicando anche azienda ospitante e ore svolte.
+\begin{lstlisting}
+SELECT s.Cognome, s.Nome, a.Ragione_sociale, e.N_ore_svolte
+FROM ESPERIENZA e
+JOIN STUDENTE s ON e.Id_studente = s.Id_studente
+JOIN AZIENDA a ON e.P_iva_azienda_ospitante = a.P_iva
+WHERE e.N_ore_svolte < 100;
+\end{lstlisting}
+\subsection*{Query 8}Elencare le aziende con la relativa disponibilità pubblicata, mostrando ragione sociale, descrizione attività e indirizzo di studi consigliato.
+\begin{lstlisting}
+SELECT a.Ragione_sociale, d.Descrizione_attivita, d.Indirizzo_studi_consigliato
+FROM AZIENDA a
+JOIN AZIENDA_DISPONIBILITA ad ON a.P_iva = ad.P_iva
+JOIN DISPONIBILITA d ON ad.Codice_id = d.Codice_id
+ORDER BY a.Ragione_sociale;
+\end{lstlisting}
+\subsection*{Query 9}Visualizzare per ogni disponibilità le competenze richieste, mostrando codice disponibilità, descrizione attività e nome competenza.
+\begin{lstlisting}
+SELECT d.Codice_id, d.Descrizione_attivita, r.nome_competenza
+FROM DISPONIBILITA d
+JOIN RICHIEDE r ON d.Codice_id = r.Codice_id
+ORDER BY d.Codice_id, r.nome_competenza;
+\end{lstlisting}
+\subsection*{Query 10}Mostrare per ogni esperienza lo studente, il tutor scolastico e il tutor aziendale associati.
+\begin{lstlisting}
+SELECT s.Cognome AS Cognome_studente,
+       s.Nome AS Nome_studente,
+       ts.Cognome AS Cognome_tutor_scuola,
+       ts.Nome AS Nome_tutor_scuola,
+       ta.Cognome AS Cognome_tutor_azienda,
+       ta.Nome AS Nome_tutor_azienda
+FROM ESPERIENZA e
+JOIN STUDENTE s ON e.Id_studente = s.Id_studente
+JOIN TUTOR_SCUOLA ts ON e.Codice_docente = ts.Codice_docente
+JOIN TUTOR_AZIENDA ta ON e.Codice_dipendente = ta.Codice_dipendente
+ORDER BY s.Cognome, s.Nome;
+\end{lstlisting}
+\subsection*{Query 11}Calcolare quante aziende appartengono a ciascun settore di attività.
+\begin{lstlisting}
+SELECT settore_attivita, COUNT(*) AS numero_aziende
+FROM AZIENDA
+GROUP BY settore_attivita
+ORDER BY numero_aziende DESC, settore_attivita;
+\end{lstlisting}
+\subsection*{Query 12}Calcolare il numero di studenti per ciascuna classe.
+\begin{lstlisting}
+SELECT Classe, COUNT(*) AS numero_studenti
+FROM STUDENTE
+GROUP BY Classe
+ORDER BY Classe;
+\end{lstlisting}
+\subsection*{Query 13}Per ogni azienda ospitante, calcolare il numero di esperienze svolte.
+\begin{lstlisting}
+SELECT a.Ragione_sociale, COUNT(*) AS numero_esperienze
+FROM AZIENDA a
+JOIN ESPERIENZA e ON a.P_iva = e.P_iva_azienda_ospitante
+GROUP BY a.P_iva, a.Ragione_sociale
+ORDER BY numero_esperienze DESC, a.Ragione_sociale;
+\end{lstlisting}
+\subsection*{Query 14}Determinare, per ogni esperienza, il deficit di ore rispetto a quelle previste, mostrando studente, ore previste, ore svolte e differenza.
+\begin{lstlisting}
+SELECT s.Cognome, s.Nome,
+       e.N_ore_previste,
+       e.N_ore_svolte,
+       (e.N_ore_previste - e.N_ore_svolte) AS ore_mancanti
+FROM ESPERIENZA e
+JOIN STUDENTE s ON e.Id_studente = s.Id_studente
+ORDER BY ore_mancanti DESC, s.Cognome, s.Nome;
+\end{lstlisting}
+\subsection*{Query 15}Calcolare la media delle ore svolte per ciascun esito finale.
+\begin{lstlisting}
+SELECT esito, AVG(N_ore_svolte) AS media_ore_svolte
+FROM ESPERIENZA
+GROUP BY esito;
+\end{lstlisting}
+\subsection*{Query 16}Trovare gli studenti che hanno svolto un'esperienza presso un'azienda del settore 'Software'.
+\begin{lstlisting}
+SELECT s.Cognome, s.Nome, a.Ragione_sociale
+FROM STUDENTE s
+JOIN ESPERIENZA e ON s.Id_studente = e.Id_studente
+JOIN AZIENDA a ON e.P_iva_azienda_ospitante = a.P_iva
+WHERE a.settore_attivita = 'Software'
+ORDER BY s.Cognome, s.Nome;
+\end{lstlisting}
+\subsection*{Query 17}Elencare le aziende che non appartengono ai settori 'IT' e 'Software'.
+\begin{lstlisting}
+SELECT Ragione_sociale, settore_attivita
+FROM AZIENDA
+WHERE settore_attivita NOT IN ('IT', 'Software')
+ORDER BY Ragione_sociale;
+\end{lstlisting}
+\subsection*{Query 18}Mostrare le disponibilità il cui numero massimo di studenti ospitabili è maggiore della media complessiva.
+\begin{lstlisting}
+SELECT Codice_id, Descrizione_attivita, N_max_studenti_ospitabili
+FROM DISPONIBILITA
+WHERE N_max_studenti_ospitabili > (
+    SELECT AVG(N_max_studenti_ospitabili)
+    FROM DISPONIBILITA
+)
+ORDER BY N_max_studenti_ospitabili DESC, Codice_id;
+\end{lstlisting}
+\subsection*{Query 19}Trovare gli studenti che hanno svolto un numero di ore superiore alla media delle ore svolte da tutti gli studenti.
+\begin{lstlisting}
+SELECT s.Cognome, s.Nome, e.N_ore_svolte
+FROM STUDENTE s
+JOIN ESPERIENZA e ON s.Id_studente = e.Id_studente
+WHERE e.N_ore_svolte > (
+    SELECT AVG(N_ore_svolte)
+    FROM ESPERIENZA
+)
+ORDER BY e.N_ore_svolte DESC, s.Cognome, s.Nome;
+\end{lstlisting}
+\subsection*{Query 20}Elencare i tutor scolastici che non risultano assegnati ad alcuna esperienza.
+\begin{lstlisting}
+SELECT ts.Codice_docente, ts.Cognome, ts.Nome
+FROM TUTOR_SCUOLA ts
+LEFT JOIN ESPERIENZA e ON ts.Codice_docente = e.Codice_docente
+WHERE e.Codice_docente IS NULL
+ORDER BY ts.Cognome, ts.Nome;
+\end{lstlisting}
+\subsection*{Query 21}Determinare il settore di attività con il maggior numero di aziende.
+\begin{lstlisting}
+SELECT settore_attivita, COUNT(*) AS numero_aziende
+FROM AZIENDA
+GROUP BY settore_attivita
+HAVING COUNT(*) = (
+    SELECT MAX(t.numero_aziende)
+    FROM (
+        SELECT COUNT(*) AS numero_aziende
+        FROM AZIENDA
+        GROUP BY settore_attivita
+    ) t
+);
+\end{lstlisting}
+\subsection*{Query 22}Trovare l'azienda o le aziende che ospitano studenti con il numero massimo di ore svolte.
+\begin{lstlisting}
+SELECT a.Ragione_sociale, s.Cognome, s.Nome, e.N_ore_svolte
+FROM ESPERIENZA e
+JOIN AZIENDA a ON e.P_iva_azienda_ospitante = a.P_iva
+JOIN STUDENTE s ON e.Id_studente = s.Id_studente
+WHERE e.N_ore_svolte = (
+    SELECT MAX(N_ore_svolte)
+    FROM ESPERIENZA
+)
+ORDER BY a.Ragione_sociale, s.Cognome, s.Nome;
+\end{lstlisting}
+\subsection*{Query 23}Per ogni settore di attività, calcolare la media delle ore svolte dagli studenti ospitati dalle aziende di quel settore.
+\begin{lstlisting}
+SELECT a.settore_attivita, AVG(e.N_ore_svolte) AS media_ore_svolte
+FROM AZIENDA a
+JOIN ESPERIENZA e ON a.P_iva = e.P_iva_azienda_ospitante
+GROUP BY a.settore_attivita
+ORDER BY media_ore_svolte DESC;
+\end{lstlisting}
+\subsection*{Query 24}Elencare le disponibilità associate ad aziende del settore 'AI' oppure 'Security', mostrando azienda, attività e competenza richiesta.
+\begin{lstlisting}
+SELECT a.Ragione_sociale, d.Descrizione_attivita, r.nome_competenza
+FROM AZIENDA a
+JOIN AZIENDA_DISPONIBILITA ad ON a.P_iva = ad.P_iva
+JOIN DISPONIBILITA d ON ad.Codice_id = d.Codice_id
+JOIN RICHIEDE r ON d.Codice_id = r.Codice_id
+WHERE a.settore_attivita IN ('AI', 'Security')
+ORDER BY a.Ragione_sociale, d.Descrizione_attivita;
+\end{lstlisting}
+\subsection*{Query 25}Trovare gli studenti che hanno svolto meno ore del corrispondente valore medio delle esperienze della loro stessa classe.
+\begin{lstlisting}
+SELECT s.Cognome, s.Nome, s.Classe, e.N_ore_svolte
+FROM STUDENTE s
+JOIN ESPERIENZA e ON s.Id_studente = e.Id_studente
+WHERE e.N_ore_svolte < (
+    SELECT AVG(e2.N_ore_svolte)
+    FROM ESPERIENZA e2
+    JOIN STUDENTE s2 ON e2.Id_studente = s2.Id_studente
+    WHERE s2.Classe = s.Classe
+)
+ORDER BY s.Classe, e.N_ore_svolte, s.Cognome, s.Nome;
+\end{lstlisting}
+
+\end{document}
