@@ -1,0 +1,170 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[italian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{setspace}
+
+\geometry{margin=2.5cm}
+\onehalfspacing
+
+\title{Esercizi sui Circuiti Logici}
+\author{Prof. Fedeli Massimo}
+\date{}
+
+\begin{document}
+	
+	\maketitle
+	
+	Per ogni esercizio:
+	
+	\begin{enumerate}
+		\item Scrivere la funzione logica in forma canonica (somma di mintermini)
+		\item Semplificare la funzione logica
+		\item Disegnare il circuito logico corrispondente
+	\end{enumerate}
+	
+	\section*{Esercizio 1}
+	
+	\begin{tabular}{c c | c}
+		A & B & F \\
+		0 & 0 & 0 \\
+		0 & 1 & 1 \\
+		1 & 0 & 0 \\
+		1 & 1 & 1 \\
+	\end{tabular}
+	
+	\section*{Esercizio 2}
+	
+	\begin{tabular}{c c | c}
+		A & B & F \\
+		0 & 0 & 1 \\
+		0 & 1 & 0 \\
+		1 & 0 & 0 \\
+		1 & 1 & 1 \\
+	\end{tabular}
+	
+	\section*{Esercizio 3}
+	
+	\begin{tabular}{c c | c}
+		A & B & F \\
+		0 & 0 & 0 \\
+		0 & 1 & 1 \\
+		1 & 0 & 1 \\
+		1 & 1 & 0 \\
+	\end{tabular}
+	
+	\section*{Esercizio 4}
+	
+	\begin{tabular}{c c | c}
+		A & B & F \\
+		0 & 0 & 1 \\
+		0 & 1 & 1 \\
+		1 & 0 & 0 \\
+		1 & 1 & 1 \\
+	\end{tabular}
+	
+	\section*{Esercizio 5}
+	
+	\begin{tabular}{c c | c}
+		A & B & F \\
+		0 & 0 & 0 \\
+		0 & 1 & 0 \\
+		1 & 0 & 1 \\
+		1 & 1 & 1 \\
+	\end{tabular}
+	
+	\section*{Esercizio 6}
+	
+	\begin{tabular}{c c c | c}
+		A & B & C & F \\
+		0 & 0 & 0 & 0 \\
+		0 & 0 & 1 & 1 \\
+		0 & 1 & 0 & 0 \\
+		0 & 1 & 1 & 1 \\
+		1 & 0 & 0 & 0 \\
+		1 & 0 & 1 & 1 \\
+		1 & 1 & 0 & 0 \\
+		1 & 1 & 1 & 1 \\
+	\end{tabular}
+	
+	\section*{Esercizio 7}
+	
+	\begin{tabular}{c c c | c}
+		A & B & C & F \\
+		0 & 0 & 0 & 1 \\
+		0 & 0 & 1 & 0 \\
+		0 & 1 & 0 & 1 \\
+		0 & 1 & 1 & 0 \\
+		1 & 0 & 0 & 1 \\
+		1 & 0 & 1 & 0 \\
+		1 & 1 & 0 & 1 \\
+		1 & 1 & 1 & 0 \\
+	\end{tabular}
+	
+	\section*{Esercizio 8}
+	
+	\begin{tabular}{c c c | c}
+		A & B & C & F \\
+		0 & 0 & 0 & 0 \\
+		0 & 0 & 1 & 1 \\
+		0 & 1 & 0 & 1 \\
+		0 & 1 & 1 & 0 \\
+		1 & 0 & 0 & 1 \\
+		1 & 0 & 1 & 0 \\
+		1 & 1 & 0 & 0 \\
+		1 & 1 & 1 & 1 \\
+	\end{tabular}
+	
+	\section*{Esercizio 9}
+	
+	\begin{tabular}{c c c | c}
+		A & B & C & F \\
+		0 & 0 & 0 & 0 \\
+		0 & 0 & 1 & 1 \\
+		0 & 1 & 0 & 1 \\
+		0 & 1 & 1 & 1 \\
+		1 & 0 & 0 & 0 \\
+		1 & 0 & 1 & 1 \\
+		1 & 1 & 0 & 1 \\
+		1 & 1 & 1 & 1 \\
+	\end{tabular}
+	
+	\section*{Esercizio 10}
+	
+	\begin{tabular}{c c c | c}
+		A & B & C & F \\
+		0 & 0 & 0 & 1 \\
+		0 & 0 & 1 & 0 \\
+		0 & 1 & 0 & 0 \\
+		0 & 1 & 1 & 1 \\
+		1 & 0 & 0 & 0 \\
+		1 & 0 & 1 & 1 \\
+		1 & 1 & 0 & 1 \\
+		1 & 1 & 1 & 0 \\
+	\end{tabular}
+	
+	\section*{Esercizi 11--15}
+	
+	Per le seguenti funzioni:
+	
+	\begin{enumerate}
+		\item scrivere la tabella di verità
+		\item disegnare il circuito logico
+	\end{enumerate}
+	
+	\begin{enumerate}
+		
+		\item $F(A,B,C)=A\overline{B}+BC$
+		
+		\item $F(A,B,C)=\overline{A}B+\overline{B}C$
+		
+		\item $F(A,B,C)=AB+\overline{A}C$
+		
+		\item $F(A,B,C)=A+B\overline{C}$
+		
+		\item $F(A,B,C)=\overline{A}B+AC$
+		
+	\end{enumerate}
+	
+\end{document}
