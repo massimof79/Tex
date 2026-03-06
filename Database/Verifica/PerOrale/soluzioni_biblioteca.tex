@@ -1,0 +1,167 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[italian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{setspace}
+\geometry{margin=2.5cm}
+\onehalfspacing
+
+\title{Soluzioni - Verifica scritta di Informatica - SQL e Algebra Relazionale}
+\author{Prof. Fedeli Massimo}
+\date{}
+
+\begin{document}
+	\maketitle
+	
+	\section*{Schema logico}
+	
+	\begin{flushleft}
+		UTENTI(id\_utente PK, cognome, nome, classe, email, data\_iscrizione) \\
+		LIBRI(id\_libro PK, titolo, autore, genere, anno\_pubblicazione, editore, copie\_totali) \\
+		PRESTITI(id\_prestito PK, id\_utente FK, id\_libro FK, data\_prestito, data\_scadenza, data\_restituzione) \\
+		PRENOTAZIONI(id\_prenotazione PK, id\_utente FK, id\_libro FK, data\_prenotazione, stato)
+	\end{flushleft}
+	
+	\section*{Soluzioni}
+	
+	\begin{enumerate}
+		\item
+\begin{verbatim}
+SELECT cognome, nome, classe
+FROM UTENTI
+ORDER BY classe, cognome, nome;
+\end{verbatim}
+
+		\item
+\begin{verbatim}
+SELECT titolo, autore, genere
+FROM LIBRI
+WHERE anno_pubblicazione > 2018;
+\end{verbatim}
+
+		\item
+\begin{verbatim}
+SELECT u.nome, u.cognome, l.titolo, p.data_scadenza
+FROM PRESTITI p
+JOIN UTENTI u ON p.id_utente = u.id_utente
+JOIN LIBRI l ON p.id_libro = l.id_libro
+WHERE p.data_restituzione IS NULL;
+\end{verbatim}
+
+		\item
+\begin{verbatim}
+SELECT titolo, autore, genere
+FROM LIBRI
+WHERE genere IN ('Informatica', 'Matematica')
+ORDER BY autore, titolo;
+\end{verbatim}
+
+		\item
+\begin{verbatim}
+SELECT genere, COUNT(*) AS numero_libri
+FROM LIBRI
+GROUP BY genere;
+\end{verbatim}
+
+		\item
+\begin{verbatim}
+SELECT u.id_utente, u.cognome, u.nome, COUNT(p.id_prestito) AS totale_prestiti
+FROM UTENTI u
+LEFT JOIN PRESTITI p ON u.id_utente = p.id_utente
+GROUP BY u.id_utente, u.cognome, u.nome;
+\end{verbatim}
+
+		\item
+\begin{verbatim}
+SELECT l.titolo
+FROM LIBRI l
+LEFT JOIN PRESTITI p ON l.id_libro = p.id_libro
+WHERE p.id_prestito IS NULL;
+\end{verbatim}
+
+		\item
+\begin{verbatim}
+SELECT u.id_utente, u.cognome, u.nome
+FROM UTENTI u
+JOIN PRESTITI p ON u.id_utente = p.id_utente
+GROUP BY u.id_utente, u.cognome, u.nome
+HAVING COUNT(DISTINCT p.id_libro) >= 3;
+\end{verbatim}
+
+		\item
+\begin{verbatim}
+SELECT l.id_libro, l.titolo, COUNT(*) AS prenotazioni_attive
+FROM LIBRI l
+JOIN PRENOTAZIONI pr ON l.id_libro = pr.id_libro
+WHERE pr.stato = 'attiva'
+GROUP BY l.id_libro, l.titolo
+HAVING COUNT(*) > 2;
+\end{verbatim}
+
+		\item
+\begin{verbatim}
+SELECT u.id_utente, u.cognome, u.nome, COUNT(*) AS totale_prestiti
+FROM UTENTI u
+JOIN PRESTITI p ON u.id_utente = p.id_utente
+GROUP BY u.id_utente, u.cognome, u.nome
+HAVING COUNT(*) = (
+    SELECT MAX(tot)
+    FROM (
+        SELECT COUNT(*) AS tot
+        FROM PRESTITI
+        GROUP BY id_utente
+    ) AS conteggi
+);
+\end{verbatim}
+
+		\item
+\begin{verbatim}
+SELECT l.id_libro, l.titolo, l.copie_totali,
+       COUNT(p.id_prestito) AS copie_attualmente_in_prestito
+FROM LIBRI l
+LEFT JOIN PRESTITI p
+  ON l.id_libro = p.id_libro
+ AND p.data_restituzione IS NULL
+GROUP BY l.id_libro, l.titolo, l.copie_totali
+HAVING COUNT(p.id_prestito) < l.copie_totali;
+\end{verbatim}
+
+		\item
+\begin{verbatim}
+PI cognome, nome (
+  UTENTI JOIN_{UTENTI.id_utente = PRESTITI.id_utente}
+  SIGMA data_restituzione IS NULL (PRESTITI)
+)
+\end{verbatim}
+
+		\item
+\begin{verbatim}
+PI titolo (
+  LIBRI JOIN_{LIBRI.id_libro = PRENOTAZIONI.id_libro} PRENOTAZIONI
+)
+\end{verbatim}
+
+		\item
+\begin{verbatim}
+SELECT u.id_utente, u.cognome, u.nome
+FROM UTENTI u
+WHERE u.id_utente IN (
+    SELECT id_utente
+    FROM PRESTITI
+)
+AND u.id_utente NOT IN (
+    SELECT id_utente
+    FROM PRENOTAZIONI
+);
+\end{verbatim}
+
+		\item
+\begin{verbatim}
+SELECT genere, AVG(anno_pubblicazione) AS anno_medio
+FROM LIBRI
+GROUP BY genere;
+\end{verbatim}
+	\end{enumerate}
+	
+\end{document}

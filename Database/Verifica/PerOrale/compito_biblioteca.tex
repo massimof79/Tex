@@ -1,0 +1,72 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[italian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{setspace}
+\geometry{margin=2.5cm}
+\onehalfspacing
+
+\title{Verifica scritta di Informatica - SQL e Algebra Relazionale}
+\author{Prof. Fedeli Massimo}
+\date{}
+
+\begin{document}
+	\maketitle
+	
+	\textbf{Cognome e Nome:} \underline{\hspace{8cm}} \hfill
+	\textbf{Data:} \underline{\hspace{3cm}}
+	
+	\vspace{0.5cm}
+	
+	\textbf{Durata:} 2 ore \\
+	\textbf{Obiettivo:} scrivere interrogazioni SQL e formulare interrogazioni in algebra relazionale su uno schema logico diverso rispetto a quelli già svolti in classe.
+	
+	\section*{Schema logico}
+	
+	\begin{flushleft}
+		UTENTI(id\_utente PK, cognome, nome, classe, email, data\_iscrizione) \\
+		LIBRI(id\_libro PK, titolo, autore, genere, anno\_pubblicazione, editore, copie\_totali) \\
+		PRESTITI(id\_prestito PK, id\_utente FK, id\_libro FK, data\_prestito, data\_scadenza, data\_restituzione) \\
+		PRENOTAZIONI(id\_prenotazione PK, id\_utente FK, id\_libro FK, data\_prenotazione, stato)
+	\end{flushleft}
+	
+	\section*{Indicazioni}
+	
+	Scrivere le query richieste in linguaggio SQL. Quando richiesto, esprimere anche l'interrogazione in algebra relazionale. Evitare abbreviazioni non standard. Usare alias significativi.
+	
+	\section*{Quesiti}
+	
+	\begin{enumerate}
+		\item Elencare cognome, nome e classe di tutti gli utenti iscritti alla biblioteca, ordinati per classe e cognome.
+		
+		\item Visualizzare titolo, autore e genere dei libri pubblicati dopo il 2018.
+		
+		\item Elencare i prestiti attualmente non restituiti, mostrando il nome dell'utente, il titolo del libro e la data di scadenza.
+		
+		\item Trovare tutti i libri del genere \texttt{Informatica} oppure \texttt{Matematica}, ordinati per autore.
+		
+		\item Contare quanti libri sono presenti per ciascun genere.
+		
+		\item Determinare, per ogni utente, il numero totale di prestiti effettuati. Mostrare anche gli utenti che non hanno mai effettuato prestiti.
+		
+		\item Elencare i titoli dei libri che non sono mai stati presi in prestito.
+		
+		\item Trovare gli utenti che hanno preso in prestito almeno 3 libri diversi.
+		
+		\item Visualizzare i libri che hanno un numero di prenotazioni maggiore di 2 con stato uguale a \texttt{attiva}.
+		
+		\item Trovare l'utente o gli utenti che hanno effettuato il maggior numero di prestiti.
+		
+		\item Elencare i libri attualmente disponibili, cioè quelli per cui il numero di copie in prestito al momento è minore del numero totale di copie possedute.
+		
+		\item Scrivere in algebra relazionale l'interrogazione che restituisce cognome e nome degli utenti che hanno almeno un prestito non ancora restituito.
+		
+		\item Scrivere in algebra relazionale l'interrogazione che restituisce i titoli dei libri prenotati almeno una volta.
+		
+		\item Trovare gli utenti che hanno effettuato almeno un prestito ma nessuna prenotazione.
+		
+		\item Per ciascun genere, calcolare l'anno medio di pubblicazione dei libri appartenenti a quel genere.
+	\end{enumerate}
+	
+\end{document}
