@@ -1,0 +1,183 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[italian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{setspace}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\geometry{margin=2.5cm}
+\singlespacing
+
+\title{Verifica di Intelligenza Artificiale - Classe 4AIQ}
+\author{Prof. Fedeli Massimo}
+\date{}
+
+\definecolor{codegray}{rgb}{0.95,0.95,0.95}
+
+\lstset{
+	backgroundcolor=\color{codegray},
+	basicstyle=\ttfamily\small,
+	breaklines=true,
+	frame=single,
+	showstringspaces=false,
+	tabsize=4,
+	language=Python
+}
+
+\begin{document}
+	
+	\maketitle
+	
+	\textbf{Cognome e Nome:} \underline{\hspace{8cm}} \hfill
+	\textbf{Data:} \underline{\hspace{3cm}}
+	
+	\vspace{0.5cm}
+	
+	\textbf{Durata:} 2 ore
+	
+	\vspace{0.5cm}
+	
+	\section*{Contesto}
+	
+	Un'azienda agricola desidera stimare la \textbf{resa agricola} di un terreno (in quintali per ettaro) in funzione di tre variabili:
+	
+	\begin{itemize}
+		\item quantità di fertilizzante utilizzato (kg per ettaro),
+		\item quantità di pioggia stagionale (mm),
+		\item temperatura media stagionale (°C).
+	\end{itemize}
+	
+	Si vuole costruire un modello di \textbf{regressione lineare multipla} utilizzando Python e la libreria \texttt{scikit-learn}.
+	
+Scrivere il codice in Python e rispondere alle domande di teoria:
+	
+	\begin{itemize}
+		\item Esercizio 1
+		\subitem generare dati simulati. 2 pt
+		\subitem addestrare un modello di regressione, 2 pt
+		\subitem utilizzare il modello per fare previsioni  1 pt.
+		\subitem visualizzare una sezione del piano di regressione in un grafico 3D. 1 pt
+		\item Esercizio 2
+		\subitem Rispondere alle domande di teoria. 4 pt
+	\end{itemize}
+	
+	\section*{Esercizio 1}
+	
+	Completa il seguente programma Python scrivendo il codice mancante a partire dai commenti.
+	
+	\begin{lstlisting}
+		# Importare le librerie necessarie:
+		# numpy
+		# matplotlib.pyplot
+		# LinearRegression da sklearn.linear_model
+		# Axes3D da mpl_toolkits.mplot3d
+		
+		
+		# -------------------------
+		# 1) DATI (simulati)
+		# -------------------------
+		
+		# fissare il seed del generatore casuale
+		
+		# definire il numero di osservazioni (n)
+		
+		# generare i valori casuali della variabile fertilizzante
+		# (distribuzione uniforme tra 50 e 250)
+		
+		# generare i valori casuali della variabile pioggia
+		# (distribuzione uniforme tra 200 e 700)
+		
+		# generare i valori casuali della variabile temperatura
+		# (distribuzione uniforme tra 12 e 30)
+		
+		# generare il rumore casuale usando una distribuzione normale
+		
+		# definire la formula della resa agricola usando
+		# fertilizzante, pioggia, temperatura e rumore
+		
+		
+		# creare la matrice delle variabili indipendenti X
+		
+		# definire la variabile target y
+		
+		
+		# -------------------------
+		# 2) REGRESSIONE
+		# -------------------------
+		
+		# creare il modello di regressione lineare
+		
+		# addestrare il modello con fit()
+		
+		# estrarre i coefficienti del modello
+		
+		# estrarre l'intercetta
+		
+		# calcolare il coefficiente di determinazione R^2
+		
+		# stampare l'equazione del modello e i parametri stimati
+		
+		
+		# -------------------------
+		# 3) PREVISIONI
+		# -------------------------
+		
+		# definire due nuovi casi di input
+		# (fertilizzante, pioggia, temperatura)
+		
+		# utilizzare il modello per effettuare le previsioni
+		
+		# stampare le previsioni in modo leggibile
+		
+		
+		# -------------------------
+		# 4) VISUALIZZAZIONE 3D
+		# -------------------------
+		
+		# fissare un valore di temperatura
+		
+		# creare la figura e gli assi 3D
+		
+		# selezionare i punti con temperatura vicina al valore fissato
+		
+		# creare uno scatter plot dei punti selezionati
+		
+		# creare una griglia di valori per fertilizzante e pioggia
+		
+		# generare le matrici con meshgrid
+		
+		# calcolare i valori del piano di regressione
+		
+		# disegnare la superficie del piano
+		
+		# impostare le etichette degli assi
+		
+		# impostare il titolo del grafico
+		
+		# mostrare il grafico
+	\end{lstlisting}
+	
+	\newpage
+	
+	\section*{Esercizio 2 - Domande teoriche}
+	
+	\begin{enumerate}
+		
+		\item Spiega il significato dell'istruzione che imposta il \textit{seed} del generatore casuale.
+		
+		\item Che cosa rappresentano i coefficienti del modello di regressione?
+		
+		\item Che cosa rappresenta l'intercetta del modello?
+		
+		\item Indica almeno due possibili variabili aggiuntive che potrebbero influenzare la resa agricola.
+		
+		\item Descrivi il funzionamento di un modello di regressione lineare
+		
+	\end{enumerate}
+	
+	
+
+	
+\end{document}
