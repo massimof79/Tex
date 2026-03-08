@@ -1,0 +1,411 @@
+\documentclass{beamer}
+
+\usepackage[italian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\usetheme{Madrid}
+
+\title{Analisi della Struttura di una Web App PCTO}
+\author{Prof. Fedeli Massimo}
+\date{}
+
+\lstset{
+	language=HTML,
+	basicstyle=\ttfamily\small,
+	keywordstyle=\color{blue},
+	stringstyle=\color{red},
+	breaklines=true
+}
+
+\begin{document}
+	
+	\frame{\titlepage}
+	
+	%------------------------------------------------
+	
+	\begin{frame}
+		\frametitle{Obiettivo del progetto}
+		
+		Il progetto realizza una semplice applicazione web per la gestione
+		delle esperienze di PCTO degli studenti.
+		
+		Le funzionalità principali sono:
+		
+		\begin{itemize}
+			\item autenticazione degli utenti
+			\item inserimento di una esperienza PCTO
+			\item ricerca delle esperienze per intervallo di date
+			\item salvataggio dei dati in un database MySQL
+		\end{itemize}
+		
+		L'applicazione è composta da due parti principali:
+		
+		\begin{itemize}
+			\item Frontend (HTML + JavaScript)
+			\item Backend (PHP + MySQL)
+		\end{itemize}
+		
+	\end{frame}
+	
+	%------------------------------------------------
+	
+	\begin{frame}
+		\frametitle{Architettura dell'applicazione}
+		
+		L'applicazione segue una architettura client-server.
+		
+		\bigskip
+		
+		\textbf{Client (browser)}
+		
+		\begin{itemize}
+			\item interfaccia HTML
+			\item codice JavaScript
+			\item invio delle richieste HTTP
+		\end{itemize}
+		
+		\bigskip
+		
+		\textbf{Server}
+		
+		\begin{itemize}
+			\item API scritte in PHP
+			\item gestione delle sessioni
+			\item accesso al database MySQL
+		\end{itemize}
+		
+	\end{frame}
+	
+	%------------------------------------------------
+	
+	\begin{frame}
+		\frametitle{Struttura dei file del progetto}
+		
+		Il progetto è organizzato in più file con responsabilità diverse.
+		
+		\bigskip
+		
+		\textbf{Frontend}
+		
+		\begin{itemize}
+			\item index.html
+		\end{itemize}
+		
+		\bigskip
+		
+		\textbf{Backend}
+		
+		\begin{itemize}
+			\item config.php
+			\item db.php
+			\item auth.php
+		\end{itemize}
+		
+		\bigskip
+		
+		\textbf{API}
+		
+		\begin{itemize}
+			\item api\_login.php
+			\item api\_logout.php
+			\item api\_session.php
+			\item api\_experiences.php
+		\end{itemize}
+		
+	\end{frame}
+	
+	%------------------------------------------------
+	
+	\begin{frame}[fragile]
+		\frametitle{Il Frontend: index.html}
+		
+		Il file \texttt{index.html} contiene l'interfaccia dell'applicazione.
+		
+		Gli elementi principali sono:
+		
+		\begin{itemize}
+			\item form di login
+			\item form per inserire una esperienza
+			\item ricerca delle esperienze
+		\end{itemize}
+		
+		\begin{lstlisting}
+			<input id="username" placeholder="username">
+			<input id="password" type="password">
+			<button onclick="login()">Login</button>
+		\end{lstlisting}
+		
+		Quando l'utente preme il pulsante viene chiamata
+		una funzione JavaScript.
+		
+	\end{frame}
+	
+	%------------------------------------------------
+	
+	\begin{frame}[fragile]
+		\frametitle{Comunicazione con il server}
+		
+		Il frontend comunica con il backend tramite
+		richieste HTTP usando la funzione \texttt{fetch()}.
+		
+		\begin{lstlisting}
+			function api(url,method,data){
+				
+				let options = {
+					method:method,
+					headers:{'Content-Type':'application/json'},
+					credentials:'same-origin'
+				}
+				
+				if(data){
+					options.body = JSON.stringify(data)
+				}
+				
+				return fetch(url,options)
+			}
+		\end{lstlisting}
+		
+		Questa funzione invia richieste alle API del server.
+		
+	\end{frame}
+	
+	%------------------------------------------------
+	
+	\begin{frame}
+		\frametitle{Backend in PHP}
+		
+		Il backend è composto da diversi file PHP che svolgono
+		funzioni specifiche.
+		
+		\bigskip
+		
+		\textbf{config.php}
+		
+		\begin{itemize}
+			\item contiene le configurazioni
+			\item definisce i parametri del database
+			\item avvia la sessione
+		\end{itemize}
+		
+		\bigskip
+		
+		\textbf{db.php}
+		
+		\begin{itemize}
+			\item gestisce la connessione al database
+			\item utilizza PDO
+		\end{itemize}
+		
+	\end{frame}
+	
+	%------------------------------------------------
+	
+	\begin{frame}[fragile]
+		\frametitle{Connessione al database}
+		
+		Il file \texttt{db.php} crea una connessione PDO
+		al database MySQL.
+		
+		\begin{lstlisting}
+			$dsn = 'mysql:host=' . DB_HOST .
+			';dbname=' . DB_NAME .
+			';charset=utf8mb4';
+			
+			$pdo = new PDO($dsn, DB_USER, DB_PASS, $options);
+		\end{lstlisting}
+		
+		PDO è una libreria che permette di lavorare con i database
+		in modo sicuro e portabile.
+		
+	\end{frame}
+	
+	%------------------------------------------------
+	
+	\begin{frame}
+		\frametitle{Gestione dell'autenticazione}
+		
+		Il file \texttt{auth.php} contiene funzioni comuni
+		usate dalle API.
+		
+		Tra le principali:
+		
+		\begin{itemize}
+			\item invio delle risposte JSON
+			\item verifica che l'utente sia autenticato
+			\item lettura dei dati JSON ricevuti
+		\end{itemize}
+		
+		Questo permette di evitare duplicazione del codice.
+		
+	\end{frame}
+	
+	%------------------------------------------------
+	
+	\begin{frame}
+		\frametitle{API REST}
+		
+		Le API sono programmi PHP che ricevono richieste HTTP.
+		
+		Ogni API svolge una funzione specifica.
+		
+		\bigskip
+		
+		\textbf{api\_login.php}
+		
+		gestisce l'autenticazione dell'utente.
+		
+		\bigskip
+		
+		\textbf{api\_logout.php}
+		
+		termina la sessione.
+		
+		\bigskip
+		
+		\textbf{api\_experiences.php}
+		
+		gestisce inserimento e ricerca delle esperienze.
+		
+	\end{frame}
+	
+	%------------------------------------------------
+	
+	\begin{frame}[fragile]
+		\frametitle{Login dell'utente}
+		
+		Durante il login il server controlla username e password.
+		
+		\begin{lstlisting}
+			$stmt = $pdo->prepare(
+			'SELECT id, username, password_hash
+			FROM utenti WHERE username = ?'
+			);
+			
+			$stmt->execute([$username]);
+		\end{lstlisting}
+		
+		La password viene verificata con
+		
+		\begin{lstlisting}
+			password_verify($password,
+			$user['password_hash']);
+		\end{lstlisting}
+		
+		Questo garantisce maggiore sicurezza.
+		
+	\end{frame}
+	
+	%------------------------------------------------
+	
+	\begin{frame}
+		\frametitle{Gestione delle sessioni}
+		
+		Dopo il login il server salva i dati dell'utente
+		nella sessione.
+		
+		\bigskip
+		
+		Questo permette di:
+		
+		\begin{itemize}
+			\item riconoscere l'utente nelle richieste successive
+			\item proteggere le API
+		\end{itemize}
+		
+		Le API possono verificare se l'utente è autenticato
+		prima di eseguire le operazioni.
+		
+	\end{frame}
+	
+	%------------------------------------------------
+	
+	\begin{frame}[fragile]
+		\frametitle{Inserimento di una esperienza}
+		
+		L'inserimento avviene tramite una richiesta POST.
+		
+		\begin{lstlisting}
+			INSERT INTO esperienze_pcto
+			(id_studente, ente_ospitante,
+			mansione, data_inizio, data_fine,
+			ore_totali)
+			VALUES (?, ?, ?, ?, ?, ?)
+		\end{lstlisting}
+		
+		I parametri sono passati tramite JSON
+		dal frontend.
+		
+	\end{frame}
+	
+	%------------------------------------------------
+	
+	\begin{frame}
+		\frametitle{Ricerca delle esperienze}
+		
+		L'API permette anche di recuperare
+		le esperienze per intervallo di date.
+		
+		La query SQL utilizza una JOIN tra
+		le tabelle:
+		
+		\begin{itemize}
+			\item esperienze\_pcto
+			\item studenti
+		\end{itemize}
+		
+		In questo modo vengono restituiti
+		anche nome e cognome dello studente.
+		
+	\end{frame}
+	
+	%------------------------------------------------
+	
+	\begin{frame}
+		\frametitle{Flusso completo dell'applicazione}
+		
+		1. L'utente apre la pagina web
+		
+		2. Inserisce username e password
+		
+		3. Il browser invia una richiesta all'API di login
+		
+		4. Il server verifica le credenziali
+		
+		5. Se il login è valido viene creata una sessione
+		
+		6. L'utente può inserire o consultare esperienze PCTO
+		
+	\end{frame}
+	
+	%------------------------------------------------
+	
+	\begin{frame}
+		\frametitle{Conclusioni}
+		
+		Questo progetto mostra come realizzare
+		una semplice applicazione web completa.
+		
+		Sono stati utilizzati:
+		
+		\begin{itemize}
+			\item HTML
+			\item JavaScript
+			\item PHP
+			\item MySQL
+		\end{itemize}
+		
+		Il progetto introduce concetti fondamentali
+		dello sviluppo web:
+		
+		\begin{itemize}
+			\item architettura client-server
+			\item API REST
+			\item autenticazione
+			\item accesso al database
+		\end{itemize}
+		
+	\end{frame}
+	
+\end{document}
