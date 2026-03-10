@@ -1,0 +1,126 @@
+\documentclass[a4paper,12pt]{article}
+
+\usepackage[italian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\usepackage{amsmath}
+\usepackage{array}
+\usepackage{circuitikz}
+
+\geometry{margin=2.5cm}
+
+\title{Verifica di Informatica}
+\author{Prof. Fedeli Massimo}
+\date{}
+
+\begin{document}
+	
+	\maketitle
+	
+	Nome e Cognome: \rule{8cm}{0.4pt}
+	
+	Classe: \rule{3cm}{0.4pt} \hfill Data: \rule{3cm}{0.4pt}
+	
+	\vspace{1cm}
+	
+	\section*{Esercizio 1 – Algoritmi e Flowgorithm}
+	
+	Scrivi un algoritmo in \textbf{Flowgorithm} che:
+	
+	\begin{itemize}
+		\item chieda all'utente quanti numeri interi vuole inserire;
+		\item il numero di valori deve essere \textbf{almeno 10}. Se l'utente inserisce un numero minore, l'algoritmo deve richiedere nuovamente il valore;
+		\item memorizzi i valori inseriti in un \textbf{vettore di interi};
+		\item al termine dell'inserimento determini:
+		\begin{itemize}
+			\item la \textbf{somma} dei valori
+			\item la \textbf{media}
+			\item il \textbf{valore massimo}
+			\item il \textbf{valore minimo}
+			\item il \textbf{numero che compare più volte} nel vettore
+		\end{itemize}
+	\end{itemize}
+	
+	L'algoritmo deve essere corredato da \textbf{commenti esplicativi} che descrivano le principali operazioni svolte.
+	
+	\vspace{1cm}
+	
+	\section*{Esercizio 2 – Funzioni logiche}
+	
+	Data la seguente \textbf{tabella di verità} con tre variabili logiche \(A\), \(B\) e \(C\):
+	
+	\begin{center}
+		\begin{tabular}{|c|c|c|c|}
+			\hline
+			A & B & C & F \\ 
+			\hline
+			0 & 0 & 0 & 0 \\ 
+			0 & 0 & 1 & 1 \\ 
+			0 & 1 & 0 & 0 \\ 
+			0 & 1 & 1 & 1 \\ 
+			1 & 0 & 0 & 1 \\ 
+			1 & 0 & 1 & 1 \\ 
+			1 & 1 & 0 & 0 \\ 
+			1 & 1 & 1 & 1 \\ 
+			\hline
+		\end{tabular}
+	\end{center}
+	
+	Determinare:
+	
+	\begin{enumerate}
+		\item la \textbf{funzione logica} \(F(A,B,C)\) in forma canonica (somma di prodotti);
+		\item la \textbf{semplificazione} della funzione;
+		\item il \textbf{circuito logico equivalente} utilizzando porte AND, OR e NOT.
+	\end{enumerate}
+	
+	\vspace{1cm}
+	
+	\section*{Esercizio 3 – Analisi di circuito logico}
+	
+	Dato il seguente circuito logico:
+	
+	\begin{center}
+		\begin{circuitikz}
+			
+			\node (A) at (0,2) {$A$};
+			\node (B) at (0,0) {$B$};
+			\node (C) at (0,-2) {$C$};
+			
+			\draw (A) -- (1,2);
+			\draw (B) -- (1,0);
+			\draw (C) -- (1,-2);
+			
+			\draw (1,2) -- (2,2) node[and port, anchor=in 1] (and1) {};
+			\draw (1,0) -- (and1.in 2);
+			
+			\draw (1,-2) -- (2,-2) node[not port] (not1) {};
+			
+			\draw (and1.out) -- (4,1);
+			\draw (not1.out) -- (4,-1);
+			
+			\node[or port] (or1) at (5,0) {};
+			
+			\draw (4,1) -- (or1.in 1);
+			\draw (4,-1) -- (or1.in 2);
+			
+			\draw (or1.out) -- (6,0) node[right] {$F$};
+			
+		\end{circuitikz}
+	\end{center}
+	
+	Determinare:
+	
+	\begin{enumerate}
+		\item la \textbf{funzione logica} realizzata dal circuito;
+		\item la \textbf{tabella di verità} completa;
+		\item indicare se la funzione può essere ulteriormente \textbf{semplificata}.
+	\end{enumerate}
+	
+	\vspace{1cm}
+	
+	\textbf{Tempo a disposizione:} 60 minuti
+	
+	\textbf{È consentito l'uso di fogli di brutta copia.}
+	
+\end{document}
