@@ -1,0 +1,15 @@
+\frametitle{Inserimento di una esperienza}
+		
+		L'inserimento avviene tramite una richiesta POST.
+		
+		\begin{lstlisting}
+			INSERT INTO esperienze_pcto
+			(id_studente, ente_ospitante,
+			mansione, data_inizio, data_fine,
+			ore_totali)
+			VALUES (?, ?, ?, ?, ?, ?)
+		\end{lstlisting}
+		
+		I parametri sono passati tramite JSON
+		dal frontend.
+		
