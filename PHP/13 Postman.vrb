@@ -1,0 +1,17 @@
+\frametitle{Inserimento con POST}
+
+		Passaggi:
+		
+		\begin{itemize}
+			\item metodo POST
+			\item body in formato JSON
+		\end{itemize}
+		
+		\begin{lstlisting}
+			{
+				"id": 4,
+				"nome": "Fantasia",
+				"prezzo": 8.5
+			}
+		\end{lstlisting}
+		

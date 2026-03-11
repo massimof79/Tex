@@ -1,0 +1,413 @@
+\documentclass{beamer}
+
+\usepackage[italian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\usetheme{Madrid}
+
+\title{Test di Web Service REST}
+\subtitle{Uso di Curl e Postman}
+\author{Prof. Fedeli Massimo }
+\date{}
+
+\definecolor{codegray}{rgb}{0.95,0.95,0.95}
+
+\lstset{
+	backgroundcolor=\color{codegray},
+	basicstyle=\ttfamily\small,
+	breaklines=true
+}
+
+\begin{document}
+	
+	\frame{\titlepage}
+	
+	%------------------------------------------------
+	
+	\begin{frame}{Web Service REST}
+		Un \textbf{Web Service REST} è un servizio web che utilizza il protocollo HTTP per permettere la comunicazione tra applicazioni.
+		
+		\bigskip
+		
+		Caratteristiche principali:
+		
+		\begin{itemize}
+			\item Architettura client-server
+			\item Comunicazione tramite HTTP
+			\item Utilizzo di URI per identificare le risorse
+			\item Dati spesso rappresentati in formato JSON
+		\end{itemize}
+		
+	\end{frame}
+	
+	%------------------------------------------------
+	
+	\begin{frame}{Operazioni REST}
+		Le operazioni sui dati vengono effettuate tramite i metodi HTTP.
+		
+		\bigskip
+		
+		\begin{center}
+			\begin{tabular}{c c c}
+				\textbf{Metodo} & \textbf{Operazione} & \textbf{Descrizione} \\
+				\hline
+				GET & Read & Recupera dati \\
+				POST & Create & Inserisce nuovi dati \\
+				PUT & Update & Aggiorna dati \\
+				DELETE & Delete & Cancella dati
+			\end{tabular}
+		\end{center}
+		
+	\end{frame}
+	
+	%------------------------------------------------
+	
+	\begin{frame}{Strumenti per testare API REST}
+		Durante lo sviluppo di un web service è necessario verificare il corretto funzionamento delle API.
+		
+		\bigskip
+		
+		Strumenti comuni:
+		
+		\begin{itemize}
+			\item Curl (strumento a riga di comando)
+			\item Postman (interfaccia grafica)
+		\end{itemize}
+		
+		\bigskip
+		
+		Questi strumenti permettono di simulare richieste HTTP verso il server.
+		
+	\end{frame}
+	
+	%------------------------------------------------
+	
+	\begin{frame}{Il comando Curl}
+		\textbf{Curl} è un software open source utilizzato per trasferire dati tramite URL.
+		
+		\bigskip
+		
+		Caratteristiche:
+		
+		\begin{itemize}
+			\item disponibile su Windows, Linux e MacOS
+			\item utilizzabile da terminale
+			\item permette di inviare richieste HTTP
+		\end{itemize}
+		
+	\end{frame}
+	
+	%------------------------------------------------
+	
+	\begin{frame}[fragile]{Verifica installazione Curl}
+		
+		Nel terminale digitiamo:
+		
+		\begin{lstlisting}
+			curl --version
+		\end{lstlisting}
+		
+		Il comando mostra la versione installata e i protocolli supportati.
+		
+	\end{frame}
+	
+	%------------------------------------------------
+	
+	\begin{frame}{Web Service di esempio}
+		Supponiamo di avere il servizio:
+		
+		\begin{center}
+			http://localhost:8080/PizzaExpress/api/pizze
+		\end{center}
+		
+		Il servizio gestisce un database di pizze con i seguenti campi:
+		
+		\begin{itemize}
+			\item id
+			\item nome
+			\item prezzo
+		\end{itemize}
+		
+	\end{frame}
+	
+	%------------------------------------------------
+	
+	\begin{frame}[fragile]{Metodo GET}
+		
+		Il metodo \textbf{GET} serve per recuperare le risorse.
+		
+		\bigskip
+		
+		\begin{lstlisting}
+			curl http://localhost:8080/PizzaExpress/api/pizze
+		\end{lstlisting}
+		
+	\end{frame}
+	
+	%------------------------------------------------
+	
+	\begin{frame}[fragile]{Risposta del server}
+		
+		Il server restituisce dati in formato JSON.
+		
+		\begin{lstlisting}
+			{
+				"pizze": [
+				{"id":1, "nome":"Margherita", "prezzo":4.5},
+				{"id":2, "nome":"Prosciutto", "prezzo":6.5},
+				{"id":3, "nome":"Capricciosa", "prezzo":8.0}
+				]
+			}
+		\end{lstlisting}
+		
+	\end{frame}
+	
+	%------------------------------------------------
+	
+	\begin{frame}{Messaggi HTTP}
+		
+		Ogni risposta HTTP contiene uno status code.
+		
+		\bigskip
+		
+		Codici comuni:
+		
+		\begin{itemize}
+			\item 200 OK
+			\item 201 Created
+			\item 204 No Content
+			\item 404 Not Found
+		\end{itemize}
+		
+	\end{frame}
+	
+	%------------------------------------------------
+	
+	\begin{frame}[fragile]{Metodo PUT}
+		
+		Il metodo \textbf{PUT} permette di aggiornare una risorsa.
+		
+		Esempio: aggiornare il prezzo della pizza con id 1.
+		
+		\begin{lstlisting}
+			curl -X PUT http://localhost:8080/PizzaExpress/api/pizze/1 \
+			-H "Content-Type: application/json" \
+			-d '{"prezzo":4.7}'
+		\end{lstlisting}
+		
+	\end{frame}
+	
+	%------------------------------------------------
+	
+	\begin{frame}{Risposta del server}
+		
+		Dopo l'aggiornamento il server restituisce:
+		
+		\begin{itemize}
+			\item codice HTTP 204 (No Content)
+		\end{itemize}
+		
+		Questo indica che la modifica è stata effettuata correttamente.
+		
+	\end{frame}
+	
+	%------------------------------------------------
+	
+	\begin{frame}[fragile]{Metodo POST}
+		
+		Il metodo \textbf{POST} permette di inserire una nuova risorsa.
+		
+		\begin{lstlisting}
+			curl -X POST http://localhost:8080/PizzaExpress/api/pizze \
+			-H "Content-Type: application/json" \
+			-d '{"id":4,"nome":"Fantasia","prezzo":8.5}'
+		\end{lstlisting}
+		
+	\end{frame}
+	
+	%------------------------------------------------
+	
+	\begin{frame}{Risposta POST}
+		
+		Se l'inserimento avviene correttamente il server restituisce:
+		
+		\begin{itemize}
+			\item 201 Created
+		\end{itemize}
+		
+		La nuova pizza viene inserita nel database.
+		
+	\end{frame}
+	
+	%------------------------------------------------
+	
+	\begin{frame}[fragile]{Metodo DELETE}
+		
+		Il metodo DELETE permette di eliminare una risorsa.
+		
+		\begin{lstlisting}
+			curl -X DELETE \
+			http://localhost:8080/PizzaExpress/api/pizze/2
+		\end{lstlisting}
+		
+	\end{frame}
+	
+	%------------------------------------------------
+	
+	\begin{frame}{Risposta DELETE}
+		
+		Se la cancellazione ha successo:
+		
+		\begin{itemize}
+			\item HTTP 204 No Content
+		\end{itemize}
+		
+		Se la risorsa non esiste più:
+		
+		\begin{itemize}
+			\item HTTP 404 Not Found
+		\end{itemize}
+		
+	\end{frame}
+	
+	%------------------------------------------------
+	
+	\begin{frame}{Introduzione a Postman}
+		
+		\textbf{Postman} è una piattaforma grafica per testare API.
+		
+		\bigskip
+		
+		Permette di:
+		
+		\begin{itemize}
+			\item inviare richieste HTTP
+			\item analizzare le risposte
+			\item salvare test
+			\item organizzare collezioni di richieste
+		\end{itemize}
+		
+	\end{frame}
+	
+	%------------------------------------------------
+	
+	\begin{frame}{Richiesta GET con Postman}
+		
+		Procedura:
+		
+		\begin{enumerate}
+			\item Aprire Postman
+			\item Selezionare metodo \textbf{GET}
+			\item Inserire l'URL del servizio
+			\item Premere Send
+		\end{enumerate}
+		
+	\end{frame}
+	
+	%------------------------------------------------
+	
+	\begin{frame}[fragile]{Aggiornamento con PUT}
+		
+		In Postman:
+		
+		\begin{itemize}
+			\item selezionare metodo \textbf{PUT}
+			\item impostare header Content-Type: application/json
+			\item inserire dati JSON nel body
+		\end{itemize}
+		
+		\begin{lstlisting}
+			{
+				"prezzo": 4.7
+			}
+		\end{lstlisting}
+		
+	\end{frame}
+	
+	%------------------------------------------------
+	
+	\begin{frame}[fragile]{Inserimento con POST}
+		
+		Passaggi:
+		
+		\begin{itemize}
+			\item metodo POST
+			\item body in formato JSON
+		\end{itemize}
+		
+		\begin{lstlisting}
+			{
+				"id": 4,
+				"nome": "Fantasia",
+				"prezzo": 8.5
+			}
+		\end{lstlisting}
+		
+	\end{frame}
+	
+	%------------------------------------------------
+	
+	\begin{frame}{Eliminazione con DELETE}
+		
+		Procedura:
+		
+		\begin{itemize}
+			\item metodo DELETE
+			\item indicare l'ID della risorsa
+		\end{itemize}
+		
+		\begin{center}
+			api/pizze/2
+		\end{center}
+		
+	\end{frame}
+	
+	%------------------------------------------------
+	
+	\begin{frame}{Verifica delle modifiche}
+		
+		Dopo aver eseguito le operazioni:
+		
+		\begin{itemize}
+			\item inviamo nuovamente una richiesta GET
+			\item controlliamo i dati restituiti
+		\end{itemize}
+		
+		Questo permette di verificare se le modifiche sono state applicate correttamente.
+		
+	\end{frame}
+	
+	%------------------------------------------------
+	
+	\begin{frame}{Vantaggi di Curl e Postman}
+		
+		\begin{itemize}
+			\item testing rapido delle API
+			\item verifica dei codici HTTP
+			\item debug dei servizi web
+			\item simulazione delle richieste client
+		\end{itemize}
+		
+	\end{frame}
+	
+	%------------------------------------------------
+	
+	\begin{frame}{Conclusioni}
+		
+		Durante lo sviluppo di API REST è fondamentale testare i servizi.
+		
+		\bigskip
+		
+		Curl e Postman consentono di:
+		
+		\begin{itemize}
+			\item inviare richieste HTTP
+			\item analizzare le risposte
+			\item verificare il corretto funzionamento del web service
+		\end{itemize}
+		
+	\end{frame}
+	
+\end{document}
