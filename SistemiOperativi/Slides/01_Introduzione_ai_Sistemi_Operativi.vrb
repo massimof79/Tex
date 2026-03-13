@@ -1,0 +1,13 @@
+\frametitle{CLI}
+	
+	La CLI permette di interagire con il sistema
+	tramite comandi testuali.
+	
+	Esempio Linux:
+	
+	\begin{verbatim}
+		ls
+		cd
+		mkdir
+	\end{verbatim}
+	
