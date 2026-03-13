@@ -1,0 +1,179 @@
+
+\documentclass[a4paper,12pt]{article}
+\usepackage[italian]{babel}
+\usepackage{listings}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+
+\title{Soluzioni - Verifica SQL Bike Sharing}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section*{Soluzioni Query}
+
+\begin{enumerate}
+	
+	\item
+	\begin{verbatim}
+		SELECT nome, cognome
+		FROM CLIENTE
+		ORDER BY cognome, nome;
+	\end{verbatim}
+	
+	\item
+	\begin{verbatim}
+		SELECT idBici, modello, tipo
+		FROM BICI
+		WHERE tipo = 'elettrica'
+		ORDER BY modello, idBici DESC;
+	\end{verbatim}
+	
+	\item
+	\begin{verbatim}
+		SELECT nome, numeroPosti
+		FROM STAZIONE
+		WHERE citta = 'Milano'
+		ORDER BY numeroPosti DESC;
+	\end{verbatim}
+	
+	\item
+	\begin{verbatim}
+		SELECT B.modello, B.tipo, S.nome
+		FROM BICI B
+		JOIN STAZIONE S
+		ON B.idStazione = S.idStazione;
+	\end{verbatim}
+	
+	\item
+	\begin{verbatim}
+		SELECT idStazione, COUNT(*) AS numero_bici
+		FROM BICI
+		GROUP BY idStazione;
+	\end{verbatim}
+	
+	\item
+	\begin{verbatim}
+		SELECT N.idNoleggio, N.dataInizio, C.nome, C.cognome
+		FROM NOLEGGIO N
+		JOIN CLIENTE C
+		ON N.idCliente = C.idCliente;
+	\end{verbatim}
+	
+	\item
+	\begin{verbatim}
+		SELECT B.modello, C.nome, N.dataInizio
+		FROM NOLEGGIO N
+		JOIN CLIENTE C ON N.idCliente = C.idCliente
+		JOIN BICI B ON N.idBici = B.idBici;
+	\end{verbatim}
+	
+	\item
+	\begin{verbatim}
+		SELECT C.nome, C.cognome, COUNT(*) AS numero_noleggi
+		FROM CLIENTE C
+		JOIN NOLEGGIO N ON C.idCliente = N.idCliente
+		GROUP BY C.idCliente, C.nome, C.cognome;
+	\end{verbatim}
+	
+	\item
+	\begin{verbatim}
+		SELECT C.nome, C.cognome
+		FROM CLIENTE C
+		LEFT JOIN NOLEGGIO N
+		ON C.idCliente = N.idCliente
+		WHERE N.idNoleggio IS NULL;
+	\end{verbatim}
+	
+	\item
+	\begin{verbatim}
+		SELECT B.idBici, B.modello
+		FROM BICI B
+		LEFT JOIN NOLEGGIO N
+		ON B.idBici = N.idBici
+		WHERE N.idNoleggio IS NULL;
+	\end{verbatim}
+	
+	\item
+	\begin{verbatim}
+		SELECT idBici, COUNT(*) AS numero_noleggi
+		FROM NOLEGGIO
+		GROUP BY idBici;
+	\end{verbatim}
+	
+	\item
+	\begin{verbatim}
+		SELECT S.nome, COUNT(B.idBici) AS numero_bici
+		FROM STAZIONE S
+		JOIN BICI B
+		ON S.idStazione = B.idStazione
+		GROUP BY S.idStazione, S.nome
+		HAVING COUNT(B.idBici) > 3;
+	\end{verbatim}
+	
+	\item
+	\begin{verbatim}
+		SELECT C.nome, C.cognome, COUNT(*) AS numero_noleggi
+		FROM CLIENTE C
+		JOIN NOLEGGIO N
+		ON C.idCliente = N.idCliente
+		GROUP BY C.idCliente, C.nome, C.cognome
+		HAVING COUNT(*) >= 2;
+	\end{verbatim}
+	
+	\item
+	\begin{verbatim}
+		SELECT DISTINCT B.modello
+		FROM BICI B
+		JOIN NOLEGGIO N ON B.idBici = N.idBici
+		LEFT JOIN MANUTENZIONE M ON B.idBici = M.idBici
+		WHERE M.idManutenzione IS NULL;
+	\end{verbatim}
+	
+	\item
+	\begin{verbatim}
+		SELECT idBici, COUNT(*) AS numero_noleggi
+		FROM NOLEGGIO
+		GROUP BY idBici
+		ORDER BY numero_noleggi DESC
+		LIMIT 1;
+	\end{verbatim}
+	
+\end{enumerate}
+
+\section*{DDL}
+
+\begin{verbatim}
+CREATE TABLE CLIENTE (
+ idCliente INT PRIMARY KEY,
+ nome VARCHAR(50),
+ cognome VARCHAR(50),
+ email VARCHAR(100),
+ citta VARCHAR(50)
+);
+
+CREATE TABLE NOLEGGIO (
+ idNoleggio INT PRIMARY KEY,
+ dataInizio DATE,
+ dataFine DATE,
+ idCliente INT,
+ FOREIGN KEY (idCliente)
+ REFERENCES CLIENTE(idCliente)
+);
+\end{verbatim}
+
+\section*{Vista}
+
+\begin{verbatim}
+CREATE VIEW vista_noleggi_clienti AS
+SELECT C.nome,
+       C.cognome,
+       B.modello,
+       N.dataInizio
+FROM NOLEGGIO N
+JOIN CLIENTE C ON N.idCliente=C.idCliente
+JOIN BICI B ON N.idBici=B.idBici;
+\end{verbatim}
+
+\end{document}
