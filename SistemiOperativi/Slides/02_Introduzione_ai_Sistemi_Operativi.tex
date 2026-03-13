@@ -1,0 +1,370 @@
+\documentclass{beamer}
+
+\usetheme{Madrid}
+\usecolortheme{seahorse}
+
+\usepackage{graphicx}
+
+\title{Sistemi Operativi}
+\subtitle{Concetti base e architettura}
+\author{Prof. Fedeli Massimo - Fabbrica Digitale}
+\date{}
+
+\begin{document}
+	
+	\frame{\titlepage}
+	
+	%------------------------------------------------
+	\begin{frame}
+		\frametitle{Sommario}
+		
+		\begin{itemize}
+			\item Funzionamento di un calcolatore
+			\item Obiettivi e funzioni di un sistema operativo
+			\item Implementazione e avvio del sistema operativo
+			\item Concetti di base sui sistemi operativi
+			\item Servizi di un sistema operativo
+			\item Funzionamento event-driven e dual mode
+			\item Servizi e chiamate di sistema
+			\item Programmi di sistema
+			\item Struttura di un sistema operativo
+		\end{itemize}
+		
+	\end{frame}
+	
+	%------------------------------------------------
+	\section{Funzionamento di un calcolatore}
+	
+	\begin{frame}
+		\frametitle{Funzionamento di un calcolatore}
+		
+		\begin{itemize}
+			\item Un calcolatore è composto da una CPU e diversi controllori di dispositivi
+			\item Comunicano tramite un bus
+			\item Operano in modo concorrente contendendo l’accesso alla memoria centrale
+		\end{itemize}
+		
+		\begin{center}
+			\includegraphics[width=0.7\textwidth]{figures/calcolatore_architettura}
+		\end{center}
+		
+	\end{frame}
+	
+	%------------------------------------------------
+	
+	\begin{frame}
+		\frametitle{I/O e trasferimento dati}
+		
+		\begin{itemize}
+			\item L'I/O avviene tra il dispositivo e il buffer locale del controller
+			\item La CPU guida poi lo spostamento dei dati sul bus
+			\item I dati vengono trasferiti tra buffer dei controller e memoria centrale
+		\end{itemize}
+		
+		\begin{center}
+			\includegraphics[width=0.7\textwidth]{figures/io_controller}
+		\end{center}
+		
+	\end{frame}
+	
+	%------------------------------------------------
+	
+	\begin{frame}
+		\frametitle{Organizzazione della memoria}
+		
+		\begin{center}
+			\includegraphics[width=0.7\textwidth]{figures/memory_hierarchy}
+		\end{center}
+		
+	\end{frame}
+	
+	%------------------------------------------------
+	
+	\begin{frame}
+		\frametitle{Tecniche di I/O}
+		
+		\begin{enumerate}
+			\item I/O programmato
+			\item I/O tramite interrupt
+			\item I/O con DMA
+			\item I/O con canali
+		\end{enumerate}
+		
+		\begin{center}
+			\includegraphics[width=0.7\textwidth]{figures/io_techniques}
+		\end{center}
+		
+	\end{frame}
+	
+	%------------------------------------------------
+	\section{Obiettivi di un sistema operativo}
+	
+	\begin{frame}
+		\frametitle{Obiettivi di un sistema operativo}
+		
+		\textbf{Astrazione}
+		
+		\begin{itemize}
+			\item Alzare il livello di astrazione dei componenti hardware
+			\item Semplificare l’uso del sistema
+			\item Rendere più semplice programmare applicazioni
+		\end{itemize}
+		
+		\begin{center}
+			\includegraphics[width=0.7\textwidth]{figures/os_abstraction}
+		\end{center}
+		
+	\end{frame}
+	
+	%------------------------------------------------
+	
+	\begin{frame}
+		\frametitle{Virtualizzazione}
+		
+		\begin{itemize}
+			\item Creazione di un’immagine del sistema dedicata a ogni programma
+			\item Indipendenza dalla presenza di altri programmi
+			\item Gestione ottimizzata delle risorse
+			\item Allocazione e condivisione ordinata delle risorse
+		\end{itemize}
+		
+	\end{frame}
+	
+	%------------------------------------------------
+	\section{Funzioni del sistema operativo}
+	
+	\begin{frame}
+		\frametitle{Gestione dei processi}
+		
+		\begin{itemize}
+			\item Creazione e terminazione dei processi
+			\item Sospensione e riattivazione
+			\item Scheduling della CPU
+			\item Sincronizzazione tra processi
+			\item Gestione dei deadlock
+			\item Comunicazione tra processi
+		\end{itemize}
+		
+	\end{frame}
+	
+	%------------------------------------------------
+	
+	\begin{frame}
+		\frametitle{Gestione della memoria}
+		
+		\begin{itemize}
+			\item Allocazione e deallocazione della memoria
+			\item Multiprogrammazione
+			\item Caricamento dei processi
+			\item Protezione della memoria
+		\end{itemize}
+		
+	\end{frame}
+	
+	%------------------------------------------------
+	
+	\begin{frame}
+		\frametitle{Gestione delle periferiche}
+		
+		\begin{itemize}
+			\item Interazione uniforme con hardware eterogeneo
+			\item Inizializzazione dei dispositivi
+			\item Gestione ottimizzata dell'I/O
+			\item Buffering e caching
+		\end{itemize}
+		
+	\end{frame}
+	
+	%------------------------------------------------
+	
+	\begin{frame}
+		\frametitle{Gestione del file system}
+		
+		\begin{itemize}
+			\item File e directory
+			\item Creazione e cancellazione file
+			\item Lettura e scrittura
+			\item Copia e ricerca
+			\item Protezione e sicurezza
+		\end{itemize}
+		
+	\end{frame}
+	
+	%------------------------------------------------
+	\section{Avvio del sistema operativo}
+	
+	\begin{frame}
+		\frametitle{Boot del sistema operativo}
+		
+		Passi principali:
+		
+		\begin{enumerate}
+			\item Accensione
+			\item Esecuzione BIOS
+			\item Bootstrap loader
+			\item Caricamento kernel
+			\item Avvio del sistema operativo
+		\end{enumerate}
+		
+	\end{frame}
+	
+	%------------------------------------------------
+	
+	\begin{frame}
+		\frametitle{Boot loader moderni}
+		
+		GNU GRUB è uno dei boot loader più diffusi nei sistemi Linux.
+		
+		\begin{itemize}
+			\item Cerca i sistemi operativi disponibili
+			\item Mostra una schermata di selezione
+			\item Avvia il sistema scelto
+		\end{itemize}
+		
+		\begin{center}
+			\includegraphics[width=0.6\textwidth]{figures/grub}
+		\end{center}
+		
+	\end{frame}
+	
+	%------------------------------------------------
+	\section{Dual Mode}
+	
+	\begin{frame}
+		\frametitle{Dual Mode}
+		
+		La CPU può operare in due modalità:
+		
+		\begin{itemize}
+			\item User mode
+			\item Kernel mode
+		\end{itemize}
+		
+		Il bit di modalità nel registro PSW indica lo stato.
+		
+	\end{frame}
+	
+	%------------------------------------------------
+	\section{Interrupt}
+	
+	\begin{frame}
+		\frametitle{Interruzioni}
+		
+		\begin{itemize}
+			\item Interrupt hardware
+			\item System call
+			\item Trap ed eccezioni
+		\end{itemize}
+		
+		\begin{center}
+			\includegraphics[width=0.7\textwidth]{figures/interrupt_flow}
+		\end{center}
+		
+	\end{frame}
+	
+	%------------------------------------------------
+	\section{System Call}
+	
+	\begin{frame}
+		\frametitle{Chiamate di sistema}
+		
+		Le system call permettono ai programmi utente
+		di richiedere servizi al sistema operativo.
+		
+		\begin{itemize}
+			\item gestione file
+			\item gestione processi
+			\item comunicazione
+		\end{itemize}
+		
+	\end{frame}
+	
+	%------------------------------------------------
+	
+	\begin{frame}
+		\frametitle{Esempio}
+		
+		Un programma C può usare:
+		
+		\begin{verbatim}
+			printf("Hello");
+		\end{verbatim}
+		
+		che internamente invoca la system call
+		
+		\begin{verbatim}
+			write()
+		\end{verbatim}
+		
+	\end{frame}
+	
+	%------------------------------------------------
+	\section{Struttura dei sistemi operativi}
+	
+	\begin{frame}
+		\frametitle{Strutture dei sistemi operativi}
+		
+		Principali architetture:
+		
+		\begin{itemize}
+			\item sistema monolitico
+			\item sistema stratificato
+			\item microkernel
+			\item moduli
+			\item macchine virtuali
+			\item client-server
+		\end{itemize}
+		
+	\end{frame}
+	
+	%------------------------------------------------
+	
+	\begin{frame}
+		\frametitle{Microkernel}
+		
+		Il microkernel mantiene nel kernel solo funzioni essenziali:
+		
+		\begin{itemize}
+			\item gestione processi
+			\item memoria
+			\item comunicazione
+		\end{itemize}
+		
+		Altre funzioni sono implementate come processi.
+		
+	\end{frame}
+	
+	%------------------------------------------------
+	
+	\begin{frame}
+		\frametitle{Macchine virtuali}
+		
+		Una macchina virtuale crea un ambiente hardware simulato.
+		
+		Vantaggi:
+		
+		\begin{itemize}
+			\item isolamento
+			\item sicurezza
+			\item esecuzione di più sistemi operativi
+		\end{itemize}
+		
+	\end{frame}
+	
+	%------------------------------------------------
+	
+	\begin{frame}
+		\frametitle{Conclusioni}
+		
+		Caratteristiche dei sistemi operativi moderni:
+		
+		\begin{itemize}
+			\item microkernel
+			\item multi-threading
+			\item multi-processing
+			\item sistemi distribuiti
+		\end{itemize}
+		
+	\end{frame}
+	
+\end{document}
