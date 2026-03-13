@@ -1,0 +1,74 @@
+CREATE TABLE STUDENTE(
+idStudente INT PRIMARY KEY,
+nome VARCHAR(40),
+cognome VARCHAR(40),
+annoIscrizione INT,
+corsoITS VARCHAR(50)
+);
+
+CREATE TABLE AZIENDA(
+idAzienda INT PRIMARY KEY,
+ragioneSociale VARCHAR(80),
+città VARCHAR(50),
+settore VARCHAR(50)
+);
+
+CREATE TABLE TUTOR_AZIENDA(
+idTutorAz INT PRIMARY KEY,
+nome VARCHAR(40),
+cognome VARCHAR(40),
+idAzienda INT,
+FOREIGN KEY(idAzienda) REFERENCES AZIENDA(idAzienda)
+);
+
+CREATE TABLE TUTOR_ACCADEMICO(
+idTutorAcc INT PRIMARY KEY,
+nome VARCHAR(40),
+cognome VARCHAR(40),
+dipartimento VARCHAR(50)
+);
+
+CREATE TABLE COMPETENZA(
+idCompetenza INT PRIMARY KEY,
+nomeCompetenza VARCHAR(60)
+);
+
+CREATE TABLE PROGETTO_STAGE(
+idProgetto INT PRIMARY KEY,
+titolo VARCHAR(80),
+durataMesi INT,
+idAzienda INT,
+FOREIGN KEY(idAzienda) REFERENCES AZIENDA(idAzienda)
+);
+
+CREATE TABLE STAGE(
+idStage INT PRIMARY KEY,
+idStudente INT,
+idProgetto INT,
+idTutorAz INT,
+idTutorAcc INT,
+dataInizio DATE,
+dataFine DATE,
+valutazione INT,
+FOREIGN KEY(idStudente) REFERENCES STUDENTE(idStudente),
+FOREIGN KEY(idProgetto) REFERENCES PROGETTO_STAGE(idProgetto),
+FOREIGN KEY(idTutorAz) REFERENCES TUTOR_AZIENDA(idTutorAz),
+FOREIGN KEY(idTutorAcc) REFERENCES TUTOR_ACCADEMICO(idTutorAcc)
+);
+
+CREATE TABLE STUDENTE_COMPETENZA(
+idStudente INT,
+idCompetenza INT,
+livello INT,
+PRIMARY KEY(idStudente,idCompetenza),
+FOREIGN KEY(idStudente) REFERENCES STUDENTE(idStudente),
+FOREIGN KEY(idCompetenza) REFERENCES COMPETENZA(idCompetenza)
+);
+
+CREATE TABLE PROGETTO_COMPETENZA(
+idProgetto INT,
+idCompetenza INT,
+PRIMARY KEY(idProgetto,idCompetenza),
+FOREIGN KEY(idProgetto) REFERENCES PROGETTO_STAGE(idProgetto),
+FOREIGN KEY(idCompetenza) REFERENCES COMPETENZA(idCompetenza)
+);

@@ -1,0 +1,97 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[italian]{babel}
+\usepackage{geometry}
+\usepackage{listings}
+\geometry{margin=2.5cm}
+
+\title{Verifica Scritta – Basi di Dati (ITS)}
+\author{Prof. Fedeli Massimo}
+\date{}
+
+\begin{document}
+	
+	\maketitle
+	
+	Si consideri il seguente schema logico per la gestione degli stage di un corso ITS.
+	
+	\bigskip
+	
+	STUDENTE(\underline{idStudente}, nome, cognome, annoIscrizione, corsoITS)
+	
+	AZIENDA(\underline{idAzienda}, ragioneSociale, città, settore)
+	
+	TUTORAZIENDA(\underline{idTutorAz}, nome, cognome, idAzienda)
+	
+	TUTORACCADEMICO(\underline{idTutorAcc}, nome, cognome, dipartimento)
+	
+	COMPETENZA(\underline{idCompetenza}, nomeCompetenza)
+	
+	PROGETTOSTAGE(\underline{idProgetto}, titolo, durataMesi, idAzienda)
+	
+	STAGE(\underline{idStage}, idStudente, idProgetto, idTutorAz, idTutorAcc, dataInizio, dataFine, valutazione)
+	
+	STUDENTECOMPETENZA(\underline{idStudente}, \underline{idCompetenza}, livello)
+	
+	PROGETTOCOMPETENZA(\underline{idProgetto}, \underline{idCompetenza})
+	
+	\bigskip
+	
+	\section*{Parte 1 – Query SQL}
+	
+	Scrivere le seguenti query SQL.
+	
+	\begin{enumerate}
+		
+		\item Elencare tutti gli studenti.
+		\item Elencare gli studenti iscritti dopo il 2022.
+		\item Elencare le aziende del settore `Software''.
+		\item Elencare i progetti di stage con durata maggiore di 6 mesi.
+		\item Mostrare studenti e azienda presso cui svolgono lo stage.
+		\item Elencare gli studenti che hanno svolto almeno uno stage.
+		\item Elencare gli studenti che non hanno svolto stage.
+		\item Mostrare il numero di stage per ogni azienda.
+		\item Calcolare la valutazione media degli stage per ogni studente.
+		\item Elencare le aziende che hanno ospitato più di 3 stage.
+		\item Mostrare i tutor aziendali con il numero di stage seguiti.
+		\item Elencare le competenze possedute dallo studente con idStudente=1.
+		\item Elencare i progetti che richiedono la competenza `Java''.
+		\item Elencare gli studenti che possiedono la competenza ``SQL''.
+		\item Mostrare gli studenti che hanno svolto stage in aziende di città diverse.
+		\item Elencare le aziende che non hanno progetti di stage.
+		\item Calcolare la durata media dei progetti per azienda.
+		\item Elencare gli studenti con valutazione media stage maggiore di 27.
+		\item Mostrare il tutor accademico che segue più stage.
+		\item Elencare i progetti con il numero di studenti coinvolti.
+		\item Mostrare la competenza più richiesta nei progetti.
+		\item Elencare gli studenti che possiedono tutte le competenze richieste da un progetto.
+		\item Elencare gli studenti che hanno lavorato con più tutor aziendali diversi.
+		\item Mostrare la valutazione massima registrata negli stage.
+		\item Elencare gli studenti con la media valutazioni più alta.
+		
+	\end{enumerate}
+	
+	\section*{Parte 2 – DDL}
+	
+	Scrivere il codice SQL per creare la tabella:
+	
+	AULA(idAula, edificio, capienza)
+	
+	con i seguenti vincoli:
+	
+	\begin{itemize}
+		\item chiave primaria
+		\item attributi obbligatori
+		\item capienza maggiore di zero
+	\end{itemize}
+	
+	\section*{Parte 3 – Vista}
+	
+	Creare una vista chiamata:
+	
+	STUDENTIVALUTAZIONE
+	
+	contenente:
+	
+	idStudente, nome, cognome, mediaValutazioneStage.
+	
+\end{document}
