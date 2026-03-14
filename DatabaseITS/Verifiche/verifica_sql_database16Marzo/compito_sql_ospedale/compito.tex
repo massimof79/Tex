@@ -1,0 +1,112 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[italian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+
+\title{Verifica di Basi di Dati -- SQL}
+\author{Prof. Fedeli Massimo -- Fabbrica Digitale}
+\date{16/03/2026}
+
+\begin{document}
+	
+	\maketitle
+	
+	\section*{Schema Logico}
+	
+	PAZIENTI(\underline{id\_paziente}, nome, cognome, data\_nascita, citt\`a)
+	
+	MEDICI(\underline{id\_medico}, nome, cognome, specializzazione)
+	
+	REPARTI(\underline{id\_reparto}, nome\_reparto, piano, id\_medico)
+	
+	RICOVERI(\underline{id\_paziente}, \underline{id\_reparto}, data\_ricovero)
+	
+	VISITE(\underline{id\_paziente}, \underline{id\_medico}, voto, data\_visita)
+	
+	
+	\section*{Parte 1 -- Query SQL}
+	
+	Scrivere le query SQL per le seguenti richieste.
+	
+	\begin{enumerate}
+		
+\item Elencare nome, cognome e città di residenza dei pazienti
+nati dopo il 1980, ordinati per data di nascita decrescente.
+
+\item Elencare i reparti situati ai piani 2 o 3, mostrando
+il nome del reparto, il piano e il numero totale di pazienti
+attualmente ricoverati in ciascuno.
+
+\item Elencare nome e cognome dei pazienti residenti a Roma
+o Milano che hanno effettuato almeno una visita con
+valutazione superiore a 7.
+		
+		\item Elencare i pazienti ordinati per cognome e nome.
+		
+		\item Elencare i reparti con il nome del medico responsabile.
+		
+		\item Elencare i pazienti che hanno effettuato almeno una visita.
+		
+		\item Elencare i pazienti che hanno ricevuto almeno una valutazione maggiore o uguale a 8.
+		
+		\item Calcolare la valutazione media per ogni reparto.
+		
+		\item Elencare i pazienti che hanno effettuato pi\`u di 2 visite.
+		
+		\item Elencare i medici che seguono pi\`u di un reparto.
+		
+		\item Elencare i reparti che non hanno ancora visite registrate.
+		
+		\item Trovare il paziente con la media delle valutazioni pi\`u alta.
+		
+		\item Elencare i pazienti ricoverati in tutti i reparti a cui sono assegnati.
+		
+		\item Elencare il numero di pazienti ricoverati in ciascun reparto.
+		
+		\item Trovare il reparto con la valutazione media pi\`u alta.
+		
+	\end{enumerate}
+	
+	
+	\section*{Parte 2 -- INSERT}
+	
+	Inserire un nuovo paziente:
+	Mario Rossi, nato il 15 marzo 2000, residente a Bologna.
+	
+	
+	\section*{Parte 3 -- UPDATE}
+	
+	Aggiornare il piano del reparto ``Cardiologia'' portandolo al piano 3.
+	
+
+\section*{Parte 4 -- SQL DDL}
+
+Scrivere le istruzioni SQL per creare le seguenti tabelle:
+
+SALE(\underline{id\_sala}, edificio, capienza)
+
+INTERVENTI(\underline{id\_intervento}, descrizione,
+data\_intervento, id\_sala, id\_medico)
+
+Vincoli:
+\begin{itemize}
+	\item \texttt{id\_sala} e \texttt{id\_intervento} chiavi primarie
+	\item \texttt{capienza} $> 0$
+	\item \texttt{id\_sala} in INTERVENTI chiave esterna verso SALE
+	\item \texttt{id\_medico} in INTERVENTI chiave esterna verso MEDICI
+	\item \texttt{data\_intervento} non può essere NULL
+\end{itemize}
+		
+	\section*{Parte 5 -- Viste}
+	
+	Creare una vista chiamata \texttt{media\_pazienti} che mostri:
+	\begin{itemize}
+		\item \texttt{id\_paziente}
+		\item \texttt{nome}
+		\item \texttt{cognome}
+		\item media delle valutazioni
+	\end{itemize}
+	
+\end{document}

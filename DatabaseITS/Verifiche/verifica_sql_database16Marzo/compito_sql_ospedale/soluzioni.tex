@@ -1,0 +1,307 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[italian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+
+\title{Verifica di Basi di Dati -- SQL}
+\author{Prof. Fedeli Massimo -- Fabbrica Digitale}
+\date{16/03/2026}
+
+\begin{document}
+	
+	\maketitle
+	
+	\section*{Schema Logico}
+	
+	PAZIENTI(\underline{id\_paziente}, nome, cognome, data\_nascita, citt\`a)
+	
+	MEDICI(\underline{id\_medico}, nome, cognome, specializzazione)
+	
+	REPARTI(\underline{id\_reparto}, nome\_reparto, piano, id\_medico)
+	
+	RICOVERI(\underline{id\_paziente}, \underline{id\_reparto}, data\_ricovero)
+	
+	VISITE(\underline{id\_paziente}, \underline{id\_medico}, voto, data\_visita)
+	
+	
+	\section*{Parte 1 -- Query SQL}
+	
+	Scrivere le query SQL per le seguenti richieste.
+	
+	\begin{enumerate}
+		
+		\item Elencare nome e cognome di tutti i pazienti.
+		
+		\item Elencare tutti i reparti con il relativo piano.
+		
+		\item Elencare i pazienti residenti a Roma.
+		
+		\item Elencare i pazienti ordinati per cognome e nome.
+		
+		\item Elencare i reparti con il nome del medico responsabile.
+		
+		\item Elencare i pazienti che hanno effettuato almeno una visita.
+		
+		\item Elencare i pazienti che hanno ricevuto almeno una valutazione maggiore o uguale a 8.
+		
+		\item Calcolare la valutazione media per ogni reparto.
+		
+		\item Elencare i pazienti che hanno effettuato pi\`u di 2 visite.
+		
+		\item Elencare i medici che seguono pi\`u di un reparto.
+		
+		\item Elencare i reparti che non hanno ancora visite registrate.
+		
+		\item Trovare il paziente con la media delle valutazioni pi\`u alta.
+		
+		\item Elencare i pazienti ricoverati in tutti i reparti a cui sono assegnati.
+		
+		\item Elencare il numero di pazienti ricoverati in ciascun reparto.
+		
+		\item Trovare il reparto con la valutazione media pi\`u alta.
+		
+	\end{enumerate}
+	
+	
+	\section*{Parte 2 -- INSERT}
+	
+	Inserire un nuovo paziente:
+	Mario Rossi, nato il 15 marzo 2000, residente a Bologna.
+	
+	
+	\section*{Parte 3 -- UPDATE}
+	
+	Aggiornare il piano del reparto ``Cardiologia'' portandolo al piano 3.
+	
+
+	\section*{Parte 4 -- SQL DDL}
+	
+	Scrivere l'istruzione SQL per creare la tabella:
+	
+	SALE(\underline{id\_sala}, edificio, capienza)
+	
+	Vincoli:
+	\begin{itemize}
+		\item \texttt{id\_sala} chiave primaria
+		\item \texttt{capienza} $> 0$
+	\end{itemize}
+		
+	\section*{Parte 5 -- Viste}
+	
+	Creare una vista chiamata \texttt{media\_pazienti} che mostri:
+	\begin{itemize}
+		\item \texttt{id\_paziente}
+		\item \texttt{nome}
+		\item \texttt{cognome}
+		\item media delle valutazioni
+	\end{itemize}
+	
+	
+	\newpage
+	\section*{SOLUZIONI}
+	
+	\subsection*{Parte 1 -- Query SQL}
+	
+	\begin{enumerate}
+		
+\item Elencare nome, cognome e città dei pazienti nati dopo
+il 1980, ordinati per data di nascita decrescente.
+\begin{verbatim}
+	SELECT nome, cognome, citta
+	FROM PAZIENTI
+	WHERE data_nascita > '1980-12-31'
+	ORDER BY data_nascita DESC;
+\end{verbatim}
+
+\item Elencare i reparti ai piani 2 o 3 con il numero
+di pazienti ricoverati.
+\begin{verbatim}
+	SELECT R.nome_reparto, R.piano,
+	COUNT(RC.id_paziente) AS num_pazienti
+	FROM REPARTI R
+	LEFT JOIN RICOVERI RC ON R.id_reparto = RC.id_reparto
+	WHERE R.piano IN (2, 3)
+	GROUP BY R.id_reparto, R.nome_reparto, R.piano;
+\end{verbatim}
+
+\item Elencare i pazienti di Roma o Milano con almeno
+una visita con valutazione superiore a 7.
+\begin{verbatim}
+	SELECT DISTINCT P.nome, P.cognome
+	FROM PAZIENTI P
+	JOIN VISITE V ON P.id_paziente = V.id_paziente
+	WHERE P.citta IN ('Roma', 'Milano')
+	AND V.voto > 7;
+\end{verbatim}
+		
+		\item Elencare i pazienti ordinati per cognome e nome.
+		\begin{verbatim}
+			SELECT nome, cognome
+			FROM PAZIENTI
+			ORDER BY cognome, nome;
+		\end{verbatim}
+		
+		\item Elencare i reparti con il nome del medico responsabile.
+		\begin{verbatim}
+			SELECT R.nome_reparto, M.nome, M.cognome
+			FROM REPARTI R
+			JOIN MEDICI M ON R.id_medico = M.id_medico;
+		\end{verbatim}
+		
+		\item Elencare i pazienti che hanno effettuato almeno una visita.
+		\begin{verbatim}
+			SELECT DISTINCT P.nome, P.cognome
+			FROM PAZIENTI P
+			JOIN VISITE V ON P.id_paziente = V.id_paziente;
+		\end{verbatim}
+		
+		\item Elencare i pazienti che hanno ricevuto almeno una
+		valutazione maggiore o uguale a 8.
+		\begin{verbatim}
+			SELECT DISTINCT P.nome, P.cognome
+			FROM PAZIENTI P
+			JOIN VISITE V ON P.id_paziente = V.id_paziente
+			WHERE V.voto >= 8;
+		\end{verbatim}
+		
+		\item Calcolare la valutazione media per ogni reparto.
+		\begin{verbatim}
+			SELECT R.nome_reparto, AVG(V.voto) AS media_valutazione
+			FROM REPARTI R
+			JOIN VISITE V ON R.id_reparto = V.id_medico
+			GROUP BY R.id_reparto, R.nome_reparto;
+		\end{verbatim}
+		
+		\item Elencare i pazienti che hanno effettuato più di 2 visite.
+		\begin{verbatim}
+			SELECT P.nome, P.cognome, COUNT(*) AS num_visite
+			FROM PAZIENTI P
+			JOIN VISITE V ON P.id_paziente = V.id_paziente
+			GROUP BY P.id_paziente, P.nome, P.cognome
+			HAVING COUNT(*) > 2;
+		\end{verbatim}
+		
+		\item Elencare i medici che seguono più di un reparto.
+		\begin{verbatim}
+			SELECT M.nome, M.cognome, COUNT(*) AS num_reparti
+			FROM MEDICI M
+			JOIN REPARTI R ON M.id_medico = R.id_medico
+			GROUP BY M.id_medico, M.nome, M.cognome
+			HAVING COUNT(*) > 1;
+		\end{verbatim}
+		
+		\item Elencare i reparti che non hanno ancora visite registrate.
+		\begin{verbatim}
+			SELECT R.nome_reparto
+			FROM REPARTI R
+			LEFT JOIN RICOVERI RC ON R.id_reparto = RC.id_reparto
+			LEFT JOIN VISITE V ON RC.id_paziente = V.id_paziente
+			WHERE V.id_paziente IS NULL;
+		\end{verbatim}
+		
+		\item Trovare il paziente con la media valutazioni più alta.
+		\begin{verbatim}
+			SELECT P.nome, P.cognome, AVG(V.voto) AS media
+			FROM PAZIENTI P
+			JOIN VISITE V ON P.id_paziente = V.id_paziente
+			GROUP BY P.id_paziente, P.nome, P.cognome
+			ORDER BY media DESC
+			LIMIT 1;
+		\end{verbatim}
+		
+		\item Elencare i pazienti ricoverati in tutti i reparti
+		a cui sono assegnati.
+		\begin{verbatim}
+					SELECT P.nome, P.cognome
+					FROM PAZIENTI P
+					JOIN RICOVERI RC ON P.id_paziente = RC.id_paziente
+					JOIN VISITE V ON P.id_paziente = V.id_paziente
+					GROUP BY P.id_paziente, P.nome, P.cognome
+					HAVING COUNT(DISTINCT V.id_medico) = (
+					SELECT COUNT(*)
+					FROM RICOVERI RC2
+					WHERE RC2.id_paziente = P.id_paziente
+					);
+		\end{verbatim}
+		
+		\item Elencare il numero di pazienti ricoverati
+		in ciascun reparto.
+		\begin{verbatim}
+			SELECT R.nome_reparto, COUNT(RC.id_paziente) AS num_pazienti
+			FROM REPARTI R
+			LEFT JOIN RICOVERI RC ON R.id_reparto = RC.id_reparto
+			GROUP BY R.id_reparto, R.nome_reparto;
+		\end{verbatim}
+		
+		\item Trovare il reparto con la valutazione media più alta.
+		\begin{verbatim}
+			SELECT R.nome_reparto, AVG(V.voto) AS media
+			FROM REPARTI R
+			JOIN RICOVERI RC ON R.id_reparto = RC.id_reparto
+			JOIN VISITE V ON RC.id_paziente = V.id_paziente
+			GROUP BY R.id_reparto, R.nome_reparto
+			ORDER BY media DESC
+			LIMIT 1;
+		\end{verbatim}
+		
+	\end{enumerate}
+	
+	\noindent\rule{\linewidth}{0.4pt}
+	
+	\subsection*{Parte 2 -- INSERT}
+	
+	\begin{verbatim}
+		INSERT INTO PAZIENTI (nome, cognome, data_nascita, città)
+		VALUES ('Mario', 'Rossi', '2000-03-15', 'Bologna');
+	\end{verbatim}
+	
+	\noindent\rule{\linewidth}{0.4pt}
+	
+	\subsection*{Parte 3 -- UPDATE}
+	
+	\begin{verbatim}
+		UPDATE REPARTI
+		SET piano = 3
+		WHERE nome_reparto = 'Cardiologia';
+	\end{verbatim}
+	
+	\noindent\rule{\linewidth}{0.4pt}
+	
+	\subsection*{Parte 4 -- SQL DDL}
+	
+\begin{verbatim}
+	CREATE TABLE SALE (
+	id_sala     INT          PRIMARY KEY,
+	edificio    VARCHAR(50)  NOT NULL,
+	capienza    INT          NOT NULL CHECK (capienza > 0)
+	);
+	
+	CREATE TABLE INTERVENTI (
+	id_intervento    INT          PRIMARY KEY,
+	descrizione      VARCHAR(100) NOT NULL,
+	data_intervento  DATE         NOT NULL,
+	id_sala          INT          NOT NULL,
+	id_medico        INT          NOT NULL,
+	FOREIGN KEY (id_sala)    REFERENCES SALE(id_sala),
+	FOREIGN KEY (id_medico)  REFERENCES MEDICI(id_medico)
+	);
+\end{verbatim}
+	
+	\noindent\rule{\linewidth}{0.4pt}
+	
+	\subsection*{Parte 5 -- Viste}
+	
+	\begin{verbatim}
+		CREATE VIEW media_pazienti AS
+		SELECT P.id_paziente, P.nome, P.cognome,
+		AVG(V.voto) AS media_valutazioni
+		FROM PAZIENTI P
+		JOIN VISITE V ON P.id_paziente = V.id_paziente
+		GROUP BY P.id_paziente, P.nome, P.cognome;
+	\end{verbatim}
+	
+	
+	
+\end{document}
