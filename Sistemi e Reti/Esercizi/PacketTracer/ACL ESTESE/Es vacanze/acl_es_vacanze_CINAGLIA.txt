@@ -1,0 +1,29 @@
+ROUTER C
+access-list 100 deny tcp host 192.168.2.13 host 192.168.0.4 eq 23
+access-list 100 deny tcp host 192.168.2.13 host 192.168.0.5 eq 23
+access-list 100 deny tcp host 192.168.2.13 host 192.168.0.6 eq 23
+access-list 100 deny tcp host 192.168.2.13 host 192.168.0.2 eq 23
+
+access-list 100 permit tcp host 192.168.2.54 host 192.168.0.4 eq 3306 
+access-list 100 deny tcp 192.168.2.0 0.0.0.255 host 192.168.0.4 eq 3306 
+
+access-list 100 permit tcp host 192.168.2.54 host 192.168.0.2 eq 53
+access-list 100 permit udp host 192.168.2.54 host 192.168.0.2 eq 53
+access-list 100 deny tcp 192.168.2.0 0.0.0.255 host 192.168.0.2 eq 53
+access-list 100 deny udp 192.168.2.0 0.0.0.255 host 192.168.0.2 eq 53
+
+
+access-list 100 permit ip any any
+
+
+interface FastEthernet0/0
+	ip access-group 100 in
+
+
+ROUTER A
+access-list 100 deny tcp host 192.168.0.6 host 192.168.0.2 eq 53
+access-list 100 deny udp host 192.168.0.6 host 192.168.0.2 eq 53
+access-list 100 permit ip any any
+
+interface FastEthernet0/0
+	ip access-group 100 in
