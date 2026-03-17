@@ -1,0 +1,259 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[italian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{geometry}
+\usepackage{listings}
+\usepackage{longtable}
+\geometry{margin=2.5cm}
+
+\title{Clustering}
+\author{Prof. Fedeli Massimo}
+\date{}
+
+\lstset{
+	basicstyle=\ttfamily\small,
+	frame=single,
+	breaklines=true
+}
+
+\begin{document}
+	
+	\maketitle
+	\tableofcontents
+	\newpage
+	
+	\section{Introduzione al Clustering}
+	
+	Il clustering è una delle tecniche fondamentali del machine learning non supervisionato. A differenza dei modelli supervisionati, non si dispone di etichette, e l'obiettivo è individuare strutture latenti nei dati.
+	
+	\subsection{Perché è importante}
+	
+	\begin{itemize}
+		\item Analisi esplorativa dei dati
+		\item Segmentazione clienti
+		\item Compressione dell'informazione
+		\item Rilevazione anomalie
+	\end{itemize}
+	
+	\subsection{Esempio concreto}
+	
+	Un'azienda di e-commerce vuole dividere i clienti in gruppi. I dati disponibili sono:
+	\begin{itemize}
+		\item età
+		\item spesa media
+		\item frequenza acquisti
+	\end{itemize}
+	
+	Il clustering consente di individuare gruppi con comportamenti simili.
+	
+	\section{Preparazione dei dati}
+	
+	\subsection{Normalizzazione}
+	
+	\begin{lstlisting}[language=Python]
+		from sklearn.preprocessing import StandardScaler
+		X_scaled = StandardScaler().fit_transform(X)
+	\end{lstlisting}
+	
+	\subsection{Perché è fondamentale}
+	
+	Senza normalizzazione, variabili con scale diverse dominano la distanza.
+	
+	\section{K-Means Approfondito}
+	
+	\subsection{Funzione obiettivo}
+	
+	\begin{equation}
+		J = \sum_{i=1}^K \sum_{x \in C_i} ||x - \mu_i||^2
+	\end{equation}
+	
+	\subsection{Algoritmo dettagliato}
+	
+	\begin{enumerate}
+		\item scelta casuale centroidi
+		\item assegnazione punti
+		\item aggiornamento centroidi
+		\item iterazione
+	\end{enumerate}
+	
+	\subsection{Esempio numerico}
+	
+	Consideriamo 4 punti: (1,1), (1,2), (5,5), (6,5).
+	
+	Con K=2, i cluster convergono naturalmente in due gruppi distinti.
+	
+	\subsection{K-Means++}
+	
+	Tecnica migliorata per inizializzazione.
+	
+	\subsection{Caso in cui fallisce}
+	
+	\begin{itemize}
+		\item cluster non sferici
+		\item presenza di outlier
+	\end{itemize}
+	
+	\subsection{Codice completo}
+	
+	\begin{lstlisting}[language=Python]
+		from sklearn.cluster import KMeans
+		
+		kmeans = KMeans(n_clusters=3, init='k-means++')
+		labels = kmeans.fit_predict(X_scaled)
+	\end{lstlisting}
+	
+	\section{DBSCAN Approfondito}
+	
+	\subsection{Definizioni}
+	
+	\begin{itemize}
+		\item punto core
+		\item punto border
+		\item rumore
+	\end{itemize}
+	
+	\subsection{Intuizione}
+	
+	Cluster = regioni dense separate da zone sparse.
+	
+	\subsection{Esempio}
+	
+	DBSCAN riesce a separare cluster non lineari.
+	
+	\subsection{Scelta parametri}
+	
+	\begin{itemize}
+		\item eps: raggio
+		\item minPts: densità minima
+	\end{itemize}
+	
+	\subsection{Codice}
+	
+	\begin{lstlisting}[language=Python]
+		from sklearn.cluster import DBSCAN
+		
+		db = DBSCAN(eps=0.3, min_samples=5)
+		labels = db.fit_predict(X_scaled)
+	\end{lstlisting}
+	
+	\section{Clustering Gerarchico}
+	
+	\subsection{Agglomerativo}
+	
+	Parte da singoli punti.
+	
+	\subsection{Divisivo}
+	
+	Parte da un unico cluster.
+	
+	\subsection{Linkage}
+	
+	\begin{itemize}
+		\item single
+		\item complete
+		\item average
+	\end{itemize}
+	
+	\subsection{Codice}
+	
+	\begin{lstlisting}[language=Python]
+		from sklearn.cluster import AgglomerativeClustering
+		
+		model = AgglomerativeClustering(n_clusters=3, linkage='ward')
+		labels = model.fit_predict(X_scaled)
+	\end{lstlisting}
+	
+	\section{Gaussian Mixture Models}
+	
+	\subsection{Modello}
+	
+	\begin{equation}
+		p(x) = \sum_{k=1}^K \pi_k \mathcal{N}(x|\mu_k,\Sigma_k)
+	\end{equation}
+	
+	\subsection{Algoritmo EM}
+	
+	\begin{itemize}
+		\item E-step
+		\item M-step
+	\end{itemize}
+	
+	\subsection{Codice}
+	
+	\begin{lstlisting}[language=Python]
+		from sklearn.mixture import GaussianMixture
+		
+		gmm = GaussianMixture(n_components=3)
+		labels = gmm.fit_predict(X_scaled)
+	\end{lstlisting}
+	
+	\section{Metriche di valutazione}
+	
+	\subsection{Silhouette}
+	
+	\begin{lstlisting}[language=Python]
+		from sklearn.metrics import silhouette_score
+		
+		score = silhouette_score(X_scaled, labels)
+	\end{lstlisting}
+	
+	\subsection{Davies-Bouldin}
+	
+	Valuta separazione tra cluster.
+	
+	\section{Confronto algoritmi}
+	
+	\begin{longtable}{|c|c|c|c|}
+		\hline
+		Algoritmo & Tipo & Parametri & Outlier \\
+		\hline
+		K-Means & Partizionale & K & No \\
+		DBSCAN & Densità & eps & Sì \\
+		Gerarchico & Gerarchico & linkage & Limitato \\
+		GMM & Probabilistico & K & No \\
+		\hline
+	\end{longtable}
+	
+	\section{Caso studio completo}
+	
+	\subsection{Scenario}
+	
+	Segmentazione clienti retail.
+	
+	\subsection{Pipeline}
+	
+	\begin{enumerate}
+		\item pulizia dati
+		\item scaling
+		\item clustering
+		\item analisi risultati
+	\end{enumerate}
+	
+	\subsection{Codice completo}
+	
+	\begin{lstlisting}[language=Python]
+		from sklearn.preprocessing import StandardScaler
+		from sklearn.cluster import KMeans
+		
+		X_scaled = StandardScaler().fit_transform(X)
+		
+		kmeans = KMeans(n_clusters=4)
+		labels = kmeans.fit_predict(X_scaled)
+	\end{lstlisting}
+	
+	\section{Errori comuni}
+	
+	\begin{itemize}
+		\item non normalizzare
+		\item scegliere K arbitrariamente
+		\item ignorare outlier
+	\end{itemize}
+	
+	\section{Conclusioni}
+	
+	Il clustering è uno strumento potente ma richiede attenzione nella preparazione dei dati e nella scelta dell'algoritmo.
+	
+\end{document}
