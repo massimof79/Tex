@@ -1,0 +1,32 @@
+\frametitle{Esempio 2 -- Esecuzione e Risultati}
+\begin{lstlisting}[style=sqlstyle]
+-- Vendita: riduzione scorte prodotto 3, magazzino 1
+UPDATE prodotti_magazzino
+SET qta = qta - 41
+WHERE idprodotto = 3 AND idmagazzino = 1;
+  \end{lstlisting}
+  \begin{columns}[T]
+    \column{0.5\textwidth}
+      \begin{exampleblock}{Tabella ordine (auto-generato)}
+        \begin{lstlisting}[style=outputstyle]
++----+-----+------------+
+|prod|mag  |data        |
++----+-----+------------+
+|  3 |  1  |2006-01-13  |
+|  1 |  2  |2006-01-13  |
++----+-----+------------+
+        \end{lstlisting}
+      \end{exampleblock}
+    \column{0.5\textwidth}
+      \begin{exampleblock}{Tabella analisi (aggiornata)}
+        \begin{lstlisting}[style=outputstyle]
++----+--------+---------+
+|prod|venduto |guadagno |
++----+--------+---------+
+|  1 |      8 |     400 |
+|  2 |      0 |       0 |
+|  3 |     41 |    3280 |
++----+--------+---------+
+        \end{lstlisting}
+      \end{exampleblock}
+  \end{columns}

@@ -1,0 +1,1114 @@
+\documentclass[aspectratio=169]{beamer}
+\usetheme{Madrid}
+\usecolortheme{seahorse}
+
+\usepackage[italian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{tikz}
+
+% Colori personalizzati
+\definecolor{sqlblue}{RGB}{0,82,155}
+\definecolor{sqlgreen}{RGB}{0,128,0}
+\definecolor{sqlred}{RGB}{180,0,0}
+\definecolor{codefg}{RGB}{40,40,40}
+\definecolor{codebg}{RGB}{248,248,248}
+\definecolor{keyw}{RGB}{0,0,200}
+
+% Stile listing per SQL
+\lstdefinestyle{sqlstyle}{
+  language=SQL,
+  basicstyle=\ttfamily\footnotesize,
+  keywordstyle=\color{keyw}\bfseries,
+  commentstyle=\color{sqlgreen}\itshape,
+  stringstyle=\color{sqlred},
+  backgroundcolor=\color{codebg},
+  frame=single,
+  rulecolor=\color{gray!40},
+  breaklines=true,
+  showstringspaces=false,
+  tabsize=2,
+  numbers=none,
+  xleftmargin=4pt,
+  xrightmargin=4pt,
+}
+
+% Stile listing per output/risultati
+\lstdefinestyle{outputstyle}{
+  basicstyle=\ttfamily\tiny,
+  backgroundcolor=\color{black!90},
+  frame=single,
+  rulecolor=\color{gray},
+  breaklines=true,
+  showstringspaces=false,
+  xleftmargin=4pt,
+  xrightmargin=4pt,
+  basicstyle=\ttfamily\tiny\color{green!70!black},
+}
+
+\setbeamertemplate{navigation symbols}{}
+\setbeamerfont{frametitle}{size=\large,series=\bfseries}
+
+\title[Trigger SQL]{Trigger nelle Basi di Dati}
+\subtitle{Paradigma E-C-A, Tipi, Sintassi MySQL ed Esempi}
+\author{IIS Fermi Sacconi Ceci}
+\institute{Prof. Fedeli Massimo -- Basi di Dati}
+\date{\today}
+
+\begin{document}
+
+% =====================================================================
+% SLIDE 1 - Titolo
+% =====================================================================
+\begin{frame}
+  \titlepage
+\end{frame}
+
+% =====================================================================
+% SLIDE 2 - Indice
+% =====================================================================
+\begin{frame}{Indice}
+  \tableofcontents
+\end{frame}
+
+% =====================================================================
+\section{Introduzione}
+% =====================================================================
+
+% SLIDE 3
+\begin{frame}{Introduzione ai Trigger}
+  \begin{block}{Definizione}
+    L'introduzione di \textbf{trigger} all'interno di una Base di Dati permette
+    la \textbf{gestione automatica} di particolari procedure in risposta a
+    determinati eventi esterni.
+  \end{block}
+
+  \vspace{0.4cm}
+  \begin{alertblock}{Basi di Dati Attive}
+    Basi di Dati che utilizzano trigger vengono dette \textbf{Basi di Dati attive}:
+    i trigger rendono \emph{reattivo} il comportamento del sistema alle
+    sollecitazioni esterne.
+  \end{alertblock}
+
+  \vspace{0.3cm}
+  \begin{tikzpicture}
+    \node[draw,rounded corners,fill=sqlblue!15,minimum width=2.5cm,minimum height=0.7cm] (ev) at (0,0) {Evento};
+    \node[draw,rounded corners,fill=orange!20,minimum width=2.5cm,minimum height=0.7cm] (tr) at (4,0) {Trigger};
+    \node[draw,rounded corners,fill=sqlgreen!20,minimum width=2.5cm,minimum height=0.7cm] (az) at (8,0) {Azione};
+    \draw[->,thick] (ev) -- (tr);
+    \draw[->,thick] (tr) -- (az);
+  \end{tikzpicture}
+\end{frame}
+
+% SLIDE 4
+\begin{frame}{Il Livello di Astrazione dei Dati}
+  \begin{columns}[T]
+    \column{0.55\textwidth}
+      L'utilizzo di \textbf{regole attive} in un DB aumenta il livello di
+      astrazione dei dati, introducendo una nuova dimensione:
+      \begin{itemize}
+        \item \textbf{Indipendenza della conoscenza}: nasconde all'esterno
+              l'esecuzione delle regole attive.
+      \end{itemize}
+      \vspace{0.3cm}
+      Il vantaggio principale è lo \textbf{spostamento} di alcuni controlli e
+      procedure automatiche \textbf{dal livello applicativo} a quello dello schema.
+    \column{0.42\textwidth}
+      \begin{tikzpicture}
+        \node[draw,fill=sqlblue!20,minimum width=3cm,minimum height=0.6cm,rounded corners]
+          at (0,2.4) {\footnotesize Livello Applicativo};
+        \node[draw,fill=orange!20,minimum width=3cm,minimum height=0.6cm,rounded corners]
+          at (0,1.6) {\footnotesize Regole Attive (Trigger)};
+        \node[draw,fill=sqlgreen!20,minimum width=3cm,minimum height=0.6cm,rounded corners]
+          at (0,0.8) {\footnotesize Schema DB};
+        \node[draw,fill=gray!20,minimum width=3cm,minimum height=0.6cm,rounded corners]
+          at (0,0) {\footnotesize Dati Fisici};
+        \draw[<->,thick,sqlblue] (-1.8,0.8) -- node[left]{\tiny sposta} (-1.8,1.6);
+      \end{tikzpicture}
+  \end{columns}
+\end{frame}
+
+% =====================================================================
+\section{Il Paradigma E-C-A}
+% =====================================================================
+
+% SLIDE 5
+\begin{frame}{Il Paradigma E-C-A}
+  \begin{block}{}
+    Il funzionamento dei trigger segue il paradigma \textbf{Evento -- Condizione -- Azione}
+  \end{block}
+  \vspace{0.2cm}
+  \begin{columns}[T]
+    \column{0.33\textwidth}
+      \begin{exampleblock}{\textcolor{sqlred}{Evento}}
+        Qualsiasi modifica DML (\texttt{INSERT}, \texttt{UPDATE}, \texttt{DELETE})
+        o l'attivazione di un altro trigger (\emph{trigger in cascata}) su una
+        \emph{tabella di target}.
+      \end{exampleblock}
+    \column{0.33\textwidth}
+      \begin{exampleblock}{\textcolor{sqlblue}{Condizione} \small[opz.]}
+        Un predicato booleano espresso mediante sintassi SQL. Se non verificato,
+        il trigger non esegue l'azione.
+      \end{exampleblock}
+    \column{0.33\textwidth}
+      \begin{exampleblock}{\textcolor{sqlgreen}{Azione}}
+        Sequenza di primitive SQL, eventualmente arricchite da un linguaggio di
+        programmazione integrato nel DBMS (es.\ PL/SQL, T-SQL).
+      \end{exampleblock}
+  \end{columns}
+\end{frame}
+
+% SLIDE 6
+\begin{frame}{Trigger in Cascata}
+  \begin{alertblock}{Trigger in cascata}
+    Quando l'evento che attiva un trigger è a sua volta l'azione di un altro
+    trigger, si parla di \textbf{trigger in cascata}.
+  \end{alertblock}
+  \vspace{0.4cm}
+  \begin{tikzpicture}
+    \node[draw,fill=sqlblue!15,rounded corners,minimum width=2.2cm,minimum height=0.65cm]
+      (op) at (0,0) {\footnotesize Op.\ DML};
+    \node[draw,fill=orange!20,rounded corners,minimum width=2.2cm,minimum height=0.65cm]
+      (t1) at (3.5,0) {\footnotesize Trigger 1};
+    \node[draw,fill=orange!20,rounded corners,minimum width=2.2cm,minimum height=0.65cm]
+      (t2) at (7,0) {\footnotesize Trigger 2};
+    \node[draw,fill=sqlgreen!20,rounded corners,minimum width=2.2cm,minimum height=0.65cm]
+      (az) at (10.5,0) {\footnotesize Azione finale};
+    \draw[->,thick] (op) -- (t1);
+    \draw[->,thick] (t1) -- (t2) node[midway,above]{\tiny evento};
+    \draw[->,thick] (t2) -- (az);
+  \end{tikzpicture}
+  \vspace{0.3cm}
+  \begin{block}{Attenzione}
+    I trigger in cascata devono essere progettati con attenzione per evitare
+    cicli infiniti di attivazione.
+  \end{block}
+\end{frame}
+
+% =====================================================================
+\section{Tipi di Trigger}
+% =====================================================================
+
+% SLIDE 7
+\begin{frame}{Tipi di Trigger -- Panoramica}
+  \begin{center}
+    \begin{tabular}{lll}
+      \toprule
+      \textbf{Classificazione} & \textbf{Tipo} & \textbf{Descrizione breve} \\
+      \midrule
+      Granularità & Row-level & Eseguito per ogni riga coinvolta \\
+                  & Statement-level & Eseguito una sola volta per istruzione \\
+      \midrule
+      Momento     & BEFORE & Prima dell'evento DML \\
+                  & AFTER  & Dopo l'evento DML \\
+                  & INSTEAD OF & Al posto dell'evento (Oracle) \\
+      \midrule
+      Livello     & Tabella & Risponde a eventi DML su tabelle \\
+                  & Schema/DB & Risponde a eventi DDL \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+\end{frame}
+
+% SLIDE 8
+\begin{frame}{Trigger a Livello di Tupla (Row-Level)}
+  \begin{block}{Definizione}
+    I trigger \textbf{a livello di riga} (row-level) vengono eseguiti
+    \textbf{una volta per ogni riga} su cui agisce un'istruzione DML.
+  \end{block}
+  \vspace{0.3cm}
+  \begin{exampleblock}{Esempio}
+    Un'istruzione \texttt{UPDATE} che modifica 500 righe attiva il trigger
+    \textbf{500 volte} -- una per ciascuna riga modificata.
+  \end{exampleblock}
+  \vspace{0.3cm}
+  \begin{columns}[T]
+    \column{0.5\textwidth}
+      \textbf{Uso tipico:}
+      \begin{itemize}
+        \item Validazione per singola riga
+        \item Calcoli derivati riga per riga
+        \item Sincronizzazione dati distribuiti
+        \item Audit trail dettagliato
+      \end{itemize}
+    \column{0.5\textwidth}
+      \textbf{Parola chiave MySQL:}
+      \begin{center}
+        \texttt{\textbf{FOR EACH ROW}}
+      \end{center}
+      Obbligatoria in MySQL -- solo row-level è supportato.
+  \end{columns}
+\end{frame}
+
+% SLIDE 9
+\begin{frame}{Trigger a Livello di Istruzione (Statement-Level)}
+  \begin{block}{Definizione}
+    I trigger \textbf{a livello di istruzione} vengono eseguiti
+    \textbf{una sola volta} per ogni istruzione DML, indipendentemente
+    dal numero di righe coinvolte.
+  \end{block}
+  \vspace{0.3cm}
+  \begin{exampleblock}{Esempio}
+    Se una singola istruzione \texttt{INSERT} inserisce 500 righe, un trigger
+    a livello di istruzione viene eseguito \textbf{una sola volta}.
+  \end{exampleblock}
+  \vspace{0.3cm}
+  \begin{alertblock}{Nota}
+    I trigger a livello di istruzione \textbf{non vengono utilizzati di frequente}
+    per attività correlate ai singoli dati. Sono più adatti per operazioni di
+    logging a livello globale di transazione.
+    \\ \textbf{MySQL non supporta} statement-level trigger (\texttt{FOR EACH ROW} è obbligatorio).
+  \end{alertblock}
+\end{frame}
+
+% SLIDE 10
+\begin{frame}{Trigger BEFORE e AFTER}
+  \begin{columns}[T]
+    \column{0.5\textwidth}
+      \begin{block}{BEFORE Trigger}
+        \begin{itemize}
+          \item Eseguito \textbf{prima} dell'operazione DML
+          \item Può \textbf{modificare} i valori \texttt{NEW} prima che vengano scritti
+          \item Se fallisce, l'operazione DML \textbf{non viene eseguita}
+          \item Utile per: validazione, normalizzazione dati
+        \end{itemize}
+      \end{block}
+    \column{0.5\textwidth}
+      \begin{alertblock}{AFTER Trigger}
+        \begin{itemize}
+          \item Eseguito \textbf{dopo} l'operazione DML
+          \item I dati sono già stati modificati
+          \item Viene eseguito solo se BEFORE e DML hanno avuto successo
+          \item Utile per: audit, aggiornamenti correlati, notifiche
+        \end{itemize}
+      \end{alertblock}
+  \end{columns}
+  \vspace{0.5cm}
+  \begin{center}
+    \begin{tikzpicture}
+      \node[draw,fill=yellow!20,rounded corners] (b) at (0,0) {BEFORE};
+      \node[draw,fill=sqlblue!20,rounded corners] (d) at (3.5,0) {DML};
+      \node[draw,fill=sqlgreen!20,rounded corners] (a) at (7,0) {AFTER};
+      \draw[->,thick] (b) -- (d);
+      \draw[->,thick] (d) -- (a);
+      \node[above=0.15cm,font=\tiny] at (0,0) {validazione};
+      \node[above=0.15cm,font=\tiny] at (7,0) {azioni collaterali};
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+% SLIDE 11
+\begin{frame}{Trigger INSTEAD OF}
+  \begin{block}{Definizione}
+    In alcuni DBMS (ad es.\ \textbf{Oracle}) è possibile utilizzare trigger
+    \texttt{INSTEAD OF} per indicare cosa fare \textbf{al posto} di eseguire
+    le azioni che hanno invocato il trigger.
+  \end{block}
+  \vspace{0.3cm}
+  \begin{exampleblock}{Caso d'uso principale: aggiornamento di viste}
+    Con un trigger \texttt{INSTEAD OF} è possibile specificare al DBMS come
+    eseguire \texttt{UPDATE}, \texttt{DELETE} e \texttt{INSERT} nelle
+    \textbf{tabelle base della vista} quando un utente tenta di modificare
+    i valori attraverso la vista stessa.
+  \end{exampleblock}
+  \vspace{0.2cm}
+  \begin{alertblock}{Supporto in MySQL}
+    MySQL \textbf{non supporta} i trigger \texttt{INSTEAD OF}.
+    Sono disponibili in Oracle, SQL Server e PostgreSQL.
+  \end{alertblock}
+\end{frame}
+
+% SLIDE 12
+\begin{frame}{Trigger a Livello di Schema e Database}
+  \begin{block}{Definizione}
+    Trigger che si innescano su operazioni eseguite a \textbf{livello di schema}:
+  \end{block}
+  \vspace{0.2cm}
+  \begin{columns}[T]
+    \column{0.5\textwidth}
+      \textbf{Esempi di eventi DDL:}
+      \begin{itemize}
+        \item \texttt{CREATE TABLE}
+        \item \texttt{ALTER TABLE}
+        \item \texttt{DROP TABLE}
+        \item \texttt{RENAME}
+        \item \texttt{TRUNCATE}
+        \item \texttt{REVOKE} / \texttt{AUDIT}
+      \end{itemize}
+    \column{0.5\textwidth}
+      \textbf{Capacità principali:}
+      \begin{enumerate}
+        \item \textbf{Impedire} l'esecuzione di operazioni DDL non autorizzate
+        \item \textbf{Controllo della sicurezza} aggiuntivo quando si verificano operazioni DDL
+        \item \textbf{Logging} delle modifiche strutturali
+      \end{enumerate}
+  \end{columns}
+\end{frame}
+
+% =====================================================================
+\section{I Trigger SQL:2003}
+% =====================================================================
+
+% SLIDE 13
+\begin{frame}{I Trigger nello Standard SQL:2003}
+  \begin{block}{Definizione formale}
+    Un trigger è una \textbf{specifica per una determinata azione} che deve
+    essere eseguita ogniqualvolta avviene un'azione su un determinato oggetto.
+  \end{block}
+  \vspace{0.2cm}
+  \textbf{Terminologia dello standard:}
+  \begin{description}
+    \item[\textit{triggered action}] L'azione d'innesco: una dichiarazione di
+      procedura SQL o una lista di dichiarazioni.
+    \item[\textit{target table}] La tabella della base di dati persistente su cui
+      il trigger è definito (tabella obiettivo).
+    \item[\textit{event trigger}] L'evento scatenante: inserimento, cancellazione
+      o modifica di un insieme di righe.
+  \end{description}
+  \vspace{0.2cm}
+  \begin{center}
+    \begin{tabular}{ll}
+      \toprule
+      \textbf{Per momento} & AFTER TRIGGER, BEFORE TRIGGER \\
+      \textbf{Per evento}  & DELETE, INSERT, UPDATE TRIGGER \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+\end{frame}
+
+% SLIDE 14
+\begin{frame}{Tabelle di Transizione}
+  \begin{block}{Scopo}
+    Per ogni trigger possono essere usate \textbf{tabelle di transizione}
+    per memorizzare lo stato \emph{precedente} e \emph{successivo} del target.
+  \end{block}
+  \vspace{0.3cm}
+  \begin{columns}[T]
+    \column{0.33\textwidth}
+      \begin{exampleblock}{DELETE Trigger}
+        Solo \textbf{old transition table}: contiene le righe prima
+        della cancellazione.
+      \end{exampleblock}
+    \column{0.33\textwidth}
+      \begin{exampleblock}{INSERT Trigger}
+        Solo \textbf{new transition table}: contiene le righe appena
+        inserite.
+      \end{exampleblock}
+    \column{0.33\textwidth}
+      \begin{exampleblock}{UPDATE Trigger}
+        \textbf{Entrambe} le tabelle: old (prima) e new (dopo la modifica).
+      \end{exampleblock}
+  \end{columns}
+  \vspace{0.3cm}
+  \begin{center}
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{lcc}
+      \toprule
+      \textbf{Evento} & \textbf{OLD} & \textbf{NEW} \\
+      \midrule
+      INSERT & \texttimes & \checkmark \\
+      DELETE & \checkmark & \texttimes \\
+      UPDATE & \checkmark & \checkmark \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+\end{frame}
+
+% SLIDE 15
+\begin{frame}{La Granularità dell'Azione}
+  L'azione del trigger può essere di tipo:
+  \vspace{0.3cm}
+  \begin{columns}[T]
+    \column{0.5\textwidth}
+      \begin{block}{Statement-Level Trigger}
+        Eseguito \textbf{solo una volta} dopo l'attivazione del trigger,
+        indipendentemente dal numero di righe coinvolte.
+        \vspace{0.2cm}
+        \begin{itemize}
+          \item La variabile di transizione ha il valore dell'intera tabella
+        \end{itemize}
+      \end{block}
+    \column{0.5\textwidth}
+      \begin{alertblock}{Row-Level Trigger}
+        Eseguito \textbf{una volta per ogni riga} della tabella di transizione
+        associata al trigger.
+        \vspace{0.2cm}
+        \begin{itemize}
+          \item La variabile di transizione assume il valore della singola tupla
+        \end{itemize}
+      \end{alertblock}
+  \end{columns}
+\end{frame}
+
+% SLIDE 16
+\begin{frame}{Variabili dei Trigger}
+  Vengono messe a disposizione dei trigger variabili speciali per accedere alle
+  tabelle di transizione.
+  \vspace{0.3cm}
+  \begin{columns}[T]
+    \column{0.5\textwidth}
+      \begin{block}{Statement-Level Trigger}
+        La variabile ha il valore dell'intera \textbf{tabella di transizione}.
+      \end{block}
+      \vspace{0.3cm}
+      \begin{block}{Row-Level Trigger}
+        La \textbf{variabile di transizione} associa ad ogni azione del trigger
+        il valore della tupla nella tabella di transizione da modificare.
+      \end{block}
+    \column{0.5\textwidth}
+      \begin{exampleblock}{Tipi di variabile (row-level)}
+        \begin{itemize}
+          \item \textbf{old transition variable}: valore della tupla \emph{prima}
+            della modifica (DELETE, UPDATE)
+          \item \textbf{new transition variable}: valore della tupla \emph{dopo}
+            la modifica (INSERT, UPDATE)
+        \end{itemize}
+      \end{exampleblock}
+  \end{columns}
+\end{frame}
+
+% SLIDE 17
+\begin{frame}{Definizione Completa di un Trigger}
+  Un trigger è definito dai seguenti componenti:
+  \vspace{0.2cm}
+  \begin{columns}[T]
+    \column{0.5\textwidth}
+      \begin{enumerate}
+        \item \textbf{Nome} del trigger
+        \item \textbf{Tabella di target}
+        \item \textbf{Momento d'azione}: \texttt{BEFORE} / \texttt{AFTER}
+        \item \textbf{Evento}: \texttt{INSERT} / \texttt{UPDATE} / \texttt{DELETE}
+      \end{enumerate}
+    \column{0.5\textwidth}
+      \begin{enumerate}\setcounter{enumi}{4}
+        \item \textbf{Granularità}: statement-level / row-level
+        \item \textbf{Nomi} per le tabelle di transizione o variabili
+        \item \textbf{L'azione} SQL da eseguire
+        \item \textbf{Timestamp} della creazione
+      \end{enumerate}
+  \end{columns}
+  \vspace{0.4cm}
+  \begin{exampleblock}{Schema sintetico}
+    \texttt{CREATE TRIGGER} \textit{nome}
+    \texttt{BEFORE|AFTER INSERT|UPDATE|DELETE ON} \textit{tabella}
+    \texttt{FOR EACH ROW} \textit{azione}
+  \end{exampleblock}
+\end{frame}
+
+% =====================================================================
+\section{Trigger in MySQL}
+% =====================================================================
+
+% SLIDE 18
+\begin{frame}{Contesto di Esecuzione del Trigger (TEC)}
+  \begin{block}{Esecuzione}
+    Durante l'esecuzione di un'istruzione S possono esistere \textbf{zero o più}
+    contesti d'esecuzione trigger (TEC), ma \textbf{al più uno} di loro può
+    essere attivo alla volta.
+  \end{block}
+  \vspace{0.3cm}
+  \begin{block}{Ciclo di vita del TEC}
+    Il contesto di esecuzione di un trigger (TEC) viene:
+    \begin{enumerate}
+      \item \textbf{Creato} al momento dell'evento scatenante
+      \item \textbf{Attivato} se la condizione è verificata
+      \item \textbf{Eseguito}: viene eseguita l'azione definita
+      \item \textbf{Distrutto} al termine dell'azione
+    \end{enumerate}
+  \end{block}
+\end{frame}
+
+% SLIDE 19
+\begin{frame}[fragile]{Sintassi CREATE TRIGGER in MySQL}
+  \begin{lstlisting}[style=sqlstyle]
+CREATE
+  [DEFINER = { user | CURRENT_USER }]
+  TRIGGER nome_trigger
+  { BEFORE | AFTER }
+  { INSERT | UPDATE | DELETE }
+  ON tabella_target
+  FOR EACH ROW
+    trigger_stmt;
+  \end{lstlisting}
+  \vspace{0.2cm}
+  \begin{columns}[T]
+    \column{0.5\textwidth}
+      \begin{itemize}
+        \item \textbf{DEFINER}: account utente i cui privilegi vengono
+              verificati all'attivazione
+        \item \textbf{BEFORE | AFTER}: momento di esecuzione
+      \end{itemize}
+    \column{0.5\textwidth}
+      \begin{itemize}
+        \item \textbf{INSERT | UPDATE | DELETE}: evento scatenante
+        \item \textbf{FOR EACH ROW}: granularità (obbligatorio in MySQL)
+        \item \textbf{trigger\_stmt}: corpo del trigger
+      \end{itemize}
+  \end{columns}
+\end{frame}
+
+% SLIDE 20
+\begin{frame}[fragile]{Parametri della Sintassi -- Dettaglio}
+  \begin{description}
+    \item[\texttt{DEFINER}] Determina i privilegi da applicare quando il trigger
+      è attivo. Formato: \texttt{'user\_name'@'host\_name'}
+    \item[\texttt{TRIGGER\_TIME}] Rappresenta il tipo di trigger:
+      \texttt{BEFORE} o \texttt{AFTER}
+    \item[\texttt{TRIGGER\_EVENT}] Indica il tipo di primitiva che attiva il trigger:
+      \begin{itemize}
+        \item \texttt{INSERT}: trigger attivato su \texttt{INSERT}, \texttt{LOAD DATA},
+          \texttt{REPLACE}
+        \item \texttt{UPDATE}: trigger attivato su \texttt{UPDATE}
+        \item \texttt{DELETE}: trigger attivato su \texttt{DELETE}, \texttt{REPLACE}
+      \end{itemize}
+    \item[\texttt{TRIGGER\_STMT}] La primitiva SQL da eseguire. Per sequenze
+      multiple si usa il blocco \texttt{BEGIN \ldots END}
+  \end{description}
+\end{frame}
+
+% SLIDE 21
+\begin{frame}[fragile]{Le Variabili OLD e NEW}
+  Per accedere alle colonne della tabella target si usano gli alias \textbf{OLD}
+  e \textbf{NEW}:
+  \vspace{0.2cm}
+  \begin{block}{\texttt{OLD.col\_name} (read-only)}
+    Si riferisce alla colonna della tabella target \textbf{prima} della modifica
+    effettuata dall'evento associato al trigger.
+  \end{block}
+  \vspace{0.2cm}
+  \begin{alertblock}{\texttt{NEW.col\_name}}
+    Si riferisce alla colonna della tabella target \textbf{dopo} la modifica
+    effettuata dall'evento.
+  \end{alertblock}
+  \vspace{0.3cm}
+  \begin{center}
+    \renewcommand{\arraystretch}{1.2}
+    \begin{tabular}{lcc}
+      \toprule
+      \textbf{Tipo Trigger} & \textbf{OLD disponibile} & \textbf{NEW disponibile} \\
+      \midrule
+      INSERT & No & Sì \\
+      DELETE & Sì & No \\
+      UPDATE & Sì & Sì \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+\end{frame}
+
+% SLIDE 22
+\begin{frame}[fragile]{Modifica di NEW in un BEFORE Trigger}
+  \begin{block}{Caratteristica speciale dei BEFORE Trigger}
+    In un \texttt{BEFORE} trigger è possibile \textbf{modificare} i valori
+    che verranno scritti nella tabella usando:
+    \vspace{0.2cm}
+    \begin{center}
+      \texttt{SET NEW.colonna = valore}
+    \end{center}
+  \end{block}
+  \vspace{0.3cm}
+  \begin{exampleblock}{Esempio: normalizzazione automatica}
+    \begin{lstlisting}[style=sqlstyle]
+-- Questo BEFORE INSERT trigger
+-- capitalizza automaticamente il nome
+CREATE TRIGGER normalizza_nome
+BEFORE INSERT ON clienti
+FOR EACH ROW
+  SET NEW.nome = CONCAT(
+    UPPER(LEFT(NEW.nome, 1)),
+    LOWER(SUBSTRING(NEW.nome, 2))
+  );
+    \end{lstlisting}
+  \end{exampleblock}
+\end{frame}
+
+% =====================================================================
+\section{Privilegi e Gestione degli Errori}
+% =====================================================================
+
+% SLIDE 23
+\begin{frame}{Privilegi per la Creazione di Trigger}
+  \begin{columns}[T]
+    \column{0.5\textwidth}
+      \begin{block}{Al momento della creazione}
+        L'utente che crea il trigger deve avere i \textbf{privilegi di SuperUtente}.
+      \end{block}
+      \vspace{0.3cm}
+      \begin{block}{Clausola DEFINER}
+        Specifica l'account utente associato al trigger. Formato:
+        \begin{center}
+          \texttt{'user'@'host'}
+        \end{center}
+        I privilegi dell'account DEFINER vengono verificati all'attivazione.
+      \end{block}
+    \column{0.5\textwidth}
+      \begin{alertblock}{Privilegi necessari all'attivazione}
+        L'utente DEFINER deve possedere:
+        \begin{itemize}
+          \item Privilegi di \textbf{SuperUtente}
+          \item \textbf{SELECT} sulla tabella target (se usa OLD/NEW)
+          \item \textbf{UPDATE} sulla tabella target (se usa \texttt{SET NEW.col})
+          \item Tutti i privilegi per gli statement SQL nell'azione
+        \end{itemize}
+      \end{alertblock}
+  \end{columns}
+\end{frame}
+
+% SLIDE 24
+\begin{frame}{Gestione degli Errori nei Trigger}
+  \begin{block}{Regole di esecuzione}
+    \begin{enumerate}
+      \item Se un \textbf{BEFORE trigger fallisce}, l'operazione DML che ha
+            generato l'evento \textbf{non viene eseguita}.
+      \item Un \textbf{AFTER trigger viene eseguito} solo se i BEFORE trigger
+            e l'operazione DML hanno avuto successo.
+      \item Un \textbf{errore} durante un BEFORE o AFTER trigger genera il
+            fallimento dell'intera procedura.
+    \end{enumerate}
+  \end{block}
+  \vspace{0.3cm}
+  \begin{columns}[T]
+    \column{0.5\textwidth}
+      \begin{exampleblock}{Sistema transazionale}
+        Il fallimento causa il \textbf{rollback} di \emph{tutte} le modifiche
+        effettuate dal trigger.
+      \end{exampleblock}
+    \column{0.5\textwidth}
+      \begin{alertblock}{Sistema non transazionale}
+        Tutte le modifiche apportate \emph{prima} dell'errore
+        \textbf{rimangono effettive}.
+      \end{alertblock}
+  \end{columns}
+\end{frame}
+
+% SLIDE 25
+\begin{frame}{Limitazioni dei Trigger in MySQL}
+  \begin{alertblock}{Unicità per evento}
+    In MySQL \textbf{non possono essere creati due trigger} con evento e tipo
+    evento uguali sulla stessa tabella target.
+  \end{alertblock}
+  \vspace{0.3cm}
+  \begin{exampleblock}{Esempi di combinazioni non ammesse}
+    Non possono coesistere sulla stessa tabella:
+    \begin{itemize}
+      \item Due trigger \texttt{BEFORE INSERT}
+      \item Due trigger \texttt{AFTER UPDATE}
+      \item Due trigger \texttt{BEFORE DELETE}
+    \end{itemize}
+  \end{exampleblock}
+  \vspace{0.3cm}
+  \begin{block}{Altre limitazioni}
+    \begin{itemize}
+      \item I trigger \textbf{non possono invocare} procedure che restituiscono
+            dati all'utente o che usano SQL dinamico
+      \item I trigger \textbf{non possono invocare} procedure che usano
+            \texttt{START TRANSACTION}, \texttt{COMMIT} o \texttt{ROLLBACK}
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+% SLIDE 26
+\begin{frame}{Chiamata di Procedure nei Trigger}
+  \begin{columns}[T]
+    \column{0.5\textwidth}
+      \begin{alertblock}{Procedure NON invocabili}
+        \begin{itemize}
+          \item Procedure che \textbf{restituiscono dati} all'utente
+          \item Procedure che usano \textbf{SQL dinamico}
+          \item Procedure con \texttt{START TRANSACTION}
+          \item Procedure con \texttt{END TRANSACTION}
+          \item Procedure con \texttt{COMMIT}
+          \item Procedure con \texttt{ROLLBACK}
+        \end{itemize}
+      \end{alertblock}
+    \column{0.5\textwidth}
+      \begin{exampleblock}{Costrutti utilizzabili}
+        All'interno del corpo del trigger è possibile utilizzare:
+        \begin{itemize}
+          \item Blocco \texttt{BEGIN \ldots END}
+          \item \texttt{IF \ldots THEN \ldots ELSE}
+          \item \texttt{DECLARE} per variabili locali
+          \item \texttt{SELECT \ldots INTO}
+          \item \texttt{INSERT}, \texttt{UPDATE}, \texttt{DELETE}
+          \item Chiamata a \textbf{funzioni} definite dall'utente
+        \end{itemize}
+      \end{exampleblock}
+  \end{columns}
+\end{frame}
+
+% =====================================================================
+\section{Esempi Pratici}
+% =====================================================================
+
+% SLIDE 27
+\begin{frame}[fragile]{Esempio Semplice: Trigger su INSERT}
+  \begin{lstlisting}[style=sqlstyle]
+-- Creazione tabella
+CREATE TABLE account (
+  acct_num INT,
+  amount   DECIMAL(10,2)
+);
+
+-- Trigger: accumula la somma degli importi inseriti
+CREATE TRIGGER ins_sum
+BEFORE INSERT ON account
+FOR EACH ROW
+  SET @sum = @sum + NEW.amount;
+  \end{lstlisting}
+  \begin{block}{Utilizzo}
+    \begin{lstlisting}[style=sqlstyle]
+SET @sum = 0;
+INSERT INTO account VALUES (1, 14.98), (2, 1937.50);
+SELECT @sum;  -- Risultato: 1952.48
+    \end{lstlisting}
+  \end{block}
+\end{frame}
+
+% SLIDE 28
+\begin{frame}[fragile]{Esempio 1 -- Tabella Utente}
+  \begin{lstlisting}[style=sqlstyle]
+CREATE TABLE `bd2`.`utente` (
+  `idutente`  INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+  `nome`      VARCHAR(15) NOT NULL DEFAULT '',
+  `cognome`   VARCHAR(25) NOT NULL DEFAULT '',
+  `password`  VARCHAR(45) NOT NULL DEFAULT '',
+  PRIMARY KEY (`idutente`)
+) ENGINE = InnoDB;
+  \end{lstlisting}
+  \begin{block}{Obiettivo del trigger}
+    Ogni volta che viene inserito un utente:
+    \begin{enumerate}
+      \item Il nome e il cognome vengono \textbf{capitalizzati} automaticamente
+      \item La password viene \textbf{hashata} con la funzione \texttt{PASSWORD()}
+    \end{enumerate}
+  \end{block}
+\end{frame}
+
+% SLIDE 29
+\begin{frame}[fragile]{Esempio 1 -- Funzione di Validazione}
+  \begin{lstlisting}[style=sqlstyle]
+DELIMITER //
+CREATE FUNCTION valida_stringa (str VARCHAR(25))
+RETURNS VARCHAR(25)
+DETERMINISTIC
+BEGIN
+  DECLARE testa VARCHAR(1);
+  DECLARE coda  VARCHAR(24);
+
+  SET str   = TRIM(str);
+  SET testa = UPPER(LEFT(str, 1));
+  SET coda  = LOWER(RIGHT(str, LENGTH(str) - 1));
+
+  RETURN CONCAT(testa, coda);
+END;
+//
+DELIMITER ;
+  \end{lstlisting}
+  \begin{block}{Comportamento}
+    La funzione trasforma qualunque stringa in formato \textbf{Title Case}:
+    prima lettera maiuscola, resto minuscolo, spazi eliminati.
+  \end{block}
+\end{frame}
+
+% SLIDE 30
+\begin{frame}[fragile]{Esempio 1 -- Creazione del Trigger}
+  \begin{lstlisting}[style=sqlstyle]
+DELIMITER //
+CREATE TRIGGER UTENTE_BEF_INS_ROW
+BEFORE INSERT ON utente
+FOR EACH ROW
+BEGIN
+  SET NEW.nome     = valida_stringa(NEW.nome);
+  SET NEW.cognome  = valida_stringa(NEW.cognome);
+  SET NEW.password = PASSWORD(NEW.password);
+END;
+//
+DELIMITER ;
+  \end{lstlisting}
+  \begin{alertblock}{Nota sulla convenzione di naming}
+    Il nome \texttt{UTENTE\_BEF\_INS\_ROW} codifica:
+    tabella (\texttt{UTENTE}), momento (\texttt{BEF}),
+    evento (\texttt{INS}), granularità (\texttt{ROW}).
+  \end{alertblock}
+\end{frame}
+
+% SLIDE 31
+\begin{frame}[fragile]{Esempio 1 -- Inserimento e Risultato}
+  \begin{lstlisting}[style=sqlstyle]
+-- Inserimento con dati non normalizzati
+INSERT INTO utente VALUES (1, 'alessio',    'meola',       'passwd1010');
+INSERT INTO utente VALUES (2, 'gIuSePPe',   'MAZZARELLA',  'passwd2020');
+  \end{lstlisting}
+  \vspace{0.2cm}
+  \begin{exampleblock}{Risultato dopo SELECT * FROM utente}
+    \begin{lstlisting}[style=outputstyle]
++----------+----------+------------+------------------------------------+
+| idutente | nome     | cognome    | password                           |
++----------+----------+------------+------------------------------------+
+|        1 | Alessio  | Meola      | *4BD714D8E708D3D6BF85BB246E0DCE6C32|
+|        2 | Giuseppe | Mazzarella | *80BCC99B46B82A5A8C18B98EDD7585AE51|
++----------+----------+------------+------------------------------------+
+    \end{lstlisting}
+  \end{exampleblock}
+  \begin{block}{Osservazioni}
+    Il trigger ha automaticamente capitalizzato i nomi e hashato le password,
+    indipendentemente dal formato di input fornito.
+  \end{block}
+\end{frame}
+
+% SLIDE 32
+\begin{frame}{Esempio 2 -- Gestione Magazzino}
+  \begin{block}{Scenario}
+    Un sistema di gestione magazzino deve gestire automaticamente:
+    \begin{enumerate}
+      \item \textbf{Riordino della merce}: quando la quantità scende sotto
+            il limite minimo, viene creato automaticamente un ordine
+      \item \textbf{Statistiche sulle vendite}: aggiornamento automatico
+            delle analisi per prodotto
+    \end{enumerate}
+  \end{block}
+  \vspace{0.2cm}
+  \begin{alertblock}{Soluzione implementata}
+    \begin{itemize}
+      \item \textbf{2 trigger}: \texttt{PROD\_MAG\_AFT\_UPD\_ROW} e
+            \texttt{PROD\_MAG\_AFT\_INS\_ROW}
+      \item \textbf{1 funzione}: \texttt{analisi\_vendite()}
+    \end{itemize}
+  \end{alertblock}
+\end{frame}
+
+% SLIDE 33
+\begin{frame}[fragile]{Esempio 2 -- Schema delle Tabelle}
+  \begin{lstlisting}[style=sqlstyle]
+-- Prodotti disponibili
+CREATE TABLE prodotto (
+  idprodotto INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+  nome       VARCHAR(45) NOT NULL,
+  marca      VARCHAR(45) NOT NULL,
+  vendita    FLOAT       NOT NULL DEFAULT 0,  -- prezzo vendita
+  acquisto   FLOAT       NOT NULL DEFAULT 0,  -- prezzo acquisto
+  PRIMARY KEY(idprodotto)
+) ENGINE = InnoDB;
+
+-- Depositi/Magazzini
+CREATE TABLE magazzino (
+  idmagazzino INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+  citta       VARCHAR(45) NOT NULL,
+  PRIMARY KEY(idmagazzino)
+) ENGINE = InnoDB;
+  \end{lstlisting}
+\end{frame}
+
+% SLIDE 34
+\begin{frame}[fragile]{Esempio 2 -- Tabella Prodotti\_Magazzino}
+  \begin{lstlisting}[style=sqlstyle]
+CREATE TABLE prodotti_magazzino (
+  idprodotto   INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+  idmagazzino  INTEGER UNSIGNED NOT NULL DEFAULT 0,
+  qta          INTEGER UNSIGNED NOT NULL DEFAULT 0,
+  qta_limite   INTEGER UNSIGNED NOT NULL DEFAULT 0,
+  qta_riordino INTEGER UNSIGNED NOT NULL DEFAULT 0,
+  PRIMARY KEY(idprodotto, idmagazzino),
+  CONSTRAINT prod_mag_prod FOREIGN KEY (idprodotto)
+    REFERENCES prodotto(idprodotto)
+    ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT prod_mag_mag FOREIGN KEY (idmagazzino)
+    REFERENCES magazzino(idmagazzino)
+    ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB;
+  \end{lstlisting}
+  \begin{block}{Chiave}
+    \texttt{qta\_limite}: soglia minima sotto cui scatta il riordino.\\
+    \texttt{qta\_riordino}: quantità da ordinare al fornitore.
+  \end{block}
+\end{frame}
+
+% SLIDE 35
+\begin{frame}[fragile]{Esempio 2 -- Tabelle Ordine e Analisi}
+  \begin{lstlisting}[style=sqlstyle]
+-- Ordini di rifornitamento generati automaticamente
+CREATE TABLE ordine (
+  idprodotto  INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+  idmagazzino INTEGER UNSIGNED NOT NULL DEFAULT 0,
+  data        DATETIME         NOT NULL DEFAULT 0,
+  PRIMARY KEY(idmagazzino, idprodotto),
+  CONSTRAINT ord_prod FOREIGN KEY (idprodotto)
+    REFERENCES prodotto(idprodotto),
+  CONSTRAINT ord_mag FOREIGN KEY (idmagazzino)
+    REFERENCES magazzino(idmagazzino)
+) ENGINE = InnoDB;
+
+-- Statistiche di vendita per prodotto
+CREATE TABLE analisi (
+  idprodotto INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+  venduto    INTEGER UNSIGNED NOT NULL DEFAULT 0,
+  guadagno   FLOAT            NOT NULL DEFAULT 0,
+  PRIMARY KEY(idprodotto),
+  CONSTRAINT analisi_prod FOREIGN KEY (idprodotto)
+    REFERENCES prodotto(idprodotto)
+) ENGINE = InnoDB;
+  \end{lstlisting}
+\end{frame}
+
+% SLIDE 36
+\begin{frame}[fragile]{Esempio 2 -- Funzione analisi\_vendite()}
+  \begin{lstlisting}[style=sqlstyle]
+DELIMITER //
+CREATE FUNCTION analisi_vendite(prodotto INT, qta INT)
+RETURNS INTEGER
+DETERMINISTIC
+BEGIN
+  DECLARE guad INTEGER;
+
+  -- Calcola il guadagno unitario (vendita - acquisto)
+  SELECT (vendita - acquisto) INTO guad
+  FROM prodotto WHERE idprodotto = prodotto;
+
+  -- Aggiorna le statistiche
+  UPDATE analisi
+  SET venduto  = venduto + qta,
+      guadagno = guadagno + (guad * qta)
+  WHERE idprodotto = prodotto;
+
+  RETURN 1;
+END;
+//
+DELIMITER ;
+  \end{lstlisting}
+\end{frame}
+
+% SLIDE 37
+\begin{frame}[fragile]{Esempio 2 -- Trigger Riordino (AFTER UPDATE)}
+  \begin{lstlisting}[style=sqlstyle]
+DELIMITER //
+CREATE TRIGGER PROD_MAG_AFT_UPD_ROW
+AFTER UPDATE OF qta ON prodotti_magazzino
+FOR EACH ROW
+BEGIN
+  DECLARE nordini    INTEGER;
+  DECLARE qtavenduta INTEGER;
+
+  SET qtavenduta = OLD.qta - NEW.qta;  -- quantita' venduta
+
+  -- Controlla se la scorta e' sotto il limite
+  IF NEW.qta < NEW.qta_limite THEN
+    SELECT COUNT(*) INTO nordini FROM ordine
+    WHERE ordine.idprodotto  = NEW.idprodotto
+      AND ordine.idmagazzino = NEW.idmagazzino;
+
+    -- Crea ordine solo se non ne esiste gia' uno
+    IF nordini = 0 THEN
+      INSERT INTO ordine VALUES
+        (NEW.idprodotto, NEW.idmagazzino, CURDATE());
+    END IF;
+  END IF;
+
+  CALL analisi_vendite(NEW.idprodotto, qtavenduta);
+END;
+//
+  \end{lstlisting}
+\end{frame}
+
+% SLIDE 38
+\begin{frame}[fragile]{Esempio 2 -- Trigger Inizializzazione Analisi}
+  \begin{lstlisting}[style=sqlstyle]
+-- Trigger: inizializza il record in "analisi"
+-- quando un prodotto viene aggiunto al magazzino
+CREATE TRIGGER PROD_MAG_AFT_INS_ROW
+AFTER INSERT ON prodotti_magazzino
+FOR EACH ROW
+BEGIN
+  IF NOT EXISTS (
+    SELECT * FROM analisi
+    WHERE idprodotto = NEW.idprodotto
+  ) THEN
+    INSERT INTO analisi VALUES (NEW.idprodotto, 0, 0);
+  END IF;
+END;
+//
+DELIMITER ;
+  \end{lstlisting}
+  \begin{block}{Logica}
+    Quando un prodotto viene inserito in magazzino per la prima volta,
+    viene creato automaticamente un record iniziale nella tabella \texttt{analisi}
+    con quantità venduta e guadagno pari a zero.
+  \end{block}
+\end{frame}
+
+% SLIDE 39
+\begin{frame}[fragile]{Esempio 2 -- Esecuzione e Risultati}
+  \begin{lstlisting}[style=sqlstyle]
+-- Vendita: riduzione scorte prodotto 3, magazzino 1
+UPDATE prodotti_magazzino
+SET qta = qta - 41
+WHERE idprodotto = 3 AND idmagazzino = 1;
+  \end{lstlisting}
+  \begin{columns}[T]
+    \column{0.5\textwidth}
+      \begin{exampleblock}{Tabella ordine (auto-generato)}
+        \begin{lstlisting}[style=outputstyle]
++----+-----+------------+
+|prod|mag  |data        |
++----+-----+------------+
+|  3 |  1  |2006-01-13  |
+|  1 |  2  |2006-01-13  |
++----+-----+------------+
+        \end{lstlisting}
+      \end{exampleblock}
+    \column{0.5\textwidth}
+      \begin{exampleblock}{Tabella analisi (aggiornata)}
+        \begin{lstlisting}[style=outputstyle]
++----+--------+---------+
+|prod|venduto |guadagno |
++----+--------+---------+
+|  1 |      8 |     400 |
+|  2 |      0 |       0 |
+|  3 |     41 |    3280 |
++----+--------+---------+
+        \end{lstlisting}
+      \end{exampleblock}
+  \end{columns}
+\end{frame}
+
+% =====================================================================
+\section{Riepilogo}
+% =====================================================================
+
+% SLIDE 40
+\begin{frame}{Riepilogo -- Trigger in MySQL}
+  \begin{columns}[T]
+    \column{0.5\textwidth}
+      \textbf{Punti chiave}
+      \begin{itemize}
+        \item I trigger implementano il paradigma \textbf{E-C-A}
+        \item Le basi di dati con trigger sono dette \textbf{attive}
+        \item MySQL supporta solo trigger \textbf{row-level}
+        \item Le variabili \textbf{OLD} e \textbf{NEW} accedono ai dati
+        \item \textbf{BEFORE}: modifica dati prima della scrittura
+        \item \textbf{AFTER}: azioni collaterali post-scrittura
+      \end{itemize}
+    \column{0.5\textwidth}
+      \textbf{Best Practice}
+      \begin{itemize}
+        \item Naming convention chiara (tabella\_BEF/AFT\_INS/UPD/DEL\_ROW)
+        \item Evitare logiche complesse nei trigger
+        \item Attenzione ai trigger in cascata
+        \item Testare il comportamento su errori
+        \item Un solo trigger per combinazione evento/tempo/tabella
+      \end{itemize}
+  \end{columns}
+  \vspace{0.4cm}
+  \begin{center}
+    \begin{tikzpicture}
+      \node[draw,fill=sqlblue!20,rounded corners,minimum width=2cm] (e) at (0,0) {Evento};
+      \node[draw,fill=orange!20,rounded corners,minimum width=2cm] (c) at (3,0) {Condizione};
+      \node[draw,fill=sqlgreen!20,rounded corners,minimum width=2cm] (a) at (6,0) {Azione};
+      \draw[->,thick] (e)--(c);
+      \draw[->,thick] (c)--(a);
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+\end{document}

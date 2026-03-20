@@ -1,0 +1,356 @@
+\documentclass{beamer}
+
+\usepackage[italian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\usetheme{Madrid}
+
+\title{Trigger nei Database Relazionali}
+\author{Prof. Massimo Fedeli}
+\date{\today}
+
+\lstset{
+	language=SQL,
+	basicstyle=\ttfamily\small,
+	keywordstyle=\color{blue},
+	commentstyle=\color{gray},
+	stringstyle=\color{red},
+	showstringspaces=false,
+	breaklines=true
+}
+
+\begin{document}
+	
+	\frame{\titlepage}
+	
+	%---------------------------------
+	\begin{frame}{Definizione di Trigger}
+		Un \textbf{trigger} è un programma eseguito automaticamente in risposta a un evento su una tabella.
+		
+		\bigskip
+		
+		Eventi tipici:
+		\begin{itemize}
+			\item INSERT
+			\item UPDATE
+			\item DELETE
+		\end{itemize}
+		
+		\bigskip
+		
+		I trigger sono parte integrante della logica lato database.
+	\end{frame}
+	
+	%---------------------------------
+	\begin{frame}{Tipologie di Trigger}
+		Lo standard SQL definisce due categorie:
+		
+		\begin{itemize}
+			\item \textbf{Trigger a livello di riga}
+			\item \textbf{Trigger a livello di istruzione}
+		\end{itemize}
+		
+		\bigskip
+		
+		Differenza fondamentale:
+		\begin{itemize}
+			\item Row-level: eseguito per ogni riga
+			\item Statement-level: eseguito una sola volta
+		\end{itemize}
+	\end{frame}
+	
+	%---------------------------------
+	\begin{frame}{Trigger a Livello di Riga}
+		Viene eseguito per ogni riga modificata.
+		
+		\bigskip
+		
+		Esempio:
+		\begin{itemize}
+			\item UPDATE su 100 righe $\rightarrow$ 100 esecuzioni
+		\end{itemize}
+		
+		\bigskip
+		
+		Utilizzo tipico:
+		\begin{itemize}
+			\item validazione dati
+			\item logging dettagliato
+		\end{itemize}
+	\end{frame}
+	
+	%---------------------------------
+	\begin{frame}{Trigger a Livello di Istruzione}
+		Viene eseguito una sola volta per ogni istruzione SQL.
+		
+		\bigskip
+		
+		Esempio:
+		\begin{itemize}
+			\item UPDATE su 100 righe $\rightarrow$ 1 esecuzione
+		\end{itemize}
+		
+		\bigskip
+		
+		Nota:
+		\begin{itemize}
+			\item MySQL \textbf{non supporta} questo tipo
+		\end{itemize}
+	\end{frame}
+	
+	%---------------------------------
+	\begin{frame}{Supporto nei DBMS}
+		MySQL:
+		\begin{itemize}
+			\item Supporta solo trigger \textbf{FOR EACH ROW}
+			\item Non supporta trigger statement-level
+		\end{itemize}
+		
+		\bigskip
+		
+		Altri DBMS (PostgreSQL, Oracle):
+		\begin{itemize}
+			\item Supportano entrambe le modalità
+		\end{itemize}
+	\end{frame}
+	
+	%---------------------------------
+	\begin{frame}{Vantaggi dei Trigger}
+		\begin{itemize}
+			\item Controllo dell'integrità dei dati
+			\item Automazione di operazioni
+			\item Logging delle modifiche
+			\item Riduzione logica lato applicazione
+		\end{itemize}
+	\end{frame}
+	
+	%---------------------------------
+	\begin{frame}{Quando Usarli}
+		Uso appropriato:
+		\begin{itemize}
+			\item auditing
+			\item validazione automatica
+			\item aggiornamento tabelle derivate
+		\end{itemize}
+		
+		\bigskip
+		
+		Uso improprio:
+		\begin{itemize}
+			\item logiche troppo complesse
+			\item dipendenze difficili da tracciare
+		\end{itemize}
+	\end{frame}
+	
+	%---------------------------------
+	\begin{frame}[fragile]{Sintassi CREATE TRIGGER}
+		\begin{lstlisting}
+CREATE TRIGGER trigger_name
+BEFORE | AFTER INSERT | UPDATE | DELETE
+ON table_name
+FOR EACH ROW
+BEGIN
+  -- istruzioni SQL
+END;
+		\end{lstlisting}
+	\end{frame}
+	
+	%---------------------------------
+	\begin{frame}{Componenti del Trigger}
+		\begin{itemize}
+			\item Nome del trigger
+			\item Evento (INSERT, UPDATE, DELETE)
+			\item Timing (BEFORE, AFTER)
+			\item Tabella associata
+			\item Corpo del trigger
+		\end{itemize}
+	\end{frame}
+	
+	%---------------------------------
+	\begin{frame}[fragile]{Esempio: BEFORE INSERT}
+		\begin{lstlisting}
+CREATE TRIGGER before_insert_user
+BEFORE INSERT ON users
+FOR EACH ROW
+BEGIN
+  SET NEW.created_at = NOW();
+END;
+		\end{lstlisting}
+		
+		\bigskip
+		
+		Imposta automaticamente il timestamp.
+	\end{frame}
+	
+	%---------------------------------
+	\begin{frame}[fragile]{Esempio: AFTER INSERT}
+		\begin{lstlisting}
+CREATE TRIGGER after_insert_order
+AFTER INSERT ON orders
+FOR EACH ROW
+BEGIN
+  INSERT INTO logs(message)
+  VALUES ('Nuovo ordine inserito');
+END;
+		\end{lstlisting}
+	\end{frame}
+	
+	%---------------------------------
+	\begin{frame}[fragile]{Esempio: BEFORE UPDATE}
+		\begin{lstlisting}
+CREATE TRIGGER before_update_salary
+BEFORE UPDATE ON employees
+FOR EACH ROW
+BEGIN
+  IF NEW.salary < 0 THEN
+    SIGNAL SQLSTATE '45000';
+  END IF;
+END;
+		\end{lstlisting}
+	\end{frame}
+	
+	%---------------------------------
+	\begin{frame}[fragile]{Esempio: AFTER UPDATE}
+		\begin{lstlisting}
+CREATE TRIGGER after_update_employee
+AFTER UPDATE ON employees
+FOR EACH ROW
+BEGIN
+  INSERT INTO audit_log(old_salary, new_salary)
+  VALUES (OLD.salary, NEW.salary);
+END;
+		\end{lstlisting}
+	\end{frame}
+	
+	%---------------------------------
+	\begin{frame}[fragile]{Esempio: BEFORE DELETE}
+		\begin{lstlisting}
+CREATE TRIGGER before_delete_user
+BEFORE DELETE ON users
+FOR EACH ROW
+BEGIN
+  INSERT INTO archive_users
+  VALUES (OLD.id, OLD.name);
+END;
+		\end{lstlisting}
+	\end{frame}
+	
+	%---------------------------------
+	\begin{frame}[fragile]{Esempio: AFTER DELETE}
+		\begin{lstlisting}
+CREATE TRIGGER after_delete_order
+AFTER DELETE ON orders
+FOR EACH ROW
+BEGIN
+  INSERT INTO logs(message)
+  VALUES ('Ordine eliminato');
+END;
+		\end{lstlisting}
+	\end{frame}
+	
+	%---------------------------------
+	\begin{frame}{Uso di OLD e NEW}
+		\begin{itemize}
+			\item \texttt{NEW}: valori dopo la modifica
+			\item \texttt{OLD}: valori prima della modifica
+		\end{itemize}
+		
+		\bigskip
+		
+		Disponibilità:
+		\begin{itemize}
+			\item INSERT $\rightarrow$ solo \texttt{NEW}
+			\item DELETE $\rightarrow$ solo \texttt{OLD}
+			\item UPDATE $\rightarrow$ \texttt{OLD} e \texttt{NEW}
+		\end{itemize}
+	\end{frame}
+	
+	%---------------------------------
+	\begin{frame}[fragile]{Eliminazione di un Trigger}
+		\begin{lstlisting}
+DROP TRIGGER IF EXISTS trigger_name;
+		\end{lstlisting}
+		
+		\bigskip
+		
+		Note:
+		\begin{itemize}
+			\item \texttt{IF EXISTS} evita errori
+			\item servono privilegi adeguati
+		\end{itemize}
+	\end{frame}
+	
+	%---------------------------------
+	\begin{frame}{Comportamento su DROP TABLE}
+		Se una tabella viene eliminata:
+		
+		\begin{itemize}
+			\item tutti i trigger associati vengono eliminati automaticamente
+		\end{itemize}
+	\end{frame}
+	
+	%---------------------------------
+	\begin{frame}{Trigger Multipli}
+		MySQL 8.0 consente:
+		
+		\begin{itemize}
+			\item più trigger per stesso evento
+			\item stesso timing (es. AFTER INSERT)
+		\end{itemize}
+		
+		\bigskip
+		
+		Ordine di esecuzione:
+		\begin{itemize}
+			\item definito dal DBMS
+		\end{itemize}
+	\end{frame}
+	
+	%---------------------------------
+	\begin{frame}{Caso di Studio}
+		Scenario:
+		\begin{itemize}
+			\item tabella ordini
+			\item aggiornamento automatico statistiche
+		\end{itemize}
+		
+		\bigskip
+		
+		Soluzione:
+		\begin{itemize}
+			\item trigger AFTER INSERT
+		\end{itemize}
+	\end{frame}
+	
+	%---------------------------------
+	\begin{frame}[fragile]{Esempio Completo}
+		\begin{lstlisting}
+CREATE TRIGGER update_total
+AFTER INSERT ON orders
+FOR EACH ROW
+BEGIN
+  UPDATE stats
+  SET total_orders = total_orders + 1;
+END;
+		\end{lstlisting}
+	\end{frame}
+	
+	%---------------------------------
+	\begin{frame}{Conclusioni}
+		\begin{itemize}
+			\item Strumento potente ma da usare con cautela
+			\item Ideale per automazioni lato DB
+			\item Può complicare il debugging
+		\end{itemize}
+		
+		\bigskip
+		
+		Regola pratica:
+		\begin{itemize}
+			\item usare solo quando realmente necessario
+		\end{itemize}
+	\end{frame}
+	
+\end{document}

@@ -1,0 +1,10 @@
+\frametitle{Esempio Completo}
+\begin{lstlisting}
+CREATE TRIGGER update_total
+AFTER INSERT ON orders
+FOR EACH ROW
+BEGIN
+  UPDATE stats
+  SET total_orders = total_orders + 1;
+END;
+		\end{lstlisting}
