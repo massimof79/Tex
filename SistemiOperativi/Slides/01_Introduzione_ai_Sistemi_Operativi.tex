@@ -6,7 +6,7 @@
 \title{Introduzione ai Sistemi Operativi}
 \subtitle{Fondamenti e Architettura}
 \author{Prof. Fedeli Massimo - Corso ITS – Fabbrica Digitale}
-\date{}
+\date{Parte 1}
 
 \begin{document}
 	
@@ -107,6 +107,15 @@ ai programmi in esecuzione.
 		
 	\end{frame}
 
+
+\begin{frame}
+	\frametitle{Titolo della slide}
+	
+	\begin{center}
+		\includegraphics[width=0.8\textwidth]{astrazione.png}
+	\end{center}
+	
+\end{frame}
 	
 		\begin{frame}
 		\frametitle{Struttura di un Sistema di Calcolo}
@@ -133,7 +142,7 @@ ai programmi in esecuzione.
 	\begin{frame}
 		\frametitle{Risorse gestite dal Sistema Operativo}
 		
-		Principali risorse:
+		\textbf{Principali risorse}:
 		
 		\begin{itemize}
 			\item CPU
@@ -219,6 +228,35 @@ ai programmi in esecuzione.
 		
 	\end{frame}
 	%------------------------------------------------
+	
+	\begin{frame}
+		\frametitle{Il  modello ad anelli}
+		Nel modello a ring i programmi che compongono il sistema operativo prendono il nome di moduli e sono raggruppati in anelli (ring), annidati dal più interno (hardware) fino al più esterno (shell).
+		\begin{center}
+			\includegraphics[width=0.8\textwidth]{cipolla.png}
+		\end{center}
+		
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{Il modello ad anelli}
+		
+		Il modello a ring, detto anche a buccia di cipolla, rappresenta
+		il sistema operativo come costituito dai seguenti 4 ring:
+		
+		\begin{itemize}
+			\item kernel (nucleo);
+			\item memory management system (sistema di gestione della memoria);
+			\item device management system (sistema di gestione delle periferiche);
+			\item file management system (sistema di gestione delle informazioni).
+		\end{itemize}
+		
+		Ogni anello rappresenta una macchina astratta diversa, costituita
+		dai moduli software di quell'anello e dagli anelli a esso interni,
+		fino all'hardware.
+		
+	\end{frame}
+	
 	
 	\begin{frame}
 		\frametitle{Evoluzione dei Sistemi Operativi}
@@ -323,28 +361,13 @@ JOB END
 	\end{frame}
 	
 	%------------------------------------------------
-	
-	\begin{frame}
-		\frametitle{Spooling}
-		
-		SPooling =
-		
-		Simultaneous Peripheral Operation On Line
-		
-		Idea principale:
-		
-		\begin{itemize}
-			\item usare il disco come buffer
-			\item sovrapporre I/O ed elaborazione
-		\end{itemize}
-		
-	\end{frame}
+
 	
 	%------------------------------------------------
 \begin{frame}
 	\frametitle{Multiprogrammazione}
 	
-	Nei sistemi batch semplici la CPU rimaneva spesso inattiva
+	Nei sistemi batch semplici la \textbf{CPU rimaneva spesso inattiva}
 	quando un programma era in attesa di operazioni di I/O
 	(lettura da disco, stampa, accesso a dispositivi).
 	
@@ -378,6 +401,22 @@ JOB END
 \end{frame}
 	 
 	 
+	 \begin{frame}
+	 	\frametitle{La monoprogrammazione}
+	 	\begin{center}
+	 		\includegraphics[width=0.5\textwidth]{monoprogrammazione.png}
+	 	\end{center}
+	 	
+	 \end{frame}
+	 
+	 	 \begin{frame}
+	 	\frametitle{La multi programmazione}
+	 	\begin{center}
+	 		\includegraphics[width=0.5\textwidth]{multiprogrammazione.png}
+	 	\end{center}
+	 	
+	 \end{frame}
+	 
 \begin{frame}
 	\frametitle{Multiprogrammazione: utilizzo della CPU}
 	
@@ -394,7 +433,9 @@ JOB END
 			tempo \(\rightarrow\)
 			
 			Job 1 : [CPU][CPU][ I/O  ][ I/O  ][ I/O  ][CPU][CPU]
+			
 			Job 2 :           [CPU][CPU][CPU][ I/O  ][ I/O  ]
+			
 			Job 3 :                         [CPU][CPU][CPU][CPU]
 		\end{semiverbatim}
 	\end{center}
@@ -414,7 +455,7 @@ JOB END
 	\begin{frame}
 		\frametitle{Scheduling}
 		
-		Lo scheduling decide:
+		Lo \textbf{scheduling} decide:
 		
 		\begin{itemize}
 			\item quale processo usare la CPU
@@ -424,13 +465,32 @@ JOB END
 		Tipi principali:
 		
 		\begin{itemize}
-			\item Long term scheduling
-			\item Short term scheduling
+			\item\textbf{Long term }scheduling
+			\item \textbf{Short term }scheduling
 		\end{itemize}
 		
 	\end{frame}
-	
+		 \begin{frame}
+		\frametitle{Scheduling}
+		\begin{center}
+			\includegraphics[width=0.7\textwidth]{longshortscheduling.png}
+		\end{center}
+		
+	\end{frame}
 	%------------------------------------------------
+	
+	\begin{frame}
+		\frametitle{Long Term vs Short Term Scheduling}
+	
+		\textbf{Short Term Scheduling (CPU Scheduler)}
+		\begin{itemize}
+			\item Seleziona il processo da eseguire sulla CPU
+			\item Gestisce la coda dei processi \textit{ready}
+			\item Agisce con alta frequenza
+			\item Transizione: \textit{ready} $\rightarrow$ \textit{running}
+		\end{itemize}
+		
+	\end{frame}
 	
 \begin{frame}
 	\frametitle{Time Sharing}
@@ -452,7 +512,18 @@ JOB END
 		\item il sistema operativo gestisce la condivisione delle risorse
 	\end{itemize}
 	
-\end{frame}\begin{frame}
+\end{frame}
+
+		 \begin{frame}
+	\frametitle{Scheduling}
+	\begin{center}
+		\includegraphics[width=0.7\textwidth]{timesharing.png}
+	\end{center}
+	
+\end{frame}
+
+
+\begin{frame}
 \frametitle{Divisione della CPU nel Time Sharing}
 
 Per permettere a più utenti di utilizzare il sistema,
@@ -555,6 +626,16 @@ Questo meccanismo è gestito dallo \textbf{scheduling della CPU}.
 	esattamente dal punto in cui era stato interrotto.
 	
 \end{frame}
+
+		 \begin{frame}
+	\frametitle{Context Switching}
+	\begin{center}
+		\includegraphics[width=0.9\textwidth]{contextswitch.png}
+	\end{center}
+	
+\end{frame}
+
+
 \begin{frame}
 	\frametitle{Quando avviene un Context Switch}
 	
@@ -615,7 +696,13 @@ Questo meccanismo è gestito dallo \textbf{scheduling della CPU}.
 	
 \end{frame}
 
-%------------------------------------------------
+		 \begin{frame}
+	\frametitle{Architettura di un sistema di calcolo}
+	\begin{center}
+		\includegraphics[width=0.9\textwidth]{architettura.png}
+	\end{center}
+	
+\end{frame}
 
 \begin{frame}
 	\frametitle{Controller dei dispositivi}
@@ -651,7 +738,7 @@ Questo meccanismo è gestito dallo \textbf{scheduling della CPU}.
 	Un \textbf{interrupt} è un segnale che interrompe temporaneamente
 	l'esecuzione della CPU per segnalare il verificarsi di un evento.
 	
-	Gli interrupt permettono al sistema operativo di reagire
+	Gli \textbf{interrupt} permettono al sistema operativo di reagire
 	rapidamente a eventi provenienti da hardware o software.
 	
 	Gli interrupt possono essere generati da:
@@ -664,6 +751,13 @@ Questo meccanismo è gestito dallo \textbf{scheduling della CPU}.
 \end{frame}
 
 %------------------------------------------------
+
+ \begin{frame}
+	\frametitle{Interrupt}
+	\begin{center}
+		\includegraphics[width=0.6\textwidth]{interrupt_1.png}
+	\end{center}
+	\end{frame}
 
 \begin{frame}
 	\frametitle{Interrupt Hardware}
@@ -684,6 +778,15 @@ Questo meccanismo è gestito dallo \textbf{scheduling della CPU}.
 	in esecuzione.
 	
 \end{frame}
+
+
+ \begin{frame}
+	\frametitle{Interrupt}
+	\begin{center}
+		\includegraphics[width=0.6\textwidth]{interrupt_2.png}
+	\end{center}
+\end{frame}
+
 
 %------------------------------------------------
 
@@ -820,6 +923,13 @@ Questo meccanismo è gestito dallo \textbf{scheduling della CPU}.
 	
 \end{frame}
 
+ \begin{frame}
+	\frametitle{Direct Memory Access}
+	\begin{center}
+		\includegraphics[width=0.6\textwidth]{dma.jpg}
+	\end{center}
+\end{frame}
+
 %------------------------------------------------
 
 \begin{frame}
@@ -944,12 +1054,21 @@ Questo meccanismo è gestito dallo \textbf{scheduling della CPU}.
 	
 \end{frame}
 
+
+ \begin{frame}
+	\frametitle{Gestione dei processi}
+	\begin{center}
+		\includegraphics[width=0.6\textwidth]{gestioneprocessi.png}
+	\end{center}
+\end{frame}
+
+
 %------------------------------------------------
 
 \begin{frame}
 	\frametitle{Gestione della memoria}
 	
-	La memoria principale è una risorsa limitata
+	La \textbf{memoria principale} è una risorsa limitata
 	che deve essere condivisa tra più processi.
 	
 	Il sistema operativo deve:
@@ -961,6 +1080,17 @@ Questo meccanismo è gestito dallo \textbf{scheduling della CPU}.
 	\end{itemize}
 	
 \end{frame}
+
+
+ \begin{frame}
+	\frametitle{Gestione della memoria}
+	\begin{center}
+		\includegraphics[width=0.6\textwidth]{gestionememoria.png}
+	\end{center}
+\end{frame}
+
+
+
 
 %------------------------------------------------
 
@@ -1097,8 +1227,8 @@ Questo meccanismo è gestito dallo \textbf{scheduling della CPU}.
 	Due tipi principali:
 	
 	\begin{itemize}
-		\item CLI (Command Line Interface)
-		\item GUI (Graphical User Interface)
+		\item \textbf{CLI} (Command Line Interface)
+		\item \textbf{GUI} (Graphical User Interface)
 	\end{itemize}
 	
 \end{frame}
@@ -1120,6 +1250,15 @@ Questo meccanismo è gestito dallo \textbf{scheduling della CPU}.
 	\end{verbatim}
 	
 \end{frame}
+
+
+ \begin{frame}
+	\frametitle{Command Line Interface}
+	\begin{center}
+		\includegraphics[width=0.6\textwidth]{cli.png}
+	\end{center}
+\end{frame}
+
 
 %------------------------------------------------
 
@@ -1172,6 +1311,41 @@ Questo meccanismo è gestito dallo \textbf{scheduling della CPU}.
 	
 \end{frame}
 
+
+\begin{frame}
+	\frametitle{Struttura Monolitica}
+	
+	In una struttura monolitica il sistema operativo è
+	un unico grande programma eseguito in modalità kernel.
+	
+	\vspace{0.3cm}
+	
+	\textbf{Caratteristiche}
+	\begin{itemize}
+		\item Tutti i servizi (file system, memoria, I/O, driver) sono nello stesso spazio
+		\item Comunicazione diretta tra componenti (chiamate di funzione)
+		\item Elevate prestazioni (basso overhead)
+	\end{itemize}
+	
+	\vspace{0.3cm}
+	
+	\textbf{Svantaggi}
+	\begin{itemize}
+		\item Scarsa modularità
+		\item Difficile manutenzione ed estensione
+		\item Un errore può compromettere tutto il sistema
+	\end{itemize}
+	
+	\vspace{0.3cm}
+	
+	\textbf{Esempi}
+	\begin{itemize}
+		\item MS-DOS
+		\item prime versioni di UNIX
+	\end{itemize}
+	
+\end{frame}
+
 %------------------------------------------------
 
 \begin{frame}
@@ -1186,21 +1360,50 @@ Questo meccanismo è gestito dallo \textbf{scheduling della CPU}.
 	
 \end{frame}
 
-%------------------------------------------------
 
 \begin{frame}
-	\frametitle{Esempio di struttura a livelli}
+	\frametitle{Struttura a livelli}
 	
-	Livelli tipici:
+	In una struttura a livelli il sistema operativo è suddiviso
+	in livelli gerarchici, ciascuno con una funzione specifica.
 	
+	\vspace{0.3cm}
+	
+	\textbf{Principio}
 	\begin{itemize}
-		\item hardware
-		\item gestione CPU
-		\item gestione memoria
-		\item gestione I/O
-		\item programmi utente
+		\item Ogni livello utilizza solo i servizi del livello sottostante
+		\item Fornisce servizi al livello superiore
+		\item Nasconde i dettagli implementativi (astrazione)
 	\end{itemize}
 	
+	\vspace{0.3cm}
+	
+	\textbf{Esempio di livelli}
+	\begin{itemize}
+		\item Hardware
+		\item Gestione memoria
+		\item Gestione processi
+		\item File system
+		\item Interfaccia utente
+	\end{itemize}
+	
+	\vspace{0.3cm}
+	
+	\textbf{Vantaggi e svantaggi}
+	\begin{itemize}
+		\item Maggiore modularità e facilità di manutenzione
+		\item Migliore isolamento tra componenti
+		\item Possibile perdita di prestazioni (passaggi tra livelli)
+	\end{itemize}
+	
+\end{frame}
+
+%------------------------------------------------
+ \begin{frame}
+	\frametitle{Struttura a livelli}
+	\begin{center}
+		\includegraphics[width=0.8\textwidth]{strutturalivelli.png}
+	\end{center}
 \end{frame}
 
 %------------------------------------------------
@@ -1226,12 +1429,37 @@ Questo meccanismo è gestito dallo \textbf{scheduling della CPU}.
 \begin{frame}
 	\frametitle{Microkernel}
 	
-	Nel modello microkernel
-	solo le funzioni essenziali
-	sono presenti nel kernel.
+	Nel modello microkernel il kernel contiene
+	solo le funzionalità minime indispensabili.
 	
-	Altre funzionalità vengono
-	eseguite come processi separati.
+	\vspace{0.3cm}
+	
+	\textbf{Funzioni nel kernel}
+	\begin{itemize}
+		\item Gestione dei processi (scheduling)
+		\item Gestione della memoria di base
+		\item Comunicazione tra processi (IPC)
+	\end{itemize}
+	
+	\vspace{0.3cm}
+	
+	\textbf{Servizi esterni al kernel}
+	\begin{itemize}
+		\item File system
+		\item Driver di dispositivo
+		\item Gestione rete
+	\end{itemize}
+	
+	\vspace{0.3cm}
+	
+	\textbf{Caratteristiche}
+	\begin{itemize}
+		\item Comunicazione tramite messaggi (IPC)
+		\item Elevato isolamento tra componenti
+	\end{itemize}
+	
+	\vspace{0.3cm}
+
 	
 \end{frame}
 
@@ -1240,12 +1468,14 @@ Questo meccanismo è gestito dallo \textbf{scheduling della CPU}.
 \begin{frame}
 	\frametitle{Vantaggi del Microkernel}
 	
+		
+	\textbf{Vantaggi e svantaggi}
 	\begin{itemize}
-		\item maggiore modularità
-		\item maggiore sicurezza
-		\item maggiore affidabilità
+		\item Maggiore sicurezza e stabilità
+		\item Più facile manutenzione
+		\item Possibile overhead nelle comunicazioni
 	\end{itemize}
-	
+
 \end{frame}
 
 %------------------------------------------------
@@ -1260,20 +1490,6 @@ Questo meccanismo è gestito dallo \textbf{scheduling della CPU}.
 	
 \end{frame}
 
-%------------------------------------------------
-
-\begin{frame}
-	\frametitle{Esempi di Sistemi Operativi}
-	
-	\begin{itemize}
-		\item Linux
-		\item Windows
-		\item macOS
-		\item Android
-		\item iOS
-	\end{itemize}
-	
-\end{frame}
 
 %------------------------------------------------
 
