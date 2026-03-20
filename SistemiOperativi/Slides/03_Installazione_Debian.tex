@@ -609,6 +609,101 @@ condividere con altri utenti
 	\end{frame}
 	
 	\begin{frame}
+		\frametitle{Opzioni disponibili}
+		
+		Durante la creazione della macchina virtuale è possibile scegliere
+		quale disco utilizzare:
+		
+		\vspace{0.5cm}
+		
+		\begin{itemize}
+			\item Create a new virtual disk
+			\item Use an existing virtual disk
+			\item Use a physical disk (advanced)
+		\end{itemize}
+		
+		\vspace{0.5cm}
+		
+		La scelta dipende da:
+		\begin{itemize}
+			\item Stato del progetto (nuovo o esistente)
+			\item Necessità di riutilizzo
+			\item Livello di controllo richiesto
+		\end{itemize}
+		
+	\end{frame}
+	
+	%---------------------------------
+	
+	\begin{frame}
+		\frametitle{Creare un nuovo disco}
+		
+		\textbf{Create a new virtual disk}
+		
+		\begin{itemize}
+			\item Crea un disco virtuale da zero
+			\item Salvato come file sul sistema host
+			\item Può essere spostato o copiato facilmente
+		\end{itemize}
+		
+		\vspace{0.5cm}
+		
+		\textbf{Quando usarlo}
+		\begin{itemize}
+			\item Nuova installazione del sistema operativo
+			\item Attività didattiche o di laboratorio
+			\item Ambienti di test
+		\end{itemize}
+		
+		\vspace{0.5cm}
+		
+		\textbf{Vantaggi}
+		\begin{itemize}
+			\item Semplicità e sicurezza
+			\item Isolamento completo
+		\end{itemize}
+		
+	\end{frame}
+	
+	%---------------------------------
+	
+	\begin{frame}
+		\frametitle{Disco esistente o fisico}
+		
+		\textbf{Use an existing virtual disk}
+		\begin{itemize}
+			\item Riutilizza un disco già configurato
+			\item Utile per macchine preconfigurate
+		\end{itemize}
+		
+		\vspace{0.4cm}
+		
+		\textbf{Quando usarlo}
+		\begin{itemize}
+			\item Ripristino di VM
+			\item Distribuzione di ambienti già pronti
+		\end{itemize}
+		
+		\vspace{0.5cm}
+		
+		\textbf{Use a physical disk (advanced)}
+		\begin{itemize}
+			\item Accesso diretto a un disco reale
+			\item Richiede privilegi amministrativi
+		\end{itemize}
+		
+		\vspace{0.4cm}
+		
+		\textbf{Attenzione}
+		\begin{itemize}
+			\item Rischio di perdita dati
+			\item Da usare solo in casi avanzati
+		\end{itemize}
+		
+	\end{frame}
+	
+	
+	\begin{frame}
 		\frametitle{Avvio della macchina virtuale}
 		
 		Avviare la VM:
@@ -625,10 +720,12 @@ condividere con altri utenti
 		
 	\end{frame}
 	
+	
+	
 	%------------------------------------------------
 	
 	\begin{frame}
-		\frametitle{Installazione Debian - Lingua e localizzazione}
+		\frametitle{Installazione Ubuntu - Lingua e localizzazione}
 		
 		Selezionare:
 		\begin{itemize}
