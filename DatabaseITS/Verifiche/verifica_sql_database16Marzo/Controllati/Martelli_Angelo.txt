@@ -1,0 +1,107 @@
+Martelli_Angelo Compito SQL 16-3-26
+
+PARTE 1 -QUERY SQL
+
+1. SELECT nome, cognome, citta FROM PAZIENTI
+WHERE data_nascita > '1980-12-31'
+ORDER BY data_nascita DESC;
+
+2. SELECT  REPARTI.nome_reparto, REPARTI.piano, COUNT(RICOVERI.id_paziente) AS totale_ricoverati
+FROM REPARTI LEFT JOIN RICOVERI ON RICOVERI.id_reparto = REPARTI.id_reparto
+WHERE REPARTI.piano IN (2, 3)
+GROUP BY REPARTI.id_reparto, REPARTI.nome_reparto, REPARTI.piano
+ORDER BY REPARTI.piano, REPARTI.nome_reparto;
+
+3. SELECT PAZIENTI.nome, PAZIENTI.cognome FROM PAZIENTI
+WHERE PAZIENTI.citta IN ('Roma', 'Milano')
+    AND EXISTS (SELECT 1 FROM VISITE WHERE VISITE.id_paziente = PAZIENTI.id_paziente
+    AND VISITE.voto > 7)
+ORDER BY PAZIENTI.cognome, PAZIENTI.nome;
+
+4. SELECT cognome, nome FROM PAZIENTI
+ORDER BY cognome ASC;
+
+5. SELECT REPARTI.nome_reparto, CONCAT(MEDICI.nome, ' ', MEDICI.cognome) AS medico_responsabile
+FROM REPARTI JOIN MEDICI ON REPARTI.id_medico = MEDICI.id_medico;
+
+6. select cognome, nome from PAZIENTI join VISITE 
+on PAZIENTI.id_paziente = VISITE.id_paziente
+where VISITE.voto is not null;
+
+7. select cognome, nome from PAZIENTI join VISITE 
+on pazienti.id_paziente = VISITE.id_paziente
+where VISITE.voto >='8';
+
+8. SELECT REPARTI.nome_reparto, ROUND(AVG(VISITE.voto), 2) AS media_valutazione,
+    COUNT(VISITE.voto) AS numero_visite
+FROM REPARTI LEFT JOIN VISITE ON VISITE.id_medico = REPARTI.id_medico
+GROUP BY REPARTI.nome_reparto
+ORDER BY media_valutazione DESC ;
+
+9. SELECT PAZIENTI.id_paziente, PAZIENTI.nome, PAZIENTI.cognome, COUNT(*) AS numero_visite
+FROM VISITE JOIN PAZIENTI ON PAZIENTI.id_paziente = VISITE.id_paziente
+GROUP BY PAZIENTI.id_paziente, PAZIENTI.nome, PAZIENTI.cognome
+HAVING COUNT(*) > 2
+ORDER BY numero_visite DESC, PAZIENTI.cognome, PAZIENTI.nome;
+
+10. SELECT MEDICI.id_medico, MEDICI.nome, MEDICI.cognome, COUNT(REPARTI.id_reparto) AS numero_reparti
+FROM MEDICI JOIN REPARTI ON REPARTI.id_medico = MEDICI.id_medico
+GROUP BY MEDICI.id_medico, MEDICI.nome, MEDICI.cognome
+HAVING COUNT(REPARTI.id_reparto) > 1
+ORDER BY numero_reparti DESC, MEDICI.cognome, MEDICI.nome;
+
+11. SELECT REPARTI.id_reparto, REPARTI.nome_reparto
+FROM REPARTI LEFT JOIN VISITE ON VISITE.id_medico = REPARTI.id_medico
+WHERE VISITE.id_medico IS NULL;
+
+12. SELECT PAZIENTI.id_paziente, PAZIENTI.nome, PAZIENTI.cognome,
+    ROUND(AVG(VISITE.voto), 2) AS media_valutazioni
+FROM VISITE JOIN PAZIENTI ON PAZIENTI.id_paziente = VISITE.id_paziente
+GROUP BY PAZIENTI.id_paziente, PAZIENTI.nome, PAZIENTI.cognome
+ORDER BY media_valutazioni DESC;
+
+14. SELECT REPARTI.id_reparto, REPARTI.nome_reparto,
+    COUNT(DISTINCT RICOVERI.id_paziente) AS numero_ricoverati
+FROM REPARTI LEFT JOIN RICOVERI ON RICOVERI.id_reparto = REPARTI.id_reparto
+GROUP BY REPARTI.id_reparto, REPARTI.nome_reparto
+ORDER BY REPARTI.nome_reparto;
+
+15. SELECT REPARTI.id_reparto, REPARTI.nome_reparto,
+    ROUND(AVG(VISITE.voto), 2) AS media_valutazioni
+FROM REPARTI JOIN VISITE ON VISITE.id_medico = REPARTI.id_medico
+GROUP BY REPARTI.id_reparto, REPARTI.nome_reparto
+ORDER BY media_valutazioni DESC;
+
+
+
+PARTE 2 - INSERT
+
+INSERT INTO PAZIENTI (id_paziente, nome, cognome, data_nascita, citta)
+VALUES (21, 'Mario', 'Rossi', '2000-03-15', 'Bologna');
+
+PARTE 3 - UPDATE
+
+UPDATE REPARTI
+SET piano = 3
+WHERE nome_reparto = 'Cardiologia';
+
+PARTE 4 - SQL DDL
+
+CREATE TABLE SALE (
+    id_sala     INT          PRIMARY KEY,
+    edificio    VARCHAR(200) NOT NULL,
+    capienza	INT	NOT NULL
+);
+
+CREATE TABLE INTERVENTI (
+    id_intervento     INT          PRIMARY KEY,
+    descrizione       VARCHAR(200) NOT NULL,
+    data_intervento   DATE         NOT NULL,
+    id_sala           INT          NOT NULL,
+    id_medico         INT          NOT NULL,
+    FOREIGN KEY (id_sala)  REFERENCES SALE(id_sala),
+    FOREIGN KEY (id_medico) REFERENCES MEDICI(id_medico)
+);
+
+
+

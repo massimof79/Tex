@@ -1,0 +1,104 @@
+1.1)
+SELECT pazienti.nome, pazienti.cognome, pazienti.citta from pazienti
+WHERE pazienti.data_nascita > "1980-00-00"
+order by pazienti.data_nascita DESC;
+
+1.2)
+SELECT reparti.nome_reparto, reparti.piano, count(ricoveri.id_reparto) as numeropazienti FROM reparti
+JOIN ricoveri on reparti.id_reparto = ricoveri.id_reparto
+WHERE reparti.piano = "2" or reparti.piano = "3"
+GROUP by ricoveri.id_reparto;
+
+1.3)
+SELECT pazienti.nome , pazienti.cognome   from pazienti
+JOIN visite on pazienti.id_paziente = visite.id_paziente
+WHERE pazienti.citta ="Roma" or pazienti.citta = "Milano" AND visite.voto > 7
+GROUP by pazienti.id_paziente
+
+1.4)
+SELECT pazienti.nome, pazienti.cognome FROM pazienti
+ORDER BY pazienti.cognome ASC, pazienti.nome ASC;
+
+1.5)
+SELECT reparti.nome_reparto , medici.nome, medici.cognome FROM reparti
+JOIN medici ON medici.id_medico = reparti.id_medico;
+
+1.6)
+SELECT pazienti.nome, pazienti.cognome FROM pazienti
+RIGHT JOIN visite on pazienti.id_paziente = visite.id_paziente;
+
+
+1.7)
+SELECT pazienti.nome, pazienti.cognome, visite.voto FROM pazienti
+RIGHT JOIN visite on pazienti.id_paziente = visite.id_paziente
+WHERE visite.voto >= 8
+GROUP BY visite.id_paziente;
+
+
+1.8)
+SELECT reparti.nome_reparto, AVG(visite.voto ) as valutazionemedia from visite
+JOIN reparti on reparti.id_medico = visite.id_medico
+GROUP by reparti.nome_reparto;
+
+1.9)
+SELECT pazienti.nome, pazienti.cognome, COUNT(visite.id_paziente) as numerovisite FROM pazienti
+JOIN visite on visite.id_paziente = pazienti.id_paziente
+GROUP by visite.id_paziente
+HAVING numerovisite > 2;
+
+
+1.10)
+SELECT medici.nome, medici.cognome, COUNT(reparti.id_reparto) as numeroreparti FROM medici 
+JOIN reparti ON medici.id_medico = reparti.id_medico
+GROUP BY reparti.id_reparto
+HAVING numeroreparti> 1;
+
+
+1.11)
+SELECT reparti.nome_reparto FROM reparti
+left JOIN visite on reparti.id_medico = visite.id_medico
+WHERE visite.id_paziente is NULL
+GROUP BY reparti.nome_reparto;
+
+1.12)
+SELECT pazienti.nome,  AVG(visite.voto) as mediapaziente from pazienti
+JOIN visite on pazienti.id_paziente = visite.id_paziente
+GROUP by visite.id_paziente;
+
+1.13)
+SELECT pazienti.nome,pazienti.cognome, reparti.nome_reparto from pazienti
+join ricoveri on ricoveri.id_paziente = pazienti.id_paziente
+JOIN reparti on reparti.id_reparto = ricoveri.id_reparto;
+
+
+
+2)
+INSERT INTO pazienti (id_paziente,nome,cognome,data_nascita,citta)
+VALUES ("21","Mario","Rossi","2000-03-15","Bologna")
+
+
+3)
+UPDATE reparti
+SET reparti.piano = "3"
+WHERE reparti.nome_reparto = "Cardiologia;
+
+4)
+CREATE TABLE sale (
+id_sala INT PRIMARY KEY,
+edificio VARCHAR(50) UNIQUE,
+capienza int )
+CREATE TABLE interventi(
+id_intervento INT PRIMARY KEY,
+descrizione VARCHAR(50) UNIQUE,
+data_intervento DATE NOT null,
+id_sala  INt,
+id_medico int,
+FOREIGN KEY id_sala REFERENCES sale(id_sala),
+    FOREIGN KEY id_medico  REFERENCES sale(id_sala)
+
+)
+
+
+
+
+

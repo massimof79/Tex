@@ -1,0 +1,65 @@
+                                                                 PARTE 1
+Esercizio 1: SELECT nome, cognome, pazienti.citta, pazienti.data_nascita FROM pazienti
+WHERE pazienti.data_nascita > 1980
+ORDER BY pazienti.data_nascita DESC
+
+Esercizio 2: SELECT reparti.nome_reparto, reparti.id_reparto, reparti.piano, COUNT(ricoveri.id_paziente) AS tot_ricoveri FROM reparti JOIN ricoveri ON reparti.id_reparto = ricoveri.id_reparto WHERE reparti.piano IN (2,3) GROUP BY reparti.nome_reparto, reparti.piano;
+
+Esercizio 3:SELECT pazienti.nome, pazienti.cognome, visite.voto FROM pazienti JOIN visite ON
+pazienti.id_paziente = visite.id_paziente
+WHERE pazienti.citta LIKE "Roma" OR " Milano" AND visite.voto > 7
+GROUP BY pazienti.nome, pazienti.cognome
+
+Esercizio 4: SELECT pazienti.cognome, pazienti.nome FROM pazienti
+ORDER BY pazienti.cognome, pazienti.nome ASC
+
+Esercizio 5: SELECT reparti.nome_reparto, reparti.id_reparto, medici.nome, medici.cognome, medici.id_medico FROM reparti JOIN medici ON
+reparti.id_medico = medici.id_medico
+
+esercizio 6: SELECT pazienti.cognome, pazienti.nome, visite.voto FROM pazienti JOIN visite ON 
+pazienti.id_paziente = visite.id_paziente 
+WHERE visite.voto IS NOT null 
+GROUP BY pazienti.nome, pazienti.cognome
+
+esercizio 7: SELECT pazienti.cognome, pazienti.nome, visite.voto FROM pazienti JOIN visite ON pazienti.id_paziente = visite.id_paziente WHERE visite.voto >= 8
+
+ESERCIZIO 8: SELECT reparti.id_reparto, ROUND(AVG (visite.voto),1) AS valutazione_media_rep FROM reparti JOIN medici ON
+reparti.id_medico = medici.id_medico JOIN visite ON
+medici.id_medico = visite.id_medico 
+GROUP BY reparti.id_reparto 
+
+esercizio 9: SELECT pazienti.cognome, pazienti.nome, pazienti.id_paziente, COUNT(visite.voto) AS tot_visite
+FROM pazienti JOIN visite ON
+pazienti.id_paziente = visite.id_paziente 
+GROUP BY pazienti.cognome, pazienti.nome
+HAVING tot_visite > 2
+
+ESERCIZIO 10: SELECT medici.cognome, medici.nome, medici.id_medico, COUNT(reparti.nome_reparto) as rep_seguiti FROM medici JOIN reparti ON
+medici.id_medico = reparti.id_reparto 
+GROUP BY medici.cognome, medici.nome 
+HAVING rep_seguiti > 1
+
+ESERCIZIO 11: SELECT reparti.id_reparto, reparti.nome_reparto, visite.voto FROM reparti JOIN medici ON
+reparti.id_medico = medici.id_medico LEFT JOIN visite ON 
+medici.id_medico = visite.id_medico WHERE visite.voto is null
+
+ESERCIZIO 12: select pazienti.nome,pazienti.cognome, avg(visite.voto) AS Media_Voto
+from pazienti join visite on pazienti.id_paziente= visite.id_paziente
+GROUP By pazienti.id_paziente, pazienti.nome, pazienti.cognome
+ORDER by Media_Voto desc
+
+ESERCIZIO 13: select pazienti.nome, pazienti.cognome,
+reparti.nome_reparto,ricoveri.data_ricovero
+from pazienti join ricoveri on pazienti.id_paziente=
+ricoveri.id_paziente join reparti on ricoveri.id_reparto =
+reparti.id_reparto ORDER by pazienti.cognome,pazienti.nome
+ 
+
+                                                                                              PARTE 2
+INSERT INTO pazienti (nome, cognome , data_nascita, citta)
+VALUES ("Mario", "Rossi", "2000-03-15", "Bologna")
+
+                                                                                              PARTE 3
+
+UPDATE reparti SET reparti.piano = 3 WHERE reparti.nome_reparto = 'cardiologia'
+

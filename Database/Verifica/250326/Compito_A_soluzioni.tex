@@ -1,0 +1,151 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[italian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{setspace}
+\geometry{margin=2.5cm}
+\onehalfspacing
+
+\title{Verifica scritta di informatica - Classe 4 AIQ - Compito B - SOLUZIONI}
+\author{Prof. Fedeli Massimo}
+\date{}
+
+\begin{document}
+	\maketitle
+	
+	\section*{Soluzioni Parte A -- SQL}
+	
+	\begin{enumerate}
+		
+		\item
+		\begin{verbatim}
+			SELECT s.nome, s.cognome, c.titolo, i.data_iscrizione
+			FROM STUDENTI s
+			JOIN ISCRIZIONI i ON s.id_studente = i.id_studente
+			JOIN CORSI c ON c.id_corso = i.id_corso
+			WHERE s.id_studente = 5
+			ORDER BY i.data_iscrizione DESC;
+		\end{verbatim}
+		
+		\item
+		\begin{verbatim}
+			SELECT titolo
+			FROM CORSI
+			WHERE categoria = 'Informatica'
+			AND attivo = 1
+			AND costo > 100;
+		\end{verbatim}
+		
+		\item
+		\begin{verbatim}
+			SELECT s.cognome, s.nome, c.titolo
+			FROM STUDENTI s
+			JOIN ISCRIZIONI i ON s.id_studente = i.id_studente
+			JOIN CORSI c ON c.id_corso = i.id_corso
+			WHERE c.livello = 'Base';
+		\end{verbatim}
+		
+		\item
+		\begin{verbatim}
+			SELECT c.titolo
+			FROM CORSI c
+			JOIN ISCRIZIONI i ON c.id_corso = i.id_corso
+			GROUP BY c.id_corso, c.titolo
+			HAVING COUNT(*) >= 10;
+		\end{verbatim}
+		
+		\item
+		\begin{verbatim}
+			SELECT i.id_iscrizione, s.cognome, i.data_iscrizione
+			FROM ISCRIZIONI i
+			JOIN STUDENTI s ON s.id_studente = i.id_studente
+			WHERE i.id_iscrizione NOT IN (
+			SELECT id_iscrizione
+			FROM PAGAMENTI
+			WHERE esito = 'positivo'
+			);
+		\end{verbatim}
+		
+		\item
+		\begin{verbatim}
+			SELECT c.titolo, COUNT(*) AS numero_iscritti
+			FROM CORSI c
+			JOIN ISCRIZIONI i ON c.id_corso = i.id_corso
+			GROUP BY c.id_corso, c.titolo
+			HAVING COUNT(*) >= 5;
+		\end{verbatim}
+		
+		\item
+		\begin{verbatim}
+			SELECT s.cognome, s.nome, SUM(p.importo) AS spesa_totale
+			FROM STUDENTI s
+			JOIN ISCRIZIONI i ON s.id_studente = i.id_studente
+			JOIN PAGAMENTI p ON p.id_iscrizione = i.id_iscrizione
+			WHERE p.esito = 'positivo'
+			GROUP BY s.id_studente, s.cognome, s.nome
+			ORDER BY spesa_totale DESC;
+		\end{verbatim}
+		
+		\item
+		\begin{verbatim}
+			SELECT c.titolo, AVG(r.voto) AS media_voti
+			FROM CORSI c
+			JOIN RECENSIONI r ON c.id_corso = r.id_corso
+			GROUP BY c.id_corso, c.titolo;
+		\end{verbatim}
+		
+		\item
+		\begin{verbatim}
+			SELECT s.id_studente, s.cognome
+			FROM STUDENTI s
+			JOIN ISCRIZIONI i ON s.id_studente = i.id_studente
+			JOIN CORSI c ON c.id_corso = i.id_corso
+			WHERE c.attivo = 1
+			GROUP BY s.id_studente, s.cognome
+			HAVING COUNT(DISTINCT c.id_corso) = (
+			SELECT COUNT(*) FROM CORSI WHERE attivo = 1
+			);
+		\end{verbatim}
+		
+		\item
+		\begin{verbatim}
+			SELECT c.titolo, SUM(p.importo) AS incasso_totale
+			FROM CORSI c
+			JOIN ISCRIZIONI i ON c.id_corso = i.id_corso
+			JOIN PAGAMENTI p ON p.id_iscrizione = i.id_iscrizione
+			WHERE p.esito = 'positivo'
+			GROUP BY c.id_corso, c.titolo;
+		\end{verbatim}
+		
+	\end{enumerate}
+	
+	\section*{Soluzioni Parte B -- Algebra Relazionale}
+	
+	\begin{enumerate}
+		
+		\item
+		\[
+		\pi_{titolo}(\sigma_{attivo=1 \land livello='Avanzato'}(CORSI))
+		\]
+		
+		\item
+		\[
+		\pi_{cognome, nome}(\sigma_{data\_iscrizione \geq '2026-01-01' \land data\_iscrizione \leq '2026-12-31'}(STUDENTI))
+		\]
+		
+		\item
+		\[
+		\pi_{titolo}(CORSI \bowtie ISCRIZIONI)
+		\]
+		
+		\item
+		\[
+		\pi_{cognome, nome, titolo}(
+		\sigma_{data\_iscrizione \geq '2026-01-01' \land data\_iscrizione \leq '2026-01-31'}
+		(STUDENTI \bowtie ISCRIZIONI \bowtie CORSI))
+		\]
+		
+	\end{enumerate}
+	
+\end{document}

@@ -1,0 +1,105 @@
+VERIFICA DEL 16/03/2026
+
+ESERCIZIO 1.1 
+SELECT nome, cognome, citta FROM pazienti 
+WHERE YEAR(data_nascita) > 1980 
+ORDER BY data_nascita DESC;
+
+ESERCIZO 2.1
+SELECT reparti.nome_reparto, reparti.piano, COUNT(ricoveri.id_paziente) AS totale_paziente_per_reparto FROM `reparti` 
+INNER JOIN ricoveri ON reparti.id_reparto = ricoveri.id_reparto 
+WHERE piano IN ( '2', '3') 
+GROUP BY nome_reparto;
+
+ESERCIZIO 3.1
+SELECT concat(nome, " ", cognome) AS Nominativo_paziente,  visite.voto FROM pazienti 
+RIGHT JOIN visite ON pazienti.id_paziente = visite.id_paziente 
+WHERE citta IN ( 'Roma', 'Milano') AND visite.voto > 7
+GROUP BY Nominativo_paziente;
+
+ESERCIZIO 4.1
+SELECT * FROM pazienti 
+ORDER BY cognome, nome;
+
+ESERCIZIO 5.1
+SELECT concat(nome, " ", cognome) AS Nominativo_medico_responsabile, nome_reparto FROM medici 
+INNER JOIN reparti ON medici.id_medico = reparti.id_medico;
+
+ESERCIZIO 6.1
+SELECT concat(nome, " ", cognome) AS Nominativo_paziente FROM pazienti 
+RIGHT JOIN visite ON pazienti.id_paziente = visite.id_paziente 
+GROUP BY Nominativo_paziente;
+
+ESERCIZIO 7.1
+SELECT concat(nome, " ", cognome) AS Nominativo_paziente,  visite.voto FROM pazienti 
+RIGHT JOIN visite ON pazienti.id_paziente = visite.id_paziente 
+WHERE visite.voto >= 8
+GROUP BY Nominativo_paziente;
+
+ESERCIZIO 8.1
+SELECT AVG(voto) AS Media_valutazione, nome_reparto FROM visite 
+LEFT JOIN medici ON visite.id_medico = medici.id_medico 
+INNER JOIN reparti ON medici.id_medico = reparti.id_medico 
+GROUP BY nome_reparto;
+
+ESERCIZIO 9.1
+SELECT concat(nome, " ", cognome) AS 'Nominativo_paziente', COUNT(visite.id_paziente) AS 'Num_visite'  FROM pazienti
+INNER JOIN visite ON pazienti.id_paziente = visite.id_paziente
+WHERE 'Num_visite' > 2;
+
+ESERCIZIO 10.1
+SELECT concat(nome, " ", cognome) AS Nominativo_medico, COUNT(reparti.id_medico) AS 'Num_reparti' FROM medici
+INNER JOIN reparti ON medici.id_medico = reparti.id_medico
+WHERE 'Num_reparti' > 1;
+
+ESERCIZIO 11.1
+
+ESERCIZIO 12.1
+SELECT t.nome, t.cognome, t.media_voto FROM ( 
+SELECT pazienti.nome as nome, pazienti.cognome as cognome, AVG(visite.voto) AS media_voto
+GROUP BY visite.id_paziente) AS t
+ORDER BY t.media_voto DESC
+LIMIT 1
+
+ESERCIZIO 13.1
+SELECT concat(nome, " ", cognome) AS Nominativo_paziente, nome_reparto FROM pazienti
+INNER JOIN ricoveri	ON pazienti.id_paziente = ricoveri.id_paziente
+INNER JOIN reparti ON ricoveri.id_reparto = reparti.id_reparto
+ORDER BY nome, cognome;
+
+ESERCIZIO 14.1
+SELECT reparti.nome_reparto, COUNT(ricoveri.id_paziente) AS totale_paziente_per_reparto FROM reparti 
+INNER JOIN ricoveri ON reparti.id_reparto = ricoveri.id_reparto 
+GROUP BY nome_reparto;
+
+ESERCIZIO 15.1
+
+
+
+ESERCIZIO 2
+INSERT INTO pazienti ( nome, cognome, data_nascita, citta) VALUES ('Mario','Rossi','2000-03-15','Bologna');
+
+ESERCIZIO 3
+UPDATE reparti SET piano = '3' WHERE reparti.nome_reparto = 'Cardiologia';
+
+ESERCIZIO 4
+CREATE TABLE sale(
+	id_sala int PRIMARY KEY,
+    edificio varchar(50) NOT Null,
+    capienza int(11) NOT null
+);
+
+CREATE TABLE interventi(
+	id_interventi int PRIMARY KEY AUTO_INCREMENT,
+    descrizione varchar(500) NOT null,
+    data_intervento DATE NOT null,
+    id_sala int,
+    FOREIGN KEY id_sala REFERENCES sale(id_sala),
+    id_medico int,
+    FOREIGN KEY id_medico REFERENCES medici(id_medico)
+);
+
+ESERCIZIO 5(non funzionante)
+CREATE VIEW media_pazienti
+SELECT id_paziente, nome, cognome, AVG(visite.voto) AS Media_valutazione FROM pazienti
+INNER JOIN visite ON pazienti.id_paziente = visite.id_paziente

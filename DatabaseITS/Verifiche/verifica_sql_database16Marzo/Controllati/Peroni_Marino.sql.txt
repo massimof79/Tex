@@ -1,0 +1,85 @@
+1- 	select pazienti.nome,pazienti.cognome,pazienti.citta from pazienti
+	where pazienti.data_nascita > '1980-12-31'
+	order by pazienti.data_nascita desc
+
+2-	select reparti.nome_reparto,reparti.piano,COUNT(ricoveri.id_paziente) as N_Pazienti_Reparto from reparti
+	join ricoveri on reparti.id_reparto=ricoveri.id_reparto
+	where reparti.piano=2 or reparti.piano=3
+	group by reparti.nome_reparto
+
+3-	SELECT pazienti.nome,pazienti.cognome,pazienti.citta,visite.voto from pazienti
+	join visite on pazienti.id_paziente=visite.id_paziente
+	where (pazienti.citta='Roma' or pazienti.citta='Milano') and visite.voto>'7'
+
+4-	SELECT pazienti.cognome,pazienti.nome from pazienti
+	order by pazienti.cognome,pazienti.nome
+
+5-	SELECT reparti.nome_reparto,concat(medici.cognome," ",medici.nome) as Medico_Responsabile from reparti
+	join medici on reparti.id_medico=medici.id_medico
+
+6-	SELECT pazienti.cognome,pazienti.nome,COUNT(visite.id_paziente) as N_Visite from pazienti
+	join visite on pazienti.id_paziente=visite.id_paziente
+	GROUP by pazienti.id_paziente
+
+7-	SELECT pazienti.cognome,pazienti.nome,visite.voto from pazienti
+	join visite on pazienti.id_paziente=visite.id_paziente
+	where visite.voto>= '8'
+	group by pazienti.id_paziente
+
+8-	SELECT reparti.nome_reparto, round(avg(visite.voto),0) as Valutazione_Media_Rep from reparti
+	left join medici on reparti.id_medico=medici.id_medico
+	left join visite on medici.id_medico=visite.id_medico
+	group by reparti.nome_reparto
+
+9-	SELECT pazienti.cognome,pazienti.nome,COUNT(visite.id_paziente) as N_Visite from pazienti
+	join visite on pazienti.id_paziente=visite.id_paziente
+	GROUP by pazienti.id_paziente
+	HAVING N_Visite>='2'
+
+10-	SELECT medici.cognome,medici.nome,COUNT(reparti.id_medico) as N_Reparti_Seguiti from medici
+	join reparti on medici.id_medico=reparti.id_medico
+	group by medici.id_medico
+	HAVING N_Reparti_Seguiti>'1'
+
+11-	SELECT reparti.nome_reparto, COUNT(visite.id_paziente) as N_Visite from reparti 
+	join medici on reparti.id_medico=medici.id_medico
+	LEFT JOIN visite on medici.id_medico=visite.id_medico
+	WHERE visite.data_visita is null
+	group by reparti.id_reparto
+
+12-	SELECT pazienti.cognome,pazienti.nome,round(avg(visite.voto),1) as Media_Valutazione from pazienti
+	join visite on pazienti.id_paziente=visite.id_paziente
+	group by pazienti.id_paziente
+	order by Media_Valutazione DESC
+	LIMIT 1
+
+13-	SELECT pazienti.cognome,pazienti.nome,reparti.nome_reparto  from pazienti
+	join ricoveri on pazienti.id_paziente=ricoveri.id_paziente
+	join reparti on ricoveri.id_reparto=reparti.id_reparto
+
+14-	SELECT reparti.nome_reparto,COUNT(ricoveri.id_paziente) as N_Pazienti_In_Rep from reparti
+	join ricoveri on reparti.id_reparto=ricoveri.id_reparto
+	GROUP by reparti.nome_reparto
+
+15-	SELECT reparti.nome_reparto,round(avg(visite.voto),1) as Val_Media from reparti
+	join visite on reparti.id_medico=visite.id_medico
+	GROUP by reparti.nome_reparto
+	ORDER by Val_Media DESC
+	limit 1
+
+PARTE 2- INSERT
+
+INSERT INTO PAZIENTI (id_paziente,nome,cognome,data_nascita,citta) 
+VALUES (21,'Mario','Rossi','2000-03-15','Bologna')
+
+PARTE 3- UPDATE
+
+UPDATE REPARTI SET piano = 3
+WHERE nome_reparto = 'Cardiologia'
+
+VISTA
+
+CREATE VIEW media_pazienti AS
+SELECT pazienti.id_paziente,pazienti.nome,pazienti.cognome,round(avg(visite.voto),1) as Media_Valutazione
+FROM pazienti join visite on pazienti.id_paziente=visite.id_paziente
+group by pazienti.id_paziente
