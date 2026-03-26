@@ -1,0 +1,124 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[italian]{babel}
+\begin{document}
+	
+	\title{Verifica SQL – Soluzioni}
+	\date{}
+	\maketitle
+	
+	\section*{Soluzioni Query}
+	
+	\begin{enumerate}
+		
+		\item 
+		SELECT nome, cognome, città
+		FROM CLIENTI
+		WHERE città IN ('Roma','Milano')
+		ORDER BY cognome;
+		
+		\item 
+		SELECT AUTO.marca, AUTO.modello, CATEGORIE.costo giornaliero
+		FROM AUTO
+		JOIN CATEGORIE ON AUTO.id categoria = CATEGORIE.id categoria
+		WHERE CATEGORIE.nome categoria = 'SUV';
+		
+		\item 
+		SELECT CLIENTI.nome, CLIENTI.cognome, AUTO.targa, NOLEGGI.data inizio, NOLEGGI.data fine
+		FROM NOLEGGI
+		JOIN CLIENTI ON NOLEGGI.id cliente = CLIENTI.id cliente
+		JOIN AUTO ON NOLEGGI.id auto = AUTO.id auto;
+		
+		\item 
+		SELECT id categoria, COUNT(*) AS numero auto
+		FROM AUTO
+		GROUP BY id categoria;
+		
+		\item 
+		SELECT DISTINCT CLIENTI.nome, CLIENTI.cognome
+		FROM CLIENTI
+		JOIN NOLEGGI ON CLIENTI.id cliente = NOLEGGI.id cliente;
+		
+		\item 
+		SELECT id cliente, COUNT(*) AS numero noleggi
+		FROM NOLEGGI
+		GROUP BY id cliente
+		HAVING COUNT(*) > 2;
+		
+		\item 
+		SELECT id noleggio, SUM(importo) AS totale pagato
+		FROM PAGAMENTI
+		GROUP BY id noleggio;
+		
+		\item 
+		SELECT CLIENTI.id cliente, CLIENTI.nome, CLIENTI.cognome, SUM(PAGAMENTI.importo) AS totale speso
+		FROM CLIENTI
+		JOIN NOLEGGI ON CLIENTI.id cliente = NOLEGGI.id cliente
+		JOIN PAGAMENTI ON NOLEGGI.id noleggio = PAGAMENTI.id noleggio
+		GROUP BY CLIENTI.id cliente, CLIENTI.nome, CLIENTI.cognome;
+		
+		\item 
+		SELECT DISTINCT id auto
+		FROM MANUTENZIONI;
+		
+		\item 
+		SELECT *
+		FROM AUTO
+		WHERE id auto NOT IN (
+		SELECT id auto
+		FROM NOLEGGI
+		);
+		
+
+		
+		\item 
+		SELECT id auto, COUNT(*) AS numero noleggi
+		FROM NOLEGGI
+		GROUP BY id auto;
+		
+		\item 
+		SELECT DISTINCT CLIENTI.nome, CLIENTI.cognome
+		FROM CLIENTI
+		JOIN NOLEGGI ON CLIENTI.id cliente = NOLEGGI.id cliente
+		JOIN AUTO ON NOLEGGI.id auto = AUTO.id auto
+		JOIN CATEGORIE ON AUTO.id categoria = CATEGORIE.id categoria
+		WHERE CATEGORIE.nome categoria = 'Lusso';
+		
+		\item 
+		SELECT id categoria, AVG(costo giornaliero) AS media costo
+		FROM CATEGORIE
+		GROUP BY id categoria
+		HAVING AVG(costo giornaliero) > 50;
+		
+		\item 
+		SELECT id auto, COUNT(*) AS numero noleggi
+		FROM NOLEGGI
+		GROUP BY id auto
+		HAVING COUNT(*) = (
+		SELECT MAX(num)
+		FROM (
+		SELECT COUNT(*) AS num
+		FROM NOLEGGI
+		GROUP BY id auto
+		) AS Conteggi
+		);
+		
+	\end{enumerate}
+	
+	\section*{INSERT}
+	INSERT INTO CLIENTI (id cliente, nome, cognome, città, patente) \\
+	VALUES (21, 'Luca', 'Bianchi', 'Torino', 'AB123CD');
+	
+	\section*{UPDATE}
+	UPDATE CATEGORIE \\
+	SET costo giornaliero = costo giornaliero * 1.10 \\
+	WHERE nome categoria = 'SUV';
+	
+	\section*{Vista}
+	CREATE VIEW spesa clienti AS
+	SELECT C.id cliente, C.nome, C.cognome, SUM(P.importo) AS totale speso
+	FROM CLIENTI C
+	JOIN NOLEGGI N ON C.id cliente = N.id cliente
+	JOIN PAGAMENTI P ON N.id noleggio = P.id noleggio
+	GROUP BY C.id cliente, C.nome, C.cognome;
+	
+\end{document}

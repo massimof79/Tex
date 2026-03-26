@@ -1,0 +1,68 @@
+
+\documentclass[a4paper,12pt]{article}
+\usepackage[italian]{babel}
+\begin{document}
+
+\title{Verifica di Basi di Dati – SQL}
+\date{27/03/2026}
+\maketitle
+
+Dato lo schema logico di seguito descritto, scrivi il codice SQL richiesto. Non è consentito usare EXIST, ANY, LIMIT.
+
+\section*{Schema Logico}
+CLIENTI(id cliente, nome, cognome, città, patente)\\
+AUTO(id auto, marca, modello, targa, anno, id categoria)\\
+CATEGORIE(id categoria, nome categoria, costo giornaliero)\\
+NOLEGGI(id noleggio, id cliente, id auto, data inizio, data fine)\\
+PAGAMENTI(id pagamento, id noleggio, importo, data pagamento)\\
+MANUTENZIONI(id manutenzione, id auto, data manutenzione, costo)
+
+\section*{Parte 1 – Query SQL}
+Scrivere le query SQL per le seguenti richieste.
+\begin{enumerate}
+\item Elencare nome, cognome e città dei clienti residenti a Roma o Milano, ordinati per cognome.
+\item Elencare marca, modello e costo giornaliero delle auto appartenenti alla categoria “SUV”.
+\item Elencare i noleggi con nome cliente, targa auto, data inizio e data fine.
+\item Elencare il numero di auto per ogni categoria.
+\item Elencare i clienti che hanno effettuato almeno un noleggio.
+\item Elencare i clienti che hanno effettuato più di 2 noleggi.
+\item Calcolare l’importo totale pagato per ogni noleggio.
+\item Calcolare la spesa totale per ogni cliente.
+\item Elencare le auto che hanno avuto almeno una manutenzione.
+\item Elencare le auto che non sono mai state noleggiate.
+\item Elencare il numero di noleggi per ogni auto.
+\item Elencare i clienti che hanno noleggiato auto di categoria “Lusso”.
+\item Elencare le categorie con costo giornaliero medio superiore a 50.
+\item Trovare l’auto più noleggiata.
+\end{enumerate}
+
+\section*{Parte 2 – INSERT}
+Inserire un nuovo cliente: Luca Bianchi, residente a Torino, patente AB123CD.
+
+\section*{Parte 3 – UPDATE}
+Aggiornare il costo giornaliero della categoria “SUV” aumentandolo del 10\%.
+
+\section*{Parte 4 – SQL DDL}
+Scrivere le istruzioni SQL per creare le seguenti tabelle:
+
+UFFICI(id ufficio, città, indirizzo)\\
+DIPENDENTI(id dipendente, nome, cognome, id ufficio)
+
+Vincoli:
+\begin{itemize}
+\item id\_ufficio e id\_dipendente chiavi primarie
+\item città non nulla
+\item id\_ufficio in DIPENDENTI chiave esterna
+\item nome e cognome non nulli
+\end{itemize}
+
+\section*{Parte 5 – Viste}
+Creare una vista chiamata spesa\_clienti che mostri:
+\begin{itemize}
+\item id\_cliente
+\item nome
+\item cognome
+\item totale speso
+\end{itemize}
+
+\end{document}
