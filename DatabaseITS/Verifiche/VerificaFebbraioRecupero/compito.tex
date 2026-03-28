@@ -1,0 +1,54 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[italian]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+
+\title{Esame di basi di dati - Prima parte}
+\author{ITS Academy - Fabbrica Digitale 4.0}
+\date{Prof. Fedeli Massimo}
+
+\begin{document}
+	
+	\maketitle
+	
+	Una clinica privata intende realizzare un sistema informativo per la gestione dei pazienti, dei medici, delle visite mediche e dei reparti presenti nella struttura.
+	
+	La clinica è organizzata in diversi reparti (ad esempio: cardiologia, ortopedia, neurologia, pediatria, radiologia). Per ogni reparto devono essere memorizzati: codice reparto, nome reparto, piano dell’edificio e numero di posti disponibili.
+	
+	I medici lavorano presso la clinica e sono assegnati a un reparto. Per ogni medico devono essere memorizzati: codice medico, nome, cognome, specializzazione, telefono, email e reparto di appartenenza. Un reparto può avere più medici, mentre ogni medico appartiene a un solo reparto.
+	
+	I pazienti possono prenotare visite mediche. Per ogni paziente devono essere memorizzati: codice paziente, nome, cognome, data di nascita, codice fiscale, indirizzo, telefono, email.
+	
+	Le visite mediche rappresentano gli appuntamenti tra pazienti e medici. Per ogni visita devono essere memorizzati: codice visita, paziente, medico, data visita, ora visita, tipo di visita, diagnosi, eventuale terapia prescritta e costo della visita.
+	
+	Un paziente può effettuare più visite nel tempo con medici diversi, mentre ogni visita è associata a un solo paziente e a un solo medico. Un medico può effettuare molte visite.
+	
+	La clinica dispone anche di alcune sale visita. Per ogni sala devono essere memorizzati: codice sala, numero sala, piano e reparto di appartenenza. Ogni visita si svolge in una determinata sala.
+	
+	Il sistema deve permettere di conoscere:
+	\begin{itemize}
+		\item lo storico delle visite di ogni paziente;
+		\item l’elenco delle visite effettuate da ogni medico;
+		\item l’occupazione delle sale visita in una certa data;
+		\item il numero di visite effettuate per ogni reparto.
+	\end{itemize}
+	
+	\bigskip
+	
+	\textbf{Richieste}
+	
+	Sulla base della descrizione fornita si richiede di:
+	
+	\begin{enumerate}
+		\item Individuare le entità principali del dominio, i loro attributi e le chiavi primarie.
+		\item Definire le relazioni tra le entità, specificandone cardinalità e partecipazione (obbligatoria o facoltativa).
+		\item Disegnare lo schema E-R.
+		\item Tradurre lo schema E-R in schema relazionale.
+	\end{enumerate}
+	
+	Consegna: inviare al docente tramite email lo schema E-R con nome file "cognome nome.json"
+	e lo schema logico all'interno di un file pdf denominato "logicocognomenome.pdf".
+	
+\end{document}
